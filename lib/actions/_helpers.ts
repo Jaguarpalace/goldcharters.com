@@ -1,6 +1,12 @@
 import { getAdminSupabase, getServerSupabase } from '@/lib/supabase/server';
 import { isSupabaseAdminConfigured } from '@/lib/supabase/env';
 
+// Discriminated union return type so callers can do `if ('error' in ctx)`
+// and TypeScript narrows ctx.error to a guaranteed string.
+type AdminContext =
+  | { admin: NonNullable<ReturnType<typeof getAdminSupabase>>; userId: string }
+  | { error: string };
+
 /**
  * Guard used at the top of every admin mutation server action.
  * - Confirms Supabase service-role key is configured (so the admin client can write)
@@ -9,25 +15,25 @@ import { isSupabaseAdminConfigured } from '@/lib/supabase/env';
  *
  * Returns the admin Supabase client when allowed, or an error string when not.
  */
-export async function requireAdminContext() {
+export async function requireAdminContext(): Promise<AdminContext> {
   if (!isSupabaseAdminConfigured()) {
-    return { error: 'Supabase is not configured on the server.' as const };
+    return { error: 'Supabase is not configured on the server.' };
   }
   const supabase = getServerSupabase();
-  if (!supabase) return { error: 'Server error.' as const };
+  if (!supabase) return { error: 'Server error.' };
 
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { error: 'Not authenticated.' as const };
+  if (!user) return { error: 'Not authenticated.' };
 
   const { data: profile } = await supabase
     .from('admin_profiles')
     .select('id')
     .eq('id', user.id)
     .maybeSingle();
-  if (!profile) return { error: 'Not authorised.' as const };
+  if (!profile) return { error: 'Not authorised.' };
 
   const admin = getAdminSupabase();
-  if (!admin) return { error: 'Server error.' as const };
+  if (!admin) return { error: 'Server error.' };
 
   return { admin, userId: user.id };
 }
