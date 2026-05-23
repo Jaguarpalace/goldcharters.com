@@ -16,7 +16,10 @@ export async function getCalculatorRates(): Promise<CalculatorRate[]> {
   if (!anyAuto) return rates;
 
   const spots = await getMetalSpots();
-  const metalKey: Record<CalculatorRate['metal_type'], keyof typeof spots | 'none'> = {
+  // Explicit metal-only key type so TypeScript knows spots[key] is MetalSpot|null,
+  // not the broader keyof typeof spots which also includes the fetched_at string.
+  type MetalKey = 'gold' | 'silver' | 'platinum' | 'palladium';
+  const metalKey: Record<CalculatorRate['metal_type'], MetalKey> = {
     Gold: 'gold',
     Silver: 'silver',
     Platinum: 'platinum',
@@ -26,10 +29,9 @@ export async function getCalculatorRates(): Promise<CalculatorRate[]> {
   return rates.map((rate) => {
     if (rate.margin_percentage == null || rate.margin_percentage <= 0) return rate;
     const key = metalKey[rate.metal_type];
-    const spot = key !== 'none' ? spots[key] : null;
-    if (!spot) return rate; // API failed — fall back to manual price silently
-    const pureGramPrice = spot.per_gram_gbp;
-    const purityPrice = spotForPurity(pureGramPrice, rate.purity_percentage);
+    const spot = spots[key];
+    if (!spot) return rate; // API failed or not configured — fall back to manual price
+    const purityPrice = spotForPurity(spot.per_gram_gbp, rate.purity_percentage);
     if (!purityPrice) return rate;
     const computed = Number(((purityPrice * rate.margin_percentage) / 100).toFixed(4));
     return { ...rate, price_per_gram: computed };
