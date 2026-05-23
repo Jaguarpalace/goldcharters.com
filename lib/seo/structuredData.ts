@@ -134,6 +134,36 @@ export function serviceSchema({
   };
 }
 
+/**
+ * Article schema for a single blog post. Powers rich-result eligibility
+ * (date badge, author, image, headline) in Google search results.
+ */
+export function articleSchema(post: {
+  title: string;
+  slug: string;
+  excerpt?: string | null;
+  featured_image_url?: string | null;
+  created_at: string;
+  updated_at: string;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: post.title,
+    description: post.excerpt ?? undefined,
+    image: post.featured_image_url ?? `${SITE_URL}/logo/charters-gold.webp`,
+    url: `${SITE_URL}/blog/${post.slug}`,
+    datePublished: post.created_at,
+    dateModified: post.updated_at,
+    author: { '@id': `${SITE_URL}#organization` },
+    publisher: { '@id': `${SITE_URL}#organization` },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `${SITE_URL}/blog/${post.slug}`,
+    },
+  };
+}
+
 export function breadcrumbSchema(items: Array<{ name: string; url: string }>) {
   return {
     '@context': 'https://schema.org',

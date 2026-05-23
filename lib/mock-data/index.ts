@@ -1,4 +1,5 @@
 import type {
+  BlogPost,
   CalculatorRate,
   Faq,
   HomepageSection,
@@ -743,6 +744,154 @@ export function mockProducts(): Product[] {
     sold_at: p.sold_at ?? null,
     ...p,
   } as Product));
+}
+
+export function mockBlogPosts(): BlogPost[] {
+  const now = new Date().toISOString();
+  return [
+    {
+      id: 'blog-1',
+      title: 'How much is 22ct gold worth per gram in the UK today?',
+      slug: 'how-much-22ct-gold-worth-per-gram-uk',
+      excerpt:
+        '22ct gold is the most common form of gold jewellery in the UK. Here is how its price per gram is calculated, and what you can expect when you sell.',
+      content: `## What 22ct gold actually is
+
+22ct gold means 22 parts pure gold out of 24, or **91.6% pure**. The remaining 8.4% is alloy — usually copper or silver — added to make the metal hard enough to wear daily.
+
+## How the price per gram is calculated
+
+The starting point is the **24ct (pure) spot price** quoted on the London Bullion Market each weekday. Per gram, you multiply that by the purity:
+
+- 24ct = 99.9% (£X per gram pure)
+- 22ct = 91.6% of the pure price
+- 18ct = 75.0% of the pure price
+- 9ct = 37.5% of the pure price
+
+Then any dealer subtracts a small margin for refining cost and risk. We typically pay between **88% and 95%** of the purity-adjusted spot price for 22ct jewellery, depending on condition and quantity.
+
+## What this means in pounds
+
+If 24ct gold is trading at £62/g on the day you sell, the maths is:
+
+- Pure spot per gram: £62.00
+- 22ct equivalent: £62.00 × 91.6% = £56.79
+- Our offer at 92% margin: £56.79 × 92% = **£52.25/g**
+
+Bring in a 10g 22ct chain and you'd expect roughly £520, give or take a couple of pounds for the live market.
+
+## What can change the offer
+
+- **Hallmarks** — a stamped piece is faster to verify and gets a better margin
+- **Weight** — bigger pieces are cheaper to refine per gram, so larger lots often get slightly better rates
+- **Condition** — broken jewellery is fine; what matters is weight and purity, not aesthetics
+- **Market movement** — gold prices change minute by minute. We quote based on the price at the moment we make the offer
+
+## Want a live figure?
+
+Use our [gold calculator](/gold-calculator) for an instant guide price across every common carat. Final offers always need an in-person purity check, but the calculator gets you within a few pounds.`,
+      featured_image_url: null,
+      category: 'Selling Gold',
+      published: true,
+      seo_title: 'How much is 22ct gold worth per gram in the UK today? | Charters Gold',
+      seo_description:
+        '22ct gold UK guide price: how the per-gram value is calculated, what we pay, and the factors that move the offer up or down.',
+      created_at: now,
+      updated_at: now,
+    },
+    {
+      id: 'blog-2',
+      title: 'Selling a Rolex: what affects the offer most',
+      slug: 'selling-rolex-what-affects-offer',
+      excerpt:
+        'Box and papers matter, but they are not everything. A guide to the four factors that actually drive the value of a pre-owned Rolex on the UK market.',
+      content: `## The hierarchy of value
+
+After valuing hundreds of Rolex watches, the same four factors come up every time, in this order:
+
+1. **Model and reference**
+2. **Condition of the dial and case**
+3. **Box and papers**
+4. **Service history**
+
+## 1. Model and reference
+
+Some references trade at a premium to retail — Submariner Date 116610LN, Daytona 116500LN, GMT-Master II "Pepsi" 126710BLRO. Others sit closer to original retail or below. The reference number on the rehaut (the inner ring around the dial) is the single most important piece of information.
+
+## 2. Condition of the dial and case
+
+A heavily polished case loses sharp edges and value. Original, unpolished cases with crisp lugs command 5-15% more than over-polished examples. Dials should be original — refurbished dials drop the value significantly.
+
+## 3. Box and papers
+
+The famous "**full set**" — original box, warranty card with matching serial, service papers — adds **10-25%** depending on the model. For desk-grail references it can mean a difference of several thousand pounds.
+
+## 4. Service history
+
+A service record from Rolex UK or an authorised service centre adds confidence. If the watch has been recently serviced, expect a small premium. If it's overdue, factor in the cost of a service when receiving offers.
+
+## What this means for you
+
+If you have a recent watch with full set and unpolished case, you're in the best position. If you have a vintage piece without box, the value is still strong — just driven mostly by rarity and condition.
+
+[Request a private valuation](/sell-watches) and we'll quote based on the live secondary market.`,
+      featured_image_url: null,
+      category: 'Selling Watches',
+      published: true,
+      seo_title: 'Selling a Rolex UK: what affects the offer most | Charters Gold',
+      seo_description:
+        'A practical guide to the four factors that determine a Rolex valuation in the UK — model, condition, papers and service history.',
+      created_at: now,
+      updated_at: now,
+    },
+    {
+      id: 'blog-3',
+      title: 'What is a Hermès Birkin worth on the resale market?',
+      slug: 'hermes-birkin-resale-value-uk',
+      excerpt:
+        'Birkins hold their value better than most luxury bags — but not all Birkins are equal. The leather, the hardware, the year and the condition all change the figure dramatically.',
+      content: `## A baseline
+
+In 2026, a **35cm Togo Birkin in a classic colour with palladium hardware** typically resells for between £8,000 and £12,000 depending on condition and provenance. A 30cm in Epsom leather might trade slightly higher; an exotic skin (croc, ostrich) sits in a different bracket entirely — £25,000 and up.
+
+## What moves the price
+
+### Leather
+- **Togo / Clemence**: most popular, easy to resell
+- **Epsom**: structured, holds shape, slight premium
+- **Box calf**: classic but shows scratches — condition-sensitive
+- **Exotics (croc, ostrich, lizard)**: 2-5× the price of standard leathers
+
+### Hardware
+Palladium and gold-tone are roughly equivalent in value. Permabrass and rose gold sit at a slight premium because they were produced in smaller batches.
+
+### Size
+- **25cm**: rare, premium for the diminutive size
+- **30cm**: most desirable everyday size
+- **35cm**: classic, broad market
+- **40cm and up**: harder to resell, lower per-piece value
+
+### Year
+Birkins from the 2010-2020 period in mint condition are the sweet spot. Older bags need to be exceptional to fetch top price; very new bags with their original receipt and dustbag command the highest figures.
+
+### Condition + accessories
+Original receipt, dustbag, box, rain cover and clochette pouch all add value. A bag with full accessories and minimal wear can be 20-30% more than one without.
+
+## Why a private valuation is worth doing
+
+The resale market for Birkins moves quickly and is brand-sensitive. A model that was hot last year may have softened; a previously slow colourway may now be in demand. We monitor the live secondary market daily.
+
+[Request a private valuation](/sell-handbags) and we'll give you a current figure based on this week's market.`,
+      featured_image_url: null,
+      category: 'Selling Handbags',
+      published: true,
+      seo_title: 'Hermès Birkin resale value UK — what determines the price | Charters Gold',
+      seo_description:
+        'Comprehensive guide to Hermès Birkin resale value in the UK: leather type, hardware, size, year and condition explained.',
+      created_at: now,
+      updated_at: now,
+    },
+  ];
 }
 
 export function mockProductImages(): ProductImage[] {
