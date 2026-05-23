@@ -1,7 +1,7 @@
-import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import { getServerSupabase } from '@/lib/supabase/server';
 import { isSupabaseConfigured } from '@/lib/supabase/env';
+import { Logo } from '@/components/public/Logo';
 import { LoginForm } from './LoginForm';
 
 export const metadata = {
@@ -20,16 +20,10 @@ export default async function LoginPage() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-ink-950 p-6">
-      <div className="w-full max-w-md">
-        <Image
-          src="/logo/charters-gold.webp"
-          alt="Charters Gold"
-          width={320}
-          height={320}
-          priority
-          style={{ mixBlendMode: 'lighten' }}
-          className="mb-6 h-32 w-32 object-contain"
-        />
+      <div className="w-full max-w-md text-center sm:text-left">
+        <div className="mb-6 flex justify-center sm:justify-start">
+          <Logo businessName="Charters Gold" size="default" href="/" />
+        </div>
         <p className="text-xs uppercase tracking-luxe text-gold-metallic">Admin Access</p>
         <h1 className="font-display text-4xl text-white mt-2">Sign In</h1>
         <p className="mt-2 text-sm text-warmgrey">

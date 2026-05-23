@@ -5,18 +5,20 @@ type LogoProps = {
   businessName: string;
   /** `default` for hero / login (large); `compact` for header / footer (smaller). */
   size?: 'default' | 'compact';
+  /** Where clicking the logo navigates. Defaults to `/` (the public homepage). */
+  href?: string;
 };
 
 /**
  * Brand mark. The tagline "Precious Metal Traders" always sits directly below
  * the crest — same layout at every size, just the image scales.
  */
-export function Logo({ businessName, size = 'default' }: LogoProps) {
+export function Logo({ businessName, size = 'default', href = '/' }: LogoProps) {
   const compact = size === 'compact';
 
   return (
     <Link
-      href="/"
+      href={href}
       className="group inline-flex flex-col items-center leading-none"
       aria-label={`${businessName} — home`}
     >

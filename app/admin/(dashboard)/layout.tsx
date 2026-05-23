@@ -1,9 +1,9 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getServerSupabase } from '@/lib/supabase/server';
 import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { BUY_ENABLED } from '@/lib/features';
+import { Logo } from '@/components/public/Logo';
 
 type NavItem = {
   href: string;
@@ -46,19 +46,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
   return (
     <div className="grid min-h-screen lg:grid-cols-[260px,1fr]">
       <aside className="border-r border-gold-metallic/15 bg-ink-900/80 p-6">
-        <Link href="/admin" className="flex flex-col items-start gap-2">
-          <Image
-            src="/logo/charters-gold.webp"
-            alt="Charters Gold"
-            width={240}
-            height={240}
-            style={{ mixBlendMode: 'lighten' }}
-            className="h-20 w-20 object-contain"
-          />
-          <p className="text-[10px] font-semibold uppercase tracking-luxe text-gold-metallic">
+        <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
+          <Logo businessName="Charters Gold" size="default" href="/admin" />
+          <p className="mt-3 text-[10px] font-semibold uppercase tracking-luxe text-gold-metallic">
             Admin Console
           </p>
-        </Link>
+        </div>
 
         <nav className="mt-8">
           <ul className="space-y-1 text-sm">
