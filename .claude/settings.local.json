@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir \"D:\\\\goldcharters.com\")",
+      "Skill(anthropic-skills:world-class-coder)",
+      "Skill(anthropic-skills:world-class-coder:*)",
+      "Bash(dir \"D:\\\\goldcharters.com\\\\public\\\\logo\")"
+    ]
+  }
+}
