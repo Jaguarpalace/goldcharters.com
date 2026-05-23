@@ -31,7 +31,7 @@ export async function CalculatorSpotBadge() {
             Live spot price · today
           </p>
           <p className="text-xs text-warmgrey">
-            Updated {new Date(spots.fetched_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })} · refreshes every 15 min
+            Updated {new Date(spots.fetched_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })} · refreshes every hour
           </p>
         </div>
       </div>

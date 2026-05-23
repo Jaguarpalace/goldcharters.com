@@ -5,7 +5,7 @@
 import 'server-only';
 
 const TROY_OUNCE_GRAMS = 31.1034768;
-const REVALIDATE_SECONDS = 60 * 15; // 15 minutes
+const REVALIDATE_SECONDS = 60 * 60; // 1 hour
 
 export type MetalSpot = {
   /** £ per gram of pure (99.99%) metal */

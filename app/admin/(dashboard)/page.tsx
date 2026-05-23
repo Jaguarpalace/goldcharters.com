@@ -33,10 +33,10 @@ export default async function AdminOverview() {
   // Operational stats — only the ones that drive daily action.
   const newRequests = valuationRequests.filter((r) => r.status === 'new').length;
   const inProgress = valuationRequests.filter((r) =>
-    ['contacted', 'valued', 'offer_sent'].includes(r.status),
+    ['contacted', 'valued', 'offer_sent', 'booked'].includes(r.status),
   ).length;
   const closed = valuationRequests.filter((r) =>
-    ['completed', 'rejected'].includes(r.status),
+    ['bought', 'completed', 'rejected'].includes(r.status),
   ).length;
 
   const last7Days = valuationRequests.filter(

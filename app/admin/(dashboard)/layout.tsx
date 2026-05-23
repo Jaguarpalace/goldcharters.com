@@ -4,6 +4,7 @@ import { getServerSupabase } from '@/lib/supabase/server';
 import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { BUY_ENABLED } from '@/lib/features';
 import { Logo } from '@/components/public/Logo';
+import { countOutstandingRequests } from '@/lib/actions/valuationRequests';
 
 type NavItem = {
   href: string;
@@ -43,6 +44,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
     }
   }
 
+  const outstandingCount = isSupabaseConfigured() ? await countOutstandingRequests() : 0;
+
   return (
     <div className="grid min-h-screen lg:grid-cols-[260px,1fr]">
       <aside className="border-r border-gold-metallic/15 bg-ink-900/80 p-6">
@@ -57,6 +60,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
           <ul className="space-y-1 text-sm">
             {NAV.map((item) => {
               const inactive = item.shopOnly && !BUY_ENABLED;
+              const showOutstandingBadge =
+                item.href === '/admin/valuation-requests' && outstandingCount > 0;
               return (
                 <li key={item.href}>
                   <Link
@@ -65,13 +70,25 @@ export default async function DashboardLayout({ children }: { children: React.Re
                     className={
                       inactive
                         ? 'flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-warmgrey/40 hover:bg-ink-800 hover:text-warmgrey/70'
-                        : 'block rounded-lg px-3 py-2 text-warmgrey hover:bg-ink-800 hover:text-gold-bright'
+                        : 'flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-warmgrey hover:bg-ink-800 hover:text-gold-bright'
                     }
                   >
                     <span>{item.label}</span>
                     {inactive && (
                       <span className="rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-luxe text-amber-300">
                         Off
+                      </span>
+                    )}
+                    {showOutstandingBadge && (
+                      <span
+                        className="inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full px-1.5 text-[10px] font-semibold text-ink-950"
+                        style={{
+                          background: 'linear-gradient(135deg, #FFD700, #B8860B)',
+                          boxShadow: '0 0 8px rgba(212,175,55,0.55)',
+                        }}
+                        title={`${outstandingCount} outstanding request${outstandingCount === 1 ? '' : 's'}`}
+                      >
+                        {outstandingCount}
                       </span>
                     )}
                   </Link>

@@ -1,7 +1,13 @@
 import Link from 'next/link';
 import { listValuationRequests } from '@/lib/actions/valuationRequests';
 import { isSupabaseConfigured } from '@/lib/supabase/env';
-import type { ValuationRequest, ValuationRequestImage } from '@/types/database';
+import {
+  VALUATION_STATUS_LABELS,
+  type ValuationRequest,
+  type ValuationRequestImage,
+  type ValuationRequestStatus,
+} from '@/types/database';
+import { StatusPipeline } from './StatusPipeline';
 
 type Row = ValuationRequest & { valuation_request_images?: ValuationRequestImage[] };
 
@@ -12,7 +18,9 @@ const STATUS_BADGE: Record<string, string> = {
   contacted: 'text-sky-300 ring-sky-500/40 bg-sky-500/10',
   valued: 'text-emerald-300 ring-emerald-500/40 bg-emerald-500/10',
   offer_sent: 'text-violet-300 ring-violet-500/40 bg-violet-500/10',
-  completed: 'text-warmgrey ring-warmgrey/30 bg-ink-800',
+  booked: 'text-cyan-300 ring-cyan-500/40 bg-cyan-500/10',
+  bought: 'text-emerald-300 ring-emerald-500/40 bg-emerald-500/10',
+  completed: 'text-emerald-300 ring-emerald-500/40 bg-emerald-500/10',
   rejected: 'text-red-300 ring-red-500/40 bg-red-500/10',
 };
 
@@ -68,9 +76,14 @@ export default async function AdminValuationRequestsPage() {
                   <span
                     className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-luxe ring-1 ${badge}`}
                   >
-                    {r.status.replace(/_/g, ' ')}
+                    {VALUATION_STATUS_LABELS[r.status as ValuationRequestStatus] ?? r.status.replace(/_/g, ' ')}
                   </span>
                 </div>
+
+                <StatusPipeline
+                  requestId={r.id}
+                  currentStatus={r.status as ValuationRequestStatus}
+                />
 
                 {r.form_variant && (
                   <p className="mt-3 inline-flex items-center gap-2 rounded-full bg-gold-gradient px-3 py-1 text-[10px] font-semibold uppercase tracking-luxe text-ink-950">

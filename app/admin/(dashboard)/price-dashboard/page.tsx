@@ -24,7 +24,7 @@ export default async function PriceDashboardPage() {
         <span className="text-xs uppercase tracking-luxe text-gold-metallic">Market</span>
         <h1 className="font-display text-4xl text-white mt-2">Live Spot Prices</h1>
         <p className="mt-2 text-sm text-warmgrey">
-          Server-cached for 15 minutes — last refreshed{' '}
+          Server-cached for 1 hour — last refreshed{' '}
           {new Date(spots.fetched_at).toLocaleString('en-GB')}.
         </p>
       </header>

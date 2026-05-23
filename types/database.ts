@@ -124,8 +124,40 @@ export type ValuationRequestStatus =
   | 'contacted'
   | 'valued'
   | 'offer_sent'
+  | 'booked'
+  | 'bought'
   | 'completed'
   | 'rejected';
+
+/** Statuses that still need our attention. Drives the sidebar badge count. */
+export const OUTSTANDING_STATUSES: ValuationRequestStatus[] = [
+  'new',
+  'contacted',
+  'valued',
+  'offer_sent',
+  'booked',
+];
+
+/** Ordered pipeline shown to admin for status progression. */
+export const VALUATION_PIPELINE: ValuationRequestStatus[] = [
+  'new',
+  'contacted',
+  'offer_sent',
+  'booked',
+  'bought',
+];
+
+/** Pretty labels for the UI. */
+export const VALUATION_STATUS_LABELS: Record<ValuationRequestStatus, string> = {
+  new: 'New',
+  contacted: 'Contacted',
+  valued: 'Valued',
+  offer_sent: 'Valuation Sent',
+  booked: 'Booked',
+  bought: 'Bought',
+  completed: 'Completed',
+  rejected: 'Rejected',
+};
 
 export type ValuationItemType =
   | 'gold'

@@ -264,3 +264,72 @@ export async function listValuationRequests() {
   if (error || !data) return [];
   return data;
 }
+
+/** Count of requests still needing action — drives the sidebar badge. */
+export async function countOutstandingRequests(): Promise<number> {
+  const supabase = getServerSupabase();
+  if (!supabase) return 0;
+
+  const { count, error } = await supabase
+    .from('valuation_requests')
+    .select('id', { count: 'exact', head: true })
+    .not('status', 'in', '("bought","completed","rejected")');
+
+  if (error) {
+    console.error('[valuation:count-outstanding]', error);
+    return 0;
+  }
+  return count ?? 0;
+}
+
+const VALID_STATUSES = new Set<string>([
+  'new',
+  'contacted',
+  'valued',
+  'offer_sent',
+  'booked',
+  'bought',
+  'completed',
+  'rejected',
+]);
+
+export async function updateValuationStatus(
+  id: string,
+  status: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (!VALID_STATUSES.has(status)) {
+    return { ok: false, error: 'Invalid status.' };
+  }
+  if (!isSupabaseAdminConfigured()) {
+    return { ok: false, error: 'Supabase not configured.' };
+  }
+  const admin = getAdminSupabase();
+  if (!admin) return { ok: false, error: 'Server error.' };
+
+  // Confirm the caller is an admin via their session.
+  const session = getServerSupabase();
+  if (session) {
+    const { data: { user } } = await session.auth.getUser();
+    if (!user) return { ok: false, error: 'Not authenticated.' };
+    const { data: profile } = await session
+      .from('admin_profiles')
+      .select('id')
+      .eq('id', user.id)
+      .maybeSingle();
+    if (!profile) return { ok: false, error: 'Not authorised.' };
+  }
+
+  const { error } = await admin
+    .from('valuation_requests')
+    .update({ status, updated_at: new Date().toISOString() })
+    .eq('id', id);
+
+  if (error) {
+    console.error('[valuation:update-status]', error);
+    return { ok: false, error: error.message };
+  }
+
+  revalidatePath('/admin/valuation-requests');
+  revalidatePath('/admin');
+  return { ok: true };
+}
