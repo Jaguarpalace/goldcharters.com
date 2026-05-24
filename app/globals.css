@@ -184,3 +184,81 @@ body {
     transform: translateY(0);
   }
 }
+
+/* ------------------------------------------------------------------------
+   Admin light theme
+   Scoped to .admin-shell[data-admin-theme="light"] — the wrapper around the
+   admin dashboard. The public site never inherits these overrides because
+   it never gets the attribute.
+
+   Strategy: catch the dark-mode Tailwind utility classes the admin code
+   already uses (bg-ink-*, text-white, text-warmgrey, border-gold-metallic/*)
+   and remap them to warm cream + dark-ink values that pair well with the
+   existing gold accents. No component refactor needed.
+   ------------------------------------------------------------------------ */
+.admin-shell[data-admin-theme='light'] {
+  color-scheme: light;
+  --ink-950-light: #f9f6ef;
+  --ink-900-light: #ffffff;
+  --ink-800-light: #f1ead8;
+  --text-strong-light: #1c1a17;
+  --text-muted-light: #5a544c;
+  --gold-on-light: #8a6a08;
+  --gold-on-light-strong: #6e5300;
+  background: var(--ink-950-light);
+  color: var(--text-strong-light);
+}
+
+/* Solid backgrounds */
+.admin-shell[data-admin-theme='light'] .bg-ink-950 { background-color: var(--ink-950-light) !important; }
+.admin-shell[data-admin-theme='light'] .bg-ink-900 { background-color: var(--ink-900-light) !important; }
+.admin-shell[data-admin-theme='light'] .bg-ink-800 { background-color: var(--ink-800-light) !important; }
+
+/* Translucent backgrounds — common in the admin */
+.admin-shell[data-admin-theme='light'] .bg-ink-950\/60 { background-color: rgba(249, 246, 239, 0.7) !important; }
+.admin-shell[data-admin-theme='light'] .bg-ink-950\/80 { background-color: rgba(249, 246, 239, 0.9) !important; }
+.admin-shell[data-admin-theme='light'] .bg-ink-900\/40 { background-color: rgba(255, 255, 255, 0.5) !important; }
+.admin-shell[data-admin-theme='light'] .bg-ink-900\/60 { background-color: rgba(255, 255, 255, 0.75) !important; }
+.admin-shell[data-admin-theme='light'] .bg-ink-900\/70 { background-color: rgba(255, 255, 255, 0.85) !important; }
+.admin-shell[data-admin-theme='light'] .bg-ink-900\/80 { background-color: rgba(255, 255, 255, 0.92) !important; }
+.admin-shell[data-admin-theme='light'] .bg-ink-800\/40 { background-color: rgba(241, 234, 216, 0.55) !important; }
+
+/* Text */
+.admin-shell[data-admin-theme='light'] .text-white { color: var(--text-strong-light) !important; }
+.admin-shell[data-admin-theme='light'] .text-warmgrey { color: var(--text-muted-light) !important; }
+.admin-shell[data-admin-theme='light'] .text-warmgrey\/70 { color: rgba(90, 84, 76, 0.78) !important; }
+.admin-shell[data-admin-theme='light'] .text-warmgrey\/60 { color: rgba(90, 84, 76, 0.65) !important; }
+.admin-shell[data-admin-theme='light'] .text-warmgrey\/50 { color: rgba(90, 84, 76, 0.55) !important; }
+.admin-shell[data-admin-theme='light'] .text-warmgrey\/40 { color: rgba(90, 84, 76, 0.45) !important; }
+
+/* Gold accents — deeper on cream for proper contrast */
+.admin-shell[data-admin-theme='light'] .text-gold-tint { color: var(--gold-on-light) !important; }
+.admin-shell[data-admin-theme='light'] .text-gold-metallic { color: var(--gold-on-light) !important; }
+.admin-shell[data-admin-theme='light'] .text-gold-bright { color: var(--gold-on-light-strong) !important; }
+
+/* Borders */
+.admin-shell[data-admin-theme='light'] .border-gold-metallic\/15 { border-color: rgba(184, 134, 11, 0.25) !important; }
+.admin-shell[data-admin-theme='light'] .border-gold-metallic\/20 { border-color: rgba(184, 134, 11, 0.3) !important; }
+.admin-shell[data-admin-theme='light'] .border-gold-metallic\/25 { border-color: rgba(184, 134, 11, 0.35) !important; }
+.admin-shell[data-admin-theme='light'] .border-gold-metallic\/30 { border-color: rgba(184, 134, 11, 0.4) !important; }
+.admin-shell[data-admin-theme='light'] .border-gold-metallic\/40 { border-color: rgba(184, 134, 11, 0.5) !important; }
+.admin-shell[data-admin-theme='light'] .border-gold-metallic\/50 { border-color: rgba(184, 134, 11, 0.6) !important; }
+
+/* Placeholder text */
+.admin-shell[data-admin-theme='light'] .placeholder\:text-warmgrey\/60::placeholder,
+.admin-shell[data-admin-theme='light'] .placeholder\:text-warmgrey\/50::placeholder,
+.admin-shell[data-admin-theme='light'] .placeholder\:text-warmgrey\/40::placeholder {
+  color: rgba(90, 84, 76, 0.55) !important;
+}
+
+/* gc-card surface */
+.admin-shell[data-admin-theme='light'] .gc-card {
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  box-shadow: inset 0 0 0 1px rgba(184, 134, 11, 0.28),
+    0 4px 24px -8px rgba(120, 90, 0, 0.12) !important;
+}
+
+/* Gold-gradient buttons keep their gradient — they look great on cream */
+/* Form inputs (.gc-input) inherit the bg-ink-900 override above */
+

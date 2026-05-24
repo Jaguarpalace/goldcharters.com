@@ -1,10 +1,12 @@
 import Link from 'next/link';
+import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { getServerSupabase } from '@/lib/supabase/server';
 import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { BUY_ENABLED } from '@/lib/features';
 import { Logo } from '@/components/public/Logo';
 import { countOutstandingRequests } from '@/lib/actions/valuationRequests';
+import { ThemeToggle, type AdminTheme } from './ThemeToggle';
 
 type NavItem = {
   href: string;
@@ -30,6 +32,7 @@ const NAV: NavItem[] = [
   { href: '/admin/media', label: 'Media Library' },
   { href: '/admin/blog', label: 'Blog' },
   { href: '/admin/email-templates', label: 'Email Templates' },
+  { href: '/admin/users', label: 'Team' },
   { href: '/admin/settings', label: 'Settings' },
 ];
 
@@ -47,8 +50,17 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   const outstandingCount = isSupabaseConfigured() ? await countOutstandingRequests() : 0;
 
+  // Read the admin-only theme cookie so we render the correct surface
+  // from the server — no flash, no hydration mismatch. Default is dark.
+  const cookieStore = cookies();
+  const themeCookie = cookieStore.get('admin-theme')?.value;
+  const theme: AdminTheme = themeCookie === 'light' ? 'light' : 'dark';
+
   return (
-    <div className="grid min-h-screen lg:grid-cols-[260px,1fr]">
+    <div
+      data-admin-theme={theme}
+      className="admin-shell grid min-h-screen lg:grid-cols-[260px,1fr]"
+    >
       <aside className="border-r border-gold-metallic/15 bg-ink-900/80 p-6">
         <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
           <Logo businessName="Charters Gold" size="default" href="/admin" />
@@ -121,9 +133,13 @@ export default async function DashboardLayout({ children }: { children: React.Re
           </div>
         )}
 
+        <div className="mt-6">
+          <ThemeToggle current={theme} />
+        </div>
+
         <Link
           href="/"
-          className="mt-6 block text-xs uppercase tracking-luxe text-gold-metallic hover:text-gold-bright"
+          className="mt-4 block text-xs uppercase tracking-luxe text-gold-metallic hover:text-gold-bright"
         >
           ← Back to public site
         </Link>
