@@ -362,6 +362,15 @@ export type AdminProfile = {
   created_at: string;
 };
 
+export type UploadedImage = {
+  id: string;
+  image_url: string;
+  alt_text: string | null;
+  bucket: string;
+  created_by: string | null;
+  created_at: string;
+};
+
 export type EmailTemplateVariable = {
   key: string;
   label: string;

@@ -1,21 +1,30 @@
-export default function AdminMediaPage() {
+import { listMediaFiles } from '@/lib/actions/media';
+import { isSupabaseConfigured } from '@/lib/supabase/env';
+import { MediaBoard } from './MediaBoard';
+
+export const dynamic = 'force-dynamic';
+
+export default async function AdminMediaPage() {
+  const files = isSupabaseConfigured() ? await listMediaFiles() : [];
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-5">
       <header>
         <span className="text-xs uppercase tracking-luxe text-gold-metallic">Media</span>
-        <h1 className="font-display text-4xl text-white mt-2">Media Library</h1>
-        <p className="mt-2 max-w-2xl text-sm text-warmgrey">
-          Upload, organise and copy URLs for images used across the public site.
+        <h1 className="font-display text-3xl text-white mt-1">Media Library</h1>
+        <p className="mt-1 text-xs text-warmgrey">
+          Upload, organise and copy URLs for images used across the public site. JPG, PNG, WEBP or
+          SVG, up to 8MB each.
         </p>
       </header>
-      <div className="gc-card flex flex-col items-center gap-3 p-16 text-center">
-        <p className="text-sm text-warmgrey">
-          The media library is being prepared. Uploads will be available shortly.
-        </p>
-        <button type="button" className="gc-btn-primary">
-          Upload Images
-        </button>
-      </div>
+
+      {!isSupabaseConfigured() && (
+        <div className="rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-200">
+          Sign in is required to manage uploads.
+        </div>
+      )}
+
+      <MediaBoard initialFiles={files} />
     </div>
   );
 }

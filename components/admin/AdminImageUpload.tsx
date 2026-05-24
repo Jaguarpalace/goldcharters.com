@@ -29,7 +29,9 @@ export function AdminImageUpload({
     startTransition(async () => {
       const result = await uploadPublicImage(formData);
       if (result.ok && result.data) {
-        onChange(result.data.url);
+        const first = result.data.uploaded[0];
+        if (first) onChange(first.image_url);
+        else setError(result.data.errors[0] ?? 'Upload failed.');
       } else if (!result.ok) {
         setError(result.error);
       }
