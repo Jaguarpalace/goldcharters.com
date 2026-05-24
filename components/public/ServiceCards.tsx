@@ -54,7 +54,7 @@ const ICONS: Record<string, React.ReactNode> = {
 
 export function ServiceCards({ services }: { services: Service[] }) {
   return (
-    <section className="relative py-6 lg:py-10">
+    <section className="relative pt-10 pb-6 lg:py-10">
       <div className="gc-container">
         <div className="mx-auto max-w-3xl text-center">
           <span className="gc-eyebrow">Our Services</span>
