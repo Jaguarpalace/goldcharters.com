@@ -10,7 +10,7 @@ insert into public.site_settings (
 ) values (
   'Charters Gold',
   '0800 047 2348',
-  'office@goldcharters.com',
+  'office@chartersgold.co.uk',
   '+44 7700 900123',
   'Avalon House, Unit 7A, Egham Business Village, Crabtree Road, Egham, Surrey, TW20 8RB',
   'Monday – Saturday · 10:00 – 18:00 · By appointment',

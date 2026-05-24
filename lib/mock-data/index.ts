@@ -21,7 +21,7 @@ export function mockSiteSettings(): SiteSettings {
     business_name: 'Charters Gold',
     logo_url: null,
     phone: '0800 047 2348',
-    email: 'office@goldcharters.com',
+    email: 'office@chartersgold.co.uk',
     whatsapp: '+44 7700 900123',
     address: 'Avalon House, Unit 7A, Egham Business Village, Crabtree Road, Egham, Surrey, TW20 8RB',
     opening_hours: 'Monday – Saturday · 10:00 – 18:00 · By appointment',

@@ -5,7 +5,7 @@
 import type { Faq, SiteSettings } from '@/types/database';
 import { FAQ_CATEGORY_LABELS } from '@/lib/format';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://goldcharters.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://chartersgold.co.uk';
 
 export function organizationSchema(settings: SiteSettings) {
   return {

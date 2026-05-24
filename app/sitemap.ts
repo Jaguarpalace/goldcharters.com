@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 import { getServerSupabase } from '@/lib/supabase/server';
 import { BUY_ENABLED } from '@/lib/features';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://goldcharters.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://chartersgold.co.uk';
 
 /**
  * Auto-generated sitemap. Google fetches /sitemap.xml on a schedule; submit it once

@@ -30,7 +30,7 @@ export default async function PrivacyPage() {
       <h2>1. About This Policy</h2>
       <p>
         This Privacy Policy applies to all personal data we process about you in connection with our
-        services. By using our website at <strong>goldcharters.com</strong> (the "Site") or by
+        services. By using our website at <strong>chartersgold.co.uk</strong> (the "Site") or by
         submitting a valuation request, you acknowledge that you have read and understood this
         Policy. Where consent is required by law, we will request it separately.
       </p>

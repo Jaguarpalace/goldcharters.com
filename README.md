@@ -257,7 +257,7 @@ Walk this list before pointing the domain at Vercel:
 - [ ] `NEXT_PUBLIC_SUPABASE_URL`
 - [ ] `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - [ ] `SUPABASE_SERVICE_ROLE_KEY` (server-only — never `NEXT_PUBLIC_`)
-- [ ] `NEXT_PUBLIC_SITE_URL` (your final domain, e.g. `https://goldcharters.com`)
+- [ ] `NEXT_PUBLIC_SITE_URL` (your final domain, e.g. `https://chartersgold.co.uk`)
 - [ ] `METAL_PRICE_API_KEY` (optional but enables the live ticker)
 
 ### SEO
@@ -278,7 +278,7 @@ Walk this list before pointing the domain at Vercel:
 - [ ] Replace placeholder hero images with real photos (compress to <500KB each)
 - [ ] Set sensible calculator margins per row in `/admin/calculator-rates`
 - [ ] Add real FAQs, customer-relevant items in `/admin/items-we-buy`
-- [ ] Configure a contact email forwarder for `office@goldcharters.com`
+- [ ] Configure a contact email forwarder for `office@chartersgold.co.uk`
 - [ ] Set up SPF / DKIM / DMARC DNS records so transactional emails don't go to spam
 
 ### Monitoring

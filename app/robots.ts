@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { BUY_ENABLED } from '@/lib/features';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://goldcharters.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://chartersgold.co.uk';
 
 export default function robots(): MetadataRoute.Robots {
   const disallow = [

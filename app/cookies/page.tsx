@@ -23,7 +23,7 @@ export default async function CookiesPage() {
       eyebrow="Legal"
       title="Cookie Policy"
       lastUpdated={LAST_UPDATED}
-      intro={`This Cookie Policy explains how ${businessName} uses cookies and similar technologies when you visit goldcharters.com. It should be read together with our Privacy Policy and Terms & Conditions.`}
+      intro={`This Cookie Policy explains how ${businessName} uses cookies and similar technologies when you visit chartersgold.co.uk. It should be read together with our Privacy Policy and Terms & Conditions.`}
     >
       <h2>1. What Are Cookies?</h2>
       <p>

@@ -25,7 +25,7 @@ export default async function TermsPage() {
       eyebrow="Legal"
       title="Terms & Conditions"
       lastUpdated={LAST_UPDATED}
-      intro={`These Terms & Conditions ("Terms") govern your use of the website at goldcharters.com (the "Site") and any transaction in which ${businessName} buys precious metals, jewellery, watches, handbags or related items from you. By using the Site or submitting items to us, you agree to be bound by these Terms.`}
+      intro={`These Terms & Conditions ("Terms") govern your use of the website at chartersgold.co.uk (the "Site") and any transaction in which ${businessName} buys precious metals, jewellery, watches, handbags or related items from you. By using the Site or submitting items to us, you agree to be bound by these Terms.`}
     >
       <h2>1. Definitions</h2>
       <p>In these Terms, unless the context requires otherwise:</p>
