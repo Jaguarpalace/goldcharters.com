@@ -30,12 +30,12 @@ export function SellSection({
   return (
     <section className="relative border-b border-gold-metallic/15 py-6 lg:py-10">
       <div className="gc-container">
-        <div className={`grid grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-10 lg:gap-14 ${flip ? 'md:[&>*:first-child]:order-2' : ''}`}>
+        <div className={`grid grid-cols-1 items-center gap-6 md:grid-cols-2 md:gap-10 lg:gap-14 ${flip ? 'md:[&>*:first-child]:order-2' : ''}`}>
           <div>
             <span className="gc-eyebrow">{variant === 'gold' ? 'Sell Gold' : 'Sell Jewellery'}</span>
             <HeadingTag className={headingClass}>{section.title}</HeadingTag>
-            <p className="gc-subhead mt-5 max-w-xl">{section.body}</p>
-            <ul className="mt-7 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+            <p className="gc-subhead mt-4 max-w-xl sm:mt-5">{section.body}</p>
+            <ul className="mt-5 grid grid-cols-1 gap-2.5 sm:mt-7 sm:grid-cols-2">
               {bullets.map((b) => (
                 <li key={b} className="flex items-start gap-2.5 text-sm text-warmgrey">
                   <Bullet />
@@ -44,7 +44,7 @@ export function SellSection({
               ))}
             </ul>
             {section.cta_label && ctaHref && (
-              <div className="mt-9">
+              <div className="mt-6 sm:mt-9">
                 {/*
                  * Same-page hash links go via a plain <a> so the browser handles
                  * the smooth scroll natively. Next.js <Link> doesn't reliably
@@ -91,7 +91,7 @@ function Bullet() {
  *  so every section across the site uses the same card proportions. */
 function SellImage({ url, alt }: { url: string; alt: string }) {
   return (
-    <div className="relative mx-auto w-full max-w-md">
+    <div className="relative mx-auto w-full max-w-[320px] sm:max-w-md">
       <div
         className="relative aspect-square overflow-hidden rounded-3xl"
         style={{
@@ -112,7 +112,7 @@ function SellImage({ url, alt }: { url: string; alt: string }) {
 
 function DecorativePanel({ variant }: { variant: 'gold' | 'jewellery' }) {
   return (
-    <div className="relative mx-auto w-full max-w-md">
+    <div className="relative mx-auto w-full max-w-[320px] sm:max-w-md">
     <div
       className="relative aspect-square overflow-hidden rounded-3xl"
       style={{

@@ -29,17 +29,17 @@ export function Hero({ section }: { section?: HomepageSection }) {
   return (
     <section className="relative overflow-hidden border-b border-gold-metallic/15">
       <HeroBackdrop />
-      <div className="gc-container relative grid grid-cols-1 gap-10 py-10 md:grid-cols-2 md:items-center md:gap-12 md:py-12 lg:gap-14 lg:py-14">
+      <div className="gc-container relative grid grid-cols-1 gap-7 py-7 md:grid-cols-2 md:items-center md:gap-12 md:py-12 lg:gap-14 lg:py-14">
         <div className="gc-reveal max-w-2xl">
           <span className="gc-eyebrow">
             <span className="h-px w-8 bg-gold-metallic" /> Precious Metal Traders
           </span>
-          <h1 className="gc-heading-xl mt-5">
+          <h1 className="gc-heading-xl mt-4 sm:mt-5">
             {section?.title ?? 'Unlock the Value of Gold & Jewellery'}
           </h1>
-          <p className="gc-subhead mt-6 max-w-xl">{section?.subtitle}</p>
+          <p className="gc-subhead mt-4 max-w-xl sm:mt-6">{section?.subtitle}</p>
 
-          <div className="mt-9 flex flex-wrap gap-3">
+          <div className="mt-6 flex flex-wrap gap-3 sm:mt-9">
             <Link href={section?.cta_href ?? '/sell-gold'} className="gc-btn-primary">
               {section?.cta_label ?? 'Sell Gold & Jewellery'}
             </Link>
@@ -51,7 +51,7 @@ export function Hero({ section }: { section?: HomepageSection }) {
           </div>
 
           {badges.length > 0 && (
-            <ul className="mt-10 grid grid-cols-1 gap-2 text-sm text-warmgrey sm:grid-cols-2">
+            <ul className="mt-7 grid grid-cols-1 gap-2 text-sm text-warmgrey sm:mt-10 sm:grid-cols-2">
               {badges.map((badge) => (
                 <li key={badge} className="flex items-start gap-2.5">
                   <span
@@ -102,7 +102,7 @@ function HeroBackdrop() {
  */
 function HeroImage({ url, alt }: { url: string; alt: string }) {
   return (
-    <div className="relative mx-auto w-full max-w-md">
+    <div className="relative mx-auto w-full max-w-[320px] sm:max-w-md">
       <div
         className="relative aspect-square overflow-hidden rounded-3xl"
         style={{
@@ -128,7 +128,7 @@ function HeroImage({ url, alt }: { url: string; alt: string }) {
  */
 function HeroVisual() {
   return (
-    <div className="relative mx-auto w-full max-w-md">
+    <div className="relative mx-auto w-full max-w-[320px] sm:max-w-md">
       <div
         className="relative aspect-square overflow-hidden rounded-3xl"
         style={{
