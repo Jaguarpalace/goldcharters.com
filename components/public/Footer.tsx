@@ -35,78 +35,94 @@ export function Footer({ settings }: { settings: SiteSettings }) {
 
   return (
     <footer className="border-t border-gold-metallic/15 bg-ink-950">
-      <div className="gc-container py-8 lg:py-10">
-        {/* Top row: brand on the left, columns of links on the right.
-            On wide screens this lays out as one balanced horizontal stripe. */}
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-[1.6fr,1fr,1fr,1fr,1fr] lg:items-start lg:gap-8">
-          {/* Brand column — compact logo + short description */}
+      <div className="gc-container py-6 lg:py-10">
+        {/*
+          Layout strategy:
+          - Mobile: brand block full-width on top, then a 2×2 grid of the four
+            info columns underneath (was 4 stacked single-column blocks before
+            — half the vertical height now).
+          - Desktop (lg+): we use `lg:contents` on the inner wrapper so its
+            children flatten into the parent 5-column grid — same horizontal
+            stripe layout we had before, no duplication.
+        */}
+        <div className="grid gap-6 lg:grid-cols-[1.6fr,1fr,1fr,1fr,1fr] lg:items-start lg:gap-8">
+          {/* Brand block */}
           <div className="lg:max-w-sm">
             <Logo businessName={settings.business_name} size="compact" />
-            <p className="mt-3 text-xs leading-relaxed text-warmgrey">
+            {/* Description: hidden on phones, 2-line clamp on tablets+, full on lg+.
+                Keeps mobile footer tight while preserving the brand voice elsewhere. */}
+            <p className="mt-3 hidden text-xs leading-relaxed text-warmgrey sm:line-clamp-2 sm:block lg:line-clamp-none">
               {settings.footer_description}
             </p>
           </div>
 
-          <FooterCol title="What We Buy">
-            <ul className="space-y-1.5 text-xs">
-              {SELL_LINKS.map((l) => (
-                <li key={l.href}>
-                  <Link href={l.href} className="text-warmgrey hover:text-gold-bright">
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </FooterCol>
+          <div className="grid grid-cols-2 gap-6 lg:contents">
+            <FooterCol title="What We Buy">
+              <ul className="space-y-1 text-xs">
+                {SELL_LINKS.map((l) => (
+                  <li key={l.href}>
+                    <Link href={l.href} className="text-warmgrey hover:text-gold-bright">
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </FooterCol>
 
-          <FooterCol title="More">
-            <ul className="space-y-1.5 text-xs">
-              {INFO_LINKS.map((l) => (
-                <li key={l.href}>
-                  <Link href={l.href} className="text-warmgrey hover:text-gold-bright">
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </FooterCol>
+            <FooterCol title="More">
+              <ul className="space-y-1 text-xs">
+                {INFO_LINKS.map((l) => (
+                  <li key={l.href}>
+                    <Link href={l.href} className="text-warmgrey hover:text-gold-bright">
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </FooterCol>
 
-          <FooterCol title="Visit & Contact">
-            {settings.address && (
-              <p className="text-xs leading-relaxed text-warmgrey">{settings.address}</p>
-            )}
-            <p className="mt-2 text-xs">
-              <a href={`tel:${settings.phone}`} className="block text-warmgrey hover:text-gold-bright">
-                {settings.phone}
-              </a>
-              <a
-                href={`mailto:${settings.email}`}
-                className="mt-1 block text-warmgrey hover:text-gold-bright"
-              >
-                {settings.email}
-              </a>
-            </p>
-            {settings.opening_hours && (
-              <p className="mt-2 text-xs text-warmgrey">{settings.opening_hours}</p>
-            )}
-          </FooterCol>
+            <FooterCol title="Visit & Contact">
+              {settings.address && (
+                <p className="text-xs leading-snug text-warmgrey">{settings.address}</p>
+              )}
+              <p className="mt-2 space-y-0.5 text-xs">
+                <a
+                  href={`tel:${settings.phone}`}
+                  className="block text-warmgrey hover:text-gold-bright"
+                >
+                  {settings.phone}
+                </a>
+                <a
+                  href={`mailto:${settings.email}`}
+                  className="block break-all text-warmgrey hover:text-gold-bright"
+                >
+                  {settings.email}
+                </a>
+              </p>
+              {settings.opening_hours && (
+                <p className="mt-2 text-[11px] leading-snug text-warmgrey/80">
+                  {settings.opening_hours}
+                </p>
+              )}
+            </FooterCol>
 
-          <FooterCol title="Legal">
-            <ul className="space-y-1.5 text-xs">
-              {LEGAL_LINKS.map((l) => (
-                <li key={l.href}>
-                  <Link href={l.href} className="text-warmgrey hover:text-gold-bright">
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </FooterCol>
+            <FooterCol title="Legal">
+              <ul className="space-y-1 text-xs">
+                {LEGAL_LINKS.map((l) => (
+                  <li key={l.href}>
+                    <Link href={l.href} className="text-warmgrey hover:text-gold-bright">
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </FooterCol>
+          </div>
         </div>
 
-        <div className="my-5 gc-divider" />
+        <div className="my-4 gc-divider lg:my-5" />
 
-        <div className="flex flex-col gap-2 text-[11px] leading-relaxed text-warmgrey/80 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-col gap-1.5 text-[10px] leading-relaxed text-warmgrey/80 lg:flex-row lg:items-center lg:justify-between lg:gap-4 lg:text-[11px]">
           <p className="max-w-4xl">{settings.footer_disclaimer}</p>
           <p className="flex-none">
             © {new Date().getFullYear()} {settings.business_name}. All rights reserved.
@@ -123,7 +139,7 @@ function FooterCol({ title, children }: { title: string; children: React.ReactNo
       <h3 className="text-[10px] font-semibold uppercase tracking-luxe text-gold-metallic">
         {title}
       </h3>
-      <div className="mt-2.5">{children}</div>
+      <div className="mt-2">{children}</div>
     </div>
   );
 }
