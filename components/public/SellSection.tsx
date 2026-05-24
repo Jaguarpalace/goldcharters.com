@@ -30,12 +30,12 @@ export function SellSection({
   return (
     <section className="relative border-b border-gold-metallic/15 py-6 lg:py-10">
       <div className="gc-container">
-        <div className={`grid items-center gap-8 md:grid-cols-2 md:gap-10 lg:gap-14 ${flip ? 'md:[&>*:first-child]:order-2' : ''}`}>
+        <div className={`grid grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-10 lg:gap-14 ${flip ? 'md:[&>*:first-child]:order-2' : ''}`}>
           <div>
             <span className="gc-eyebrow">{variant === 'gold' ? 'Sell Gold' : 'Sell Jewellery'}</span>
             <HeadingTag className={headingClass}>{section.title}</HeadingTag>
             <p className="gc-subhead mt-5 max-w-xl">{section.body}</p>
-            <ul className="mt-7 grid gap-2.5 sm:grid-cols-2">
+            <ul className="mt-7 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
               {bullets.map((b) => (
                 <li key={b} className="flex items-start gap-2.5 text-sm text-warmgrey">
                   <Bullet />

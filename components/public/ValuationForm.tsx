@@ -138,7 +138,7 @@ export function ValuationForm({ variant = 'metal', defaultItemType }: Props) {
       </Question>
 
       <Question number={QUESTION_NUMBER[variant].contact} label="Your contact details" required>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Field label="First name" name="first_name" required />
           <Field label="Last name" name="last_name" required />
           <Field label="Email" name="email" type="email" required />

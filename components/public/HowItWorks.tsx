@@ -61,7 +61,7 @@ export function HowItWorks({ asH1 = false }: { asH1?: boolean }) {
           )}
         </div>
 
-        <ol className="mt-8 grid gap-4 sm:grid-cols-3 lg:gap-5">
+        <ol className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3 lg:gap-5">
           {steps.map((step, i) => (
             <li key={step.title} className="gc-card gc-card-gold-edge p-7">
               <div className="flex items-center gap-3 text-gold-metallic">

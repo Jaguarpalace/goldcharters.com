@@ -50,7 +50,7 @@ export function GoldCalculator({
     <section className="relative py-6 lg:py-10" id="gold-calculator">
       <div className="gc-container">
         {/* Header strip: title left, total card right */}
-        <div className="grid gap-6 md:grid-cols-[1.4fr,1fr] md:items-end md:gap-8">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-[1.4fr,1fr] md:items-end md:gap-8">
           <div>
             <span className="gc-eyebrow">Sell Your Gold Calculator</span>
             {asH1 ? (

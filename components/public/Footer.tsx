@@ -48,7 +48,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
             children flatten into the parent 5-column grid — same horizontal
             stripe layout we had before, no duplication.
         */}
-        <div className="grid gap-6 lg:grid-cols-[1.6fr,1fr,1fr,1fr,1fr] lg:items-start lg:gap-8">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.6fr,1fr,1fr,1fr,1fr] lg:items-start lg:gap-8">
           {/* Brand block */}
           <div className="lg:max-w-sm">
             <Logo businessName={settings.business_name} size="compact" />

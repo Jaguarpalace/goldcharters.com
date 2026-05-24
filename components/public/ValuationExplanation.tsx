@@ -10,7 +10,7 @@ export function ValuationExplanation({ section }: { section?: HomepageSection })
   return (
     <section className="relative border-y border-gold-metallic/15 py-6 lg:py-10">
       <div className="gc-container">
-        <div className="grid gap-8 lg:grid-cols-[1fr,1.1fr] lg:gap-12">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr,1.1fr] lg:gap-12">
           <div>
             <span className="gc-eyebrow">Transparent Valuations</span>
             <h2 className="gc-heading mt-3">{section.title}</h2>

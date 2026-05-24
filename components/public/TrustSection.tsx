@@ -8,7 +8,7 @@ export function TrustSection({ cards }: { cards: TrustCard[] }) {
           <span className="gc-eyebrow">Why Clients Trust Us</span>
           <h2 className="gc-heading mt-3">A Service Built on Discretion</h2>
         </div>
-        <ul className="mt-8 grid gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+        <ul className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
           {cards.map((card) => (
             <li key={card.id} className="gc-card flex items-start gap-4 p-5">
               <span

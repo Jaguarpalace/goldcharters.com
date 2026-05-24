@@ -69,7 +69,12 @@ export function ServiceCards({ services }: { services: Service[] }) {
             height of the old vertical hero cards, so even an odd number of
             services (e.g. 7) splits 4|3 across the columns and stays visually
             balanced rather than leaving a glaring orphan row. */}
-        <ul className="mx-auto mt-8 grid max-w-5xl gap-3 sm:grid-cols-2">
+        {/* `grid-cols-1` is *not* the default for `grid` alone — without an
+            explicit grid-template-columns the children size to their content,
+            so a long description was pushing each card wider than the phone
+            viewport. Forcing `minmax(0, 1fr)` columns via `grid-cols-1`
+            constrains them to the available row width. */}
+        <ul className="mx-auto mt-8 grid max-w-5xl grid-cols-1 gap-3 sm:grid-cols-2">
           {services.map((service) => (
             <li key={service.id}>
               <Link

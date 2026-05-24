@@ -29,7 +29,7 @@ export function Hero({ section }: { section?: HomepageSection }) {
   return (
     <section className="relative overflow-hidden border-b border-gold-metallic/15">
       <HeroBackdrop />
-      <div className="gc-container relative grid gap-10 py-10 md:grid-cols-2 md:items-center md:gap-12 md:py-12 lg:gap-14 lg:py-14">
+      <div className="gc-container relative grid grid-cols-1 gap-10 py-10 md:grid-cols-2 md:items-center md:gap-12 md:py-12 lg:gap-14 lg:py-14">
         <div className="gc-reveal max-w-2xl">
           <span className="gc-eyebrow">
             <span className="h-px w-8 bg-gold-metallic" /> Private UK Specialists
