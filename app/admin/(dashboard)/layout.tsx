@@ -29,6 +29,7 @@ const NAV: NavItem[] = [
   { href: '/admin/contact', label: 'Contact Details' },
   { href: '/admin/media', label: 'Media Library' },
   { href: '/admin/blog', label: 'Blog' },
+  { href: '/admin/email-templates', label: 'Email Templates' },
   { href: '/admin/settings', label: 'Settings' },
 ];
 

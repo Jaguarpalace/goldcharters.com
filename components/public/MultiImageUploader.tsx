@@ -90,8 +90,14 @@ export function MultiImageUploader({
   return (
     <div>
       <label className="gc-label">Upload Photos</label>
+      {/*
+        The transparent <input type="file" /> below is positioned absolutely over
+        the whole dropzone — clicking anywhere on the zone clicks the input
+        natively. Previously we ALSO had onClick={() => inputRef.current?.click()}
+        on this wrapper, which fired a second programmatic click and reopened
+        the picker after every selection. Removed.
+      */}
       <div
-        onClick={() => inputRef.current?.click()}
         onDragOver={(e) => {
           e.preventDefault();
           setIsDragging(true);

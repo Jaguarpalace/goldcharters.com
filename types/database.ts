@@ -346,3 +346,21 @@ export type AdminProfile = {
   role: 'admin' | 'editor';
   created_at: string;
 };
+
+export type EmailTemplateVariable = {
+  key: string;
+  label: string;
+  example: string;
+};
+
+export type EmailTemplate = {
+  id: string;
+  key: string;
+  name: string;
+  description: string | null;
+  subject: string;
+  html_body: string;
+  available_variables: EmailTemplateVariable[] | null;
+  enabled: boolean;
+  updated_at: string;
+};
