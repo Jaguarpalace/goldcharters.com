@@ -13,7 +13,7 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
     theme_color: '#050505',
     orientation: 'portrait-primary',
     icons: [
-      { src: '/logo/charters-gold.webp', sizes: 'any', type: 'image/webp' },
+      { src: '/logo/charters_gold_true_transparent.png', sizes: 'any', type: 'image/png' },
     ],
   };
 }

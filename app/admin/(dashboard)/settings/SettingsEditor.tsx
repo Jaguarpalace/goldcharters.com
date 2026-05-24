@@ -29,7 +29,7 @@ export function SettingsEditor({ initial }: { initial: SiteSettings }) {
 
       <Section title="Brand">
         <Field label="Business name" name="business_name" value={s.business_name} onChange={(v) => set('business_name', v)} />
-        <Field label="Logo URL" name="logo_url" value={s.logo_url ?? ''} onChange={(v) => set('logo_url', v || null)} placeholder="/logo/charters-gold.png" />
+        <Field label="Logo URL" name="logo_url" value={s.logo_url ?? ''} onChange={(v) => set('logo_url', v || null)} placeholder="/logo/charters_gold_true_transparent.png" />
       </Section>
 
       <Section title="Contact">

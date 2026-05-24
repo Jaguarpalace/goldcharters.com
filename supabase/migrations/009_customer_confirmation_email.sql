@@ -119,7 +119,7 @@ values (
     jsonb_build_object('key', 'business_phone_digits', 'label', 'Business phone (digits only)', 'example', '08000472348'),
     jsonb_build_object('key', 'business_email', 'label', 'Business email', 'example', 'office@chartersgold.co.uk'),
     jsonb_build_object('key', 'address', 'label', 'Business address', 'example', 'Avalon House, Egham…'),
-    jsonb_build_object('key', 'logo_url', 'label', 'Brand logo URL', 'example', 'https://chartersgold.co.uk/logo/charters-gold.png'),
+    jsonb_build_object('key', 'logo_url', 'label', 'Brand logo URL', 'example', 'https://chartersgold.co.uk/logo/charters_gold_true_transparent.png'),
     jsonb_build_object('key', 'site_url', 'label', 'Public site URL', 'example', 'https://chartersgold.co.uk')
   )
 )

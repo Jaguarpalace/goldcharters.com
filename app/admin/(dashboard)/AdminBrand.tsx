@@ -15,13 +15,13 @@ export function AdminBrand() {
       className="group flex flex-col items-center leading-none"
     >
       <Image
-        src="/logo/charters-gold.png"
+        src="/logo/charters_gold_true_transparent.png"
         alt="Charters Gold"
-        width={240}
-        height={240}
+        width={320}
+        height={320}
         priority
-        sizes="96px"
-        className="h-20 w-20 object-contain transition-transform duration-300 group-hover:scale-105"
+        sizes="128px"
+        className="h-28 w-28 object-contain transition-transform duration-300 group-hover:scale-105"
       />
       <span
         className="mt-1.5 text-[9px] font-semibold uppercase tracking-luxe gc-text-gold-gradient sm:text-[10px]"

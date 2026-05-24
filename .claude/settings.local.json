@@ -7,7 +7,23 @@
       "Bash(dir \"D:\\\\goldcharters.com\\\\public\\\\logo\")",
       "Bash(node -e \"const sharp=require\\('sharp'\\); sharp\\('public/logo/charters-gold.webp'\\).resize\\(480,480,{fit:'inside',withoutEnlargement:true}\\).png\\({compressionLevel:9}\\).toFile\\('public/logo/charters-gold-email.png'\\).then\\(i=>console.log\\('OK',i.width,'x',i.height,Math.round\\(i.size/1024\\)+'KB'\\)\\).catch\\(e=>{console.error\\(e.message\\);process.exit\\(1\\)}\\)\")",
       "Bash(npx --yes -p sharp-cli sharp -i \"D:/goldcharters.com/public/logo/charters-gold.webp\" -o \"D:/goldcharters.com/public/logo/\" -f png resize 480 480 --withoutEnlargement)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(git revert *)",
+      "Bash(npx --yes -p sharp-cli sharp --help)",
+      "Bash(npx --yes -p sharp-cli sharp -i \"D:/goldcharters.com/public/logo/charters-gold.png\" -o \"D:/tmp_logo/\" -f webp --quality 92 --effort 6 resize 1000 1000 --fit inside --kernel lanczos3)",
+      "Bash(cp D:/tmp_logo/charters-gold.png D:/goldcharters.com/public/logo/charters-gold.png)",
+      "Bash(cp D:/tmp_logo/charters-gold.webp D:/goldcharters.com/public/logo/charters-gold.webp)",
+      "Bash(rm -rf D:/tmp_logo)",
+      "Bash(node -e \"const fs=require\\('fs'\\);['png','webp'].forEach\\(ext=>{const buf=fs.readFileSync\\('D:/goldcharters.com/public/logo/charters-gold.'+ext\\);console.log\\(ext.padEnd\\(5\\),\\(buf.length/1024\\).toFixed\\(0\\)+'KB'\\);}\\);\")",
+      "Bash(npx --yes -p sharp-cli sharp -i \"D:/goldcharters.com/public/logo/charters-gold.png\" -o \"D:/tmp_logo/\" -f png resize 100 100 --fit inside)",
+      "Bash(node -e ' *)",
+      "Bash(npx --yes -p sharp-cli sharp -i \"D:/goldcharters.com/public/logo/charters-gold.png\" -o \"D:/\" -f png --background \"{r:11,g:11,b:11}\" --flatten resize 300 300 --fit inside)",
+      "Bash(npx --yes -p sharp-cli sharp -i \"D:/goldcharters.com/public/logo/charters-gold.png\" -o \"D:/\" -f png flatten --background \"#0b0b0b\" resize 300 300 --fit inside)",
+      "Bash(npx --yes -p sharp-cli sharp -i \"D:/goldcharters.com/public/logo/charters-gold.png\" -o \"D:/\" resize 300 300 --fit inside flatten 11 11 11 -f png)",
+      "Bash(npm install *)"
     ]
   }
 }

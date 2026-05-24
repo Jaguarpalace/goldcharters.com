@@ -12,6 +12,10 @@ type LogoProps = {
 /**
  * Brand mark. The tagline "Precious Metal Traders" always sits directly below
  * the crest — same layout at every size, just the image scales.
+ *
+ * Uses the PNG file (true alpha) rather than the WebP — no `mix-blend-mode`
+ * hack is needed because the PNG has genuine transparency, so the crest looks
+ * sharp on both dark and light surfaces.
  */
 export function Logo({ businessName, size = 'default', href = '/' }: LogoProps) {
   const compact = size === 'compact';
@@ -23,24 +27,20 @@ export function Logo({ businessName, size = 'default', href = '/' }: LogoProps) 
       aria-label={`${businessName} — home`}
     >
       <Image
-        src="/logo/charters-gold.webp"
+        src="/logo/charters_gold_true_transparent.png"
         alt={businessName}
         width={520}
         height={520}
         priority
         sizes={
           compact
-            ? '(max-width: 640px) 48px, 64px'
-            : '(max-width: 640px) 96px, (max-width: 1024px) 120px, 144px'
+            ? '(max-width: 640px) 64px, 88px'
+            : '(max-width: 640px) 128px, (max-width: 1024px) 160px, 192px'
         }
-        // mix-blend-mode: lighten makes the logo's baked-in dark background
-        // blend with the site's black surfaces — visual transparency without
-        // requiring the file itself to have an alpha channel.
-        style={{ mixBlendMode: 'lighten' }}
         className={
           compact
-            ? 'h-12 w-12 object-contain sm:h-14 sm:w-14 lg:h-16 lg:w-16'
-            : 'h-20 w-20 object-contain transition-transform duration-300 group-hover:scale-105 sm:h-24 sm:w-24 lg:h-28 lg:w-28'
+            ? 'h-16 w-16 object-contain sm:h-20 sm:w-20 lg:h-[88px] lg:w-[88px]'
+            : 'h-28 w-28 object-contain transition-transform duration-300 group-hover:scale-105 sm:h-32 sm:w-32 lg:h-40 lg:w-40'
         }
       />
       <span

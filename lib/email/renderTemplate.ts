@@ -50,7 +50,7 @@ export async function sampleVariablesFor(key: string): Promise<Variables> {
     // PNG (not WebP) for email — Apple Mail iOS and most Outlook clients still
     // don't render WebP, and a broken logo in a customer email looks far worse
     // than a slightly heavier PNG.
-    logo_url: `${siteUrl}/logo/charters-gold.png`,
+    logo_url: `${siteUrl}/logo/charters_gold_true_transparent.png`,
     business_name: settings.business_name,
     address: settings.address ?? '',
     business_phone: settings.phone,

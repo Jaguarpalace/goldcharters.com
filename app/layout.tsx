@@ -80,7 +80,7 @@ export async function generateMetadata(): Promise<Metadata> {
       locale: 'en_GB',
       images: [
         {
-          url: '/logo/charters-gold.webp',
+          url: '/logo/charters_gold_true_transparent.png',
           width: 1200,
           height: 1200,
           alt: settings.business_name,
@@ -91,7 +91,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: 'summary_large_image',
       title: settings.seo_title,
       description: settings.seo_description,
-      images: ['/logo/charters-gold.webp'],
+      images: ['/logo/charters_gold_true_transparent.png'],
     },
     robots: {
       index: true,
@@ -105,8 +105,8 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
     icons: {
-      icon: '/logo/charters-gold.webp',
-      apple: '/logo/charters-gold.webp',
+      icon: '/logo/charters_gold_true_transparent.png',
+      apple: '/logo/charters_gold_true_transparent.png',
     },
     category: 'business',
   };
