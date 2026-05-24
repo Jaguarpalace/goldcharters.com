@@ -102,9 +102,9 @@ function HeroBackdrop() {
  */
 function HeroImage({ url, alt }: { url: string; alt: string }) {
   return (
-    <div className="relative mx-auto w-full max-w-[280px] sm:max-w-md">
+    <div className="relative mx-auto w-full max-w-md">
       <div
-        className="relative aspect-square overflow-hidden rounded-3xl"
+        className="relative aspect-[6/5] overflow-hidden rounded-3xl sm:aspect-square"
         style={{
           boxShadow: '0 30px 90px -30px rgba(212,175,55,0.45), inset 0 0 0 1px rgba(212,175,55,0.25)',
         }}
@@ -128,9 +128,9 @@ function HeroImage({ url, alt }: { url: string; alt: string }) {
  */
 function HeroVisual() {
   return (
-    <div className="relative mx-auto w-full max-w-[280px] sm:max-w-md">
+    <div className="relative mx-auto w-full max-w-md">
       <div
-        className="relative aspect-square overflow-hidden rounded-3xl"
+        className="relative aspect-[6/5] overflow-hidden rounded-3xl sm:aspect-square"
         style={{
           background:
             'radial-gradient(60% 40% at 50% 30%, rgba(255,215,0,0.18), transparent 70%), linear-gradient(160deg, #0b0b0b, #050505 60%, #141414)',
