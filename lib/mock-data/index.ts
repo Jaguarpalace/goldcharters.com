@@ -336,18 +336,27 @@ export function mockServices(): Service[] {
 }
 
 export function mockItemsWeBuy(): ItemWeBuy[] {
-  // Consolidated gold/jewellery list: eight curated items that each have a
-  // dedicated landing page under /we-buy/<slug>. Handbags and watches stay
-  // listed as before (no dedicated /we-buy pages yet).
   const names = [
-    'Gold Jewellery',
-    'Broken Gold',
-    'Unwanted Jewellery',
-    'Wedding Rings',
-    'Vintage Jewellery',
-    'Branded Jewellery',
-    'Luxury Necklaces',
-    'Luxury Bracelets',
+    'Gold rings',
+    'Gold chains',
+    'Gold bracelets',
+    'Gold earrings',
+    'Scrap gold',
+    'Broken gold',
+    'Gold coins',
+    'Sovereigns',
+    'Gold bars',
+    'Bullion',
+    'Diamond rings',
+    'Engagement rings',
+    'Wedding rings',
+    'Antique jewellery',
+    'Vintage jewellery',
+    'Branded jewellery',
+    'Luxury necklaces',
+    'Luxury bracelets',
+    'Inherited jewellery',
+    'Unwanted jewellery',
     'Hermès handbags',
     'Chanel handbags',
     'Louis Vuitton handbags',

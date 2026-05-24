@@ -2,7 +2,6 @@ import type { MetadataRoute } from 'next';
 import { getServerSupabase } from '@/lib/supabase/server';
 import { BUY_ENABLED } from '@/lib/features';
 import { LOCATIONS } from '@/lib/content/locations';
-import { BUY_PAGES } from '@/lib/content/buy';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://chartersgold.co.uk';
 
@@ -31,14 +30,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: now,
       changeFrequency: 'monthly' as const,
       priority: 0.8,
-    })),
-    // We-buy index + bespoke pages per item type.
-    { url: `${SITE_URL}/we-buy`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
-    ...BUY_PAGES.map((p) => ({
-      url: `${SITE_URL}/we-buy/${p.slug}`,
-      lastModified: now,
-      changeFrequency: 'monthly' as const,
-      priority: 0.85,
     })),
     // Legal pages — low priority but visible to crawlers so Google knows they exist
     { url: `${SITE_URL}/privacy`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
