@@ -3,10 +3,12 @@
 import { revalidatePath } from 'next/cache';
 import { getAdminSupabase, getServerSupabase } from '@/lib/supabase/server';
 import { isSupabaseAdminConfigured } from '@/lib/supabase/env';
+import { sendNewRequestNotification } from '@/lib/email/sendNewRequestNotification';
 import type {
   FormVariant,
   PreferredContactMethod,
   ValuationItemType,
+  ValuationRequest,
 } from '@/types/database';
 
 // Allowed values per branch — server validates against these, regardless of
@@ -200,8 +202,9 @@ export async function submitValuationRequest(
       consent_accepted: true,
       status: 'new',
     })
-    .select('id')
-    .single();
+    // Pull the full row back so we have everything we need for the email.
+    .select('*')
+    .single<ValuationRequest>();
 
   if (insertError || !request) {
     console.error('[valuation:insert]', insertError);
@@ -247,6 +250,12 @@ export async function submitValuationRequest(
       .insert(uploadedImageRows);
     if (imgError) console.error('[valuation:images]', imgError);
   }
+
+  // Fire the admin notification email. Awaited so any errors get logged,
+  // but the result is intentionally ignored — sendNewRequestNotification
+  // is fail-soft and never throws, so the customer's submission always
+  // succeeds even if email delivery is having a bad day.
+  await sendNewRequestNotification(request, uploadedImageRows.length);
 
   revalidatePath('/admin/valuation-requests');
   return { ok: true, requestId: request.id, persisted: true };
