@@ -1,4 +1,9 @@
+import Link from 'next/link';
 import type { ItemWeBuy } from '@/types/database';
+import { BUY_PAGES } from '@/lib/content/buy';
+
+/** Match a homepage pill name against a /we-buy landing page. */
+const BUY_SLUG_BY_NAME = new Map(BUY_PAGES.map((p) => [p.name.toLowerCase(), p.slug]));
 
 /**
  * Categorise items by the keywords in their name so we can group them
@@ -100,13 +105,22 @@ export function ItemsWeBuy({ items }: { items: ItemWeBuy[] }) {
                 <span className="h-px w-8 bg-gradient-to-l from-transparent to-gold-metallic/50" aria-hidden />
               </div>
               <ul className="flex flex-wrap justify-center gap-1.5">
-                {grouped[category].map((item) => (
-                  <li key={item.id}>
-                    <span className="inline-flex items-center rounded-full border border-gold-metallic/25 bg-ink-900/50 px-3.5 py-1 text-[12px] text-warmgrey transition hover:border-gold-metallic hover:bg-ink-800/70 hover:text-gold-bright">
-                      {item.name}
-                    </span>
-                  </li>
-                ))}
+                {grouped[category].map((item) => {
+                  const slug = BUY_SLUG_BY_NAME.get(item.name.toLowerCase());
+                  const pillClass =
+                    'inline-flex items-center rounded-full border border-gold-metallic/25 bg-ink-900/50 px-3.5 py-1 text-[12px] text-warmgrey transition hover:border-gold-metallic hover:bg-ink-800/70 hover:text-gold-bright';
+                  return (
+                    <li key={item.id}>
+                      {slug ? (
+                        <Link href={`/we-buy/${slug}`} className={pillClass}>
+                          {item.name}
+                        </Link>
+                      ) : (
+                        <span className={pillClass}>{item.name}</span>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
               {idx < visibleCategories.length - 1 && (
                 <div className="mx-auto mt-6 h-px w-24 bg-gold-metallic/15" aria-hidden />
