@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function CheckoutPage() {
   if (!BUY_ENABLED) redirect('/');
   return (
-    <section className="py-16">
+    <section className="py-8 lg:py-16">
       <div className="gc-container">
         <span className="gc-eyebrow">Secure Checkout</span>
         <h1 className="gc-heading mt-3">Complete Your Order</h1>

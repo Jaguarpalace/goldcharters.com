@@ -75,7 +75,7 @@ export default async function ShopPage({ searchParams }: { searchParams: SearchP
     <>
       <section className="relative overflow-hidden border-b border-gold-metallic/15">
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink-950 via-ink-900 to-ink-950" />
-        <div className="gc-container relative py-20 lg:py-24">
+        <div className="gc-container relative py-7 lg:py-24">
           <span className="gc-eyebrow">Shop The Collection</span>
           <h1 className="gc-heading-xl mt-5">Curated Gold & Jewellery</h1>
           <p className="gc-subhead mt-6 max-w-2xl">

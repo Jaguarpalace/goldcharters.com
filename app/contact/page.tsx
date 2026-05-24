@@ -20,7 +20,7 @@ export default async function ContactPage() {
     <>
       <section className="relative overflow-hidden border-b border-gold-metallic/15">
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink-950 via-ink-900 to-ink-950" />
-        <div className="gc-container relative py-10 lg:py-14">
+        <div className="gc-container relative py-7 lg:py-14">
           <span className="gc-eyebrow">Contact</span>
           <h1 className="gc-heading-xl mt-5">Speak with a Specialist</h1>
           <p className="gc-subhead mt-6 max-w-2xl">

@@ -17,7 +17,7 @@ export default function LocationsIndexPage() {
     <>
       <section className="relative overflow-hidden border-b border-gold-metallic/15">
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink-950 via-ink-900 to-ink-950" />
-        <div className="gc-container relative py-10 lg:py-14">
+        <div className="gc-container relative py-7 lg:py-14">
           <div className="mx-auto max-w-3xl text-center">
             <span className="gc-eyebrow">Areas We Cover</span>
             <h1 className="gc-heading-xl mt-3">Specialist Valuations across the South-East</h1>
