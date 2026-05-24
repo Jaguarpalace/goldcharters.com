@@ -230,8 +230,8 @@ export function RequestsBoard({ initialRequests }: { initialRequests: Row[] }) {
           No requests match this search. Try different keywords or clear the status filter.
         </div>
       ) : (
-        <div className="overflow-hidden rounded-lg border border-gold-metallic/15">
-          <table className="w-full text-sm">
+        <div className="overflow-x-auto rounded-lg border border-gold-metallic/15">
+          <table className="w-full min-w-[640px] text-sm">
             <thead className="bg-ink-900/80 text-[10px] uppercase tracking-luxe text-warmgrey">
               <tr>
                 <th scope="col" className="w-10 px-3 py-2 text-left">

@@ -41,8 +41,8 @@ export function TeamBoard({
         <h2 className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">
           {team.length} {team.length === 1 ? 'teammate' : 'teammates'}
         </h2>
-        <div className="overflow-hidden rounded-lg border border-gold-metallic/15">
-          <table className="w-full text-sm">
+        <div className="overflow-x-auto rounded-lg border border-gold-metallic/15">
+          <table className="w-full min-w-[520px] text-sm">
             <thead className="bg-ink-900/80 text-[10px] uppercase tracking-luxe text-warmgrey">
               <tr>
                 <th className="px-3 py-2 text-left">Name / email</th>

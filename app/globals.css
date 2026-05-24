@@ -28,6 +28,12 @@ body {
   color: #f6f6f6;
   -webkit-font-smoothing: antialiased;
   font-feature-settings: 'ss01', 'ss02';
+  /* Prevent any single element from making the whole page scroll
+     horizontally on mobile. Wide things (e.g. admin data tables) get
+     their own overflow-x:auto wrapper so the table scrolls inside,
+     while the page stays put. `clip` keeps position:sticky working,
+     which `hidden` would break. */
+  overflow-x: clip;
 }
 
 /* Stop the sticky header from covering anchored sections when you click
