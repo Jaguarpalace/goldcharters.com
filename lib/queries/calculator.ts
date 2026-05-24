@@ -8,8 +8,10 @@ import type { CalculatorRate } from '@/types/database';
  * admin has set a `margin_percentage`. Each row stays manual unless margin
  * is set — so admins can mix-and-match.
  */
-export async function getCalculatorRates(): Promise<CalculatorRate[]> {
-  const rates = await fetchRowsFromSource();
+export async function getCalculatorRates(
+  opts: { includeHidden?: boolean } = {},
+): Promise<CalculatorRate[]> {
+  const rates = await fetchRowsFromSource(opts);
 
   // Only fetch spots if at least one row wants live pricing.
   const anyAuto = rates.some((r) => r.margin_percentage !== null && r.margin_percentage > 0);
@@ -38,16 +40,22 @@ export async function getCalculatorRates(): Promise<CalculatorRate[]> {
   });
 }
 
-async function fetchRowsFromSource(): Promise<CalculatorRate[]> {
+async function fetchRowsFromSource(
+  opts: { includeHidden?: boolean } = {},
+): Promise<CalculatorRate[]> {
   const supabase = getServerSupabase();
-  if (!supabase) return mockCalculatorRates();
+  if (!supabase) {
+    const all = mockCalculatorRates();
+    return opts.includeHidden ? all : all.filter((r) => r.visible);
+  }
 
-  const { data, error } = await supabase
+  let query = supabase
     .from('calculator_rates')
     .select('*')
-    .eq('visible', true)
     .order('display_order', { ascending: true });
+  if (!opts.includeHidden) query = query.eq('visible', true);
 
+  const { data, error } = await query;
   if (error || !data) return mockCalculatorRates();
   return data as CalculatorRate[];
 }

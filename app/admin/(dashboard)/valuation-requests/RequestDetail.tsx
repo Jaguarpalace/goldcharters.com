@@ -23,11 +23,16 @@ type Row = ValuationRequest & { valuation_request_images?: ValuationRequestImage
 export function RequestDetail({
   request,
   onPatch,
+  onDelete,
 }: {
   request: Row;
   /** Called whenever this row's data changes, so the parent can keep its
    * client-side cache in sync (used by search filters + CSV export). */
   onPatch: (patch: Partial<ValuationRequest>) => void;
+  /** Optional — when provided, renders a "Delete request" affordance with a
+   * two-step confirm. The parent owns the actual delete action so optimistic
+   * row removal stays consistent with the rest of the board. */
+  onDelete?: () => void;
 }) {
   const photos = request.valuation_request_images ?? [];
   const paymentRelevant =
@@ -139,6 +144,58 @@ export function RequestDetail({
               })
             }
           />
+        )}
+        {onDelete && <DeleteRequestBlock onDelete={onDelete} />}
+      </div>
+    </div>
+  );
+}
+
+/* ----------------------------- Delete block ----------------------------- */
+
+function DeleteRequestBlock({ onDelete }: { onDelete: () => void }) {
+  const [armed, setArmed] = useState(false);
+  return (
+    <div className="rounded-lg border border-red-500/20 bg-red-500/[0.04] p-4">
+      <div className="flex items-center justify-between">
+        <h3 className="text-[10px] font-semibold uppercase tracking-luxe text-red-300/90">
+          Danger zone
+        </h3>
+        <span className="text-[9px] uppercase tracking-luxe text-warmgrey/60">
+          Permanent
+        </span>
+      </div>
+      <p className="mt-2 text-[11px] leading-relaxed text-warmgrey">
+        Deletes this request, its uploaded photos and all internal notes. There
+        is no undo. Use for cleaning up test submissions or removing data on
+        customer request.
+      </p>
+      <div className="mt-3 flex justify-end">
+        {armed ? (
+          <span className="inline-flex items-center gap-2">
+            <button
+              type="button"
+              onClick={onDelete}
+              className="rounded-md border border-red-500/60 bg-red-500/15 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-luxe text-red-300 hover:bg-red-500/25"
+            >
+              Confirm delete
+            </button>
+            <button
+              type="button"
+              onClick={() => setArmed(false)}
+              className="text-[11px] uppercase tracking-luxe text-warmgrey hover:text-gold-bright"
+            >
+              Cancel
+            </button>
+          </span>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setArmed(true)}
+            className="rounded-md border border-red-500/30 bg-transparent px-3 py-1.5 text-[11px] font-semibold uppercase tracking-luxe text-red-300/80 transition hover:border-red-500/60 hover:text-red-300"
+          >
+            Delete request
+          </button>
         )}
       </div>
     </div>

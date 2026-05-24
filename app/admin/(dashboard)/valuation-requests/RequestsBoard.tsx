@@ -8,7 +8,11 @@ import {
   type ValuationRequestImage,
   type ValuationRequestStatus,
 } from '@/types/database';
-import { bulkUpdateValuationStatus } from '@/lib/actions/valuationRequests';
+import {
+  bulkDeleteValuationRequests,
+  bulkUpdateValuationStatus,
+  deleteValuationRequest,
+} from '@/lib/actions/valuationRequests';
 import { buildValuationsCsv, downloadCsv } from './csv';
 import { RequestDetail } from './RequestDetail';
 
@@ -45,6 +49,9 @@ export function RequestsBoard({ initialRequests }: { initialRequests: Row[] }) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [bulkPending, startBulk] = useTransition();
   const [bulkFeedback, setBulkFeedback] = useState<string | null>(null);
+  /** Tracks whether the bulk-delete "Confirm" button is showing.
+   * Two-step pattern stops a stray click from wiping selected rows. */
+  const [bulkDeleteArmed, setBulkDeleteArmed] = useState(false);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -100,6 +107,45 @@ export function RequestsBoard({ initialRequests }: { initialRequests: Row[] }) {
 
   const patchRow = (id: string, patch: Partial<ValuationRequest>) => {
     setRows((prev) => prev.map((r) => (r.id === id ? { ...r, ...patch } : r)));
+  };
+
+  const applyBulkDelete = () => {
+    setBulkFeedback(null);
+    const ids = Array.from(selected);
+    if (ids.length === 0) return;
+    // Optimistically remove the rows so the table updates instantly.
+    setRows((prev) => prev.filter((r) => !selected.has(r.id)));
+    setSelected(new Set());
+    setBulkDeleteArmed(false);
+    if (expandedId && selected.has(expandedId)) setExpandedId(null);
+    startBulk(async () => {
+      const result = await bulkDeleteValuationRequests(ids);
+      if (result.ok) {
+        setBulkFeedback(`${result.deleted} deleted`);
+        setTimeout(() => setBulkFeedback(null), 2000);
+      } else {
+        setBulkFeedback(result.error);
+        // Roll back on failure.
+        setRows(initialRequests);
+      }
+    });
+  };
+
+  const deleteSingleRequest = (id: string) => {
+    setRows((prev) => prev.filter((r) => r.id !== id));
+    if (expandedId === id) setExpandedId(null);
+    setSelected((prev) => {
+      const next = new Set(prev);
+      next.delete(id);
+      return next;
+    });
+    startBulk(async () => {
+      const result = await deleteValuationRequest(id);
+      if (!result.ok) {
+        setBulkFeedback(result.error);
+        setRows(initialRequests);
+      }
+    });
   };
 
   const applyBulkStatus = (status: ValuationRequestStatus) => {
@@ -210,13 +256,46 @@ export function RequestsBoard({ initialRequests }: { initialRequests: Row[] }) {
           {bulkFeedback && (
             <span className="text-[11px] text-gold-tint">{bulkFeedback}</span>
           )}
-          <button
-            type="button"
-            onClick={clearSelection}
-            className="ml-auto text-[11px] uppercase tracking-luxe text-warmgrey hover:text-gold-bright"
-          >
-            Clear
-          </button>
+
+          {/* Bulk delete — two-step confirm so a stray click can't wipe data */}
+          {bulkDeleteArmed ? (
+            <span className="ml-auto inline-flex items-center gap-1">
+              <button
+                type="button"
+                disabled={bulkPending}
+                onClick={applyBulkDelete}
+                className="rounded-md border border-red-500/60 bg-red-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-luxe text-red-300 hover:bg-red-500/25 disabled:cursor-wait disabled:opacity-50"
+              >
+                {bulkPending ? 'Deleting…' : `Confirm delete ${selected.size}`}
+              </button>
+              <button
+                type="button"
+                onClick={() => setBulkDeleteArmed(false)}
+                disabled={bulkPending}
+                className="text-[11px] uppercase tracking-luxe text-warmgrey hover:text-gold-bright"
+              >
+                Cancel
+              </button>
+            </span>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={() => setBulkDeleteArmed(true)}
+                className="ml-auto text-[11px] uppercase tracking-luxe text-warmgrey transition hover:text-red-300"
+                title="Permanently delete selected requests"
+              >
+                Delete
+              </button>
+              <button
+                type="button"
+                onClick={clearSelection}
+                className="text-[11px] uppercase tracking-luxe text-warmgrey hover:text-gold-bright"
+              >
+                Clear
+              </button>
+            </>
+          )}
         </div>
       )}
 
@@ -260,6 +339,7 @@ export function RequestsBoard({ initialRequests }: { initialRequests: Row[] }) {
                   onSelect={() => toggleSelect(r.id)}
                   onToggleExpand={() => setExpandedId(expandedId === r.id ? null : r.id)}
                   onPatch={(patch) => patchRow(r.id, patch)}
+                  onDelete={() => deleteSingleRequest(r.id)}
                 />
               ))}
             </tbody>
@@ -279,6 +359,7 @@ function RequestRow({
   onSelect,
   onToggleExpand,
   onPatch,
+  onDelete,
 }: {
   request: Row;
   selected: boolean;
@@ -286,6 +367,7 @@ function RequestRow({
   onSelect: () => void;
   onToggleExpand: () => void;
   onPatch: (patch: Partial<ValuationRequest>) => void;
+  onDelete: () => void;
 }) {
   const badge = STATUS_BADGE[request.status] ?? 'text-warmgrey ring-warmgrey/30';
   const summary = buildItemSummary(request);
@@ -380,7 +462,7 @@ function RequestRow({
       {expanded && (
         <tr>
           <td colSpan={6} className="p-0">
-            <RequestDetail request={request} onPatch={onPatch} />
+            <RequestDetail request={request} onPatch={onPatch} onDelete={onDelete} />
           </td>
         </tr>
       )}

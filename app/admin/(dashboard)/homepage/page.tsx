@@ -4,7 +4,9 @@ import { HomepageEditor } from './HomepageEditor';
 export const dynamic = 'force-dynamic';
 
 export default async function HomepageCMSPage() {
-  const sections = await getHomepageSections();
+  // Admin needs to see hidden sections too, otherwise unticking "visible"
+  // makes a section vanish from its own editor.
+  const sections = await getHomepageSections({ includeHidden: true });
 
   return (
     <div className="space-y-8">

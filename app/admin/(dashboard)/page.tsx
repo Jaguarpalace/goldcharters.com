@@ -1,282 +1,354 @@
 import Link from 'next/link';
-import { getServices } from '@/lib/queries/services';
-import { getCalculatorRates } from '@/lib/queries/calculator';
-import { getProducts } from '@/lib/queries/products';
-import { getFaqs } from '@/lib/queries/faqs';
-import { getItemsWeBuy } from '@/lib/queries/items';
-import { getSiteSettings } from '@/lib/queries/homepage';
 import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { listValuationRequests } from '@/lib/actions/valuationRequests';
 import { getMetalSpots, spotForPurity } from '@/lib/services/metalPrice';
 import { formatGBP } from '@/lib/format';
-import { BUY_ENABLED } from '@/lib/features';
-import type { ValuationRequest } from '@/types/database';
+import {
+  VALUATION_STATUS_LABELS,
+  type ValuationRequest,
+  type ValuationRequestStatus,
+} from '@/types/database';
 
 export const dynamic = 'force-dynamic';
 
-export default async function AdminOverview() {
-  // Fetch in parallel — the page renders once everything resolves.
-  const [services, rates, products, faqs, items, settings, spots] = await Promise.all([
-    getServices(),
-    getCalculatorRates(),
-    BUY_ENABLED ? getProducts() : Promise.resolve([]),
-    getFaqs(),
-    getItemsWeBuy(),
-    getSiteSettings(),
-    getMetalSpots(),
-  ]);
+const DAY_MS = 24 * 60 * 60 * 1000;
+const WEEK_MS = 7 * DAY_MS;
+const SLA_HOURS = 18;
+const PIPELINE: ValuationRequestStatus[] = [
+  'new',
+  'contacted',
+  'offer_sent',
+  'booked',
+  'bought',
+];
 
-  const valuationRequests = (isSupabaseConfigured()
+export default async function AdminOverview() {
+  const [spots] = await Promise.all([getMetalSpots()]);
+  const requests = (isSupabaseConfigured()
     ? ((await listValuationRequests()) as ValuationRequest[])
     : []);
 
-  // Operational stats — only the ones that drive daily action.
-  const newRequests = valuationRequests.filter((r) => r.status === 'new').length;
-  const inProgress = valuationRequests.filter((r) =>
-    ['contacted', 'valued', 'offer_sent', 'booked'].includes(r.status),
-  ).length;
-  const closed = valuationRequests.filter((r) =>
-    ['bought', 'completed', 'rejected'].includes(r.status),
-  ).length;
+  const now = Date.now();
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0);
+  const startOfMonth = new Date();
+  startOfMonth.setDate(1);
+  startOfMonth.setHours(0, 0, 0, 0);
 
-  const last7Days = valuationRequests.filter(
-    (r) => Date.now() - +new Date(r.created_at) < 7 * 24 * 60 * 60 * 1000,
-  ).length;
+  const within = (since: number) => (r: ValuationRequest) =>
+    +new Date(r.created_at) >= since;
 
-  const recent = valuationRequests.slice(0, 5);
+  const today = requests.filter(within(+startOfDay));
+  const week = requests.filter(within(now - WEEK_MS));
+  const month = requests.filter(within(+startOfMonth));
 
-  const goldPerGram22ct = spots.gold ? spotForPurity(spots.gold.per_gram_gbp, 91.6) : null;
+  const paidIn = (rows: ValuationRequest[]) =>
+    rows.reduce((sum, r) => sum + (r.paid_at ? Number(r.payment_amount ?? 0) : 0), 0);
+
+  // Pipeline counts (all-time). Reduce in one pass.
+  const pipelineCounts = requests.reduce<Record<string, number>>((acc, r) => {
+    acc[r.status] = (acc[r.status] ?? 0) + 1;
+    return acc;
+  }, {});
+
+  // Action needed: status === 'new' and older than the SLA cutoff.
+  const slaCutoff = now - SLA_HOURS * 60 * 60 * 1000;
+  const needsAction = requests
+    .filter((r) => r.status === 'new' && +new Date(r.created_at) < slaCutoff)
+    .slice(0, 6);
+
+  // Recent activity feed — last 5 by updated_at (status change, note, etc.).
+  const recent = [...requests]
+    .sort((a, b) => +new Date(b.updated_at) - +new Date(a.updated_at))
+    .slice(0, 5);
+
+  const goldGram = spots.gold?.per_gram_gbp ?? null;
 
   return (
-    <div className="space-y-8">
-      <header>
-        <span className="text-[10px] uppercase tracking-luxe text-gold-metallic">Dashboard</span>
-        <h1 className="font-display text-3xl font-semibold text-white mt-1 sm:text-4xl">
-          Welcome back
-        </h1>
-        <p className="mt-1 text-sm text-warmgrey">
-          Last updated {new Date(settings.updated_at).toLocaleString('en-GB')}
+    <div className="space-y-10">
+      {/* HEADER */}
+      <header className="flex items-end justify-between gap-4">
+        <div>
+          <span className="text-[10px] font-semibold uppercase tracking-luxe text-gold-metallic">
+            Dashboard
+          </span>
+          <h1 className="font-display text-3xl text-white mt-1 sm:text-4xl">Welcome back</h1>
+        </div>
+        <p className="hidden text-[10px] uppercase tracking-luxe text-warmgrey sm:block">
+          Live · {new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
         </p>
       </header>
 
-      {/* Primary KPIs — small, focused, actionable */}
-      <section>
-        <h2 className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">Enquiries</h2>
-        <ul className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <StatCard
-            label="New (action needed)"
-            value={newRequests}
-            accent={newRequests > 0}
-            href="/admin/valuation-requests"
-          />
-          <StatCard
-            label="In progress"
-            value={inProgress}
-            href="/admin/valuation-requests"
-          />
-          <StatCard label="Last 7 days" value={last7Days} />
-          <StatCard label="Closed (lifetime)" value={closed} />
-        </ul>
+      {/* HERO METRICS — typography led, no cards, hairline gold dividers */}
+      <section className="grid grid-cols-1 sm:grid-cols-3">
+        <Metric
+          label="Today"
+          enquiries={today.length}
+          paid={paidIn(today)}
+        />
+        <Metric
+          label="This week"
+          enquiries={week.length}
+          paid={paidIn(week)}
+          withDivider
+        />
+        <Metric
+          label="This month"
+          enquiries={month.length}
+          paid={paidIn(month)}
+          withDivider
+        />
       </section>
 
-      {/* Market + CMS at a glance */}
-      <section className="grid gap-3 lg:grid-cols-[1.4fr,1fr]">
-        <div className="gc-card p-5">
-          <p className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">
-            Live spot · today
-          </p>
-          {spots.gold && goldPerGram22ct ? (
-            <div className="mt-3 grid gap-5 sm:grid-cols-3">
-              <SpotMini label="24ct · pure" value={formatGBP(spots.gold.per_gram_gbp)} />
-              <SpotMini label="22ct" value={formatGBP(goldPerGram22ct)} />
-              <SpotMini
-                label="18ct"
-                value={formatGBP(spotForPurity(spots.gold.per_gram_gbp, 75.0) ?? 0)}
-              />
-            </div>
-          ) : (
-            <p className="mt-3 text-sm text-warmgrey">
-              Metal price API not configured. Set <code className="text-gold-tint">METAL_PRICE_API_KEY</code>{' '}
-              in env to enable.
-            </p>
-          )}
-          <p className="mt-3 text-[11px] text-warmgrey/70">
-            Cached server-side · refreshes every 15 minutes
-          </p>
-        </div>
-
-        <div className="gc-card p-5">
-          <p className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">CMS health</p>
-          <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-            <CmsRow label="Services" value={services.length} />
-            <CmsRow label="Items we buy" value={items.length} />
-            <CmsRow label="FAQ entries" value={faqs.length} />
-            <CmsRow label="Calculator rates" value={rates.length} />
-            {BUY_ENABLED && <CmsRow label="Active products" value={products.filter((p) => p.status === 'active').length} />}
-          </dl>
-        </div>
-      </section>
-
-      {/* Quick actions — compact pills, not big cards */}
+      {/* PIPELINE — single line of stages, arrows in between */}
       <section>
-        <h2 className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">
-          Quick actions
-        </h2>
-        <ul className="mt-3 flex flex-wrap gap-2">
-          <QuickAction href="/admin/valuation-requests" label="Review enquiries" primary />
-          <QuickAction href="/admin/calculator-rates" label="Calculator rates" />
-          <QuickAction href="/admin/homepage" label="Homepage content" />
-          <QuickAction href="/admin/faqs" label="FAQs" />
-          <QuickAction href="/admin/items-we-buy" label="Items we buy" />
-          <QuickAction href="/admin/settings" label="Site settings" />
-          <QuickAction href="/admin/price-dashboard" label="Live prices" />
-        </ul>
-      </section>
-
-      {/* Recent enquiries table */}
-      <section>
-        <div className="flex items-end justify-between gap-3">
-          <h2 className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">
-            Recent valuation requests
-          </h2>
+        <div className="flex items-baseline justify-between gap-4">
+          <span className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">
+            Pipeline
+          </span>
           <Link
             href="/admin/valuation-requests"
-            className="text-[10px] uppercase tracking-luxe text-gold-metallic hover:text-gold-bright"
+            className="text-[10px] uppercase tracking-luxe text-warmgrey transition hover:text-gold-bright"
           >
             View all →
           </Link>
         </div>
-        <div className="mt-3 overflow-hidden rounded-xl border border-gold-metallic/15">
-          <table className="min-w-full divide-y divide-gold-metallic/10 text-sm">
-            <thead className="bg-ink-900/80 text-left text-[10px] uppercase tracking-luxe text-warmgrey">
-              <tr>
-                <th className="px-4 py-2.5">Received</th>
-                <th className="px-4 py-2.5">Customer</th>
-                <th className="px-4 py-2.5">Branch</th>
-                <th className="px-4 py-2.5">Summary</th>
-                <th className="px-4 py-2.5">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gold-metallic/10">
-              {recent.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="px-4 py-6 text-center text-xs text-warmgrey">
-                    No requests yet — they appear here as customers submit the form.
-                  </td>
-                </tr>
-              ) : (
-                recent.map((r) => (
-                  <tr key={r.id} className="hover:bg-ink-900/40">
-                    <td className="whitespace-nowrap px-4 py-2.5 text-xs text-warmgrey">
-                      {new Date(r.created_at).toLocaleString('en-GB', {
-                        day: 'numeric',
-                        month: 'short',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </td>
-                    <td className="px-4 py-2.5 text-white">
-                      {r.first_name} {r.last_name}
-                    </td>
-                    <td className="px-4 py-2.5 text-[11px] uppercase tracking-luxe text-gold-tint">
-                      {r.form_variant ?? '—'}
-                    </td>
-                    <td className="max-w-[240px] truncate px-4 py-2.5 text-xs text-warmgrey">
-                      {summarise(r)}
-                    </td>
-                    <td className="px-4 py-2.5 text-xs text-warmgrey">
-                      {r.status.replace(/_/g, ' ')}
-                    </td>
-                  </tr>
-                ))
+        <ol className="mt-5 flex items-center gap-1 overflow-x-auto pb-1">
+          {PIPELINE.map((stage, i) => (
+            <li key={stage} className="flex flex-none items-center gap-1">
+              <Stage
+                label={VALUATION_STATUS_LABELS[stage]}
+                count={pipelineCounts[stage] ?? 0}
+              />
+              {i < PIPELINE.length - 1 && (
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 14 14"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.4"
+                  className="flex-none text-gold-metallic/40"
+                  aria-hidden
+                >
+                  <path d="M3 7h8M8 4l3 3-3 3" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
               )}
-            </tbody>
-          </table>
-        </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      {/* NEEDS ATTENTION + RECENT ACTIVITY */}
+      <section className="grid grid-cols-1 gap-10 lg:grid-cols-2">
+        <Column
+          title="Needs your attention"
+          empty="Nothing waiting — every new enquiry has been picked up within the last 18 hours."
+        >
+          {needsAction.length > 0 && (
+            <ul className="divide-y divide-gold-metallic/10">
+              {needsAction.map((r) => (
+                <AttentionRow key={r.id} request={r} now={now} />
+              ))}
+            </ul>
+          )}
+        </Column>
+
+        <Column title="Recent activity" empty="No activity yet.">
+          {recent.length > 0 && (
+            <ul className="divide-y divide-gold-metallic/10">
+              {recent.map((r) => (
+                <ActivityRow key={r.id} request={r} now={now} />
+              ))}
+            </ul>
+          )}
+        </Column>
+      </section>
+
+      {/* LIVE SPOT — thin footer strip */}
+      <section className="flex flex-wrap items-baseline gap-x-8 gap-y-3 border-t border-gold-metallic/15 pt-6">
+        <span className="text-[10px] font-semibold uppercase tracking-luxe text-gold-metallic">
+          Live spot · gold
+        </span>
+        {goldGram ? (
+          <>
+            <SpotRow label="24ct" value={goldGram} />
+            <SpotRow label="22ct" value={spotForPurity(goldGram, 91.6)} />
+            <SpotRow label="18ct" value={spotForPurity(goldGram, 75.0)} />
+            <SpotRow label="14ct" value={spotForPurity(goldGram, 58.5)} />
+            <SpotRow label="9ct" value={spotForPurity(goldGram, 37.5)} />
+          </>
+        ) : (
+          <span className="text-[11px] text-warmgrey">Live feed temporarily unavailable.</span>
+        )}
       </section>
     </div>
   );
 }
 
-/* -------------------------- small helpers ---------------------------------- */
+/* ----------------------------- Components -------------------------------- */
 
-function summarise(r: ValuationRequest): string {
-  const bits: string[] = [];
-  if (r.metal_type) bits.push(r.metal_type);
-  if (r.item_category) bits.push(r.item_category);
-  if (r.brand) bits.push(r.brand);
-  if (r.model) bits.push(r.model);
-  if (r.carat) bits.push(r.carat);
-  return bits.length > 0 ? bits.join(' · ') : (r.description?.slice(0, 60) ?? '—');
-}
-
-function StatCard({
+function Metric({
   label,
-  value,
-  accent,
-  href,
+  enquiries,
+  paid,
+  withDivider = false,
 }: {
   label: string;
-  value: number | string;
-  accent?: boolean;
-  href?: string;
+  enquiries: number;
+  paid: number;
+  withDivider?: boolean;
 }) {
-  const card = (
-    <li
-      className={
-        'gc-card p-4 transition ' +
-        (accent ? 'gc-card-gold-edge ring-1 ring-gold-metallic/40' : '') +
-        (href ? ' hover:bg-ink-900' : '')
-      }
-    >
-      <p className="text-[10px] uppercase tracking-luxe text-warmgrey">{label}</p>
-      <p className={'mt-1 font-display text-2xl font-semibold ' + (accent ? 'text-gold-bright' : 'text-white')}>
-        {value}
-      </p>
-    </li>
-  );
-  return href ? <Link href={href}>{card}</Link> : card;
-}
-
-function SpotMini({ label, value }: { label: string; value: string }) {
   return (
-    <div>
-      <p className="text-[10px] uppercase tracking-luxe text-warmgrey">{label}</p>
-      <p className="font-display text-xl font-semibold text-white">{value}<span className="text-xs font-normal text-warmgrey">/g</span></p>
+    <div className={withDivider ? 'border-t border-gold-metallic/15 pt-5 sm:border-l sm:border-t-0 sm:pl-8 sm:pt-0' : ''}>
+      <p className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">
+        {label}
+      </p>
+      <p className="mt-3 flex items-baseline gap-2">
+        <span className="font-display text-4xl font-semibold text-white sm:text-5xl">
+          {enquiries}
+        </span>
+        <span className="text-[11px] uppercase tracking-luxe text-warmgrey">
+          {enquiries === 1 ? 'enquiry' : 'enquiries'}
+        </span>
+      </p>
+      <p className="mt-1.5 text-sm text-warmgrey">
+        <span className="font-display text-xl text-gold-tint">{formatGBP(paid)}</span>{' '}
+        <span className="text-[10px] uppercase tracking-luxe text-warmgrey">paid out</span>
+      </p>
     </div>
   );
 }
 
-function CmsRow({ label, value }: { label: string; value: number | string }) {
+function Stage({ label, count }: { label: string; count: number }) {
+  const active = count > 0;
   return (
-    <>
-      <dt className="text-warmgrey">{label}</dt>
-      <dd className="text-right text-white">{value}</dd>
-    </>
+    <Link
+      href="/admin/valuation-requests"
+      className={
+        'flex flex-col items-start gap-0.5 rounded-md border px-3 py-2 transition ' +
+        (active
+          ? 'border-gold-metallic/40 bg-ink-900/60 text-white hover:border-gold-metallic'
+          : 'border-gold-metallic/10 bg-transparent text-warmgrey/70 hover:border-gold-metallic/30')
+      }
+    >
+      <span className="font-display text-2xl leading-none">{count}</span>
+      <span className="text-[9px] uppercase tracking-luxe">{label}</span>
+    </Link>
   );
 }
 
-function QuickAction({
-  href,
-  label,
-  primary,
+function Column({
+  title,
+  empty,
+  children,
 }: {
-  href: string;
-  label: string;
-  primary?: boolean;
+  title: string;
+  empty: string;
+  children: React.ReactNode;
 }) {
+  // Children is null/undefined when the list is empty; we render the
+  // empty-state copy instead. Keeps both columns visually aligned.
+  const hasContent =
+    children !== null && children !== undefined && children !== false;
+  return (
+    <div>
+      <h2 className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">
+        {title}
+      </h2>
+      <div className="mt-4">
+        {hasContent ? (
+          children
+        ) : (
+          <p className="py-4 text-[12px] leading-relaxed text-warmgrey">{empty}</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function AttentionRow({ request, now }: { request: ValuationRequest; now: number }) {
+  const ageHours = Math.floor((now - +new Date(request.created_at)) / (60 * 60 * 1000));
   return (
     <li>
       <Link
-        href={href}
-        className={
-          primary
-            ? 'inline-flex items-center gap-2 rounded-full bg-gold-gradient px-4 py-2 text-xs font-semibold uppercase tracking-luxe text-ink-950 shadow-[0_0_14px_rgba(212,175,55,0.35)]'
-            : 'inline-flex items-center gap-2 rounded-full border border-gold-metallic/30 bg-ink-900/60 px-4 py-2 text-xs font-semibold uppercase tracking-luxe text-warmgrey hover:border-gold-metallic hover:text-gold-bright'
-        }
+        href="/admin/valuation-requests"
+        className="group flex items-center justify-between gap-4 py-3 transition hover:bg-ink-900/40"
       >
-        {label}
+        <span className="min-w-0 flex-1">
+          <span className="block truncate font-medium text-white">
+            {request.first_name} {request.last_name}
+          </span>
+          <span className="mt-0.5 block truncate text-[11px] text-warmgrey">
+            {summarise(request)}
+          </span>
+        </span>
+        <span className="whitespace-nowrap text-[11px] uppercase tracking-luxe text-amber-300">
+          {ageHours}h waiting
+        </span>
       </Link>
     </li>
   );
+}
+
+function ActivityRow({ request, now }: { request: ValuationRequest; now: number }) {
+  const ago = relativeTime(now - +new Date(request.updated_at));
+  return (
+    <li>
+      <Link
+        href="/admin/valuation-requests"
+        className="group flex items-center justify-between gap-4 py-3 transition hover:bg-ink-900/40"
+      >
+        <span className="min-w-0 flex-1">
+          <span className="block truncate text-[13px] text-white">
+            {request.first_name} {request.last_name}
+            <span className="ml-2 text-[10px] uppercase tracking-luxe text-gold-tint">
+              {VALUATION_STATUS_LABELS[request.status as ValuationRequestStatus] ??
+                request.status.replace(/_/g, ' ')}
+            </span>
+          </span>
+          <span className="mt-0.5 block truncate text-[11px] text-warmgrey">
+            {summarise(request)}
+          </span>
+        </span>
+        <span className="whitespace-nowrap text-[10px] uppercase tracking-luxe text-warmgrey">
+          {ago}
+        </span>
+      </Link>
+    </li>
+  );
+}
+
+function SpotRow({ label, value }: { label: string; value: number | null }) {
+  return (
+    <span className="inline-flex items-baseline gap-1.5">
+      <span className="text-[10px] uppercase tracking-luxe text-warmgrey">{label}</span>
+      <span className="font-display text-sm text-white">
+        {value !== null ? formatGBP(value) : '—'}
+        <span className="text-[10px] text-warmgrey/70">/g</span>
+      </span>
+    </span>
+  );
+}
+
+/* ----------------------------- Helpers ----------------------------------- */
+
+function summarise(r: ValuationRequest): string {
+  const bits = [r.form_variant, r.metal_type, r.brand, r.model, r.carat]
+    .filter(Boolean)
+    .slice(0, 3);
+  if (bits.length > 0) return bits.join(' · ');
+  return r.description?.slice(0, 60) ?? '—';
+}
+
+function relativeTime(ms: number): string {
+  const sec = Math.floor(ms / 1000);
+  if (sec < 60) return `${sec}s ago`;
+  const min = Math.floor(sec / 60);
+  if (min < 60) return `${min}m ago`;
+  const hr = Math.floor(min / 60);
+  if (hr < 24) return `${hr}h ago`;
+  const days = Math.floor(hr / 24);
+  if (days < 30) return `${days}d ago`;
+  return `${Math.floor(days / 30)}mo ago`;
 }

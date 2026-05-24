@@ -4,7 +4,8 @@ import { ItemsEditor } from './ItemsEditor';
 export const dynamic = 'force-dynamic';
 
 export default async function AdminItemsWeBuyPage() {
-  const items = await getItemsWeBuy();
+  // Admin sees hidden items too so they can re-enable them.
+  const items = await getItemsWeBuy({ includeHidden: true });
   return (
     <div className="space-y-8">
       <header>

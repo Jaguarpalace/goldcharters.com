@@ -4,7 +4,8 @@ import { ServicesEditor } from './ServicesEditor';
 export const dynamic = 'force-dynamic';
 
 export default async function AdminServicesPage() {
-  const services = await getServices();
+  // Admin sees hidden services too so they can re-enable them.
+  const services = await getServices({ includeHidden: true });
   return (
     <div className="space-y-8">
       <header>

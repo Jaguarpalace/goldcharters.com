@@ -32,7 +32,7 @@ export function Hero({ section }: { section?: HomepageSection }) {
       <div className="gc-container relative grid grid-cols-1 gap-10 py-10 md:grid-cols-2 md:items-center md:gap-12 md:py-12 lg:gap-14 lg:py-14">
         <div className="gc-reveal max-w-2xl">
           <span className="gc-eyebrow">
-            <span className="h-px w-8 bg-gold-metallic" /> Private UK Specialists
+            <span className="h-px w-8 bg-gold-metallic" /> Precious Metal Traders
           </span>
           <h1 className="gc-heading-xl mt-5">
             {section?.title ?? 'Unlock the Value of Gold & Jewellery'}
@@ -104,7 +104,7 @@ function HeroImage({ url, alt }: { url: string; alt: string }) {
   return (
     <div className="relative mx-auto w-full max-w-md">
       <div
-        className="relative aspect-[4/5] overflow-hidden rounded-3xl"
+        className="relative aspect-square overflow-hidden rounded-3xl"
         style={{
           boxShadow: '0 30px 90px -30px rgba(212,175,55,0.45), inset 0 0 0 1px rgba(212,175,55,0.25)',
         }}
@@ -130,7 +130,7 @@ function HeroVisual() {
   return (
     <div className="relative mx-auto w-full max-w-md">
       <div
-        className="relative aspect-[4/5] overflow-hidden rounded-3xl"
+        className="relative aspect-square overflow-hidden rounded-3xl"
         style={{
           background:
             'radial-gradient(60% 40% at 50% 30%, rgba(255,215,0,0.18), transparent 70%), linear-gradient(160deg, #0b0b0b, #050505 60%, #141414)',

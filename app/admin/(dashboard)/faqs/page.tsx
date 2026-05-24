@@ -4,7 +4,8 @@ import { FaqsEditor } from './FaqsEditor';
 export const dynamic = 'force-dynamic';
 
 export default async function AdminFaqsPage() {
-  const faqs = await getFaqs();
+  // Admin sees hidden FAQs too so they can re-enable them.
+  const faqs = await getFaqs({ includeHidden: true });
   return (
     <div className="space-y-8">
       <header>

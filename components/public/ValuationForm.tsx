@@ -12,7 +12,14 @@ import type { FormVariant } from '@/types/database';
 const METAL_OPTIONS = ['Gold', 'Silver', 'Platinum'] as const;
 const ITEM_FORM_OPTIONS = ['Coins', 'Bullion', 'Scrap', 'Jewellery', 'Other'] as const;
 
-const CARAT_OPTIONS = [
+/**
+ * Purity options are metal-specific. Gold uses carats (a fraction of 24);
+ * silver and platinum use fineness expressed as parts per 1,000. The
+ * field stored in the DB is `carat: text`, so we just write the chosen
+ * label into it ("18ct", "925", "950 platinum", etc.) — the admin sees it
+ * as a free-text string and reads it correctly regardless of metal.
+ */
+const GOLD_PURITY = [
   { value: '', label: "I'm not sure" },
   { value: '9ct', label: '9ct (37.5%)' },
   { value: '10ct', label: '10ct (41.7%)' },
@@ -23,6 +30,43 @@ const CARAT_OPTIONS = [
   { value: '22ct', label: '22ct (91.6%)' },
   { value: '24ct', label: '24ct (99.9%)' },
 ];
+
+const SILVER_PURITY = [
+  { value: '', label: "I'm not sure" },
+  { value: '999 silver', label: 'Fine silver — 999 (99.9%)' },
+  { value: '958 silver', label: 'Britannia — 958 (95.8%)' },
+  { value: '925 silver', label: 'Sterling — 925 (92.5%)' },
+  { value: '900 silver', label: 'Coin silver — 900 (90%)' },
+];
+
+const PLATINUM_PURITY = [
+  { value: '', label: "I'm not sure" },
+  { value: '950 platinum', label: '950 (95%)' },
+  { value: '900 platinum', label: '900 (90%)' },
+  { value: '850 platinum', label: '850 (85%)' },
+];
+
+function purityOptionsFor(metal: string) {
+  if (metal === 'Silver') return SILVER_PURITY;
+  if (metal === 'Platinum') return PLATINUM_PURITY;
+  return GOLD_PURITY;
+}
+
+function purityLabelFor(metal: string) {
+  if (metal === 'Silver') return 'What silver fineness?';
+  if (metal === 'Platinum') return 'What platinum fineness?';
+  return 'What carat?';
+}
+
+function purityHintFor(metal: string) {
+  if (metal === 'Silver') {
+    return 'Silver purity is stamped as parts per 1,000. Common marks: 925 (Sterling) or 999 (fine).';
+  }
+  if (metal === 'Platinum') {
+    return 'Platinum purity is stamped as parts per 1,000. 950 is the most common.';
+  }
+  return "Look for a hallmark stamp — 9, 14, 18, 22, 24 etc. Leave blank if you're not sure.";
+}
 
 const JEWELLERY_TYPE_OPTIONS = [
   'Ring',
@@ -226,7 +270,9 @@ const VARIANT_META: Record<FormVariant, { eyebrow: string; title: string; subtit
 // Each branch has a different number of variant-specific questions, so the
 // shared trailing questions (description, contact) shift accordingly.
 const QUESTION_NUMBER: Record<FormVariant, { photos: number; contact: number }> = {
-  metal: { photos: 4, contact: 5 },
+  // Metal branch now has 4 branch-specific questions (metal, form, purity,
+  // grams), so photos becomes question 5 and contact 6.
+  metal: { photos: 5, contact: 6 },
   jewellery: { photos: 4, contact: 5 },
   watch: { photos: 4, contact: 5 },
   handbag: { photos: 5, contact: 6 },
@@ -237,6 +283,12 @@ const QUESTION_NUMBER: Record<FormVariant, { photos: number; contact: number }> 
 // ---------------------------------------------------------------------------
 
 function MetalBranch() {
+  // Track the chosen metal so the purity field can swap its label and
+  // option list. Default to Gold since that's the most common case and
+  // matches the first (auto-checked) chip.
+  const [metal, setMetal] = useState<string>('Gold');
+  const purityOptions = purityOptionsFor(metal);
+
   return (
     <>
       <Question number={1} label="Which metal?" required>
@@ -244,6 +296,7 @@ function MetalBranch() {
           name="metal_type"
           options={METAL_OPTIONS.map((m) => ({ value: m, label: m }))}
           required
+          onChange={setMetal}
         />
       </Question>
       <Question number={2} label="What form is it in?" required>
@@ -255,16 +308,43 @@ function MetalBranch() {
       </Question>
       <Question
         number={3}
-        label="What carat or purity?"
-        hint="Optional — leave blank if you're not sure."
+        label={purityLabelFor(metal)}
+        hint={purityHintFor(metal)}
       >
-        <select name="carat" defaultValue="" className="gc-input max-w-sm">
-          {CARAT_OPTIONS.map((c) => (
+        {/* key forces React to remount the <select> when metal changes,
+            so the chosen value resets to the new metal's default ("" /
+            "I'm not sure"). Stops stale "925 silver" lingering after a
+            switch to Gold. */}
+        <select
+          key={metal}
+          name="carat"
+          defaultValue=""
+          className="gc-input max-w-sm"
+        >
+          {purityOptions.map((c) => (
             <option key={c.value} value={c.value} className="bg-ink-950 text-white">
               {c.label}
             </option>
           ))}
         </select>
+      </Question>
+      <Question
+        number={4}
+        label="Approximate weight in grams?"
+        hint="Optional but helps a lot — even a rough figure narrows the valuation."
+      >
+        <div className="flex items-center gap-2">
+          <input
+            type="number"
+            name="weight_grams"
+            inputMode="decimal"
+            min="0"
+            step="0.01"
+            placeholder="e.g. 28.4"
+            className="gc-input max-w-[200px]"
+          />
+          <span className="text-sm text-warmgrey">grams</span>
+        </div>
       </Question>
     </>
   );
@@ -453,10 +533,14 @@ function ChipGroup({
   name,
   options,
   required,
+  onChange,
 }: {
   name: string;
   options: { value: string; label: string }[];
   required?: boolean;
+  /** Optional — fires whenever the user picks a different chip. Used by
+   * the metal branch to swap the purity field as the metal changes. */
+  onChange?: (value: string) => void;
 }) {
   return (
     <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
@@ -471,6 +555,7 @@ function ChipGroup({
             value={opt.value}
             defaultChecked={required && i === 0}
             required={required}
+            onChange={onChange ? (e) => onChange(e.currentTarget.value) : undefined}
             className="sr-only"
           />
           {opt.label}

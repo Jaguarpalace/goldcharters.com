@@ -418,6 +418,116 @@ export async function updateValuationPayment(
   return { ok: true };
 }
 
+/**
+ * Permanently delete a valuation request, its image rows (CASCADE) and any
+ * uploaded photos in the private `valuation-uploads` storage bucket.
+ * Intended for cleaning up test submissions or removing data on customer
+ * request. There is no undo.
+ */
+export async function deleteValuationRequest(
+  id: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const ctx = await requireAdminContext();
+  if ('error' in ctx) return { ok: false, error: ctx.error };
+
+  // Look up the image paths first so we can remove the storage objects.
+  // valuation_request_images has CASCADE on delete, so the rows themselves
+  // will go automatically when we drop the parent row — but the storage
+  // bucket has no FK to anything, so we must do that ourselves.
+  const { data: images } = await ctx.admin
+    .from('valuation_request_images')
+    .select('image_url')
+    .eq('valuation_request_id', id);
+
+  if (images && images.length > 0) {
+    const paths = (images as { image_url: string }[])
+      .map((row) => extractStoragePath(row.image_url, 'valuation-uploads'))
+      .filter((p): p is string => Boolean(p));
+    if (paths.length > 0) {
+      const { error } = await ctx.admin.storage
+        .from('valuation-uploads')
+        .remove(paths);
+      // Log but don't fail — orphan storage objects are recoverable, an
+      // orphan DB row is not.
+      if (error) console.error('[valuation:delete-storage]', error);
+    }
+  }
+
+  const { error } = await ctx.admin
+    .from('valuation_requests')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    console.error('[valuation:delete]', error);
+    return { ok: false, error: error.message };
+  }
+
+  revalidatePath('/admin/valuation-requests');
+  revalidatePath('/admin');
+  return { ok: true };
+}
+
+/** Permanently delete many valuation requests at once. */
+export async function bulkDeleteValuationRequests(
+  ids: string[],
+): Promise<{ ok: true; deleted: number } | { ok: false; error: string }> {
+  const ctx = await requireAdminContext();
+  if ('error' in ctx) return { ok: false, error: ctx.error };
+
+  if (!Array.isArray(ids) || ids.length === 0) return { ok: true, deleted: 0 };
+  if (ids.length > 500) return { ok: false, error: 'Too many records selected.' };
+
+  // Storage cleanup first (same approach as single delete).
+  const { data: images } = await ctx.admin
+    .from('valuation_request_images')
+    .select('image_url')
+    .in('valuation_request_id', ids);
+
+  if (images && images.length > 0) {
+    const paths = (images as { image_url: string }[])
+      .map((row) => extractStoragePath(row.image_url, 'valuation-uploads'))
+      .filter((p): p is string => Boolean(p));
+    if (paths.length > 0) {
+      const { error } = await ctx.admin.storage
+        .from('valuation-uploads')
+        .remove(paths);
+      if (error) console.error('[valuation:bulk-delete-storage]', error);
+    }
+  }
+
+  const { error, data } = await ctx.admin
+    .from('valuation_requests')
+    .delete()
+    .in('id', ids)
+    .select('id');
+
+  if (error) {
+    console.error('[valuation:bulk-delete]', error);
+    return { ok: false, error: error.message };
+  }
+
+  revalidatePath('/admin/valuation-requests');
+  revalidatePath('/admin');
+  return { ok: true, deleted: data?.length ?? ids.length };
+}
+
+/** Pull the storage object path out of either a Supabase public URL or a
+ *  signed URL. Returns null if the URL doesn't look like one we recognise. */
+function extractStoragePath(url: string, bucket: string): string | null {
+  // Signed URLs look like: .../storage/v1/object/sign/<bucket>/<path>?token=...
+  // Public URLs look like: .../storage/v1/object/public/<bucket>/<path>
+  const match = url.match(
+    new RegExp(`/storage/v1/object/(?:public|sign)/${bucket}/([^?]+)`),
+  );
+  if (!match) return null;
+  try {
+    return decodeURIComponent(match[1]);
+  } catch {
+    return match[1];
+  }
+}
+
 /** Set the same status on many requests at once. */
 export async function bulkUpdateValuationStatus(
   ids: string[],

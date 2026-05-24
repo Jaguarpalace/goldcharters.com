@@ -4,7 +4,8 @@ import { CalculatorRatesEditor } from './CalculatorRatesEditor';
 export const dynamic = 'force-dynamic';
 
 export default async function AdminCalculatorRatesPage() {
-  const rates = await getCalculatorRates();
+  // Admin sees hidden rows too so they can re-enable them.
+  const rates = await getCalculatorRates({ includeHidden: true });
   return (
     <div className="space-y-8">
       <header>

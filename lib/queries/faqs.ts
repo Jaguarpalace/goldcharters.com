@@ -21,16 +21,24 @@ function filterForBuyMode(faqs: Faq[]): Faq[] {
   return faqs.filter((f) => !SHOP_ONLY_CATEGORIES.has(f.category));
 }
 
-export async function getFaqs(): Promise<Faq[]> {
+export async function getFaqs(
+  opts: { includeHidden?: boolean } = {},
+): Promise<Faq[]> {
   const supabase = getServerSupabase();
-  if (!supabase) return filterForBuyMode(mockFaqs());
+  if (!supabase) {
+    const all = opts.includeHidden ? mockFaqs() : mockFaqs().filter((f) => f.visible);
+    return opts.includeHidden ? all : filterForBuyMode(all);
+  }
 
-  const { data, error } = await supabase
+  let query = supabase
     .from('faqs')
     .select('*')
-    .eq('visible', true)
     .order('display_order', { ascending: true });
+  if (!opts.includeHidden) query = query.eq('visible', true);
 
+  const { data, error } = await query;
   if (error || !data) return filterForBuyMode(mockFaqs());
-  return filterForBuyMode(data as Faq[]);
+  // Admin sees every category (including shop-only ones) so they can manage
+  // them; public site filters out shop categories when BUY_ENABLED is false.
+  return opts.includeHidden ? (data as Faq[]) : filterForBuyMode(data as Faq[]);
 }

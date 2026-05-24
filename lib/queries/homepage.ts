@@ -16,16 +16,30 @@ export async function getSiteSettings(): Promise<SiteSettings> {
   return data as SiteSettings;
 }
 
-export async function getHomepageSections(): Promise<HomepageSection[]> {
+/**
+ * Fetch homepage sections.
+ *
+ * By default returns only visible rows — that's what the public site wants.
+ * Pass `includeHidden: true` from the admin editor so unticking the
+ * "visible" checkbox doesn't make a section disappear from its own editor.
+ */
+export async function getHomepageSections(
+  opts: { includeHidden?: boolean } = {},
+): Promise<HomepageSection[]> {
   const supabase = getServerSupabase();
-  if (!supabase) return mockHomepageSections();
+  if (!supabase) {
+    const all = mockHomepageSections();
+    return opts.includeHidden ? all : all.filter((s) => s.visible);
+  }
 
-  const { data, error } = await supabase
+  let query = supabase
     .from('homepage_sections')
     .select('*')
-    .eq('visible', true)
     .order('display_order', { ascending: true });
 
+  if (!opts.includeHidden) query = query.eq('visible', true);
+
+  const { data, error } = await query;
   if (error || !data) return mockHomepageSections();
   return data as HomepageSection[];
 }

@@ -43,16 +43,22 @@ export function Logo({ businessName, size = 'default', href = '/' }: LogoProps) 
             : 'h-28 w-28 object-contain transition-transform duration-300 group-hover:scale-105 sm:h-32 sm:w-32 lg:h-40 lg:w-40'
         }
       />
-      <span
-        className={
-          compact
-            ? 'mt-1 text-[8px] font-semibold uppercase gc-text-gold-gradient sm:text-[9px]'
-            : 'mt-1.5 text-[9px] font-semibold uppercase tracking-luxe gc-text-gold-gradient sm:text-[10px]'
-        }
-        style={{ letterSpacing: '0.22em' }}
-      >
-        Precious Metal Traders
-      </span>
+      {/*
+        The logo image already has "Charters Gold" baked into the artwork,
+        so we only render the "Precious Metal Traders" tagline on the
+        larger (default) variant — login page, footer, hero contexts where
+        the extra line has space to breathe. In the header (compact) it
+        would either stack on top of the baked-in name or overflow the
+        header divider, so we leave it out.
+      */}
+      {!compact && (
+        <span
+          className="mt-2 text-[9px] font-semibold uppercase tracking-luxe gc-text-gold-gradient sm:text-[10px]"
+          style={{ letterSpacing: '0.22em' }}
+        >
+          Precious Metal Traders
+        </span>
+      )}
     </Link>
   );
 }

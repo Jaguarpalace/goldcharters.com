@@ -93,7 +93,7 @@ function SellImage({ url, alt }: { url: string; alt: string }) {
   return (
     <div className="relative mx-auto w-full max-w-md">
       <div
-        className="relative aspect-[4/5] overflow-hidden rounded-3xl"
+        className="relative aspect-square overflow-hidden rounded-3xl"
         style={{
           boxShadow: '0 30px 90px -40px rgba(212,175,55,0.4), inset 0 0 0 1px rgba(212,175,55,0.25)',
         }}
@@ -114,7 +114,7 @@ function DecorativePanel({ variant }: { variant: 'gold' | 'jewellery' }) {
   return (
     <div className="relative mx-auto w-full max-w-md">
     <div
-      className="relative aspect-[4/5] overflow-hidden rounded-3xl"
+      className="relative aspect-square overflow-hidden rounded-3xl"
       style={{
         background: 'linear-gradient(160deg, #0b0b0b, #141414 50%, #050505)',
         boxShadow: '0 30px 90px -40px rgba(212,175,55,0.4), inset 0 0 0 1px rgba(212,175,55,0.25)',
