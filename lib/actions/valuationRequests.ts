@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { getAdminSupabase, getServerSupabase } from '@/lib/supabase/server';
 import { isSupabaseAdminConfigured } from '@/lib/supabase/env';
 import { sendNewRequestNotification } from '@/lib/email/sendNewRequestNotification';
+import { sendCustomerConfirmation } from '@/lib/email/sendCustomerConfirmation';
 import type {
   FormVariant,
   PreferredContactMethod,
@@ -251,11 +252,15 @@ export async function submitValuationRequest(
     if (imgError) console.error('[valuation:images]', imgError);
   }
 
-  // Fire the admin notification email. Awaited so any errors get logged,
-  // but the result is intentionally ignored — sendNewRequestNotification
-  // is fail-soft and never throws, so the customer's submission always
-  // succeeds even if email delivery is having a bad day.
-  await sendNewRequestNotification(request, uploadedImageRows.length);
+  // Fire the two transactional emails in parallel:
+  //   1. Internal alert to the team
+  //   2. Branded confirmation back to the customer
+  // Both senders are fail-soft and never throw, so the customer's submission
+  // always succeeds even if email delivery is having a bad day.
+  await Promise.all([
+    sendNewRequestNotification(request, uploadedImageRows.length),
+    sendCustomerConfirmation(request, uploadedImageRows.length),
+  ]);
 
   revalidatePath('/admin/valuation-requests');
   return { ok: true, requestId: request.id, persisted: true };

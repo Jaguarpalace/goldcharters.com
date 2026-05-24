@@ -13,16 +13,16 @@ export default async function AdminEmailTemplatesPage() {
         <span className="text-xs uppercase tracking-luxe text-gold-metallic">CMS</span>
         <h1 className="font-display text-4xl text-white mt-2">Email Templates</h1>
         <p className="mt-2 max-w-2xl text-sm text-warmgrey">
-          Every transactional email the system sends — admin alerts, customer auto-replies — is
-          rendered from a template stored here. Edit subject, HTML body and which variables to use.
+          Every transactional email the website sends — internal alerts, customer confirmations and
+          status updates — is composed here. Edit the subject and body and the change is live on
+          the next send.
         </p>
       </header>
 
       {!isEmailConfigured() && (
         <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-4 text-sm text-amber-200">
-          <strong>Resend not connected.</strong> Templates can be edited and previewed, but emails
-          won&apos;t actually send until <code className="text-amber-100">RESEND_API_KEY</code> is set
-          in environment variables.
+          <strong>Email delivery is currently paused.</strong> Templates can still be edited and
+          previewed; sending will resume once the email service is reconnected.
         </div>
       )}
 

@@ -31,9 +31,7 @@ export default async function PriceDashboardPage() {
 
       {!haveKey && (
         <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-200">
-          The metal-price API key isn&apos;t configured. Set{' '}
-          <code className="text-amber-100">METAL_PRICE_API_KEY</code> in{' '}
-          <code className="text-amber-100">.env.local</code> and restart the dev server.
+          Live price feed temporarily unavailable. Showing the most recent cached values.
         </div>
       )}
 

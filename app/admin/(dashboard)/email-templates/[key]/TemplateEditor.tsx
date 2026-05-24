@@ -109,7 +109,7 @@ export function TemplateEditor({
               onChange={(e) => setEnabled(e.target.checked)}
               className="h-4 w-4 accent-gold-metallic"
             />
-            Template enabled (when off, the system falls back to no email — never to a hardcoded version)
+            Active — send this email when its trigger fires
           </label>
 
           <div className="mt-5 flex items-center justify-between gap-3">
@@ -140,7 +140,8 @@ export function TemplateEditor({
             Live preview
           </h2>
           <p className="mt-2 text-[11px] text-warmgrey">
-            Rendered with sample values. The actual send uses real customer data.
+            Rendered with sample data so you can see exactly how the email will appear to its
+            recipient.
           </p>
 
           <div className="mt-4 rounded-lg border border-gold-metallic/15 bg-ink-950 p-4">
@@ -191,8 +192,8 @@ export function TemplateEditor({
             Send a test
           </h2>
           <p className="mt-2 text-[11px] text-warmgrey">
-            Sends the current template (with sample values) to any address. Requires Resend env vars
-            to be set.
+            Renders this template with sample data and sends it to any inbox so you can preview the
+            final result.
           </p>
           <input
             value={testRecipient}

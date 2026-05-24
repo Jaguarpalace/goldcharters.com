@@ -27,7 +27,7 @@ export default async function LoginPage() {
         <p className="text-xs uppercase tracking-luxe text-gold-metallic">Admin Access</p>
         <h1 className="font-display text-4xl text-white mt-2">Sign In</h1>
         <p className="mt-2 text-sm text-warmgrey">
-          Authorised personnel only. Sessions are tied to Supabase Auth.
+          Authorised personnel only.
         </p>
 
         <div className="mt-8 gc-card gc-card-gold-edge p-7">
@@ -35,8 +35,7 @@ export default async function LoginPage() {
             <LoginForm />
           ) : (
             <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-200">
-              Supabase is not configured. Add <code>NEXT_PUBLIC_SUPABASE_URL</code> and{' '}
-              <code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code> to <code>.env.local</code> to enable login.
+              Sign-in is temporarily unavailable. Please try again shortly.
             </div>
           )}
         </div>

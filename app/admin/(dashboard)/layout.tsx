@@ -110,9 +110,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
         {!isSupabaseConfigured() && (
           <div className="mt-6 rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-200">
-            Supabase is not configured. The admin is in <strong>preview mode</strong> — UI only. Set the
-            environment variables in <code className="text-amber-100">.env.local</code> to enable login,
-            data persistence and authentication.
+            <strong>Preview mode.</strong> Edits won’t persist — the live database isn’t connected
+            on this environment.
           </div>
         )}
 
