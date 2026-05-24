@@ -124,7 +124,7 @@ values (
     jsonb_build_object('key', 'description_block', 'label', 'Customer description block (HTML, empty if no description)', 'example', '(rendered HTML)'),
     jsonb_build_object('key', 'admin_url', 'label', 'Link to the admin valuation requests page', 'example', 'https://chartersgold.co.uk/admin/valuation-requests'),
     jsonb_build_object('key', 'site_url', 'label', 'Public site URL', 'example', 'https://chartersgold.co.uk'),
-    jsonb_build_object('key', 'logo_url', 'label', 'Brand logo URL (hosted publicly)', 'example', 'https://chartersgold.co.uk/logo/charters-gold.webp'),
+    jsonb_build_object('key', 'logo_url', 'label', 'Brand logo URL (hosted publicly)', 'example', 'https://chartersgold.co.uk/logo/charters-gold.png'),
     jsonb_build_object('key', 'business_name', 'label', 'Business name from site settings', 'example', 'Charters Gold'),
     jsonb_build_object('key', 'address', 'label', 'Business address from site settings', 'example', 'Avalon House, Egham…')
   )
@@ -239,7 +239,7 @@ values (
     jsonb_build_object('key', 'business_phone_digits', 'label', 'Business phone (digits only)', 'example', '08000472348'),
     jsonb_build_object('key', 'business_email', 'label', 'Business email', 'example', 'office@chartersgold.co.uk'),
     jsonb_build_object('key', 'address', 'label', 'Business address', 'example', 'Avalon House, Egham…'),
-    jsonb_build_object('key', 'logo_url', 'label', 'Brand logo URL', 'example', 'https://chartersgold.co.uk/logo/charters-gold.webp'),
+    jsonb_build_object('key', 'logo_url', 'label', 'Brand logo URL', 'example', 'https://chartersgold.co.uk/logo/charters-gold.png'),
     jsonb_build_object('key', 'site_url', 'label', 'Public site URL', 'example', 'https://chartersgold.co.uk')
   )
 )

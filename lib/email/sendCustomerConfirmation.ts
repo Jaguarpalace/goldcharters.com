@@ -75,7 +75,7 @@ async function buildVariables(req: ValuationRequest, photoCount: number): Promis
 
   return {
     site_url: siteUrl,
-    logo_url: `${siteUrl}/logo/charters-gold.webp`,
+    logo_url: `${siteUrl}/logo/charters-gold.png`,
     business_name: settings.business_name,
     business_phone: settings.phone,
     business_phone_digits: settings.phone.replace(/\D+/g, ''),

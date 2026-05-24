@@ -71,7 +71,7 @@ async function buildVariables(req: ValuationRequest, photoCount: number): Promis
 
   return {
     site_url: siteUrl,
-    logo_url: `${siteUrl}/logo/charters-gold.webp`,
+    logo_url: `${siteUrl}/logo/charters-gold.png`,
     business_name: settings.business_name,
     address: settings.address ?? '',
     admin_url: `${siteUrl}/admin/valuation-requests`,
