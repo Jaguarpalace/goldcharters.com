@@ -89,14 +89,19 @@ export function ServiceCards({ services }: { services: Service[] }) {
                     {(service.icon_key && ICONS[service.icon_key]) ?? ICONS.diamond}
                   </span>
                 </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block font-display text-[15px] font-semibold leading-tight text-white">
+                {/* Outer wrapper is a `div`, not `<span>`, so `min-w-0` + `flex-1`
+                    properly constrain the block children. A `<span>` is inline
+                    by default and even as a flex item won't reliably contain
+                    truncate'd children — the description was overflowing the
+                    card width and getting clipped at the viewport edge. */}
+                <div className="min-w-0 flex-1 overflow-hidden">
+                  <div className="truncate font-display text-[15px] font-semibold leading-tight text-white">
                     {service.title}
-                  </span>
-                  <span className="mt-1 block truncate text-[12px] text-warmgrey">
+                  </div>
+                  <div className="mt-1 truncate text-[12px] text-warmgrey">
                     {service.short_description}
-                  </span>
-                </span>
+                  </div>
+                </div>
                 <svg
                   width="14"
                   height="14"
