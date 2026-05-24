@@ -43,8 +43,8 @@ export default async function CookiesPage() {
       <h3>2.1 Strictly Necessary Cookies</h3>
       <p>
         These are essential for the Site to function. They do not require consent. They enable
-        core functionality including authentication, security, basket persistence (where the shop
-        is enabled) and load balancing. Without these cookies the Site cannot operate properly.
+        core functionality including authentication, security and load balancing. Without these
+        cookies the Site cannot operate properly.
       </p>
 
       <h3>2.2 Functional Cookies</h3>
@@ -118,8 +118,7 @@ export default async function CookiesPage() {
       </ul>
       <p>
         Please note that disabling strictly necessary cookies will prevent parts of the Site from
-        functioning correctly, including authentication, secure form submissions and shopping
-        basket persistence.
+        functioning correctly, including authentication and secure form submissions.
       </p>
 
       <h2>4. Do-Not-Track Signals</h2>

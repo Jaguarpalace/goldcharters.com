@@ -7,7 +7,7 @@ export const revalidate = 86400;
 export const metadata: Metadata = {
   title: 'Terms & Conditions',
   description:
-    'The terms and conditions governing use of the Charters Gold website, valuation services and purchase transactions.',
+    'The terms and conditions governing use of the Charters Gold website and our private valuation services.',
   robots: { index: true, follow: true },
 };
 

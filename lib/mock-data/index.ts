@@ -31,13 +31,13 @@ export function mockSiteSettings(): SiteSettings {
     top_bar_trust_text: 'Private valuations · Insured handling',
     top_bar_payment_text: 'Same-day payment available',
     footer_description:
-      'Charters Gold is a private valuation house specialising in gold, fine jewellery and antique pieces. We buy from private clients across the United Kingdom and curate a small collection of pieces available to purchase online.',
+      'Charters Gold is a private valuation house specialising in gold, fine jewellery, luxury watches and designer handbags. We buy from private clients across the United Kingdom with transparent valuations and same-day payment.',
     footer_disclaimer:
       'Valuations are subject to inspection, item condition, market prices and verification. Offers may vary depending on purity, weight, gemstones, brand, demand and documentation. Calculator prices are guide prices only.',
     social_links: { instagram: '#', facebook: '#' },
     seo_title: 'Charters Gold · Private UK Gold & Jewellery Specialists',
     seo_description:
-      'Sell gold, diamonds and fine jewellery to a discreet UK private valuation house, or browse our curated collection of jewellery and gold pieces.',
+      'Sell gold, diamonds, fine jewellery, luxury watches and designer handbags to a discreet UK private valuation house. Same-day payment, transparent valuations, no obligation.',
     updated_at: new Date().toISOString(),
   };
 }
@@ -49,14 +49,12 @@ export function mockHomepageSections(): HomepageSection[] {
       section_key: 'hero',
       title: 'Unlock the Value of Gold & Jewellery',
       subtitle:
-        'Sell your gold and jewellery with confidence, or discover carefully selected jewellery and gold pieces available to buy online.',
+        'Sell your gold, fine jewellery, luxury watches and designer handbags to a discreet UK valuation house. Transparent figures, same-day payment, no obligation.',
       body: null,
-      cta_label: 'Sell Gold & Jewellery',
+      cta_label: 'Get a Valuation',
       cta_href: '/sell-gold',
       image_url: null,
       extra: {
-        secondary_cta_label: 'Shop Jewellery',
-        secondary_cta_href: '/shop',
         badges: [
           'Same-Day Payment Available',
           'Discreet Valuations',
@@ -176,7 +174,9 @@ export function mockHomepageSections(): HomepageSection[] {
       image_url: null,
       extra: null,
       display_order: 4,
-      visible: true,
+      // Hidden while the site is buy-from-customers only. Keep the row in
+      // place so the content survives a future shop re-enable.
+      visible: false,
       updated_at: new Date().toISOString(),
     },
     {
@@ -269,7 +269,8 @@ export function mockServices(): Service[] {
       cta_href: '/shop',
       pathway: 'buy',
       display_order: 4,
-      visible: true,
+      // Hidden while the site is buy-from-customers only.
+      visible: false,
       updated_at: new Date().toISOString(),
     },
     {
@@ -390,8 +391,8 @@ export function mockTrustCards(): TrustCard[] {
     'UK-based service',
     'Clear communication',
     'Professional customer care',
-    'Curated jewellery stock',
-    'Secure checkout for purchases',
+    'Insured postal valuations',
+    'Private appointments by name',
   ].map((title, i) => ({
     id: `trust-${i}`,
     title,
@@ -450,33 +451,6 @@ export function mockFaqs(): Faq[] {
       visible: true,
     },
     {
-      id: 'faq-6',
-      category: 'buying_jewellery',
-      question: 'Do you sell jewellery online?',
-      answer:
-        'Yes. Available pieces can be browsed in the shop section and added to the basket for secure checkout.',
-      display_order: 6,
-      visible: true,
-    },
-    {
-      id: 'faq-7',
-      category: 'stock_orders',
-      question: 'Are shop products actually in stock?',
-      answer:
-        'Yes. The website uses live stock status from our admin inventory system. Sold and reserved pieces are automatically marked unavailable.',
-      display_order: 7,
-      visible: true,
-    },
-    {
-      id: 'faq-8',
-      category: 'stock_orders',
-      question: 'Can I buy one-off jewellery items?',
-      answer:
-        'Yes. Many pieces in our collection are unique, so once sold they automatically become unavailable. Reserved items are held briefly during checkout.',
-      display_order: 8,
-      visible: true,
-    },
-    {
       id: 'faq-9',
       category: 'selling_gold',
       question: 'Do I need ID when selling?',
@@ -501,15 +475,6 @@ export function mockFaqs(): Faq[] {
       answer:
         'No. You are under no obligation. Our specialists provide a clear valuation; the decision to accept is entirely yours.',
       display_order: 10,
-      visible: true,
-    },
-    {
-      id: 'faq-11',
-      category: 'delivery',
-      question: 'How are purchased items delivered?',
-      answer:
-        'Pieces are sent fully insured via tracked, signed-for courier within the UK. Delivery options are confirmed at checkout.',
-      display_order: 11,
       visible: true,
     },
   ];

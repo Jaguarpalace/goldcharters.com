@@ -16,7 +16,7 @@ export default function NotFound() {
         <h1 className="gc-heading-xl mt-4">This page has been valued elsewhere</h1>
         <p className="gc-subhead mt-5 max-w-xl">
           The page you were looking for couldn&apos;t be found. It may have been moved or removed.
-          Browse the most popular sections below — or get in touch with our team directly.
+          Try one of the most-visited sections below, or get in touch with our team directly.
         </p>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
