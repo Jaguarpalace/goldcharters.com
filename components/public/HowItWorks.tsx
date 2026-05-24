@@ -61,12 +61,12 @@ export function HowItWorks({ asH1 = false }: { asH1?: boolean }) {
           )}
         </div>
 
-        <ol className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3 lg:gap-5">
+        <ol className="mt-6 grid grid-cols-1 gap-3 sm:mt-8 sm:grid-cols-3 sm:gap-4 lg:gap-5">
           {steps.map((step, i) => (
-            <li key={step.title} className="gc-card gc-card-gold-edge p-7">
+            <li key={step.title} className="gc-card gc-card-gold-edge p-5 sm:p-7">
               <div className="flex items-center gap-3 text-gold-metallic">
                 <span
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold text-ink-950"
+                  className="inline-flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold text-ink-950 sm:h-9 sm:w-9"
                   style={{
                     background: 'linear-gradient(135deg, #FFD700, #D4AF37 60%, #B8860B)',
                     boxShadow: '0 0 14px rgba(212,175,55,0.5)',
@@ -76,8 +76,8 @@ export function HowItWorks({ asH1 = false }: { asH1?: boolean }) {
                 </span>
                 <span className="text-xs font-medium uppercase tracking-luxe">Step {i + 1}</span>
               </div>
-              <h3 className="font-display text-2xl text-white mt-4">{step.title}</h3>
-              <p className="mt-3 text-sm text-warmgrey">{step.body}</p>
+              <h3 className="mt-3 font-display text-xl text-white sm:mt-4 sm:text-2xl">{step.title}</h3>
+              <p className="mt-2 text-sm text-warmgrey sm:mt-3">{step.body}</p>
             </li>
           ))}
         </ol>
