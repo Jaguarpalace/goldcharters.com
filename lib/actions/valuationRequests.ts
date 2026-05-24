@@ -3,14 +3,18 @@
 import { revalidatePath } from 'next/cache';
 import { getAdminSupabase, getServerSupabase } from '@/lib/supabase/server';
 import { isSupabaseAdminConfigured } from '@/lib/supabase/env';
+import { requireAdminContext } from './_helpers';
 import { sendNewRequestNotification } from '@/lib/email/sendNewRequestNotification';
 import { sendCustomerConfirmation } from '@/lib/email/sendCustomerConfirmation';
 import type {
   FormVariant,
+  PaymentMethod,
   PreferredContactMethod,
   ValuationItemType,
   ValuationRequest,
+  ValuationRequestStatus,
 } from '@/types/database';
+import { PAYMENT_METHODS } from '@/types/database';
 
 // Allowed values per branch — server validates against these, regardless of
 // what the client sends.
@@ -346,4 +350,98 @@ export async function updateValuationStatus(
   revalidatePath('/admin/valuation-requests');
   revalidatePath('/admin');
   return { ok: true };
+}
+
+/** Save internal notes for a request. Notes are admin-only; never sent to the customer. */
+export async function updateValuationNotes(
+  id: string,
+  notes: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const ctx = await requireAdminContext();
+  if ('error' in ctx) return { ok: false, error: ctx.error };
+
+  const trimmed = notes.slice(0, 5000); // hard cap to keep DB sane
+  const { error } = await ctx.admin
+    .from('valuation_requests')
+    .update({ notes: trimmed || null, updated_at: new Date().toISOString() })
+    .eq('id', id);
+
+  if (error) {
+    console.error('[valuation:update-notes]', error);
+    return { ok: false, error: error.message };
+  }
+
+  revalidatePath('/admin/valuation-requests');
+  return { ok: true };
+}
+
+export type PaymentInput = {
+  amount: number | null;
+  method: PaymentMethod | null;
+  reference: string | null;
+  paidAt: string | null; // ISO date string or null
+};
+
+/** Save payment details against a request. Used once a piece is bought. */
+export async function updateValuationPayment(
+  id: string,
+  input: PaymentInput,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const ctx = await requireAdminContext();
+  if ('error' in ctx) return { ok: false, error: ctx.error };
+
+  if (input.amount !== null && (!Number.isFinite(input.amount) || input.amount < 0)) {
+    return { ok: false, error: 'Payment amount must be a positive number.' };
+  }
+  if (input.method !== null && !PAYMENT_METHODS.includes(input.method)) {
+    return { ok: false, error: 'Unknown payment method.' };
+  }
+
+  const { error } = await ctx.admin
+    .from('valuation_requests')
+    .update({
+      payment_amount: input.amount,
+      payment_method: input.method,
+      payment_reference: input.reference?.slice(0, 200) ?? null,
+      paid_at: input.paidAt,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', id);
+
+  if (error) {
+    console.error('[valuation:update-payment]', error);
+    return { ok: false, error: error.message };
+  }
+
+  revalidatePath('/admin/valuation-requests');
+  revalidatePath('/admin');
+  return { ok: true };
+}
+
+/** Set the same status on many requests at once. */
+export async function bulkUpdateValuationStatus(
+  ids: string[],
+  status: ValuationRequestStatus,
+): Promise<{ ok: true; updated: number } | { ok: false; error: string }> {
+  const ctx = await requireAdminContext();
+  if ('error' in ctx) return { ok: false, error: ctx.error };
+
+  if (!VALID_STATUSES.has(status)) return { ok: false, error: 'Invalid status.' };
+  if (!Array.isArray(ids) || ids.length === 0) return { ok: true, updated: 0 };
+  if (ids.length > 500) return { ok: false, error: 'Too many records selected.' };
+
+  const { error, data } = await ctx.admin
+    .from('valuation_requests')
+    .update({ status, updated_at: new Date().toISOString() })
+    .in('id', ids)
+    .select('id');
+
+  if (error) {
+    console.error('[valuation:bulk-status]', error);
+    return { ok: false, error: error.message };
+  }
+
+  revalidatePath('/admin/valuation-requests');
+  revalidatePath('/admin');
+  return { ok: true, updated: data?.length ?? ids.length };
 }

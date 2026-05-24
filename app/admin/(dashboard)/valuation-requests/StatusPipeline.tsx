@@ -21,9 +21,13 @@ import { updateValuationStatus } from '@/lib/actions/valuationRequests';
 export function StatusPipeline({
   requestId,
   currentStatus,
+  onChange,
 }: {
   requestId: string;
   currentStatus: ValuationRequestStatus;
+  /** Fires after a successful status save so a parent list can keep its
+   * copy of the row in sync (badge colour, filter eligibility, etc.). */
+  onChange?: (status: ValuationRequestStatus) => void;
 }) {
   const [status, setStatus] = useState<ValuationRequestStatus>(currentStatus);
   const [pending, startTransition] = useTransition();
@@ -43,6 +47,8 @@ export function StatusPipeline({
       if (!result.ok) {
         setStatus(previous);
         setError(result.error);
+      } else {
+        onChange?.(next);
       }
     });
   };

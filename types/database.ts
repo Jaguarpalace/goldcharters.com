@@ -208,8 +208,23 @@ export type ValuationRequest = {
   consent_accepted: boolean;
   status: ValuationRequestStatus;
   notes: string | null;
+  /** Final figure paid to the customer in GBP. Set once a piece is bought. */
+  payment_amount: number | null;
+  payment_method: PaymentMethod | null;
+  payment_reference: string | null;
+  paid_at: string | null;
   created_at: string;
   updated_at: string;
+};
+
+export const PAYMENT_METHODS = ['cash', 'bank_transfer', 'cheque', 'card', 'other'] as const;
+export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
+export const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
+  cash: 'Cash',
+  bank_transfer: 'Bank transfer',
+  cheque: 'Cheque',
+  card: 'Card',
+  other: 'Other',
 };
 
 export type ValuationRequestImage = {
