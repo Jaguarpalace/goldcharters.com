@@ -968,7 +968,7 @@ const DEFAULT_NEW_REQUEST_HTML = `<!DOCTYPE html>
         <tr>
           <td style="padding:32px 24px 20px; border-bottom:1px solid rgba(212,175,55,0.15); text-align:center; background:#000000;">
             <img src="{{logo_url}}" alt="{{business_name}}" width="96" height="96" style="display:block; margin:0 auto; border:0;" />
-            <p style="margin:14px 0 0; color:#d4af37; font-size:10px; letter-spacing:0.22em; text-transform:uppercase; font-weight:600;">{{business_name}} · Admin Alert</p>
+            <p style="margin:14px 0 0; color:#d4af37; font-size:10px; letter-spacing:0.22em; text-transform:uppercase; font-weight:600;">Precious Metal Traders · Internal Alert</p>
             <h1 style="margin:10px 0 0; color:#ffffff; font-family:Georgia, serif; font-size:22px; line-height:1.2;">New valuation request</h1>
             <p style="margin:6px 0 0; color:#9a9a9a; font-size:12px;">{{submitted_at}}</p>
           </td>
@@ -1025,7 +1025,7 @@ const DEFAULT_CUSTOMER_CONFIRMATION_HTML = `<!DOCTYPE html>
         <tr>
           <td style="padding:36px 24px 26px; border-bottom:1px solid rgba(212,175,55,0.15); text-align:center; background:#000000;">
             <img src="{{logo_url}}" alt="{{business_name}}" width="120" height="120" style="display:block; margin:0 auto; border:0;" />
-            <p style="margin:14px 0 0; color:#d4af37; font-size:10px; letter-spacing:0.22em; text-transform:uppercase; font-weight:600;">{{business_name}}</p>
+            <p style="margin:14px 0 0; color:#d4af37; font-size:10px; letter-spacing:0.22em; text-transform:uppercase; font-weight:600;">Precious Metal Traders</p>
             <h1 style="margin:14px 0 0; color:#ffffff; font-family:Georgia, serif; font-size:26px; line-height:1.2;">Thank you, {{first_name}}.</h1>
             <p style="margin:10px 0 0; color:#cfcfcf; font-size:14px;">Your valuation request is safely with us.</p>
           </td>
