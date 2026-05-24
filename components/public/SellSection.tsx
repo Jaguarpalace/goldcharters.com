@@ -28,7 +28,11 @@ export function SellSection({
   const ctaHref = asH1 ? '#valuation-form' : section.cta_href;
 
   return (
-    <section className="relative border-b border-gold-metallic/15 py-6 lg:py-10">
+    <section
+      className={`relative border-b border-gold-metallic/15 ${
+        asH1 ? 'pt-2 pb-6 lg:py-10' : 'py-6 lg:py-10'
+      }`}
+    >
       <div className="gc-container">
         <div className={`grid grid-cols-1 items-center gap-6 md:grid-cols-2 md:gap-10 lg:gap-14 ${flip ? 'md:[&>*:first-child]:order-2' : ''}`}>
           <div>
