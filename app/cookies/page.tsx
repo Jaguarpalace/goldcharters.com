@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { getSiteSettings } from '@/lib/queries/homepage';
 import { LegalPageLayout } from '@/components/public/LegalPageLayout';
+import { CookiePreferencesButton } from '@/components/public/CookiePreferencesButton';
 
 export const revalidate = 86400;
 
@@ -67,35 +68,16 @@ export default async function CookiesPage() {
         cookies are set.
       </p>
 
-      <h2>3. Specific Cookies &amp; Technologies</h2>
-      <p>The principal technologies in use on this Site are:</p>
-      <ul>
-        <li>
-          <strong>Supabase Auth session cookie</strong> (strictly necessary) — stores the
-          authenticated admin session for our private staff dashboard. Set only when an
-          administrator signs in.
-        </li>
-        <li>
-          <strong>gc-cart-v1</strong> (functional, localStorage) — used by the shopping basket to
-          remember items added by visitors. Set only when the shop is in use.
-        </li>
-        <li>
-          <strong>Next.js framework cookies</strong> (strictly necessary) — used by our hosting
-          framework to deliver the Site reliably and route requests correctly.
-        </li>
-      </ul>
+      <h2>3. Controlling Cookies</h2>
       <p>
-        We do not currently set Google Analytics, Facebook Pixel, advertising or remarketing
-        cookies. We will update this Policy if any third-party measurement or advertising
-        technologies are added.
+        Use the button below to review or change your cookie choices on this site at any time. You
+        can also control cookies more broadly through your browser settings — most browsers allow
+        you to view, delete and block cookies, including blocking cookies from particular sites.
       </p>
-
-      <h2>4. Controlling Cookies</h2>
       <p>
-        You can control and manage cookies in your browser settings. Most browsers allow you to
-        view, delete and block cookies, including blocking cookies from particular sites. Detailed
-        guidance for each major browser is available at:
+        <CookiePreferencesButton />
       </p>
+      <p>Detailed guidance for each major browser is available at:</p>
       <ul>
         <li>
           <a
@@ -140,14 +122,14 @@ export default async function CookiesPage() {
         basket persistence.
       </p>
 
-      <h2>5. Do-Not-Track Signals</h2>
+      <h2>4. Do-Not-Track Signals</h2>
       <p>
         We respect Do-Not-Track ("DNT") browser signals where it is technically practicable to do
         so. Because our default position is not to set non-essential cookies without consent, the
         practical effect of a DNT signal aligns with our standard processing.
       </p>
 
-      <h2>6. International Visitors</h2>
+      <h2>5. International Visitors</h2>
       <p>
         Some of our service providers operate from outside the United Kingdom. Cookies and similar
         identifiers set by those providers may transfer technical data outside the United Kingdom.
@@ -155,13 +137,13 @@ export default async function CookiesPage() {
         <a href="/privacy">Privacy Policy</a>.
       </p>
 
-      <h2>7. Children</h2>
+      <h2>6. Children</h2>
       <p>
         Our Site is intended for adults. We do not knowingly direct cookies or similar tracking
         technologies at children under the age of eighteen.
       </p>
 
-      <h2>8. Changes To This Policy</h2>
+      <h2>7. Changes To This Policy</h2>
       <p>
         We may update this Policy from time to time to reflect changes in technology, regulation
         or our use of cookies. The "Last updated" date at the top of this page indicates when the
@@ -169,7 +151,7 @@ export default async function CookiesPage() {
         consent if required by law.
       </p>
 
-      <h2>9. Contact</h2>
+      <h2>8. Contact</h2>
       <p>
         Questions about this Policy or our use of cookies should be sent to{' '}
         <a href={`mailto:${email}`}>{email}</a>.

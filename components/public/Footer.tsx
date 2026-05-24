@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import type { SiteSettings } from '@/types/database';
 import { Logo } from './Logo';
 import { BUY_ENABLED } from '@/lib/features';
+import { openConsentSettings } from '@/lib/consent/consent';
 
 const SELL_LINKS = [
   { label: 'Sell Gold', href: '/sell-gold' },
@@ -115,6 +116,15 @@ export function Footer({ settings }: { settings: SiteSettings }) {
                     </Link>
                   </li>
                 ))}
+                <li>
+                  <button
+                    type="button"
+                    onClick={openConsentSettings}
+                    className="text-warmgrey transition hover:text-gold-bright"
+                  >
+                    Cookie Preferences
+                  </button>
+                </li>
               </ul>
             </FooterCol>
           </div>

@@ -5,6 +5,7 @@ import { getSiteSettings } from '@/lib/queries/homepage';
 import { Header } from '@/components/public/Header';
 import { Footer } from '@/components/public/Footer';
 import { LiveGoldTicker } from '@/components/public/LiveGoldTicker';
+import { CookieConsent } from '@/components/public/CookieConsent';
 import { JsonLd } from '@/lib/seo/JsonLd';
 import {
   localBusinessSchema,
@@ -138,6 +139,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <Header settings={settings} liveTicker={<LiveGoldTicker />} />
         <main className="min-h-screen gc-bg-noise">{children}</main>
         <Footer settings={settings} />
+        <CookieConsent />
       </body>
     </html>
   );
