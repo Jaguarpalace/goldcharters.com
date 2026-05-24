@@ -2,61 +2,18 @@
 
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import { buildWhatsappUrl } from '@/lib/whatsapp';
 
 /**
- * Floating click-to-chat WhatsApp pill, pinned to the bottom-left of every
- * public page (the cookie banner lives bottom-right, so they don't collide).
- *
- * Builds a wa.me deep link from `site_settings.whatsapp`, with a pre-filled
- * first message that's context-aware to the page the visitor is on — so a
- * customer on /sell-watches starts a chat with "I'd like a valuation for a
- * watch" already typed, rather than a cold blank box.
+ * Floating click-to-chat WhatsApp pill, pinned to the bottom-left on
+ * tablet+ screens. On mobile we surface WhatsApp as a compact icon inside
+ * the header instead — see Header.tsx — so the pill is hidden there.
  *
  * Hidden when:
- *   - We're inside the admin (same exclusion as the public Footer)
- *   - site_settings.whatsapp is empty (so the brand can switch it off
- *     from /admin/settings without touching code)
+ *   - We're inside the admin
+ *   - site_settings.whatsapp is empty
+ *   - The viewport is under md breakpoint (mobile uses the header icon)
  */
-
-type MessageRule = { match: (pathname: string) => boolean; message: string };
-
-const MESSAGE_RULES: MessageRule[] = [
-  {
-    match: (p) => p.startsWith('/sell-watches'),
-    message: "Hi Charters Gold, I'd like a valuation for a watch.",
-  },
-  {
-    match: (p) => p.startsWith('/sell-handbags'),
-    message: "Hi Charters Gold, I'd like a valuation for a designer handbag.",
-  },
-  {
-    match: (p) => p.startsWith('/sell-jewellery'),
-    message: "Hi Charters Gold, I'd like a valuation for a piece of jewellery.",
-  },
-  {
-    match: (p) => p.startsWith('/sell-gold'),
-    message: "Hi Charters Gold, I'd like a valuation for some gold.",
-  },
-  {
-    match: (p) => p.startsWith('/gold-calculator'),
-    message: "Hi Charters Gold, I have some gold I'd like valued — could you help?",
-  },
-  {
-    match: (p) => p.startsWith('/contact'),
-    message: 'Hi Charters Gold, I have a question about your service.',
-  },
-  {
-    match: (p) => p.startsWith('/blog'),
-    message: "Hi Charters Gold, I just read one of your articles and have a question.",
-  },
-];
-
-const DEFAULT_MESSAGE =
-  "Hi Charters Gold, I'd like a private valuation. Could you help?";
-
-function buildMessage(pathname: string): string {
-  return MESSAGE_RULES.find((r) => r.match(pathname))?.message ?? DEFAULT_MESSAGE;
-}
 
 export function WhatsAppButton({ whatsapp }: { whatsapp: string | null | undefined }) {
   const pathname = usePathname() ?? '/';
@@ -69,15 +26,10 @@ export function WhatsAppButton({ whatsapp }: { whatsapp: string | null | undefin
     return () => window.clearTimeout(t);
   }, []);
 
-  if (!whatsapp) return null;
   if (pathname.startsWith('/admin')) return null;
 
-  // WhatsApp wa.me URLs require the number as digits only (no +, no spaces).
-  const phone = whatsapp.replace(/\D+/g, '');
-  if (!phone) return null;
-
-  const message = buildMessage(pathname);
-  const href = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+  const href = buildWhatsappUrl(whatsapp, pathname);
+  if (!href) return null;
 
   return (
     <a
@@ -87,10 +39,10 @@ export function WhatsAppButton({ whatsapp }: { whatsapp: string | null | undefin
       aria-label="Chat on WhatsApp"
       title="Chat on WhatsApp"
       className={
-        'group fixed bottom-4 left-4 z-50 inline-flex items-center gap-2.5 rounded-full ' +
-        'border border-gold-metallic/40 bg-ink-950/85 px-3 py-2 shadow-[0_12px_32px_-8px_rgba(212,175,55,0.45)] backdrop-blur ' +
+        'group fixed bottom-5 left-5 z-50 hidden items-center gap-2.5 rounded-full ' +
+        'border border-gold-metallic/40 bg-ink-950/85 px-4 py-2.5 shadow-[0_12px_32px_-8px_rgba(212,175,55,0.45)] backdrop-blur ' +
         'transition-all duration-300 hover:border-gold-metallic hover:bg-ink-900 hover:shadow-[0_16px_40px_-8px_rgba(212,175,55,0.65)] ' +
-        'sm:bottom-5 sm:left-5 sm:px-4 sm:py-2.5 ' +
+        'md:inline-flex ' +
         (mounted ? 'translate-y-0 opacity-100' : 'translate-y-3 opacity-0')
       }
       style={{ transitionProperty: 'opacity, transform, box-shadow, background-color, border-color' }}
