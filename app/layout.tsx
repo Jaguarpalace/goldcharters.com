@@ -6,6 +6,7 @@ import { Header } from '@/components/public/Header';
 import { Footer } from '@/components/public/Footer';
 import { LiveGoldTicker } from '@/components/public/LiveGoldTicker';
 import { CookieConsent } from '@/components/public/CookieConsent';
+import { WhatsAppButton } from '@/components/public/WhatsAppButton';
 import { JsonLd } from '@/lib/seo/JsonLd';
 import {
   localBusinessSchema,
@@ -139,6 +140,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <Header settings={settings} liveTicker={<LiveGoldTicker />} />
         <main className="min-h-screen gc-bg-noise">{children}</main>
         <Footer settings={settings} />
+        <WhatsAppButton whatsapp={settings.whatsapp} />
         <CookieConsent />
       </body>
     </html>
