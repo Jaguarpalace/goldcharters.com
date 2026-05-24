@@ -8,6 +8,7 @@ import { Logo } from './Logo';
 import { BasketIndicator } from '@/components/shop/BasketIndicator';
 import { BUY_ENABLED } from '@/lib/features';
 import { GetValuationLink } from './GetValuationLink';
+import { LOCATIONS } from '@/lib/content/locations';
 
 const SELL_LINKS = [
   { label: 'Sell Gold', href: '/sell-gold' },
@@ -29,6 +30,12 @@ const INFO_LINKS = [
   { label: 'Contact', href: '/contact' },
 ];
 
+/** Derived once at module level so we don't rebuild this array on every render. */
+const LOCATION_LINKS: { label: string; href: string }[] = [
+  ...LOCATIONS.map((l) => ({ label: l.name, href: `/locations/${l.slug}` })),
+  { label: 'View all areas →', href: '/locations' },
+];
+
 export function Header({ settings }: { settings: SiteSettings }) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -48,6 +55,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
         <nav aria-label="Primary" className="hidden items-center gap-6 lg:flex">
           <NavGroup label="What We Buy" links={SELL_LINKS} />
           {BUY_ENABLED && <NavGroup label="Shop" links={BUY_LINKS} />}
+          <NavGroup label="Areas" links={LOCATION_LINKS} />
           {INFO_LINKS.map((l) => (
             <Link
               key={l.href}
@@ -131,6 +139,11 @@ export function Header({ settings }: { settings: SiteSettings }) {
             {BUY_ENABLED && (
               <MobileSection label="Shop" links={BUY_LINKS} onClick={() => setMobileOpen(false)} />
             )}
+            <MobileSection
+              label="Areas We Cover"
+              links={LOCATION_LINKS}
+              onClick={() => setMobileOpen(false)}
+            />
             <MobileSection label="More" links={INFO_LINKS} onClick={() => setMobileOpen(false)} />
 
             <div className="mt-2 grid grid-cols-2 gap-2">

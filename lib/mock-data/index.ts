@@ -486,6 +486,15 @@ export function mockFaqs(): Faq[] {
       visible: true,
     },
     {
+      id: 'faq-areas',
+      category: 'selling_gold',
+      question: 'What areas do you cover?',
+      answer:
+        'We are based in Egham, Surrey, and serve clients across London, Surrey, Berkshire and the Thames Valley — including Windsor, Ascot, Heathrow, Reading, Twickenham, Richmond and Staines. You can visit our office by appointment, we can arrange a private home visit for pieces of significant value, or we accept insured postal valuations from anywhere in the UK. See our Areas We Cover page for region-specific guides.',
+      display_order: 10,
+      visible: true,
+    },
+    {
       id: 'faq-10',
       category: 'selling_jewellery',
       question: 'Am I under pressure to sell?',
