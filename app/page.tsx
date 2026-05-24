@@ -35,9 +35,12 @@ export default async function HomePage() {
   ]);
 
   // When buy is disabled, only show services on the sell pathway.
-  const services = BUY_ENABLED
+  // Also hide the Gold Calculator service tile — it's now promoted to a
+  // dedicated header CTA so listing it again here would be redundant.
+  const services = (BUY_ENABLED
     ? allServices
-    : allServices.filter((s) => s.pathway !== 'buy');
+    : allServices.filter((s) => s.pathway !== 'buy')
+  ).filter((s) => s.slug !== 'gold-calculator' && s.cta_href !== '/gold-calculator');
 
   return (
     <>

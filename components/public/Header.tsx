@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState, type ReactNode } from 'react';
+import { useState } from 'react';
 import type { SiteSettings } from '@/types/database';
 import { Logo } from './Logo';
 import { BasketIndicator } from '@/components/shop/BasketIndicator';
@@ -29,14 +29,7 @@ const INFO_LINKS = [
   { label: 'Contact', href: '/contact' },
 ];
 
-export function Header({
-  settings,
-  liveTicker,
-}: {
-  settings: SiteSettings;
-  /** Server-rendered live gold price node injected by the root layout. */
-  liveTicker?: ReactNode;
-}) {
+export function Header({ settings }: { settings: SiteSettings }) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -66,20 +59,40 @@ export function Header({
           ))}
         </nav>
 
-        {/* Right cluster: live ticker · phone · CTA · basket · mobile menu */}
+        {/* Right cluster: phone · calculator · valuation CTA · basket · mobile menu */}
         <div className="flex items-center gap-3 lg:gap-4">
-          {/* Live ticker + phone — compact, tablet+ only */}
-          <div className="hidden flex-col items-end gap-0.5 text-right text-[11px] uppercase tracking-luxe md:flex">
-            {liveTicker}
-            <a
-              href={`tel:${phoneDigits}`}
-              className="font-medium text-gold-tint hover:text-gold-bright"
-            >
-              {settings.phone}
-            </a>
-          </div>
+          {/* Phone — compact, tablet+ only. Live ticker removed from the
+              public header; live spot data still drives the calculator and
+              lives in the admin price-dashboard. */}
+          <a
+            href={`tel:${phoneDigits}`}
+            className="hidden whitespace-nowrap text-[12px] font-medium uppercase tracking-luxe text-gold-tint hover:text-gold-bright md:inline"
+          >
+            {settings.phone}
+          </a>
 
           {BUY_ENABLED && <BasketIndicator />}
+
+          {/* Calculator — secondary CTA. Compact pill so the primary
+              "Get a Valuation" gradient still leads the eye. */}
+          <Link
+            href="/gold-calculator"
+            className="hidden items-center gap-1.5 whitespace-nowrap rounded-full border border-gold-metallic/40 px-4 py-2 text-[12px] font-semibold uppercase tracking-luxe text-gold-tint transition hover:border-gold-metallic hover:bg-ink-900/70 hover:text-gold-bright sm:inline-flex"
+          >
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              aria-hidden
+            >
+              <rect x="4" y="3" width="16" height="18" rx="2" />
+              <path d="M7 7h10M7 11h2M11 11h2M15 11h2M7 15h2M11 15h2M15 15h2M7 19h2M11 19h2M15 19h2" />
+            </svg>
+            Calculator
+          </Link>
 
           <GetValuationLink className="gc-btn-primary hidden whitespace-nowrap sm:inline-flex">
             Get a Valuation
@@ -104,13 +117,13 @@ export function Header({
       {mobileOpen && (
         <div className="lg:hidden border-t border-gold-metallic/15 bg-ink-950">
           <nav className="gc-container flex flex-col gap-2 py-4">
-            {/* Live ticker + phone shown at the top of the drawer on mobile */}
-            <div className="flex items-center justify-between rounded-xl border border-gold-metallic/15 bg-ink-900/60 px-4 py-2.5 text-[11px] uppercase tracking-luxe">
-              <span className="text-gold-tint">{liveTicker}</span>
-              <a href={`tel:${phoneDigits}`} className="font-medium text-gold-tint">
-                {settings.phone}
-              </a>
-            </div>
+            {/* Phone strip at the top of the drawer */}
+            <a
+              href={`tel:${phoneDigits}`}
+              className="flex items-center justify-center rounded-xl border border-gold-metallic/15 bg-ink-900/60 px-4 py-2.5 text-[11px] font-medium uppercase tracking-luxe text-gold-tint"
+            >
+              {settings.phone}
+            </a>
 
             <MobileSection label="What We Buy" links={SELL_LINKS} onClick={() => setMobileOpen(false)} />
             {BUY_ENABLED && (
@@ -118,12 +131,21 @@ export function Header({
             )}
             <MobileSection label="More" links={INFO_LINKS} onClick={() => setMobileOpen(false)} />
 
-            <GetValuationLink
-              className="gc-btn-primary mt-2 w-full"
-              onNavigate={() => setMobileOpen(false)}
-            >
-              Get a Valuation
-            </GetValuationLink>
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              <Link
+                href="/gold-calculator"
+                onClick={() => setMobileOpen(false)}
+                className="inline-flex items-center justify-center gap-1.5 rounded-full border border-gold-metallic/50 px-4 py-2.5 text-[12px] font-semibold uppercase tracking-luxe text-gold-tint hover:border-gold-metallic hover:text-gold-bright"
+              >
+                Calculator
+              </Link>
+              <GetValuationLink
+                className="gc-btn-primary w-full"
+                onNavigate={() => setMobileOpen(false)}
+              >
+                Get a Valuation
+              </GetValuationLink>
+            </div>
           </nav>
         </div>
       )}

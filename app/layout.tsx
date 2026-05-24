@@ -4,7 +4,6 @@ import './globals.css';
 import { getSiteSettings } from '@/lib/queries/homepage';
 import { Header } from '@/components/public/Header';
 import { Footer } from '@/components/public/Footer';
-import { LiveGoldTicker } from '@/components/public/LiveGoldTicker';
 import { CookieConsent } from '@/components/public/CookieConsent';
 import { WhatsAppButton } from '@/components/public/WhatsAppButton';
 import { JsonLd } from '@/lib/seo/JsonLd';
@@ -133,11 +132,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             localBusinessSchema(settings),
           ]}
         />
-        {/* Trust bar removed — its content (live ticker, phone) is now inline
-            inside the Header, in the same row as the logo. LiveGoldTicker is
-            an async server component, passed in as a prop so the client-side
-            Header can render it without itself becoming async. */}
-        <Header settings={settings} liveTicker={<LiveGoldTicker />} />
+        {/* Live gold ticker removed from the public header — keeps the
+            chrome calmer and stops shoppers reading numbers when we'd
+            rather they request a private valuation. Live spot data still
+            powers the calculator and lives in /admin/price-dashboard. */}
+        <Header settings={settings} />
         <main className="min-h-screen gc-bg-noise">{children}</main>
         <Footer settings={settings} />
         <WhatsAppButton whatsapp={settings.whatsapp} />
