@@ -28,9 +28,9 @@ export async function sendNewRequestNotification(
     console.info('[email:new-request] skipped — RESEND_API_KEY not set');
     return { ok: false, skipped: true };
   }
-  const recipients = getAdminRecipients();
+  const recipients = await getAdminRecipients();
   if (recipients.length === 0) {
-    console.warn('[email:new-request] skipped — ADMIN_NOTIFICATION_EMAIL empty');
+    console.warn('[email:new-request] skipped — no notification recipients configured');
     return { ok: false, skipped: true };
   }
 

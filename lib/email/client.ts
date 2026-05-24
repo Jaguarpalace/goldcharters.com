@@ -1,5 +1,6 @@
 import 'server-only';
 import { Resend } from 'resend';
+import { getEnabledRecipientEmails } from '@/lib/queries/notificationRecipients';
 
 /**
  * SERVER-ONLY Resend client. Lazy-initialised so a missing API key in dev
@@ -20,13 +21,29 @@ export function isEmailConfigured(): boolean {
   return Boolean(process.env.RESEND_API_KEY);
 }
 
-/** Parse the comma-separated env var into an array of recipients. */
-export function getAdminRecipients(): string[] {
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/**
+ * Resolve who receives transactional admin alerts (new valuation requests,
+ * etc.). Reads the admin-editable notification_recipients table first; only
+ * falls back to the ADMIN_NOTIFICATION_EMAIL env var when the table is empty
+ * or unavailable, so existing deployments keep working until the admin
+ * populates the table from /admin/notifications.
+ */
+export async function getAdminRecipients(): Promise<string[]> {
+  try {
+    const fromDb = await getEnabledRecipientEmails();
+    const valid = fromDb.filter((e) => EMAIL_RE.test(e));
+    if (valid.length > 0) return valid;
+  } catch (err) {
+    console.warn('[email:recipients] DB read failed, falling back to env', err);
+  }
+
   const raw = process.env.ADMIN_NOTIFICATION_EMAIL ?? '';
   return raw
     .split(',')
     .map((email) => email.trim())
-    .filter((email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
+    .filter((email) => EMAIL_RE.test(email));
 }
 
 /** The "From" address used on all outbound emails. Must be a verified domain in Resend. */

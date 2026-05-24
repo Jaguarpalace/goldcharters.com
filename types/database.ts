@@ -362,6 +362,16 @@ export type AdminProfile = {
   created_at: string;
 };
 
+export type NotificationRecipient = {
+  id: string;
+  email: string;
+  label: string | null;
+  enabled: boolean;
+  display_order: number;
+  created_at: string;
+  updated_at: string;
+};
+
 export type UploadedImage = {
   id: string;
   image_url: string;
