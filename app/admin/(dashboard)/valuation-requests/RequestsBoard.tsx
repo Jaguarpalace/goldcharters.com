@@ -309,42 +309,76 @@ export function RequestsBoard({ initialRequests }: { initialRequests: Row[] }) {
           No requests match this search. Try different keywords or clear the status filter.
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-gold-metallic/15">
-          <table className="w-full min-w-[640px] text-sm">
-            <thead className="bg-ink-900/80 text-[10px] uppercase tracking-luxe text-warmgrey">
-              <tr>
-                <th scope="col" className="w-10 px-3 py-2 text-left">
-                  <input
-                    type="checkbox"
-                    checked={allVisibleSelected}
-                    onChange={toggleSelectAll}
-                    aria-label="Select all visible"
-                    className="h-3.5 w-3.5 accent-gold-metallic"
+        <>
+          {/* DESKTOP TABLE — full table on lg+; horizontal scroll within
+              the wrapper if a tablet is narrower than the min-width. */}
+          <div className="hidden overflow-x-auto rounded-lg border border-gold-metallic/15 lg:block">
+            <table className="w-full min-w-[640px] text-sm">
+              <thead className="bg-ink-900/80 text-[10px] uppercase tracking-luxe text-warmgrey">
+                <tr>
+                  <th scope="col" className="w-10 px-3 py-2 text-left">
+                    <input
+                      type="checkbox"
+                      checked={allVisibleSelected}
+                      onChange={toggleSelectAll}
+                      aria-label="Select all visible"
+                      className="h-3.5 w-3.5 accent-gold-metallic"
+                    />
+                  </th>
+                  <th scope="col" className="px-2 py-2 text-left">Submitted</th>
+                  <th scope="col" className="px-2 py-2 text-left">Customer</th>
+                  <th scope="col" className="px-2 py-2 text-left">Item</th>
+                  <th scope="col" className="px-2 py-2 text-left">Status</th>
+                  <th scope="col" className="w-8 px-2 py-2"></th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gold-metallic/10">
+                {filtered.map((r) => (
+                  <RequestRow
+                    key={r.id}
+                    request={r}
+                    selected={selected.has(r.id)}
+                    expanded={expandedId === r.id}
+                    onSelect={() => toggleSelect(r.id)}
+                    onToggleExpand={() => setExpandedId(expandedId === r.id ? null : r.id)}
+                    onPatch={(patch) => patchRow(r.id, patch)}
+                    onDelete={() => deleteSingleRequest(r.id)}
                   />
-                </th>
-                <th scope="col" className="px-2 py-2 text-left">Submitted</th>
-                <th scope="col" className="px-2 py-2 text-left">Customer</th>
-                <th scope="col" className="px-2 py-2 text-left">Item</th>
-                <th scope="col" className="px-2 py-2 text-left">Status</th>
-                <th scope="col" className="w-8 px-2 py-2"></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gold-metallic/10">
-              {filtered.map((r) => (
-                <RequestRow
-                  key={r.id}
-                  request={r}
-                  selected={selected.has(r.id)}
-                  expanded={expandedId === r.id}
-                  onSelect={() => toggleSelect(r.id)}
-                  onToggleExpand={() => setExpandedId(expandedId === r.id ? null : r.id)}
-                  onPatch={(patch) => patchRow(r.id, patch)}
-                  onDelete={() => deleteSingleRequest(r.id)}
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* MOBILE CARDS — stacked layout for phones / small tablets,
+              same data + expanded-detail behaviour as the table. */}
+          <ul className="space-y-2 lg:hidden">
+            <li className="flex items-center justify-between px-1 pb-1 text-[10px] uppercase tracking-luxe text-warmgrey">
+              <label className="inline-flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={allVisibleSelected}
+                  onChange={toggleSelectAll}
+                  aria-label="Select all visible"
+                  className="h-3.5 w-3.5 accent-gold-metallic"
                 />
-              ))}
-            </tbody>
-          </table>
-        </div>
+                <span>Select all</span>
+              </label>
+              <span>{filtered.length} shown</span>
+            </li>
+            {filtered.map((r) => (
+              <RequestCard
+                key={r.id}
+                request={r}
+                selected={selected.has(r.id)}
+                expanded={expandedId === r.id}
+                onSelect={() => toggleSelect(r.id)}
+                onToggleExpand={() => setExpandedId(expandedId === r.id ? null : r.id)}
+                onPatch={(patch) => patchRow(r.id, patch)}
+                onDelete={() => deleteSingleRequest(r.id)}
+              />
+            ))}
+          </ul>
+        </>
       )}
     </div>
   );
@@ -467,6 +501,122 @@ function RequestRow({
         </tr>
       )}
     </>
+  );
+}
+
+/* -------------------------- Mobile card --------------------------------- */
+
+/** Card-style row for mobile / tablet. Same data, same expand behaviour
+ *  as the desktop table row, just stacked vertically so the columns fit
+ *  in a narrow viewport. */
+function RequestCard({
+  request,
+  selected,
+  expanded,
+  onSelect,
+  onToggleExpand,
+  onPatch,
+  onDelete,
+}: {
+  request: Row;
+  selected: boolean;
+  expanded: boolean;
+  onSelect: () => void;
+  onToggleExpand: () => void;
+  onPatch: (patch: Partial<ValuationRequest>) => void;
+  onDelete: () => void;
+}) {
+  const badge = STATUS_BADGE[request.status] ?? 'text-warmgrey ring-warmgrey/30';
+  const summary = buildItemSummary(request);
+  const photoCount = request.valuation_request_images?.length ?? 0;
+
+  return (
+    <li
+      className={
+        'overflow-hidden rounded-lg border transition ' +
+        (expanded
+          ? 'border-gold-metallic/40 bg-ink-900/60'
+          : 'border-gold-metallic/15 bg-ink-900/40')
+      }
+    >
+      <div
+        className="flex cursor-pointer items-start gap-3 p-3"
+        onClick={onToggleExpand}
+      >
+        <input
+          type="checkbox"
+          checked={selected}
+          onChange={onSelect}
+          onClick={(e) => e.stopPropagation()}
+          aria-label={`Select ${request.first_name} ${request.last_name}`}
+          className="mt-1 h-3.5 w-3.5 flex-none accent-gold-metallic"
+        />
+        <div className="min-w-0 flex-1">
+          <div className="flex items-start justify-between gap-2">
+            <span className="min-w-0 flex-1 truncate font-medium text-white">
+              {request.first_name} {request.last_name}
+            </span>
+            <span
+              className={`flex-none rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-luxe ring-1 ${badge}`}
+            >
+              {VALUATION_STATUS_LABELS[request.status as ValuationRequestStatus] ??
+                request.status.replace(/_/g, ' ')}
+            </span>
+          </div>
+          <div className="mt-1 truncate text-[11px] text-warmgrey">
+            {summary.primary}
+            {summary.secondary && (
+              <>
+                <span className="text-warmgrey/50"> · </span>
+                <span>{summary.secondary}</span>
+              </>
+            )}
+          </div>
+          <div className="mt-1 flex items-center gap-2 text-[10px] text-warmgrey/80">
+            <span>
+              {new Date(request.created_at).toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: 'short',
+              })}{' '}
+              ·{' '}
+              {new Date(request.created_at).toLocaleTimeString('en-GB', {
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+            </span>
+            {photoCount > 0 && (
+              <span className="text-gold-tint">
+                · {photoCount} photo{photoCount === 1 ? '' : 's'}
+              </span>
+            )}
+            {request.payment_amount !== null && (
+              <span className="ml-auto text-gold-tint">
+                £{Number(request.payment_amount).toLocaleString('en-GB')}
+              </span>
+            )}
+          </div>
+        </div>
+        <svg
+          className={
+            'mt-1.5 h-4 w-4 flex-none text-warmgrey transition ' +
+            (expanded ? 'rotate-180 text-gold-tint' : '')
+          }
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          aria-hidden
+        >
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </div>
+
+      {expanded && (
+        <div className="border-t border-gold-metallic/15">
+          <RequestDetail request={request} onPatch={onPatch} onDelete={onDelete} />
+        </div>
+      )}
+    </li>
   );
 }
 

@@ -7,6 +7,7 @@ import { BUY_ENABLED } from '@/lib/features';
 import { countOutstandingRequests } from '@/lib/actions/valuationRequests';
 import { ThemeToggle, type AdminTheme } from './ThemeToggle';
 import { AdminBrand } from './AdminBrand';
+import { AdminShell } from './AdminShell';
 
 type NavItem = {
   href: string;
@@ -51,102 +52,101 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   const outstandingCount = isSupabaseConfigured() ? await countOutstandingRequests() : 0;
 
-  // Read the admin-only theme cookie so we render the correct surface
-  // from the server — no flash, no hydration mismatch. Default is dark.
   const cookieStore = cookies();
   const themeCookie = cookieStore.get('admin-theme')?.value;
   const theme: AdminTheme = themeCookie === 'light' ? 'light' : 'dark';
 
-  return (
-    <div
-      data-admin-theme={theme}
-      className="admin-shell grid min-h-screen lg:grid-cols-[260px,1fr]"
-    >
-      <aside className="border-r border-gold-metallic/15 bg-ink-900/80 p-6">
-        <div className="flex flex-col items-center text-center">
-          <AdminBrand />
-          <p className="mt-3 text-[10px] font-semibold uppercase tracking-luxe text-gold-metallic">
-            Admin Console
+  // Sidebar content is built once on the server; AdminShell uses it both
+  // for the desktop rail and the mobile drawer.
+  const sidebar = (
+    <>
+      <div className="flex flex-col items-center text-center">
+        <AdminBrand />
+        <p className="mt-3 text-[10px] font-semibold uppercase tracking-luxe text-gold-metallic">
+          Admin Console
+        </p>
+      </div>
+
+      <nav className="mt-8" aria-label="Admin navigation">
+        <ul className="space-y-1 text-sm">
+          {NAV.map((item) => {
+            const inactive = item.shopOnly && !BUY_ENABLED;
+            const showOutstandingBadge =
+              item.href === '/admin/valuation-requests' && outstandingCount > 0;
+            return (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  title={inactive ? 'Shop is disabled — click to view paused tools' : undefined}
+                  className={
+                    inactive
+                      ? 'flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-warmgrey/40 hover:bg-ink-800 hover:text-warmgrey/70'
+                      : 'flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-warmgrey hover:bg-ink-800 hover:text-gold-bright'
+                  }
+                >
+                  <span>{item.label}</span>
+                  {inactive && (
+                    <span className="rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-luxe text-amber-300">
+                      Off
+                    </span>
+                  )}
+                  {showOutstandingBadge && (
+                    <span
+                      className="inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full px-1.5 text-[10px] font-semibold text-ink-950"
+                      style={{
+                        background: 'linear-gradient(135deg, #FFD700, #B8860B)',
+                        boxShadow: '0 0 8px rgba(212,175,55,0.55)',
+                      }}
+                      title={`${outstandingCount} outstanding request${outstandingCount === 1 ? '' : 's'}`}
+                    >
+                      {outstandingCount}
+                    </span>
+                  )}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+
+      {!BUY_ENABLED && (
+        <div className="mt-6 rounded-lg border border-amber-500/30 bg-amber-500/5 p-3 text-[11px] leading-relaxed text-amber-200/90">
+          <p className="font-semibold text-amber-200">Shop disabled</p>
+          <p className="mt-1 text-amber-200/70">
+            The website does not sell items. Greyed-out tools are kept for when the shop is re-enabled.
           </p>
         </div>
+      )}
 
-        <nav className="mt-8">
-          <ul className="space-y-1 text-sm">
-            {NAV.map((item) => {
-              const inactive = item.shopOnly && !BUY_ENABLED;
-              const showOutstandingBadge =
-                item.href === '/admin/valuation-requests' && outstandingCount > 0;
-              return (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    title={inactive ? 'Shop is disabled — click to view paused tools' : undefined}
-                    className={
-                      inactive
-                        ? 'flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-warmgrey/40 hover:bg-ink-800 hover:text-warmgrey/70'
-                        : 'flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-warmgrey hover:bg-ink-800 hover:text-gold-bright'
-                    }
-                  >
-                    <span>{item.label}</span>
-                    {inactive && (
-                      <span className="rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-luxe text-amber-300">
-                        Off
-                      </span>
-                    )}
-                    {showOutstandingBadge && (
-                      <span
-                        className="inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full px-1.5 text-[10px] font-semibold text-ink-950"
-                        style={{
-                          background: 'linear-gradient(135deg, #FFD700, #B8860B)',
-                          boxShadow: '0 0 8px rgba(212,175,55,0.55)',
-                        }}
-                        title={`${outstandingCount} outstanding request${outstandingCount === 1 ? '' : 's'}`}
-                      >
-                        {outstandingCount}
-                      </span>
-                    )}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
-
-        {!BUY_ENABLED && (
-          <div className="mt-6 rounded-lg border border-amber-500/30 bg-amber-500/5 p-3 text-[11px] leading-relaxed text-amber-200/90">
-            <p className="font-semibold text-amber-200">Shop disabled</p>
-            <p className="mt-1 text-amber-200/70">
-              The website does not sell items. Greyed-out tools are kept for when the shop is re-enabled.
-            </p>
-          </div>
-        )}
-
-        {!isSupabaseConfigured() && (
-          <div className="mt-6 rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-200">
-            <strong>Preview mode.</strong> Edits won’t persist — the live database isn’t connected
-            on this environment.
-          </div>
-        )}
-
-        {userEmail && (
-          <div className="mt-6 rounded-lg border border-gold-metallic/15 bg-ink-950 p-3 text-xs text-warmgrey">
-            Signed in as <span className="text-gold-tint">{userEmail}</span>
-          </div>
-        )}
-
-        <div className="mt-6">
-          <ThemeToggle current={theme} />
+      {!isSupabaseConfigured() && (
+        <div className="mt-6 rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-200">
+          <strong>Preview mode.</strong> Edits won’t persist — the live database isn’t connected
+          on this environment.
         </div>
+      )}
 
-        <Link
-          href="/"
-          className="mt-4 block text-xs uppercase tracking-luxe text-gold-metallic hover:text-gold-bright"
-        >
-          ← Back to public site
-        </Link>
-      </aside>
+      {userEmail && (
+        <div className="mt-6 rounded-lg border border-gold-metallic/15 bg-ink-950 p-3 text-xs text-warmgrey">
+          Signed in as <span className="text-gold-tint">{userEmail}</span>
+        </div>
+      )}
 
-      <div className="p-8">{children}</div>
+      <div className="mt-6">
+        <ThemeToggle current={theme} />
+      </div>
+
+      <Link
+        href="/"
+        className="mt-4 block text-xs uppercase tracking-luxe text-gold-metallic hover:text-gold-bright"
+      >
+        ← Back to public site
+      </Link>
+    </>
+  );
+
+  return (
+    <div data-admin-theme={theme} className="admin-shell min-h-screen">
+      <AdminShell sidebar={sidebar}>{children}</AdminShell>
     </div>
   );
 }
