@@ -6,6 +6,7 @@ import type { SiteSettings } from '@/types/database';
 import { Logo } from './Logo';
 import { BUY_ENABLED } from '@/lib/features';
 import { openConsentSettings } from '@/lib/consent/consent';
+import { LOCATIONS } from '@/lib/content/locations';
 
 const SELL_LINKS = [
   { label: 'Sell Gold', href: '/sell-gold' },
@@ -18,6 +19,7 @@ const SELL_LINKS = [
 const INFO_LINKS = [
   ...(BUY_ENABLED ? [{ label: 'Shop Collection', href: '/shop' }] : []),
   { label: 'How It Works', href: '/how-it-works' },
+  { label: 'Areas We Cover', href: '/locations' },
   { label: 'Blog', href: '/blog' },
   { label: 'FAQs', href: '/faqs' },
   { label: 'Contact', href: '/contact' },
@@ -131,6 +133,27 @@ export function Footer({ settings }: { settings: SiteSettings }) {
         </div>
 
         <div className="my-4 gc-divider lg:my-5" />
+
+        {/* Areas-we-cover sub-footer. Distributes internal PageRank to every
+            location page from every page on the site, and signals service
+            area to Google. */}
+        <div className="mb-4 lg:mb-5">
+          <p className="text-[10px] font-semibold uppercase tracking-luxe text-gold-metallic">
+            Areas We Cover
+          </p>
+          <ul className="mt-2 flex flex-wrap gap-1.5">
+            {LOCATIONS.map((l) => (
+              <li key={l.slug}>
+                <Link
+                  href={`/locations/${l.slug}`}
+                  className="inline-flex items-center rounded-full border border-gold-metallic/20 bg-ink-900/50 px-2.5 py-1 text-[11px] text-warmgrey hover:border-gold-metallic/50 hover:text-gold-bright"
+                >
+                  {l.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
 
         <div className="flex flex-col gap-1.5 text-[10px] leading-relaxed text-warmgrey/80 lg:flex-row lg:items-center lg:justify-between lg:gap-4 lg:text-[11px]">
           <p className="max-w-4xl">{settings.footer_disclaimer}</p>

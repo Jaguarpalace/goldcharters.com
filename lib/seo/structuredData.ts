@@ -177,4 +177,58 @@ export function breadcrumbSchema(items: Array<{ name: string; url: string }>) {
   };
 }
 
+/**
+ * LocalBusiness markup specialised for a per-location landing page.
+ * Same business, different `areaServed` and a unique @id so Google can
+ * understand the page as a service-area page rather than a duplicate
+ * of the head-office LocalBusiness schema.
+ */
+export function locationLocalBusinessSchema(input: {
+  settings: SiteSettings;
+  locationSlug: string;
+  locationName: string;
+  region?: string;
+  description: string;
+}) {
+  const { settings, locationSlug, locationName, region, description } = input;
+  return {
+    '@context': 'https://schema.org',
+    '@type': ['LocalBusiness', 'Store'],
+    '@id': `${SITE_URL}/locations/${locationSlug}#localbusiness`,
+    name: `${settings.business_name} — ${locationName}`,
+    description,
+    image: `${SITE_URL}/logo/charters-gold.webp`,
+    url: `${SITE_URL}/locations/${locationSlug}`,
+    telephone: settings.phone,
+    email: settings.email,
+    priceRange: '£££',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'Avalon House, Unit 7A, Egham Business Village, Crabtree Road',
+      addressLocality: 'Egham',
+      addressRegion: 'Surrey',
+      postalCode: 'TW20 8RB',
+      addressCountry: 'GB',
+    },
+    areaServed: {
+      '@type': 'Place',
+      name: locationName,
+      ...(region ? { containedInPlace: { '@type': 'AdministrativeArea', name: region } } : {}),
+    },
+  };
+}
+
+/** FAQPage schema built from a location page's bespoke FAQ block. */
+export function locationFaqSchema(faqs: Array<{ question: string; answer: string }>) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({
+      '@type': 'Question',
+      name: f.question,
+      acceptedAnswer: { '@type': 'Answer', text: f.answer },
+    })),
+  };
+}
+
 export { SITE_URL };

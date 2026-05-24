@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { getServerSupabase } from '@/lib/supabase/server';
 import { BUY_ENABLED } from '@/lib/features';
+import { LOCATIONS } from '@/lib/content/locations';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://chartersgold.co.uk';
 
@@ -22,6 +23,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/faqs`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
     { url: `${SITE_URL}/how-it-works`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${SITE_URL}/contact`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
+    // Locations index + every bespoke area-served page.
+    { url: `${SITE_URL}/locations`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
+    ...LOCATIONS.map((l) => ({
+      url: `${SITE_URL}/locations/${l.slug}`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.8,
+    })),
     // Legal pages — low priority but visible to crawlers so Google knows they exist
     { url: `${SITE_URL}/privacy`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
     { url: `${SITE_URL}/terms`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
