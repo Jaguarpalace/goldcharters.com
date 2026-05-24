@@ -102,7 +102,7 @@ function HeroBackdrop() {
  */
 function HeroImage({ url, alt }: { url: string; alt: string }) {
   return (
-    <div className="relative mx-auto w-full max-w-[320px] sm:max-w-md">
+    <div className="relative mx-auto w-full max-w-[280px] sm:max-w-md">
       <div
         className="relative aspect-square overflow-hidden rounded-3xl"
         style={{
@@ -128,7 +128,7 @@ function HeroImage({ url, alt }: { url: string; alt: string }) {
  */
 function HeroVisual() {
   return (
-    <div className="relative mx-auto w-full max-w-[320px] sm:max-w-md">
+    <div className="relative mx-auto w-full max-w-[280px] sm:max-w-md">
       <div
         className="relative aspect-square overflow-hidden rounded-3xl"
         style={{

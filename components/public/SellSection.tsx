@@ -91,7 +91,7 @@ function Bullet() {
  *  so every section across the site uses the same card proportions. */
 function SellImage({ url, alt }: { url: string; alt: string }) {
   return (
-    <div className="relative mx-auto w-full max-w-[320px] sm:max-w-md">
+    <div className="relative mx-auto w-full max-w-[280px] sm:max-w-md">
       <div
         className="relative aspect-square overflow-hidden rounded-3xl"
         style={{
@@ -112,7 +112,7 @@ function SellImage({ url, alt }: { url: string; alt: string }) {
 
 function DecorativePanel({ variant }: { variant: 'gold' | 'jewellery' }) {
   return (
-    <div className="relative mx-auto w-full max-w-[320px] sm:max-w-md">
+    <div className="relative mx-auto w-full max-w-[280px] sm:max-w-md">
     <div
       className="relative aspect-square overflow-hidden rounded-3xl"
       style={{
