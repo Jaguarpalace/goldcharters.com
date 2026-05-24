@@ -4,9 +4,9 @@ import { redirect } from 'next/navigation';
 import { getServerSupabase } from '@/lib/supabase/server';
 import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { BUY_ENABLED } from '@/lib/features';
-import { Logo } from '@/components/public/Logo';
 import { countOutstandingRequests } from '@/lib/actions/valuationRequests';
 import { ThemeToggle, type AdminTheme } from './ThemeToggle';
+import { AdminBrand } from './AdminBrand';
 
 type NavItem = {
   href: string;
@@ -62,8 +62,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
       className="admin-shell grid min-h-screen lg:grid-cols-[260px,1fr]"
     >
       <aside className="border-r border-gold-metallic/15 bg-ink-900/80 p-6">
-        <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
-          <Logo businessName="Charters Gold" size="default" href="/admin" />
+        <div className="flex flex-col items-center text-center">
+          <AdminBrand />
           <p className="mt-3 text-[10px] font-semibold uppercase tracking-luxe text-gold-metallic">
             Admin Console
           </p>
