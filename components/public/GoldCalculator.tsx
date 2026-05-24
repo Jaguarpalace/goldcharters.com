@@ -81,14 +81,51 @@ export function GoldCalculator({
           </div>
         </div>
 
-        {/* Calculator — 2 columns of rows side-by-side on tablet+ */}
+        {/*
+          Calculator — single column on mobile, two columns on desktop.
+
+          Layout note: the previous version rendered two side-by-side
+          sub-columns, each with its own header. On mobile they stacked,
+          which meant the header text "Type & Carat / Weight / Item Price"
+          appeared twice — once at the top of each stacked column. Here we
+          render the header exactly once on mobile and once per column on
+          desktop, by toggling visibility with Tailwind responsive classes.
+
+          Row counts are balanced to within 1 (7 vs 6 for 13 rates) so the
+          two desktop columns end at roughly the same vertical line.
+        */}
         <div className="mt-6 gc-card gc-card-gold-edge overflow-hidden">
-          <div className="grid lg:grid-cols-2 lg:divide-x lg:divide-gold-metallic/15">
-            <RateColumn rows={leftRows} onChangeWeight={onChangeWeight} />
-            <RateColumn rows={rightRows} onChangeWeight={onChangeWeight} />
+          {/* MOBILE: single column with one header */}
+          <div className="lg:hidden">
+            <RateHeader />
+            <div className="divide-y divide-gold-metallic/10">
+              {rows.map((row) => (
+                <RateRow key={row.rate.id} row={row} onChangeWeight={onChangeWeight} />
+              ))}
+            </div>
           </div>
 
-          {/* Grand total bar spanning both columns */}
+          {/* DESKTOP: two balanced columns, each with its own header */}
+          <div className="hidden lg:grid lg:grid-cols-2 lg:divide-x lg:divide-gold-metallic/15">
+            <div>
+              <RateHeader />
+              <div className="divide-y divide-gold-metallic/10">
+                {leftRows.map((row) => (
+                  <RateRow key={`l-${row.rate.id}`} row={row} onChangeWeight={onChangeWeight} />
+                ))}
+              </div>
+            </div>
+            <div>
+              <RateHeader />
+              <div className="divide-y divide-gold-metallic/10">
+                {rightRows.map((row) => (
+                  <RateRow key={`r-${row.rate.id}`} row={row} onChangeWeight={onChangeWeight} />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Grand total bar spanning the whole calculator */}
           <div className="flex items-center justify-between gap-4 border-t border-gold-metallic/20 bg-ink-900/80 px-4 py-3">
             <span className="text-[11px] font-semibold uppercase tracking-luxe text-gold-tint">
               Estimated Grand Total
@@ -108,55 +145,48 @@ export function GoldCalculator({
   );
 }
 
-/**
- * One sub-column of the calculator. Renders a header row, then one row
- * per rate with metal/carat, weight input and computed price.
- */
-function RateColumn({
-  rows,
+function RateHeader() {
+  return (
+    <div className="grid grid-cols-[1.4fr,1fr,1fr] gap-3 bg-ink-900/80 px-4 py-2 text-[10px] uppercase tracking-luxe text-gold-tint">
+      <div>Type &amp; Carat</div>
+      <div>Weight (g)</div>
+      <div className="text-right">Item Price</div>
+    </div>
+  );
+}
+
+function RateRow({
+  row,
   onChangeWeight,
 }: {
-  rows: CalculatedRow[];
+  row: CalculatedRow;
   onChangeWeight: (id: string, value: string) => void;
 }) {
+  const { rate, raw, itemPrice } = row;
   return (
-    <div className="divide-y divide-gold-metallic/10">
-      {/* Header */}
-      <div className="grid grid-cols-[1.4fr,1fr,1fr] gap-3 bg-ink-900/80 px-4 py-2 text-[10px] uppercase tracking-luxe text-gold-tint">
-        <div>Type &amp; Carat</div>
-        <div>Weight (g)</div>
-        <div className="text-right">Item Price</div>
-      </div>
-
-      {rows.map(({ rate, raw, itemPrice }) => (
-        <div
-          key={rate.id}
-          className="grid grid-cols-[1.4fr,1fr,1fr] items-center gap-3 px-4 py-2.5 hover:bg-ink-900/40"
-        >
-          <div className="min-w-0">
-            <div className="truncate text-sm font-medium text-white">
-              {rate.metal_type} {rate.carat_label}
-            </div>
-            <div className="text-[10px] text-warmgrey">
-              {rate.purity_percentage}% · {formatGBP(rate.price_per_gram)}/g
-            </div>
-          </div>
-          <input
-            type="number"
-            inputMode="decimal"
-            step="0.01"
-            min="0"
-            placeholder="0.00"
-            value={raw}
-            onChange={(e) => onChangeWeight(rate.id, e.target.value)}
-            className="w-full rounded-md border border-gold-metallic/25 bg-ink-950/80 px-2.5 py-1.5 text-sm text-white placeholder:text-warmgrey/50 focus:border-gold-metallic focus:outline-none focus:ring-2 focus:ring-gold-metallic/30"
-            aria-label={`Weight in grams for ${rate.metal_type} ${rate.carat_label}`}
-          />
-          <div className="text-right text-sm font-medium text-gold-tint">
-            {itemPrice > 0 ? formatGBP(itemPrice) : '£0.00'}
-          </div>
+    <div className="grid grid-cols-[1.4fr,1fr,1fr] items-center gap-3 px-4 py-2.5 hover:bg-ink-900/40">
+      <div className="min-w-0">
+        <div className="truncate text-sm font-medium text-white">
+          {rate.metal_type} {rate.carat_label}
         </div>
-      ))}
+        <div className="text-[10px] text-warmgrey">
+          {rate.purity_percentage}% · {formatGBP(rate.price_per_gram)}/g
+        </div>
+      </div>
+      <input
+        type="number"
+        inputMode="decimal"
+        step="0.01"
+        min="0"
+        placeholder="0.00"
+        value={raw}
+        onChange={(e) => onChangeWeight(rate.id, e.target.value)}
+        className="w-full rounded-md border border-gold-metallic/25 bg-ink-950/80 px-2.5 py-1.5 text-sm text-white placeholder:text-warmgrey/50 focus:border-gold-metallic focus:outline-none focus:ring-2 focus:ring-gold-metallic/30"
+        aria-label={`Weight in grams for ${rate.metal_type} ${rate.carat_label}`}
+      />
+      <div className="text-right text-sm font-medium text-gold-tint">
+        {itemPrice > 0 ? formatGBP(itemPrice) : '£0.00'}
+      </div>
     </div>
   );
 }

@@ -56,45 +56,63 @@ export function ServiceCards({ services }: { services: Service[] }) {
   return (
     <section className="relative py-6 lg:py-10">
       <div className="gc-container">
-        <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
-          <div className="max-w-xl">
-            <span className="gc-eyebrow">Our Services</span>
-            <h2 className="gc-heading mt-3">A Discreet, Professional Service</h2>
-          </div>
-          <p className="max-w-sm text-sm text-warmgrey">
-            Every enquiry is handled by an experienced specialist. We provide transparent valuations and
-            considered guidance — never pressure.
+        <div className="mx-auto max-w-3xl text-center">
+          <span className="gc-eyebrow">Our Services</span>
+          <h2 className="gc-heading mt-3">A Discreet, Professional Service</h2>
+          <p className="gc-subhead mt-3">
+            Every enquiry is handled by an experienced specialist. We provide transparent valuations
+            and considered guidance — never pressure.
           </p>
         </div>
 
-        <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {/* Compact horizontal cards in a 2-column grid. Cards are ~1/3 the
+            height of the old vertical hero cards, so even an odd number of
+            services (e.g. 7) splits 4|3 across the columns and stays visually
+            balanced rather than leaving a glaring orphan row. */}
+        <ul className="mx-auto mt-8 grid max-w-5xl gap-3 sm:grid-cols-2">
           {services.map((service) => (
-            <Link
-              key={service.id}
-              href={service.cta_href ?? '#'}
-              className="gc-card gc-card-gold-edge group block overflow-hidden p-5 transition-transform duration-300 hover:-translate-y-1"
-            >
-              <div
-                className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg text-gold-metallic group-hover:text-gold-bright"
-                style={{ boxShadow: 'inset 0 0 0 1px rgba(212,175,55,0.3)' }}
+            <li key={service.id}>
+              <Link
+                href={service.cta_href ?? '#'}
+                className="group flex h-full items-center gap-4 rounded-xl border border-gold-metallic/20 bg-ink-900/60 p-4 transition hover:border-gold-metallic hover:bg-ink-800/40"
               >
-                <span className="h-5 w-5">
-                  {(service.icon_key && ICONS[service.icon_key]) ?? ICONS.diamond}
+                <span
+                  aria-hidden
+                  className="flex h-11 w-11 flex-none items-center justify-center rounded-lg text-gold-metallic transition group-hover:text-gold-bright"
+                  style={{
+                    background:
+                      'linear-gradient(135deg, rgba(212,175,55,0.12), rgba(255,215,0,0.04))',
+                    boxShadow: 'inset 0 0 0 1px rgba(212,175,55,0.3)',
+                  }}
+                >
+                  <span className="h-5 w-5">
+                    {(service.icon_key && ICONS[service.icon_key]) ?? ICONS.diamond}
+                  </span>
                 </span>
-              </div>
-              <h3 className="font-display text-lg font-semibold text-white">{service.title}</h3>
-              <p className="mt-2 text-xs leading-relaxed text-warmgrey">
-                {service.short_description}
-              </p>
-              <div className="mt-4 inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-luxe text-gold-tint group-hover:text-gold-bright">
-                {service.cta_label ?? 'Learn more'}
-                <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <span className="min-w-0 flex-1">
+                  <span className="block font-display text-[15px] font-semibold leading-tight text-white">
+                    {service.title}
+                  </span>
+                  <span className="mt-1 block truncate text-[12px] text-warmgrey">
+                    {service.short_description}
+                  </span>
+                </span>
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 14 14"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  aria-hidden
+                  className="flex-none text-gold-metallic/70 transition group-hover:translate-x-0.5 group-hover:text-gold-bright"
+                >
                   <path d="M2 7h10M8 3l4 4-4 4" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-              </div>
-            </Link>
+              </Link>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   );
