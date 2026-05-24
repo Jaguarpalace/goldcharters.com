@@ -66,8 +66,9 @@ export function Header({ settings }: { settings: SiteSettings }) {
               lives in the admin price-dashboard. */}
           <a
             href={`tel:${phoneDigits}`}
-            className="hidden whitespace-nowrap text-[12px] font-medium uppercase tracking-luxe text-gold-tint hover:text-gold-bright md:inline"
+            className="hidden items-center gap-1.5 whitespace-nowrap text-[12px] font-medium uppercase tracking-luxe text-gold-tint hover:text-gold-bright md:inline-flex"
           >
+            <PhoneIcon />
             {settings.phone}
           </a>
 
@@ -120,8 +121,9 @@ export function Header({ settings }: { settings: SiteSettings }) {
             {/* Phone strip at the top of the drawer */}
             <a
               href={`tel:${phoneDigits}`}
-              className="flex items-center justify-center rounded-xl border border-gold-metallic/15 bg-ink-900/60 px-4 py-2.5 text-[11px] font-medium uppercase tracking-luxe text-gold-tint"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-gold-metallic/15 bg-ink-900/60 px-4 py-2.5 text-[11px] font-medium uppercase tracking-luxe text-gold-tint"
             >
+              <PhoneIcon />
               {settings.phone}
             </a>
 
@@ -150,6 +152,25 @@ export function Header({ settings }: { settings: SiteSettings }) {
         </div>
       )}
     </header>
+  );
+}
+
+/** Compact phone handset glyph used next to the header phone number. */
+function PhoneIcon() {
+  return (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z" />
+    </svg>
   );
 }
 
