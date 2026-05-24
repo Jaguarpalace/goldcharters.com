@@ -117,7 +117,15 @@ type Props = {
 export function ValuationForm({ variant = 'metal', defaultItemType }: Props) {
   const [files, setFiles] = useState<SelectedFile[]>([]);
   const [serverError, setServerError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<{ id: string; persisted: boolean } | null>(null);
+  const [success, setSuccess] = useState<
+    | {
+        id: string;
+        persisted: boolean;
+        firstName: string;
+        email: string;
+      }
+    | null
+  >(null);
   const [isPending, startTransition] = useTransition();
 
   const meta = VARIANT_META[variant];
@@ -129,13 +137,25 @@ export function ValuationForm({ variant = 'metal', defaultItemType }: Props) {
 
     const form = e.currentTarget;
     const formData = new FormData(form);
+
+    // Capture the customer's name + email BEFORE the form resets, so we
+    // can personalise the success card with both. Failsafe defaults if
+    // either field is somehow missing.
+    const firstName = String(formData.get('first_name') ?? '').trim();
+    const email = String(formData.get('email') ?? '').trim();
+
     formData.delete('photos');
     files.forEach((f) => formData.append('photos', f.file, f.file.name));
 
     startTransition(async () => {
       const result = await submitValuationRequest(formData);
       if (result.ok) {
-        setSuccess({ id: result.requestId, persisted: result.persisted });
+        setSuccess({
+          id: result.requestId,
+          persisted: result.persisted,
+          firstName,
+          email,
+        });
         form.reset();
         setFiles([]);
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -146,7 +166,14 @@ export function ValuationForm({ variant = 'metal', defaultItemType }: Props) {
   };
 
   if (success) {
-    return <SuccessCard id={success.id} persisted={success.persisted} />;
+    return (
+      <SuccessCard
+        id={success.id}
+        persisted={success.persisted}
+        firstName={success.firstName}
+        email={success.email}
+      />
+    );
   }
 
   return (
@@ -596,30 +623,94 @@ function Field({
   );
 }
 
-function SuccessCard({ id, persisted }: { id: string; persisted: boolean }) {
+function SuccessCard({
+  id,
+  persisted,
+  firstName,
+  email,
+}: {
+  id: string;
+  persisted: boolean;
+  firstName: string;
+  email: string;
+}) {
+  const greeting = firstName ? `Thank you, ${firstName}` : 'Thank you';
   return (
-    <div className="gc-card gc-card-gold-edge p-8 text-center" id="valuation-form">
+    <div
+      id="valuation-form"
+      className="gc-card gc-card-gold-edge p-8 text-center sm:p-10"
+    >
+      {/* Animated tick — subtle scale-in for a moment of satisfaction */}
       <div
-        className="mx-auto mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full"
+        className="mx-auto mb-6 inline-flex h-14 w-14 items-center justify-center rounded-full"
         style={{
           background: 'linear-gradient(135deg, #FFD700, #B8860B)',
-          boxShadow: '0 0 24px rgba(212,175,55,0.5)',
+          boxShadow: '0 0 32px rgba(212,175,55,0.55)',
+          animation: 'gcReveal 0.5s ease-out both',
         }}
       >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#050505" strokeWidth="2.4">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#050505" strokeWidth="2.4">
           <path d="M5 12l4 4 10-10" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </div>
-      <h3 className="font-display text-2xl font-semibold text-white">
-        Thank you — your request is with our team
+
+      <h3 className="font-display text-2xl font-semibold text-white sm:text-3xl">
+        {greeting} — your request is with our team
       </h3>
-      <p className="mt-2 text-sm text-warmgrey">
-        A specialist will be in touch shortly using your preferred contact method.
+
+      <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-warmgrey">
+        {email ? (
+          <>
+            We&apos;ve sent a confirmation to{' '}
+            <span className="text-gold-tint">{email}</span>. A specialist will respond within one
+            business day using your preferred contact method.
+          </>
+        ) : (
+          <>A specialist will respond within one business day using your preferred contact method.</>
+        )}
       </p>
-      <p className="mt-2 text-xs text-warmgrey/70">
-        Reference: <span className="font-mono text-gold-tint">{id}</span>
+
+      {/* What happens next — same 3 steps as the customer confirmation email */}
+      <ol className="mx-auto mt-7 max-w-md space-y-3 text-left">
+        <NextStep
+          n={1}
+          title="Review"
+          body="Our valuation team examines your photographs and supporting details."
+        />
+        <NextStep
+          n={2}
+          title="Indicative offer"
+          body="We come back to you with a guide valuation and any clarifying questions."
+        />
+        <NextStep
+          n={3}
+          title="Final offer & payment"
+          body="Once you're happy with the figure, we confirm in person and arrange same-day payment."
+        />
+      </ol>
+
+      <p className="mt-7 text-[10px] uppercase tracking-luxe text-warmgrey/70">
+        Reference{' '}
+        <span className="font-mono text-gold-tint">{id.slice(0, 8)}</span>
         {!persisted && ' · Demo mode: Supabase not yet configured'}
       </p>
     </div>
+  );
+}
+
+function NextStep({ n, title, body }: { n: number; title: string; body: string }) {
+  return (
+    <li className="flex items-start gap-3">
+      <span
+        aria-hidden
+        className="mt-0.5 inline-flex h-7 w-7 flex-none items-center justify-center rounded-full text-xs font-semibold text-ink-950"
+        style={{ background: 'linear-gradient(135deg, #A67C00, #D4AF37)' }}
+      >
+        {n}
+      </span>
+      <span className="text-sm leading-relaxed text-warmgrey">
+        <strong className="text-white">{title}.</strong> {body}
+      </span>
+    </li>
   );
 }
