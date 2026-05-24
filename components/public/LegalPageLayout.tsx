@@ -24,19 +24,22 @@ export function LegalPageLayout({
     <>
       <section className="relative overflow-hidden border-b border-gold-metallic/15">
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink-950 via-ink-900 to-ink-950" />
-        <div className="gc-container relative py-10 lg:py-14">
-          <div className="max-w-3xl">
+        {/* Hero header: centered same-width column as the body prose below so
+            the two sections feel aligned, with tighter vertical padding so the
+            page doesn't open with a wall of empty black. */}
+        <div className="gc-container relative py-7 lg:py-10">
+          <div className="mx-auto max-w-3xl">
             <span className="gc-eyebrow">{eyebrow}</span>
-            <h1 className="gc-heading-xl mt-3">{title}</h1>
-            <p className="mt-4 text-xs uppercase tracking-luxe text-gold-tint">
+            <h1 className="gc-heading-xl mt-2">{title}</h1>
+            <p className="mt-3 text-xs uppercase tracking-luxe text-gold-tint">
               Last updated: {lastUpdated}
             </p>
-            {intro && <p className="gc-subhead mt-5">{intro}</p>}
+            {intro && <p className="gc-subhead mt-4">{intro}</p>}
           </div>
         </div>
       </section>
 
-      <section className="py-6 lg:py-10">
+      <section className="py-6 lg:py-8">
         <div className="gc-container">
           <article className="mx-auto max-w-3xl text-sm leading-relaxed text-warmgrey legal-prose">
             {children}
