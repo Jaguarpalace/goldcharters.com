@@ -69,24 +69,3 @@ export async function logAdminAction(input: LogAdminActionInput): Promise<void> 
   }
 }
 
-/**
- * Diff utility — returns the subset of `after` whose values differ from
- * `before`. Lets call sites pass `await logAdminAction({ ..., before: diff(before, after), after: diff(after, before) })`
- * so the audit row is minimal and human-readable rather than dumping the
- * whole record on every update.
- */
-export function diff<T extends Record<string, unknown>>(
-  before: T | null | undefined,
-  after: T | null | undefined,
-): Partial<T> {
-  if (!before || !after) return (after ?? {}) as Partial<T>;
-  const out: Partial<T> = {};
-  for (const key of Object.keys(after) as Array<keyof T>) {
-    const a = after[key];
-    const b = before[key];
-    if (JSON.stringify(a) !== JSON.stringify(b)) {
-      (out as Record<keyof T, unknown>)[key] = a;
-    }
-  }
-  return out;
-}
