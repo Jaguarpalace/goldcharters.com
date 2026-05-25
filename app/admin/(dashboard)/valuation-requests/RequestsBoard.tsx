@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useMemo, useState, useTransition } from 'react';
 import {
   VALUATION_PIPELINE,
@@ -12,11 +13,15 @@ import {
   bulkDeleteValuationRequests,
   bulkUpdateValuationStatus,
   deleteValuationRequest,
+  type RequestNextActions,
 } from '@/lib/actions/valuationRequests';
 import { buildValuationsCsv, downloadCsv } from './csv';
 import { RequestDetail } from './RequestDetail';
 
-type Row = ValuationRequest & { valuation_request_images?: ValuationRequestImage[] };
+type Row = ValuationRequest & {
+  valuation_request_images?: ValuationRequestImage[];
+  next_actions: RequestNextActions;
+};
 
 const STATUS_BADGE: Record<string, string> = {
   new: 'text-amber-300 ring-amber-500/40 bg-amber-500/10',
@@ -448,6 +453,7 @@ function RequestRow({
             <span className="text-warmgrey/50"> · </span>
             <span className="whitespace-nowrap">{request.phone}</span>
           </div>
+          <NextActionPills request={request} />
         </td>
         <td className="px-2 py-2.5 align-top">
           <div className="text-white">{summary.primary}</div>
@@ -572,6 +578,7 @@ function RequestCard({
               </>
             )}
           </div>
+          <NextActionPills request={request} />
           <div className="mt-1 flex items-center gap-2 text-[10px] text-warmgrey/80">
             <span>
               {new Date(request.created_at).toLocaleDateString('en-GB', {
@@ -617,6 +624,81 @@ function RequestCard({
         </div>
       )}
     </li>
+  );
+}
+
+/* ----------------------------- Next-action pills ------------------------ */
+
+/**
+ * Inline status hints sitting under the customer name. Each pill is a link
+ * to the screen where the admin can resolve it. Hidden completely when
+ * there's nothing actionable.
+ *
+ *   - "Add to holdings"  : status=bought + payment set + no stock row yet
+ *   - "Missing KYC"      : matched customer is missing ID and/or POA docs
+ *   - "Customer not linked": no customer record matched — rare since
+ *                            submission now auto-links, but possible for
+ *                            legacy data
+ */
+function NextActionPills({ request }: { request: Row }) {
+  const { customer, stock_item, kyc_complete } = request.next_actions;
+  const needsHoldings =
+    request.status === 'bought' &&
+    request.payment_amount !== null &&
+    stock_item === null;
+  const needsKyc = customer !== null && !kyc_complete;
+  const customerMissing = customer === null;
+
+  if (!needsHoldings && !needsKyc && !customerMissing && stock_item === null) {
+    return null;
+  }
+
+  return (
+    <div className="mt-1.5 flex flex-wrap gap-1">
+      {needsHoldings && (
+        <span
+          title="This purchase has been paid but isn't in the holdings ledger yet"
+          className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-luxe text-amber-300 ring-1 ring-amber-500/40"
+        >
+          <span
+            aria-hidden
+            className="inline-block h-1.5 w-1.5 rounded-full bg-amber-300"
+          />
+          Add to holdings
+        </span>
+      )}
+      {needsKyc && customer && (
+        <Link
+          href={`/admin/customers/${customer.id}?tab=documents`}
+          onClick={(e) => e.stopPropagation()}
+          title="Customer is missing ID and/or proof of address"
+          className="inline-flex items-center gap-1 rounded-full bg-red-500/15 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-luxe text-red-300 ring-1 ring-red-500/40 transition hover:bg-red-500/25"
+        >
+          <span aria-hidden className="inline-block h-1.5 w-1.5 rounded-full bg-red-300" />
+          Missing KYC
+        </Link>
+      )}
+      {customerMissing && (
+        <span
+          title="No matching customer record yet"
+          className="inline-flex items-center gap-1 rounded-full bg-warmgrey/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-luxe text-warmgrey ring-1 ring-warmgrey/30"
+        >
+          <span aria-hidden className="inline-block h-1.5 w-1.5 rounded-full bg-warmgrey/70" />
+          Customer not linked
+        </span>
+      )}
+      {stock_item && (
+        <Link
+          href={`/admin/holdings/${stock_item.id}`}
+          onClick={(e) => e.stopPropagation()}
+          title="View the linked holdings ledger entry"
+          className="inline-flex items-center gap-1 rounded-full bg-gold-metallic/15 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-luxe text-gold-tint ring-1 ring-gold-metallic/40 transition hover:bg-gold-metallic/25 hover:text-gold-bright"
+        >
+          <span aria-hidden className="inline-block h-1.5 w-1.5 rounded-full bg-gold-bright" />
+          {stock_item.stock_number}
+        </Link>
+      )}
+    </div>
   );
 }
 

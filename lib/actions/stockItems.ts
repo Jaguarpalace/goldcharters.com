@@ -192,6 +192,13 @@ export type RecordSaleInput = {
   sold_at?: string | null;
   /** Optional override; otherwise current spot for the item's metal is stamped. */
   sold_spot_gbp_per_g?: number | null;
+  /**
+   * When true and the stock item was imported from a valuation request, that
+   * source valuation is advanced to status='completed' alongside the sale.
+   * Defaults true on the UI when there is a linked valuation. Walk-ins have
+   * no valuation_request_id, so this is silently ignored.
+   */
+  complete_source_valuation?: boolean;
 };
 
 export async function recordStockItemSale(
@@ -243,6 +250,21 @@ export async function recordStockItemSale(
     .eq('id', id)
     .select('*')
     .single<StockItem>();
+
+  // Optionally close the originating valuation request — best-effort,
+  // ledger sale still succeeds if this side-effect fails.
+  if (input.complete_source_valuation && existing.valuation_request_id) {
+    const { error: vrError } = await ctx.admin
+      .from('valuation_requests')
+      .update({ status: 'completed' })
+      .eq('id', existing.valuation_request_id)
+      .neq('status', 'completed');
+    if (vrError) {
+      console.error('[holdings:sale:complete-valuation]', vrError);
+    } else {
+      revalidatePath('/admin/valuation-requests');
+    }
+  }
 
   if (error || !data) {
     console.error('[holdings:sale]', error);

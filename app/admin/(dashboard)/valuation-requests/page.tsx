@@ -1,14 +1,11 @@
 import { listValuationRequests } from '@/lib/actions/valuationRequests';
 import { isSupabaseConfigured } from '@/lib/supabase/env';
-import type { ValuationRequest, ValuationRequestImage } from '@/types/database';
 import { RequestsBoard } from './RequestsBoard';
-
-type Row = ValuationRequest & { valuation_request_images?: ValuationRequestImage[] };
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminValuationRequestsPage() {
-  const requests = (await listValuationRequests()) as Row[];
+  const requests = await listValuationRequests();
 
   return (
     <div className="space-y-5">

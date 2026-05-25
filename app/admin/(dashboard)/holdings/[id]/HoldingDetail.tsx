@@ -291,11 +291,15 @@ function SalePanel({
   item: StockItem;
   onSold: () => void;
 }) {
+  const hasSourceValuation = !!item.valuation_request_id;
   const [form, setForm] = useState({
     sold_to_name: '',
     sold_to_email: '',
     sold_amount_gbp: '',
     sold_at: toLocalDateTime(new Date().toISOString()),
+    // Default on when there's a source valuation so the typical case (sale
+    // closing out an original enquiry) doesn't need an extra click.
+    complete_source_valuation: hasSourceValuation,
   });
   const [pending, startTransition] = useTransition();
   const [feedback, setFeedback] = useState<{ ok: boolean; text: string } | null>(null);
@@ -314,6 +318,7 @@ function SalePanel({
         sold_to_email: form.sold_to_email || null,
         sold_amount_gbp: Number(form.sold_amount_gbp || 0),
         sold_at: form.sold_at ? new Date(form.sold_at).toISOString() : null,
+        complete_source_valuation: form.complete_source_valuation,
       });
       if (result.ok) {
         setFeedback({ ok: true, text: 'Sale recorded.' });
@@ -361,6 +366,24 @@ function SalePanel({
           />
         </label>
       </div>
+
+      {hasSourceValuation && (
+        <label className="flex items-start gap-2 rounded-md border border-gold-metallic/15 bg-ink-900/40 p-3 text-[11px] text-warmgrey">
+          <input
+            type="checkbox"
+            checked={form.complete_source_valuation}
+            onChange={(e) =>
+              setForm((prev) => ({ ...prev, complete_source_valuation: e.target.checked }))
+            }
+            className="mt-0.5 h-3.5 w-3.5 flex-none accent-gold-metallic"
+          />
+          <span>
+            Also mark the source valuation request as <strong>Completed</strong>. Use when this
+            sale closes out the original enquiry. Leave unticked if you're parting out a piece
+            and the original request is still in progress.
+          </span>
+        </label>
+      )}
 
       <div className="flex items-center justify-between gap-3">
         {feedback ? (

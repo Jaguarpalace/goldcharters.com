@@ -6,12 +6,15 @@ import { isSupabaseAdminConfigured } from '@/lib/supabase/env';
 import { requireAdminContext } from './_helpers';
 import { sendNewRequestNotification } from '@/lib/email/sendNewRequestNotification';
 import { sendCustomerConfirmation } from '@/lib/email/sendCustomerConfirmation';
+import { getMetalSpots } from '@/lib/services/metalPrice';
+import { purityToPercent } from '@/lib/schemas/valuationFormOptions';
 import type {
   FormVariant,
   PaymentMethod,
   PreferredContactMethod,
   ValuationItemType,
   ValuationRequest,
+  ValuationRequestImage,
   ValuationRequestStatus,
 } from '@/types/database';
 import { PAYMENT_METHODS } from '@/types/database';
@@ -213,6 +216,22 @@ export async function submitValuationRequest(
     return { ok: false, error: 'Could not save your request. Please try again.' };
   }
 
+  // Auto-link / auto-create the KYC customer record. Every public form
+  // submission becomes a customer in the directory keyed by email — so the
+  // 'History' and 'Holdings' tabs on /admin/customers/[id] light up
+  // automatically and the admin never has to manually create the row.
+  //
+  // Insert is best-effort: if the customer already exists (unique email)
+  // we leave the existing record untouched so a manually-cleaned name or
+  // address isn't overwritten. Errors are logged but never block the
+  // valuation submission — the request is what matters to the seller.
+  await ensureCustomerForRequest(admin, {
+    first_name: firstName,
+    last_name: lastName,
+    email,
+    phone,
+  });
+
   // Upload photos to the private bucket and store signed URLs
   const uploadedImageRows: Array<{
     valuation_request_id: string;
@@ -267,7 +286,84 @@ export async function submitValuationRequest(
   return { ok: true, requestId: request.id, persisted: true };
 }
 
-export async function listValuationRequests() {
+/**
+ * Insert a customer record for a freshly-submitted valuation request when
+ * none yet exists. Existing rows are left untouched so admin edits stick.
+ *
+ * Implemented as best-effort: any error is logged and swallowed — the
+ * valuation submission must not fail because of a KYC bookkeeping hiccup.
+ */
+async function ensureCustomerForRequest(
+  admin: NonNullable<ReturnType<typeof getAdminSupabase>>,
+  input: {
+    first_name: string;
+    last_name: string;
+    email: string;
+    phone: string;
+  },
+): Promise<void> {
+  try {
+    const email = input.email.trim().toLowerCase();
+    const { data: existing } = await admin
+      .from('customers')
+      .select('id')
+      .ilike('email', email)
+      .maybeSingle();
+    if (existing) return; // already in the directory; nothing to do
+
+    const { error } = await admin.from('customers').insert({
+      first_name: input.first_name,
+      last_name: input.last_name,
+      email,
+      phone: input.phone || null,
+    });
+    if (error) {
+      // Unique-constraint races can briefly produce 23505 — harmless, the
+      // other side already created the row.
+      if (error.code !== '23505') {
+        console.error('[valuation:customer-autocreate]', error);
+      }
+    }
+  } catch (e) {
+    console.error('[valuation:customer-autocreate]', e);
+  }
+}
+
+/**
+ * Per-row "next action" hints. The list endpoint derives these once with a
+ * small handful of batched queries so the admin board can render
+ * 'Add to holdings', 'Missing KYC' etc. badges without fetching anything
+ * extra per row.
+ */
+export type RequestNextActions = {
+  /** Matched customer record (by email, case-insensitive). Null when the
+   *  customer hasn't been created yet — should be rare now that submission
+   *  auto-links, but historical data without a customer row is possible. */
+  customer: {
+    id: string;
+    first_name: string;
+    last_name: string;
+  } | null;
+  /** Stock-ledger row already created from this valuation, if any. Drives
+   *  the "Add to holdings" prompt when status=bought and this is null. */
+  stock_item: {
+    id: string;
+    stock_number: string;
+    status: 'held' | 'sold' | 'written_off';
+  } | null;
+  /** True when the customer has at least one ID-type document AND at least
+   *  one proof of address on file. */
+  kyc_complete: boolean;
+};
+
+export type ValuationRequestRow = ValuationRequest & {
+  valuation_request_images?: ValuationRequestImage[];
+  next_actions: RequestNextActions;
+};
+
+const ID_DOC_TYPES = new Set(['id', 'passport', 'driving_licence']);
+
+export async function listValuationRequests(): Promise<ValuationRequestRow[]> {
   const supabase = getServerSupabase();
   if (!supabase) return [];
 
@@ -276,8 +372,112 @@ export async function listValuationRequests() {
     .select('*, valuation_request_images(*)')
     .order('created_at', { ascending: false });
 
-  if (error || !data) return [];
-  return data;
+  if (error || !data || data.length === 0) return [];
+
+  const rows = data as Array<ValuationRequest & { valuation_request_images?: ValuationRequestImage[] }>;
+
+  // ----- Batch the three enrichment queries in parallel --------------------
+  const emails = Array.from(
+    new Set(rows.map((r) => r.email.trim().toLowerCase()).filter(Boolean)),
+  );
+  const requestIds = rows.map((r) => r.id);
+
+  const [customersRes, stockItemsRes] = await Promise.all([
+    emails.length > 0
+      ? supabase
+          .from('customers')
+          .select('id, first_name, last_name, email')
+          .in('email', emails)
+      : Promise.resolve({ data: [] as Array<{
+          id: string;
+          first_name: string;
+          last_name: string;
+          email: string;
+        }> }),
+    requestIds.length > 0
+      ? supabase
+          .from('stock_items')
+          .select('id, stock_number, status, valuation_request_id')
+          .in('valuation_request_id', requestIds)
+      : Promise.resolve({ data: [] as Array<{
+          id: string;
+          stock_number: string;
+          status: 'held' | 'sold' | 'written_off';
+          valuation_request_id: string | null;
+        }> }),
+  ]);
+
+  const customers = (customersRes.data ?? []) as Array<{
+    id: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+  }>;
+  const stockItems = (stockItemsRes.data ?? []) as Array<{
+    id: string;
+    stock_number: string;
+    status: 'held' | 'sold' | 'written_off';
+    valuation_request_id: string | null;
+  }>;
+
+  // KYC documents — only worth fetching if we found matching customers.
+  const customerIds = customers.map((c) => c.id);
+  const docsRes =
+    customerIds.length > 0
+      ? await supabase
+          .from('customer_documents')
+          .select('customer_id, doc_type')
+          .in('customer_id', customerIds)
+      : { data: [] };
+  const docs = (docsRes.data ?? []) as Array<{
+    customer_id: string;
+    doc_type: string;
+  }>;
+
+  // ----- Build lookup maps -------------------------------------------------
+  const customerByEmail = new Map<string, (typeof customers)[number]>();
+  for (const c of customers) {
+    customerByEmail.set(c.email.trim().toLowerCase(), c);
+  }
+  const stockItemByRequest = new Map<string, (typeof stockItems)[number]>();
+  for (const s of stockItems) {
+    if (s.valuation_request_id) stockItemByRequest.set(s.valuation_request_id, s);
+  }
+  const kycByCustomer = new Map<string, boolean>();
+  for (const cid of customerIds) {
+    const own = docs.filter((d) => d.customer_id === cid);
+    const hasId = own.some((d) => ID_DOC_TYPES.has(d.doc_type));
+    const hasPoa = own.some((d) => d.doc_type === 'proof_of_address');
+    kycByCustomer.set(cid, hasId && hasPoa);
+  }
+
+  // ----- Attach to rows ----------------------------------------------------
+  return rows.map((row) => {
+    const customer = customerByEmail.get(row.email.trim().toLowerCase()) ?? null;
+    const stockItem = stockItemByRequest.get(row.id) ?? null;
+    const kycComplete = customer ? kycByCustomer.get(customer.id) === true : false;
+
+    return {
+      ...row,
+      next_actions: {
+        customer: customer
+          ? {
+              id: customer.id,
+              first_name: customer.first_name,
+              last_name: customer.last_name,
+            }
+          : null,
+        stock_item: stockItem
+          ? {
+              id: stockItem.id,
+              stock_number: stockItem.stock_number,
+              status: stockItem.status,
+            }
+          : null,
+        kyc_complete: kycComplete,
+      },
+    } as ValuationRequestRow;
+  });
 }
 
 /** Count of requests still needing action — drives the sidebar badge. */
@@ -347,6 +547,185 @@ export async function updateValuationStatus(
   revalidatePath('/admin/valuation-requests');
   revalidatePath('/admin');
   return { ok: true };
+}
+
+/* --------------------------------------------------------- Walk-in flow */
+
+export type WalkInPurchaseInput = {
+  // Seller
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  address_line1?: string | null;
+  address_line2?: string | null;
+  city?: string | null;
+  postcode?: string | null;
+
+  // Item (metal branch — handbags/watches not yet supported in this wizard)
+  metal_type: string;
+  carat?: string | null;
+  weight_grams?: number | null;
+  description?: string | null;
+  condition?: string | null;
+
+  // Payment
+  payment_amount_gbp: number;
+  payment_method?: PaymentMethod | null;
+  payment_reference?: string | null;
+};
+
+/**
+ * Single-shot action for in-person walk-in purchases. Creates (or links) a
+ * customer record, a valuation_request already at status='bought' with the
+ * payment captured, and a stock_items row imported from it — so the same
+ * Print button and Holdings dashboard the website flow uses keep working
+ * unchanged. Returns the new valuation request id for the caller to
+ * redirect to the printable document.
+ */
+export async function createWalkInPurchase(
+  input: WalkInPurchaseInput,
+): Promise<
+  | { ok: true; data: { valuation_request_id: string; stock_item_id: string | null } }
+  | { ok: false; error: string }
+> {
+  const ctx = await requireAdminContext();
+  if ('error' in ctx) return { ok: false, error: ctx.error };
+
+  // --- Validation -----------------------------------------------------
+  const first = (input.first_name ?? '').trim();
+  const last = (input.last_name ?? '').trim();
+  const email = (input.email ?? '').trim().toLowerCase();
+  const phone = (input.phone ?? '').trim();
+  if (!first || !last) return { ok: false, error: 'Seller name is required.' };
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+    return { ok: false, error: 'Seller email looks invalid.' };
+  if (!phone) return { ok: false, error: 'Seller phone is required.' };
+  if (!input.metal_type) return { ok: false, error: 'Pick a metal type.' };
+  if (!Number.isFinite(input.payment_amount_gbp) || input.payment_amount_gbp < 0)
+    return { ok: false, error: 'Amount paid is required and must be ≥ 0.' };
+
+  // --- Step 1: upsert customer ---------------------------------------
+  const customerPatch = {
+    first_name: first,
+    last_name: last,
+    email,
+    phone,
+    address_line1: input.address_line1?.trim() || null,
+    address_line2: input.address_line2?.trim() || null,
+    city: input.city?.trim() || null,
+    postcode: input.postcode?.trim() || null,
+  };
+  const { data: existingCustomer } = await ctx.admin
+    .from('customers')
+    .select('id')
+    .ilike('email', email)
+    .maybeSingle();
+  let customerId: string | null = (existingCustomer as { id: string } | null)?.id ?? null;
+  if (!customerId) {
+    const { data: newCustomer, error: cErr } = await ctx.admin
+      .from('customers')
+      .insert(customerPatch)
+      .select('id')
+      .single();
+    if (cErr) {
+      // 23505 means another tab raced us — re-fetch and continue.
+      if (cErr.code === '23505') {
+        const { data: again } = await ctx.admin
+          .from('customers')
+          .select('id')
+          .ilike('email', email)
+          .maybeSingle();
+        customerId = (again as { id: string } | null)?.id ?? null;
+      } else {
+        console.error('[walkin:customer]', cErr);
+        return { ok: false, error: cErr.message };
+      }
+    } else {
+      customerId = (newCustomer as { id: string }).id;
+    }
+  }
+
+  // --- Step 2: insert valuation_request already at status='bought' ---
+  const nowIso = new Date().toISOString();
+  const { data: vr, error: vrErr } = await ctx.admin
+    .from('valuation_requests')
+    .insert({
+      first_name: first,
+      last_name: last,
+      email,
+      phone,
+      preferred_contact_method: 'phone' as PreferredContactMethod,
+      consent_accepted: true,
+      form_variant: 'metal' as FormVariant,
+      item_type: 'gold' as ValuationItemType,
+      metal_type: input.metal_type,
+      carat: input.carat?.trim() || null,
+      weight_grams: input.weight_grams ?? null,
+      condition: input.condition?.trim() || null,
+      description: input.description?.trim() || null,
+      status: 'bought',
+      payment_amount: input.payment_amount_gbp,
+      payment_method: input.payment_method ?? 'cash',
+      payment_reference: input.payment_reference?.trim() || null,
+      paid_at: nowIso,
+    })
+    .select('id')
+    .single();
+  if (vrErr || !vr) {
+    console.error('[walkin:request]', vrErr);
+    return { ok: false, error: vrErr?.message ?? 'Could not save the purchase.' };
+  }
+  const valuationRequestId = (vr as { id: string }).id;
+
+  // --- Step 3: best-effort stock_items row ---------------------------
+  // We don't use createStockItemFromValuation here because that function
+  // re-derives values from the request row we just inserted — direct insert
+  // with the data already in hand is faster and avoids a re-fetch.
+  const spots = await getMetalSpots();
+  const spot =
+    input.metal_type === 'Gold'
+      ? spots.gold?.per_gram_gbp
+      : input.metal_type === 'Silver'
+      ? spots.silver?.per_gram_gbp
+      : input.metal_type === 'Platinum'
+      ? spots.platinum?.per_gram_gbp
+      : null;
+  const purityPct = purityToPercent(input.carat ?? null);
+  const { data: stock, error: stockErr } = await ctx.admin
+    .from('stock_items')
+    .insert({
+      valuation_request_id: valuationRequestId,
+      customer_id: customerId,
+      item_type: 'gold',
+      description: input.description?.trim() || null,
+      metal_type: input.metal_type,
+      carat: input.carat?.trim() || null,
+      purity_percentage: purityPct,
+      weight_grams: input.weight_grams ?? null,
+      acquired_at: nowIso,
+      acquired_paid_gbp: input.payment_amount_gbp,
+      acquired_spot_gbp_per_g: spot ?? null,
+    })
+    .select('id')
+    .single();
+  if (stockErr) {
+    // The valuation request is in place; the admin can click "Add to
+    // holdings" on the board if this side failed. Don't block the response.
+    console.error('[walkin:stock]', stockErr);
+  }
+
+  revalidatePath('/admin/valuation-requests');
+  revalidatePath('/admin/customers');
+  revalidatePath('/admin/holdings');
+
+  return {
+    ok: true,
+    data: {
+      valuation_request_id: valuationRequestId,
+      stock_item_id: (stock as { id: string } | null)?.id ?? null,
+    },
+  };
 }
 
 /** Save internal notes for a request. Notes are admin-only; never sent to the customer. */
