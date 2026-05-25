@@ -82,7 +82,6 @@ export default async function HomePage() {
         ]}
       />
       <Hero section={findHomepageSection(sections, 'hero')} />
-      <BrandIntro />
       {BUY_ENABLED && <SellBuyPathways />}
       <ServiceCards services={services} />
       <SellSection section={findHomepageSection(sections, 'sell_intro')} variant="gold" />
@@ -113,6 +112,7 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <BrandIntro />
       <FAQSection faqs={faqs} />
     </>
   );
