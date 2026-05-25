@@ -9,7 +9,7 @@ import {
   type PaymentMethod,
   type ValuationRequest,
 } from '@/types/database';
-import { PrintActions } from './PrintActions';
+import { PrintShell } from './PrintShell';
 
 export const dynamic = 'force-dynamic';
 
@@ -80,51 +80,7 @@ export default async function PurchasePrintPage({
   });
 
   return (
-    <div className="print-page">
-      {/* Embedded styles — scoped here so they don't leak into the rest of
-          the admin. Print rules hide the action bar and force light theme. */}
-      <style>{`
-        @page { size: A4; margin: 18mm 16mm; }
-        .print-page {
-          background: #ffffff;
-          color: #111111;
-          font-family: 'Manrope', system-ui, sans-serif;
-          font-size: 12px;
-          line-height: 1.5;
-          min-height: 100vh;
-        }
-        .print-sheet { max-width: 720px; margin: 0 auto; padding: 32px 24px 64px; }
-        .print-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; border-bottom: 2px solid #b8860b; padding-bottom: 16px; }
-        .print-logo { width: 96px; height: 96px; object-fit: contain; }
-        .print-brand { text-align: right; }
-        .print-brand h1 { font-size: 18px; font-weight: 700; color: #b8860b; letter-spacing: 0.12em; text-transform: uppercase; margin: 0; }
-        .print-brand p { margin: 4px 0 0; font-size: 11px; color: #555; }
-        .print-doc-title { font-size: 22px; font-weight: 700; margin: 28px 0 4px; }
-        .print-doc-sub { font-size: 12px; color: #555; margin: 0 0 24px; }
-        .print-section { margin-top: 22px; }
-        .print-section h2 { font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: #b8860b; border-bottom: 1px solid #e6dcc1; padding-bottom: 4px; margin: 0 0 10px; }
-        .print-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 24px; row-gap: 8px; }
-        .print-field { display: flex; flex-direction: column; }
-        .print-field span { font-size: 9px; text-transform: uppercase; letter-spacing: 0.16em; color: #999; }
-        .print-field strong { font-size: 13px; font-weight: 600; color: #111; }
-        .print-disclaimer { white-space: pre-wrap; font-size: 11.5px; color: #1a1a1a; }
-        .print-signatures { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; margin-top: 36px; }
-        .print-sig-block { border-top: 1px solid #111; padding-top: 8px; }
-        .print-sig-block .label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.16em; color: #777; }
-        .print-sig-block .name { font-size: 12px; font-weight: 600; margin-top: 4px; }
-        .print-sig-line { display: inline-block; width: 100%; min-height: 28px; }
-        .print-foot { margin-top: 36px; padding-top: 12px; border-top: 1px solid #e6dcc1; font-size: 10px; color: #777; text-align: center; }
-
-        /* Action bar — visible on screen, hidden in print */
-        .print-actions { position: sticky; top: 0; z-index: 10; display: flex; justify-content: flex-end; gap: 12px; background: #f6f3eb; border-bottom: 1px solid #e6dcc1; padding: 10px 24px; }
-        @media print {
-          .print-actions { display: none !important; }
-          .print-page { background: #ffffff !important; }
-        }
-      `}</style>
-
-      <PrintActions />
-
+    <PrintShell>
       <div className="print-sheet">
         <header className="print-header">
           <img
@@ -264,7 +220,7 @@ export default async function PurchasePrintPage({
           requirements.
         </p>
       </div>
-    </div>
+    </PrintShell>
   );
 }
 
