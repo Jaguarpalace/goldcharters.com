@@ -8,6 +8,7 @@ import { countOutstandingRequests } from '@/lib/actions/valuationRequests';
 import { ThemeToggle, type AdminTheme } from './ThemeToggle';
 import { AdminBrand } from './AdminBrand';
 import { AdminShell } from './AdminShell';
+import { NavLink } from './NavLink';
 
 type NavItem = {
   href: string;
@@ -77,34 +78,26 @@ export default async function DashboardLayout({ children }: { children: React.Re
               item.href === '/admin/valuation-requests' && outstandingCount > 0;
             return (
               <li key={item.href}>
-                <Link
+                <NavLink
                   href={item.href}
-                  title={inactive ? 'Shop is disabled — click to view paused tools' : undefined}
-                  className={
-                    inactive
-                      ? 'flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-warmgrey/40 hover:bg-ink-800 hover:text-warmgrey/70'
-                      : 'flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-warmgrey hover:bg-ink-800 hover:text-gold-bright'
+                  label={item.label}
+                  inactive={inactive}
+                  inactiveTitle="Shop is disabled — click to view paused tools"
+                  badge={
+                    showOutstandingBadge ? (
+                      <span
+                        className="inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full px-1.5 text-[10px] font-semibold text-ink-950"
+                        style={{
+                          background: 'linear-gradient(135deg, #FFD700, #B8860B)',
+                          boxShadow: '0 0 8px rgba(212,175,55,0.55)',
+                        }}
+                        title={`${outstandingCount} outstanding request${outstandingCount === 1 ? '' : 's'}`}
+                      >
+                        {outstandingCount}
+                      </span>
+                    ) : null
                   }
-                >
-                  <span>{item.label}</span>
-                  {inactive && (
-                    <span className="rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-luxe text-amber-300">
-                      Off
-                    </span>
-                  )}
-                  {showOutstandingBadge && (
-                    <span
-                      className="inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full px-1.5 text-[10px] font-semibold text-ink-950"
-                      style={{
-                        background: 'linear-gradient(135deg, #FFD700, #B8860B)',
-                        boxShadow: '0 0 8px rgba(212,175,55,0.55)',
-                      }}
-                      title={`${outstandingCount} outstanding request${outstandingCount === 1 ? '' : 's'}`}
-                    >
-                      {outstandingCount}
-                    </span>
-                  )}
-                </Link>
+                />
               </li>
             );
           })}
