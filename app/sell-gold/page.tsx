@@ -4,6 +4,7 @@ import { breadcrumbSchema, serviceSchema, SITE_URL } from '@/lib/seo/structuredD
 import { findHomepageSection, getHomepageSections } from '@/lib/queries/homepage';
 import { getCalculatorRates } from '@/lib/queries/calculator';
 import { getItemsWeBuy } from '@/lib/queries/items';
+import { buildPageMetadata } from '@/lib/queries/pageSeo';
 import { SellSection } from '@/components/public/SellSection';
 import { GoldCalculator } from '@/components/public/GoldCalculator';
 import { ItemsWeBuy } from '@/components/public/ItemsWeBuy';
@@ -12,30 +13,9 @@ import { HowItWorks } from '@/components/public/HowItWorks';
 
 export const revalidate = 120;
 
-export const metadata: Metadata = {
-  title: 'Sell Gold For Cash · Private UK Specialists',
-  description:
-    'Sell gold rings, chains, bracelets, coins, bars and scrap gold to a discreet UK private valuation house. Same-day payment, live spot pricing, no obligation.',
-  keywords: [
-    'sell gold UK',
-    'sell gold for cash',
-    'sell gold Surrey',
-    'sell gold Egham',
-    'sell scrap gold',
-    'sell broken gold',
-    'sell gold coins',
-    'sell sovereigns',
-    'sell gold bars',
-    'gold buyer near me',
-  ],
-  alternates: { canonical: `${SITE_URL}/sell-gold` },
-  openGraph: {
-    url: `${SITE_URL}/sell-gold`,
-    title: 'Sell Gold For Cash · Private UK Specialists',
-    description:
-      'Discreet UK private valuation house. Same-day payment, live spot pricing, transparent offers.',
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata('/sell-gold');
+}
 
 export default async function SellGoldPage() {
   const [sections, rates, items] = await Promise.all([

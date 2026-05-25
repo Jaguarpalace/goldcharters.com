@@ -36,6 +36,7 @@ const NAV: NavItem[] = [
   { href: '/admin/contact', label: 'Contact Details' },
   { href: '/admin/media', label: 'Media Library' },
   { href: '/admin/blog', label: 'Blog' },
+  { href: '/admin/seo', label: 'Page SEO' },
   { href: '/admin/email-templates', label: 'Email Templates' },
   { href: '/admin/notifications', label: 'Notifications' },
   { href: '/admin/users', label: 'Team' },

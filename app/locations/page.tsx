@@ -1,16 +1,13 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { LOCATIONS } from '@/lib/content/locations';
-import { SITE_URL } from '@/lib/seo/structuredData';
+import { buildPageMetadata } from '@/lib/queries/pageSeo';
 
 export const revalidate = 86400;
 
-export const metadata: Metadata = {
-  title: 'Areas We Cover — Gold & Jewellery Valuations across Surrey, London & the Thames Valley',
-  description:
-    'Private gold, watch, jewellery and handbag valuations across London, Surrey, Berkshire, Windsor, Ascot, Heathrow, Reading, Twickenham and Richmond — all served from our Egham office.',
-  alternates: { canonical: `${SITE_URL}/locations` },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata('/locations');
+}
 
 export default function LocationsIndexPage() {
   return (

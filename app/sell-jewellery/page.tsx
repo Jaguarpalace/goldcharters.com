@@ -3,6 +3,7 @@ import { JsonLd } from '@/lib/seo/JsonLd';
 import { breadcrumbSchema, serviceSchema, SITE_URL } from '@/lib/seo/structuredData';
 import { findHomepageSection, getHomepageSections } from '@/lib/queries/homepage';
 import { getItemsWeBuy } from '@/lib/queries/items';
+import { buildPageMetadata } from '@/lib/queries/pageSeo';
 import { SellSection } from '@/components/public/SellSection';
 import { ItemsWeBuy } from '@/components/public/ItemsWeBuy';
 import { ValuationForm } from '@/components/public/ValuationForm';
@@ -11,29 +12,9 @@ import { ValuationExplanation } from '@/components/public/ValuationExplanation';
 
 export const revalidate = 120;
 
-export const metadata: Metadata = {
-  title: 'Sell Fine Jewellery · Diamond, Antique & Branded Specialists',
-  description:
-    'Receive a professional valuation for diamond rings, designer jewellery, antique pieces and inherited jewellery from a discreet UK private specialist.',
-  keywords: [
-    'sell jewellery UK',
-    'sell diamond ring UK',
-    'sell engagement ring UK',
-    'sell antique jewellery',
-    'sell vintage jewellery',
-    'sell inherited jewellery',
-    'sell designer jewellery',
-    'sell branded jewellery',
-    'jewellery valuation UK',
-  ],
-  alternates: { canonical: `${SITE_URL}/sell-jewellery` },
-  openGraph: {
-    url: `${SITE_URL}/sell-jewellery`,
-    title: 'Sell Fine Jewellery UK · Diamond, Antique, Designer',
-    description:
-      'Professional jewellery valuation from a discreet UK private specialist. Same-day payment, transparent offers.',
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata('/sell-jewellery');
+}
 
 export default async function SellJewelleryPage() {
   const [sections, items] = await Promise.all([getHomepageSections(), getItemsWeBuy()]);

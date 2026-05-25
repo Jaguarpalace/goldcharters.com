@@ -3,6 +3,7 @@ import { JsonLd } from '@/lib/seo/JsonLd';
 import { breadcrumbSchema, serviceSchema, SITE_URL } from '@/lib/seo/structuredData';
 import { findHomepageSection, getHomepageSections } from '@/lib/queries/homepage';
 import { getItemsWeBuy } from '@/lib/queries/items';
+import { buildPageMetadata } from '@/lib/queries/pageSeo';
 import { SellSection } from '@/components/public/SellSection';
 import { ItemsWeBuy } from '@/components/public/ItemsWeBuy';
 import { ValuationForm } from '@/components/public/ValuationForm';
@@ -11,29 +12,9 @@ import type { HomepageSection } from '@/types/database';
 
 export const revalidate = 120;
 
-export const metadata: Metadata = {
-  title: 'Sell Luxury Watches · Rolex, Patek Philippe, AP · UK Specialists',
-  description:
-    'Sell luxury watches — Rolex, Patek Philippe, Audemars Piguet, Omega, Cartier — to a discreet UK specialist. Movement, papers and provenance fully assessed. Same-day payment available.',
-  keywords: [
-    'sell luxury watch UK',
-    'sell Rolex UK',
-    'sell Rolex Submariner UK',
-    'sell Rolex Daytona UK',
-    'sell Patek Philippe UK',
-    'sell Audemars Piguet UK',
-    'sell Omega watch UK',
-    'sell Cartier watch UK',
-    'luxury watch buyer UK',
-  ],
-  alternates: { canonical: `${SITE_URL}/sell-watches` },
-  openGraph: {
-    url: `${SITE_URL}/sell-watches`,
-    title: 'Sell Luxury Watches UK · Rolex, Patek Philippe, AP',
-    description:
-      'Specialist valuations for Rolex, Patek Philippe, Audemars Piguet, Omega and Cartier. Movement, papers, provenance assessed.',
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata('/sell-watches');
+}
 
 // Hardcoded fallback so the page works before the migration adds the row.
 const FALLBACK_SECTION: HomepageSection = {

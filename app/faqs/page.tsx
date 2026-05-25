@@ -2,17 +2,14 @@ import type { Metadata } from 'next';
 import { getFaqs } from '@/lib/queries/faqs';
 import { FAQSection } from '@/components/public/FAQSection';
 import { JsonLd } from '@/lib/seo/JsonLd';
-import { faqPageSchema, SITE_URL } from '@/lib/seo/structuredData';
+import { faqPageSchema } from '@/lib/seo/structuredData';
+import { buildPageMetadata } from '@/lib/queries/pageSeo';
 
 export const revalidate = 120;
 
-export const metadata: Metadata = {
-  title: 'Frequently Asked Questions',
-  description:
-    'Answers to common questions about selling gold, jewellery, watches and handbags, our valuation process, ID requirements and payment timelines.',
-  alternates: { canonical: `${SITE_URL}/faqs` },
-  openGraph: { url: `${SITE_URL}/faqs` },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata('/faqs');
+}
 
 export default async function FaqsPage() {
   const faqs = await getFaqs();

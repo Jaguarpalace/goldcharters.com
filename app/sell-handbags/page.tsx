@@ -3,6 +3,7 @@ import { JsonLd } from '@/lib/seo/JsonLd';
 import { breadcrumbSchema, serviceSchema, SITE_URL } from '@/lib/seo/structuredData';
 import { findHomepageSection, getHomepageSections } from '@/lib/queries/homepage';
 import { getItemsWeBuy } from '@/lib/queries/items';
+import { buildPageMetadata } from '@/lib/queries/pageSeo';
 import { SellSection } from '@/components/public/SellSection';
 import { ItemsWeBuy } from '@/components/public/ItemsWeBuy';
 import { ValuationForm } from '@/components/public/ValuationForm';
@@ -11,29 +12,9 @@ import type { HomepageSection } from '@/types/database';
 
 export const revalidate = 120;
 
-export const metadata: Metadata = {
-  title: 'Sell Designer Handbags · Hermès, Chanel, Louis Vuitton · UK Specialists',
-  description:
-    'Sell pre-loved designer handbags — Hermès, Chanel, Louis Vuitton, Dior, Gucci, Prada — to a discreet UK private specialist. Authentication included. Same-day payment available.',
-  keywords: [
-    'sell designer handbag UK',
-    'sell Hermes bag UK',
-    'sell Hermes Birkin UK',
-    'sell Hermes Kelly UK',
-    'sell Chanel bag UK',
-    'sell Louis Vuitton UK',
-    'sell pre-loved handbag',
-    'designer handbag buyer',
-    'authenticate designer handbag',
-  ],
-  alternates: { canonical: `${SITE_URL}/sell-handbags` },
-  openGraph: {
-    url: `${SITE_URL}/sell-handbags`,
-    title: 'Sell Designer Handbags · UK Specialists',
-    description:
-      'Hermès, Chanel, Louis Vuitton, Dior, Gucci, Prada. Authentication included. Fair offers, same-day payment.',
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata('/sell-handbags');
+}
 
 // Hardcoded fallback so the page is fully functional even before the
 // supabase/migrations/002_handbags_watches.sql migration is applied.

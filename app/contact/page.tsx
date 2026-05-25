@@ -1,17 +1,13 @@
 import type { Metadata } from 'next';
 import { getSiteSettings } from '@/lib/queries/homepage';
+import { buildPageMetadata } from '@/lib/queries/pageSeo';
 import { ValuationForm } from '@/components/public/ValuationForm';
-import { SITE_URL } from '@/lib/seo/structuredData';
 
 export const revalidate = 120;
 
-export const metadata: Metadata = {
-  title: 'Contact · Private Valuations',
-  description:
-    'Speak with a Charters Gold specialist. Telephone, email, WhatsApp or in-person appointment in Egham, Surrey.',
-  alternates: { canonical: `${SITE_URL}/contact` },
-  openGraph: { url: `${SITE_URL}/contact` },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata('/contact');
+}
 
 export default async function ContactPage() {
   const settings = await getSiteSettings();

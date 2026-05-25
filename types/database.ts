@@ -490,6 +490,25 @@ export type EmailTemplateVariable = {
   example: string;
 };
 
+/**
+ * Per-route SEO metadata override. Keyed by the route slug (e.g. '/sell-gold').
+ * Edited from /admin/seo. Pages call `getPageSeo(slug)` during
+ * `generateMetadata` and fall back to a hardcoded default when the row is
+ * absent, so the public site is never broken by a missing CMS entry.
+ */
+export type PageSeo = {
+  slug: string;
+  title: string;
+  description: string;
+  keywords: string[] | null;
+  og_title: string | null;
+  og_description: string | null;
+  og_image_url: string | null;
+  canonical_url: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
 export type EmailTemplate = {
   id: string;
   key: string;

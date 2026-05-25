@@ -2,17 +2,13 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getBlogPosts } from '@/lib/queries/blog';
-import { SITE_URL } from '@/lib/seo/structuredData';
+import { buildPageMetadata } from '@/lib/queries/pageSeo';
 
 export const revalidate = 300; // 5 minutes
 
-export const metadata: Metadata = {
-  title: 'Insights & Guides · Charters Gold',
-  description:
-    'Practical guides on selling gold, fine jewellery, luxury watches and designer handbags in the UK — written by Charters Gold specialists.',
-  alternates: { canonical: `${SITE_URL}/blog` },
-  openGraph: { url: `${SITE_URL}/blog`, type: 'website' },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata('/blog');
+}
 
 export default async function BlogIndex() {
   const posts = await getBlogPosts();
