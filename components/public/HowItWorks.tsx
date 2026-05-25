@@ -76,11 +76,13 @@ export function HowItWorks({
   const buySteps =
     (buySection ? readSteps(buySection.extra) : null) ?? [...DEFAULT_BUY_STEPS];
   const steps = tab === 'sell' ? sellSteps : buySteps;
-  // Heading + eyebrow + optional body subhead all come from whichever side
+  // Heading + tagline + optional body subhead all come from whichever side
   // is showing — keeps the admin's labels in sync with the visible tab.
+  // Eyebrow stays as a fixed section label ("How It Works"); CMS subtitle
+  // renders as a small gold tagline UNDER the heading.
   const sourceSection = tab === 'sell' ? sellSection : buySection;
-  const eyebrow = sourceSection?.subtitle ?? 'How It Works';
   const heading = sourceSection?.title ?? 'A Considered, Step-by-Step Process';
+  const subtitle = sourceSection?.subtitle ?? null;
   const subhead = sourceSection?.body ?? null;
   const HeadingTag = asH1 ? 'h1' : 'h2';
   const headingClass = asH1 ? 'gc-heading-xl mt-4' : 'gc-heading mt-3';
@@ -90,8 +92,13 @@ export function HowItWorks({
       <div className="gc-container">
         <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
           <div className="max-w-2xl">
-            <span className="gc-eyebrow">{eyebrow}</span>
+            <span className="gc-eyebrow">How It Works</span>
             <HeadingTag className={headingClass}>{heading}</HeadingTag>
+            {subtitle && (
+              <p className="mt-3 text-sm uppercase tracking-luxe text-gold-tint">
+                {subtitle}
+              </p>
+            )}
             {subhead && <p className="gc-subhead mt-3">{subhead}</p>}
           </div>
           {BUY_ENABLED && (

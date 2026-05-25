@@ -77,8 +77,8 @@ function readPathways(extra: HomepageSection['extra']): Pathway[] | null {
 }
 
 export function SellBuyPathways({ section }: { section?: HomepageSection }) {
-  const eyebrow = section?.subtitle ?? 'Two Distinct Journeys';
   const title = section?.title ?? 'Sell To Us · Buy From Us';
+  const subtitle = section?.subtitle ?? null;
   const subhead =
     section?.body ??
     'Our private clients choose one of two pathways. Both are handled with the same level of care and discretion.';
@@ -88,8 +88,13 @@ export function SellBuyPathways({ section }: { section?: HomepageSection }) {
     <section className="relative border-b border-gold-metallic/15 py-6 lg:py-10">
       <div className="gc-container">
         <div className="mx-auto max-w-3xl text-center">
-          <span className="gc-eyebrow">{eyebrow}</span>
+          <span className="gc-eyebrow">Two Distinct Journeys</span>
           <h2 className="gc-heading mt-4">{title}</h2>
+          {subtitle && (
+            <p className="mt-3 text-sm uppercase tracking-luxe text-gold-tint">
+              {subtitle}
+            </p>
+          )}
           <p className="gc-subhead mt-4">{subhead}</p>
         </div>
 

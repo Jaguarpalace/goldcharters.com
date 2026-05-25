@@ -26,8 +26,8 @@ function paragraphs(body: string): string[] {
 }
 
 export function BrandIntro({ section }: { section?: HomepageSection }) {
-  const eyebrow = section?.subtitle ?? DEFAULT_EYEBROW;
   const title = section?.title ?? DEFAULT_TITLE;
+  const subtitle = section?.subtitle ?? null;
   const body = section?.body ?? DEFAULT_BODY;
 
   return (
@@ -35,8 +35,13 @@ export function BrandIntro({ section }: { section?: HomepageSection }) {
       <div className="gc-container">
         <div className="mx-auto max-w-3xl">
           <div className="text-center">
-            <span className="gc-eyebrow">{eyebrow}</span>
+            <span className="gc-eyebrow">{DEFAULT_EYEBROW}</span>
             <h2 className="gc-heading mt-3">{title}</h2>
+            {subtitle && (
+              <p className="mt-3 text-sm uppercase tracking-luxe text-gold-tint">
+                {subtitle}
+              </p>
+            )}
           </div>
 
           <div className="mt-7 space-y-5 text-[15px] leading-relaxed text-warmgrey">
