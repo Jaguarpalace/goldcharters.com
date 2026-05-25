@@ -36,7 +36,10 @@ export function SellSection({
       <div className="gc-container">
         <div className={`grid grid-cols-1 items-center gap-6 md:grid-cols-2 md:gap-10 lg:gap-14 ${flip ? 'md:[&>*:first-child]:order-2' : ''}`}>
           <div>
-            <span className="gc-eyebrow">{variant === 'gold' ? 'Sell Gold' : 'Sell Jewellery'}</span>
+            {/* Eyebrow removed — every variant duplicated the title
+                ('Sell Gold' / 'Sell Jewellery' above 'Sell Your Gold With
+                Confidence' was pure visual padding). The title carries
+                the section identity on its own. */}
             <HeadingTag className={headingClass}>{section.title}</HeadingTag>
             {section.subtitle && (
               <p className="mt-3 text-sm uppercase tracking-luxe text-gold-tint">

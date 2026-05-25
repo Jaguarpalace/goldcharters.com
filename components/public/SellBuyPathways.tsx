@@ -88,8 +88,7 @@ export function SellBuyPathways({ section }: { section?: HomepageSection }) {
     <section className="relative border-b border-gold-metallic/15 py-6 lg:py-10">
       <div className="gc-container">
         <div className="mx-auto max-w-3xl text-center">
-          <span className="gc-eyebrow">Two Distinct Journeys</span>
-          <h2 className="gc-heading mt-4">{title}</h2>
+          <h2 className="gc-heading">{title}</h2>
           {subtitle && (
             <p className="mt-3 text-sm uppercase tracking-luxe text-gold-tint">
               {subtitle}

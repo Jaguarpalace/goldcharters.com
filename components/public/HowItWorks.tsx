@@ -92,7 +92,6 @@ export function HowItWorks({
       <div className="gc-container">
         <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
           <div className="max-w-2xl">
-            <span className="gc-eyebrow">How It Works</span>
             <HeadingTag className={headingClass}>{heading}</HeadingTag>
             {subtitle && (
               <p className="mt-3 text-sm uppercase tracking-luxe text-gold-tint">

@@ -15,8 +15,7 @@ export function ShopTeaser({
       <div className="gc-container">
         <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
           <div>
-            <span className="gc-eyebrow">Shop The Collection</span>
-            <h2 className="gc-heading mt-3">{section?.title ?? 'Shop Gold & Jewellery'}</h2>
+            <h2 className="gc-heading">{section?.title ?? 'Shop Gold & Jewellery'}</h2>
             {section?.subtitle && (
               <p className="mt-3 text-sm uppercase tracking-luxe text-gold-tint">
                 {section.subtitle}

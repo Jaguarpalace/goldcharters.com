@@ -35,8 +35,7 @@ export function BrandIntro({ section }: { section?: HomepageSection }) {
       <div className="gc-container">
         <div className="mx-auto max-w-3xl">
           <div className="text-center">
-            <span className="gc-eyebrow">{DEFAULT_EYEBROW}</span>
-            <h2 className="gc-heading mt-3">{title}</h2>
+            <h2 className="gc-heading">{title}</h2>
             {subtitle && (
               <p className="mt-3 text-sm uppercase tracking-luxe text-gold-tint">
                 {subtitle}
