@@ -4,6 +4,12 @@ import { listValuationRequests } from '@/lib/actions/valuationRequests';
 import { getMetalSpots, spotForPurity } from '@/lib/services/metalPrice';
 import { formatGBP } from '@/lib/format';
 import {
+  computePortfolioSnapshot,
+  listHeldStockItems,
+  type MetalKey,
+} from '@/lib/queries/stockItems';
+import { listAuditLog, type AuditLogEntry } from '@/lib/queries/auditLog';
+import {
   VALUATION_STATUS_LABELS,
   type ValuationRequest,
   type ValuationRequestStatus,
@@ -23,10 +29,25 @@ const PIPELINE: ValuationRequestStatus[] = [
 ];
 
 export default async function AdminOverview() {
-  const [spots] = await Promise.all([getMetalSpots()]);
-  const requests = (isSupabaseConfigured()
-    ? ((await listValuationRequests()) as ValuationRequest[])
-    : []);
+  // Pull everything the dashboard needs in parallel — three independently
+  // cached upstreams (Supabase, metalprice API, Supabase again) — so the
+  // page renders fast even when the holdings ledger has hundreds of rows.
+  const [spots, requestsRaw, heldStock, auditEntries] = await Promise.all([
+    getMetalSpots(),
+    isSupabaseConfigured()
+      ? (listValuationRequests() as Promise<ValuationRequest[]>)
+      : Promise.resolve([] as ValuationRequest[]),
+    isSupabaseConfigured() ? listHeldStockItems() : Promise.resolve([]),
+    isSupabaseConfigured() ? listAuditLog(5) : Promise.resolve([] as AuditLogEntry[]),
+  ]);
+  const requests = requestsRaw;
+  const spotMap: Record<MetalKey, number | null> = {
+    gold: spots.gold?.per_gram_gbp ?? null,
+    silver: spots.silver?.per_gram_gbp ?? null,
+    platinum: spots.platinum?.per_gram_gbp ?? null,
+    palladium: spots.palladium?.per_gram_gbp ?? null,
+  };
+  const portfolio = computePortfolioSnapshot(heldStock, spotMap, spots.fetched_at);
 
   const now = Date.now();
   const startOfDay = new Date();
@@ -79,6 +100,14 @@ export default async function AdminOverview() {
         </p>
       </header>
 
+      {/* QUICK ACTIONS — the four highest-frequency entry points */}
+      <section className="flex flex-wrap gap-2">
+        <QuickAction href="/admin/walk-in" label="New walk-in purchase" tone="primary" />
+        <QuickAction href="/admin/valuation-requests" label="Valuation requests" />
+        <QuickAction href="/admin/holdings" label="Holdings ledger" />
+        <QuickAction href="/admin/customers" label="Customers" />
+      </section>
+
       {/* HERO METRICS — typography led, no cards, hairline gold dividers */}
       <section className="grid grid-cols-1 sm:grid-cols-3">
         <Metric
@@ -98,6 +127,42 @@ export default async function AdminOverview() {
           paid={paidIn(month)}
           withDivider
         />
+      </section>
+
+      {/* HOLDINGS SNAPSHOT — live cost basis vs current value */}
+      <section>
+        <div className="flex items-baseline justify-between gap-4">
+          <span className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">
+            Holdings
+          </span>
+          <Link
+            href="/admin/holdings"
+            className="text-[10px] uppercase tracking-luxe text-warmgrey transition hover:text-gold-bright"
+          >
+            View all →
+          </Link>
+        </div>
+        <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-4">
+          <HoldingStat label="Items held" value={portfolio.combined.count.toString()} />
+          <HoldingStat
+            label="Cost basis"
+            value={formatGBP(portfolio.combined.total_cost_gbp)}
+          />
+          <HoldingStat
+            label="Current value"
+            value={formatGBP(portfolio.combined.total_current_value_gbp)}
+            sub={
+              portfolio.spot_fetched_at
+                ? `Spot · ${new Date(portfolio.spot_fetched_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}`
+                : 'Live spot unavailable'
+            }
+          />
+          <HoldingStat
+            label="Unrealised P&L"
+            value={`${formatGBPSigned(portfolio.combined.pl_gbp)} · ${formatPct(portfolio.combined.pl_pct)}`}
+            tone={portfolio.combined.pl_gbp >= 0 ? 'positive' : 'negative'}
+          />
+        </div>
       </section>
 
       {/* PIPELINE — single line of stages, arrows in between */}
@@ -154,33 +219,54 @@ export default async function AdminOverview() {
           )}
         </Column>
 
-        <Column title="Recent activity" empty="No activity yet.">
-          {recent.length > 0 && (
+        <Column
+          title="Recent admin activity"
+          empty="Nothing logged yet — the audit trail starts collecting from the next admin write."
+        >
+          {auditEntries.length > 0 && (
             <ul className="divide-y divide-gold-metallic/10">
-              {recent.map((r) => (
-                <ActivityRow key={r.id} request={r} now={now} />
+              {auditEntries.map((e) => (
+                <AuditRow key={e.id} entry={e} now={now} />
               ))}
+              <li className="pt-3">
+                <Link
+                  href="/admin/audit-log"
+                  className="text-[10px] uppercase tracking-luxe text-warmgrey transition hover:text-gold-bright"
+                >
+                  View full audit log →
+                </Link>
+              </li>
             </ul>
           )}
         </Column>
       </section>
 
-      {/* LIVE SPOT — thin footer strip */}
-      <section className="flex flex-wrap items-baseline gap-x-8 gap-y-3 border-t border-gold-metallic/15 pt-6">
-        <span className="text-[10px] font-semibold uppercase tracking-luxe text-gold-metallic">
-          Live spot · gold
-        </span>
-        {goldGram ? (
-          <>
-            <SpotRow label="24ct" value={goldGram} />
-            <SpotRow label="22ct" value={spotForPurity(goldGram, 91.6)} />
-            <SpotRow label="18ct" value={spotForPurity(goldGram, 75.0)} />
-            <SpotRow label="14ct" value={spotForPurity(goldGram, 58.5)} />
-            <SpotRow label="9ct" value={spotForPurity(goldGram, 37.5)} />
-          </>
-        ) : (
-          <span className="text-[11px] text-warmgrey">Live feed temporarily unavailable.</span>
-        )}
+      {/* LIVE SPOT — gold carats on top row, other metals on bottom */}
+      <section className="space-y-3 border-t border-gold-metallic/15 pt-6">
+        <div className="flex flex-wrap items-baseline gap-x-8 gap-y-3">
+          <span className="text-[10px] font-semibold uppercase tracking-luxe text-gold-metallic">
+            Live spot · gold
+          </span>
+          {goldGram ? (
+            <>
+              <SpotRow label="24ct" value={goldGram} />
+              <SpotRow label="22ct" value={spotForPurity(goldGram, 91.6)} />
+              <SpotRow label="18ct" value={spotForPurity(goldGram, 75.0)} />
+              <SpotRow label="14ct" value={spotForPurity(goldGram, 58.5)} />
+              <SpotRow label="9ct" value={spotForPurity(goldGram, 37.5)} />
+            </>
+          ) : (
+            <span className="text-[11px] text-warmgrey">Live feed temporarily unavailable.</span>
+          )}
+        </div>
+        <div className="flex flex-wrap items-baseline gap-x-8 gap-y-3">
+          <span className="text-[10px] font-semibold uppercase tracking-luxe text-warmgrey">
+            Other metals
+          </span>
+          <SpotRow label="Silver" value={spotMap.silver} />
+          <SpotRow label="Platinum" value={spotMap.platinum} />
+          <SpotRow label="Palladium" value={spotMap.palladium} />
+        </div>
       </section>
     </div>
   );
@@ -329,6 +415,95 @@ function SpotRow({ label, value }: { label: string; value: number | null }) {
       </span>
     </span>
   );
+}
+
+function QuickAction({
+  href,
+  label,
+  tone = 'default',
+}: {
+  href: string;
+  label: string;
+  tone?: 'default' | 'primary';
+}) {
+  const base =
+    'inline-flex items-center gap-2 rounded-md border px-3.5 py-2 text-[11px] font-semibold uppercase tracking-luxe transition';
+  const theme =
+    tone === 'primary'
+      ? 'border-gold-metallic bg-gold-metallic/20 text-gold-bright shadow-[0_0_14px_-4px_rgba(212,175,55,0.55)] hover:bg-gold-metallic/30'
+      : 'border-gold-metallic/30 text-gold-tint hover:border-gold-metallic hover:bg-gold-metallic/10 hover:text-gold-bright';
+  return (
+    <Link href={href} className={`${base} ${theme}`}>
+      {label}
+    </Link>
+  );
+}
+
+function HoldingStat({
+  label,
+  value,
+  sub,
+  tone,
+}: {
+  label: string;
+  value: string;
+  sub?: string;
+  tone?: 'positive' | 'negative';
+}) {
+  return (
+    <div>
+      <p className="text-[10px] font-semibold uppercase tracking-luxe text-warmgrey">
+        {label}
+      </p>
+      <p
+        className={
+          'mt-1 font-display text-xl ' +
+          (tone === 'negative'
+            ? 'text-red-300'
+            : tone === 'positive'
+            ? 'text-emerald-300'
+            : 'text-white')
+        }
+      >
+        {value}
+      </p>
+      {sub && <p className="mt-0.5 text-[10px] uppercase tracking-luxe text-warmgrey/70">{sub}</p>}
+    </div>
+  );
+}
+
+function AuditRow({ entry, now }: { entry: AuditLogEntry; now: number }) {
+  const ago = relativeTime(now - +new Date(entry.created_at));
+  const summary = entry.note ?? `${entry.action.replace(/_/g, ' ')} · ${entry.entity_type}`;
+  return (
+    <li className="py-3">
+      <div className="flex items-baseline justify-between gap-3">
+        <span className="text-[13px] text-white">{summary}</span>
+        <span className="whitespace-nowrap text-[10px] uppercase tracking-luxe text-warmgrey">
+          {ago}
+        </span>
+      </div>
+      <div className="mt-0.5 text-[11px] text-warmgrey">
+        <span className="text-warmgrey/70">{entry.entity_type.replace(/_/g, ' ')}</span>
+        {entry.actor_email && (
+          <>
+            <span className="text-warmgrey/40"> · </span>
+            <span>{entry.actor_email}</span>
+          </>
+        )}
+      </div>
+    </li>
+  );
+}
+
+function formatGBPSigned(n: number): string {
+  const sign = n > 0 ? '+' : '';
+  return `${sign}${formatGBP(n)}`;
+}
+
+function formatPct(n: number): string {
+  const sign = n > 0 ? '+' : '';
+  return `${sign}${n.toFixed(2)}%`;
 }
 
 /* ----------------------------- Helpers ----------------------------------- */

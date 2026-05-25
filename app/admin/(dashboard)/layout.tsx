@@ -9,6 +9,7 @@ import { ThemeToggle, type AdminTheme } from './ThemeToggle';
 import { AdminBrand } from './AdminBrand';
 import { AdminShell } from './AdminShell';
 import { NavLink } from './NavLink';
+import { SearchPalette } from './SearchPalette';
 
 type NavItem = {
   href: string;
@@ -75,7 +76,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
         </p>
       </div>
 
-      <nav className="mt-8" aria-label="Admin navigation">
+      <div className="mt-6">
+        <SearchPalette />
+      </div>
+
+      <nav className="mt-6" aria-label="Admin navigation">
         <ul className="space-y-1 text-sm">
           {NAV.map((item) => {
             const inactive = item.shopOnly && !BUY_ENABLED;
