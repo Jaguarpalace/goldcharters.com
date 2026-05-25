@@ -38,6 +38,7 @@ export function mockSiteSettings(): SiteSettings {
     seo_title: 'Charters Gold · Private UK Gold & Jewellery Specialists',
     seo_description:
       'Sell gold, diamonds, fine jewellery, luxury watches and designer handbags to a discreet UK private valuation house. Same-day payment, transparent valuations, no obligation.',
+    purchase_disclaimer_text: null,
     updated_at: new Date().toISOString(),
   };
 }

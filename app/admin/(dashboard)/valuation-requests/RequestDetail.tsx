@@ -180,13 +180,14 @@ function AddToHoldingsBlock({ requestId }: { requestId: string }) {
   return (
     <div className="rounded-lg border border-gold-metallic/25 bg-ink-900/70 p-4">
       <h3 className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">
-        Holdings ledger
+        Purchase actions
       </h3>
       <p className="mt-2 text-[11px] leading-relaxed text-warmgrey">
-        Add this piece to the holdings ledger. Metal, weight, carat and payment are pre-filled
-        from this request, and the live spot price is stamped automatically.
+        Print the customer's purchase document &amp; seller disclaimer, then add the piece to the
+        holdings ledger (metal, weight, carat and payment pre-fill from this request, live spot is
+        stamped automatically).
       </p>
-      <div className="mt-3 flex items-center justify-end gap-3">
+      <div className="mt-3 flex flex-wrap items-center justify-end gap-3">
         {feedback?.ok === true && (
           <p className="text-[11px] text-gold-tint">
             Added as{' '}
@@ -202,6 +203,14 @@ function AddToHoldingsBlock({ requestId }: { requestId: string }) {
         {feedback?.ok === false && (
           <p className="text-[11px] text-amber-400">{feedback.error}</p>
         )}
+        <Link
+          href={`/admin/valuation-requests/${requestId}/print`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rounded-md border border-gold-metallic/40 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-luxe text-gold-tint transition hover:bg-gold-metallic/15 hover:text-gold-bright"
+        >
+          Print purchase document
+        </Link>
         <button
           type="button"
           onClick={submit}

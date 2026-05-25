@@ -19,6 +19,11 @@ export type SiteSettings = {
   social_links: Record<string, string> | null;
   seo_title: string;
   seo_description: string;
+  /**
+   * Plain-text disclaimer printed on the Purchase Confirmation & Seller's
+   * Disclaimer document. Newlines are preserved when rendered for print.
+   */
+  purchase_disclaimer_text: string | null;
   updated_at: string;
 };
 

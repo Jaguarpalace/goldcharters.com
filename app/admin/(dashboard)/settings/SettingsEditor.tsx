@@ -56,6 +56,20 @@ export function SettingsEditor({ initial }: { initial: SiteSettings }) {
         <TextArea label="SEO description" name="seo_description" value={s.seo_description} onChange={(v) => set('seo_description', v)} rows={3} />
       </Section>
 
+      <Section title="Purchase Disclaimer">
+        <div className="lg:col-span-2 -mt-2 mb-1 text-[11px] text-warmgrey">
+          Plain text only. Printed on the purchase document that the customer signs at the
+          moment of sale. Line breaks are preserved exactly as you type them.
+        </div>
+        <TextArea
+          label="Disclaimer text"
+          name="purchase_disclaimer_text"
+          value={s.purchase_disclaimer_text ?? ''}
+          onChange={(v) => set('purchase_disclaimer_text', v || null)}
+          rows={14}
+        />
+      </Section>
+
       <div className="flex items-center justify-between">
         {feedback ? (
           <p className={'text-sm ' + (feedback.kind === 'ok' ? 'text-gold-tint' : 'text-amber-400')}>

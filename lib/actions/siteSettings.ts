@@ -43,5 +43,6 @@ export async function updateSiteSettingsFromForm(formData: FormData): Promise<Sa
     footer_disclaimer: optionalText(formData.get('footer_disclaimer'), 800),
     seo_title: sanitiseText(formData.get('seo_title'), 160) || 'Charters Gold',
     seo_description: sanitiseText(formData.get('seo_description'), 300),
+    purchase_disclaimer_text: optionalText(formData.get('purchase_disclaimer_text'), 8000),
   });
 }
