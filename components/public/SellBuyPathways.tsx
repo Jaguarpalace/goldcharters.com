@@ -1,41 +1,117 @@
 import Link from 'next/link';
+import type { HomepageSection } from '@/types/database';
 
-export function SellBuyPathways() {
+/**
+ * "Sell To Us · Buy From Us" pathways block. Content lives in the CMS
+ * under section_key='sell_buy_pathways' (migration 019). The `extra`
+ * JSONB column carries an array of pathways under the `pathways` key.
+ *
+ * Hardcoded DEFAULT_PATHWAYS provide a guaranteed fallback so the page
+ * stays whole if the CMS row is missing or shape-drifted.
+ */
+type Pathway = {
+  label: string;
+  title: string;
+  body: string;
+  cta_label: string;
+  cta_href: string;
+  highlights: string[];
+  variant?: 'sell' | 'buy';
+};
+
+const DEFAULT_PATHWAYS: readonly Pathway[] = [
+  {
+    label: '01 · Selling',
+    title: 'Sell To Us',
+    body: 'Receive a professional valuation for gold, diamonds, jewellery, coins and bars. Upload photos, use our gold calculator, or request a private valuation.',
+    cta_label: 'Start Selling',
+    cta_href: '/sell-gold',
+    highlights: ['Live gold pricing', 'Same-day payment available', 'Multi-photo upload'],
+    variant: 'sell',
+  },
+  {
+    label: '02 · Buying',
+    title: 'Buy From Us',
+    body: 'Browse selected gold and jewellery items available to purchase online, with clear product details, photos and secure checkout.',
+    cta_label: 'Shop Now',
+    cta_href: '/shop',
+    highlights: ['Live stock availability', 'Curated collection', 'Secure UK delivery'],
+    variant: 'buy',
+  },
+];
+
+/**
+ * Defensive JSONB → typed read. Accepts unknown shapes from the database
+ * and returns null if the row doesn't carry the expected fields, so we
+ * fall back to the hardcoded defaults cleanly.
+ */
+function readPathways(extra: HomepageSection['extra']): Pathway[] | null {
+  if (!extra || typeof extra !== 'object') return null;
+  const raw = (extra as Record<string, unknown>).pathways;
+  if (!Array.isArray(raw)) return null;
+  const parsed = raw
+    .filter((p): p is Record<string, unknown> => !!p && typeof p === 'object')
+    .map((p): Pathway | null => {
+      const label = typeof p.label === 'string' ? p.label : null;
+      const title = typeof p.title === 'string' ? p.title : null;
+      const body = typeof p.body === 'string' ? p.body : null;
+      const ctaLabel = typeof p.cta_label === 'string' ? p.cta_label : null;
+      const ctaHref = typeof p.cta_href === 'string' ? p.cta_href : null;
+      const highlights = Array.isArray(p.highlights)
+        ? p.highlights.filter((h): h is string => typeof h === 'string')
+        : [];
+      const variant = p.variant === 'buy' ? 'buy' : 'sell';
+      if (!label || !title || !body || !ctaLabel || !ctaHref) return null;
+      return {
+        label,
+        title,
+        body,
+        cta_label: ctaLabel,
+        cta_href: ctaHref,
+        highlights,
+        variant,
+      };
+    })
+    .filter((p): p is Pathway => p !== null);
+  return parsed.length > 0 ? parsed : null;
+}
+
+export function SellBuyPathways({ section }: { section?: HomepageSection }) {
+  const eyebrow = section?.subtitle ?? 'Two Distinct Journeys';
+  const title = section?.title ?? 'Sell To Us · Buy From Us';
+  const subhead =
+    section?.body ??
+    'Our private clients choose one of two pathways. Both are handled with the same level of care and discretion.';
+  const pathways = (section ? readPathways(section.extra) : null) ?? [...DEFAULT_PATHWAYS];
+
   return (
     <section className="relative border-b border-gold-metallic/15 py-6 lg:py-10">
       <div className="gc-container">
         <div className="mx-auto max-w-3xl text-center">
-          <span className="gc-eyebrow">Two Distinct Journeys</span>
-          <h2 className="gc-heading mt-4">Sell To Us · Buy From Us</h2>
-          <p className="gc-subhead mt-4">
-            Our private clients choose one of two pathways. Both are handled with the same level of care and
-            discretion.
-          </p>
+          <span className="gc-eyebrow">{eyebrow}</span>
+          <h2 className="gc-heading mt-4">{title}</h2>
+          <p className="gc-subhead mt-4">{subhead}</p>
         </div>
 
         <div className="mt-10 grid gap-5 md:grid-cols-2 md:gap-6">
-          <PathwayCard
-            label="01 · Selling"
-            title="Sell To Us"
-            body="Receive a professional valuation for gold, diamonds, jewellery, coins and bars. Upload photos, use our gold calculator, or request a private valuation."
-            cta={{ label: 'Start Selling', href: '/sell-gold' }}
-            highlights={['Live gold pricing', 'Same-day payment available', 'Multi-photo upload']}
-          />
-          <PathwayCard
-            label="02 · Buying"
-            title="Buy From Us"
-            body="Browse selected gold and jewellery items available to purchase online, with clear product details, photos and secure checkout."
-            cta={{ label: 'Shop Now', href: '/shop' }}
-            highlights={['Live stock availability', 'Curated collection', 'Secure UK delivery']}
-            variant="buy"
-          />
+          {pathways.map((p) => (
+            <PathwayCard
+              key={p.title}
+              label={p.label}
+              title={p.title}
+              body={p.body}
+              cta={{ label: p.cta_label, href: p.cta_href }}
+              highlights={p.highlights}
+              variant={p.variant}
+            />
+          ))}
         </div>
       </div>
     </section>
   );
 }
 
-type Pathway = {
+type PathwayCardProps = {
   label: string;
   title: string;
   body: string;
@@ -44,7 +120,7 @@ type Pathway = {
   variant?: 'sell' | 'buy';
 };
 
-function PathwayCard({ label, title, body, cta, highlights, variant = 'sell' }: Pathway) {
+function PathwayCard({ label, title, body, cta, highlights, variant = 'sell' }: PathwayCardProps) {
   return (
     <article className="gc-card gc-card-gold-edge group relative overflow-hidden p-8 sm:p-10">
       <div

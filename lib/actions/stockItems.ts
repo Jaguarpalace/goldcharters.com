@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { requireAdminContext, type SaveResult } from './_helpers';
+import { logAdminAction } from './auditLog';
 import { getMetalSpots, spotForPurity } from '@/lib/services/metalPrice';
 import { purityToPercent } from '@/lib/schemas/valuationFormOptions';
 import type { StockItem } from '@/types/database';
@@ -116,6 +117,21 @@ export async function createStockItem(
   }
 
   refresh(data.id);
+  await logAdminAction({
+    admin: ctx.admin,
+    actorId: ctx.userId,
+    entity_type: 'stock_item',
+    entity_id: data.id,
+    action: 'create',
+    after: {
+      stock_number: data.stock_number,
+      metal_type: data.metal_type,
+      carat: data.carat,
+      weight_grams: data.weight_grams,
+      paid: data.acquired_paid_gbp,
+    },
+    note: `Created ${data.stock_number}`,
+  });
   return { ok: true, data };
 }
 
@@ -266,6 +282,24 @@ export async function recordStockItemSale(
     }
   }
 
+  if (data) {
+    await logAdminAction({
+      admin: ctx.admin,
+      actorId: ctx.userId,
+      entity_type: 'stock_item',
+      entity_id: id,
+      action: 'record_sale',
+      after: {
+        sold_to_name: data.sold_to_name,
+        sold_amount_gbp: data.sold_amount_gbp,
+        sold_at: data.sold_at,
+      },
+      note: `Sold ${existing.stock_number}${
+        data.sold_to_name ? ` to ${data.sold_to_name}` : ''
+      } · £${Number(data.sold_amount_gbp ?? 0).toLocaleString('en-GB')}`,
+    });
+  }
+
   if (error || !data) {
     console.error('[holdings:sale]', error);
     return { ok: false, error: error?.message ?? 'Could not record sale.' };
@@ -309,12 +343,31 @@ export async function deleteStockItem(id: string): Promise<SaveResult> {
   const ctx = await requireAdminContext();
   if ('error' in ctx) return { ok: false, error: ctx.error };
 
+  // Capture identifying fields before the row vanishes so the audit log
+  // retains a human-readable summary of what was deleted.
+  const { data: existing } = await ctx.admin
+    .from('stock_items')
+    .select('stock_number, metal_type, acquired_paid_gbp')
+    .eq('id', id)
+    .maybeSingle();
+
   const { error } = await ctx.admin.from('stock_items').delete().eq('id', id);
   if (error) {
     console.error('[holdings:delete]', error);
     return { ok: false, error: error.message };
   }
   refresh();
+  await logAdminAction({
+    admin: ctx.admin,
+    actorId: ctx.userId,
+    entity_type: 'stock_item',
+    entity_id: id,
+    action: 'delete',
+    before: existing ?? null,
+    note: existing
+      ? `Deleted ${(existing as { stock_number: string }).stock_number}`
+      : 'Deleted stock item',
+  });
   return { ok: true };
 }
 

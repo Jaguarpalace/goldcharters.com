@@ -16,7 +16,11 @@ export default async function HowItWorksPage() {
   return (
     <>
       {/* HowItWorks acts as the page hero — title renders as <h1>. */}
-      <HowItWorks asH1 />
+      <HowItWorks
+        asH1
+        sellSection={findHomepageSection(sections, 'how_it_works_sell')}
+        buySection={findHomepageSection(sections, 'how_it_works_buy')}
+      />
       <ValuationExplanation section={findHomepageSection(sections, 'valuation_explainer')} />
     </>
   );

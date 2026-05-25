@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { getSiteSettings } from '@/lib/queries/homepage';
 import { LegalPageLayout } from '@/components/public/LegalPageLayout';
 import { CookiePreferencesButton } from '@/components/public/CookiePreferencesButton';
+import { formatLegalDate, getLegalPage } from '@/lib/queries/legalPages';
 
 export const revalidate = 86400;
 
@@ -12,19 +13,30 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-const LAST_UPDATED = '23 May 2026';
+const DEFAULT_LAST_UPDATED = '23 May 2026';
+const DEFAULT_EYEBROW = 'Legal';
+const DEFAULT_TITLE = 'Cookie Policy';
 
 export default async function CookiesPage() {
-  const settings = await getSiteSettings();
+  const [settings, legal] = await Promise.all([getSiteSettings(), getLegalPage('cookies')]);
   const businessName = settings.business_name;
   const email = settings.email;
 
+  const lastUpdated = legal
+    ? formatLegalDate(legal.last_reviewed_at, DEFAULT_LAST_UPDATED)
+    : DEFAULT_LAST_UPDATED;
+  const eyebrow = legal?.eyebrow ?? DEFAULT_EYEBROW;
+  const title = legal?.title ?? DEFAULT_TITLE;
+  const intro =
+    legal?.intro ??
+    `This Cookie Policy explains how ${businessName} uses cookies and similar technologies when you visit chartersgold.co.uk. It should be read together with our Privacy Policy and Terms & Conditions.`;
+
   return (
     <LegalPageLayout
-      eyebrow="Legal"
-      title="Cookie Policy"
-      lastUpdated={LAST_UPDATED}
-      intro={`This Cookie Policy explains how ${businessName} uses cookies and similar technologies when you visit chartersgold.co.uk. It should be read together with our Privacy Policy and Terms & Conditions.`}
+      eyebrow={eyebrow}
+      title={title}
+      lastUpdated={lastUpdated}
+      intro={intro}
     >
       <h2>1. What Are Cookies?</h2>
       <p>

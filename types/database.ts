@@ -496,6 +496,60 @@ export type EmailTemplateVariable = {
  * `generateMetadata` and fall back to a hardcoded default when the row is
  * absent, so the public site is never broken by a missing CMS entry.
  */
+export type FormOption = {
+  id: string;
+  set_key: string;
+  value: string;
+  label: string;
+  display_order: number;
+  visible: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export const FORM_OPTION_SET_KEYS = [
+  'metal',
+  'item_form',
+  'jewellery_type',
+  'gemstone',
+  'watch_brand',
+  'handbag_brand',
+  'condition',
+  'box_papers',
+  'purity_gold',
+  'purity_silver',
+  'purity_platinum',
+] as const;
+
+export type FormOptionSetKey = (typeof FORM_OPTION_SET_KEYS)[number];
+
+export const FORM_OPTION_SET_LABELS: Record<FormOptionSetKey, string> = {
+  metal: 'Metal',
+  item_form: 'Item form (Coins, Bullion, …)',
+  jewellery_type: 'Jewellery type',
+  gemstone: 'Gemstone',
+  watch_brand: 'Watch brand',
+  handbag_brand: 'Handbag brand',
+  condition: 'Condition',
+  box_papers: 'Box / papers',
+  purity_gold: 'Purity — Gold',
+  purity_silver: 'Purity — Silver',
+  purity_platinum: 'Purity — Platinum',
+};
+
+/**
+ * Tiny CMS layer over the legal pages. Body prose stays in code (high-stakes
+ * legal text reviewed by counsel); only cosmetic surfaces are editable.
+ */
+export type LegalPage = {
+  slug: string;
+  eyebrow: string | null;
+  title: string | null;
+  intro: string | null;
+  last_reviewed_at: string;
+  updated_at: string;
+};
+
 export type PageSeo = {
   slug: string;
   title: string;

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { getSiteSettings } from '@/lib/queries/homepage';
 import { LegalPageLayout } from '@/components/public/LegalPageLayout';
+import { formatLegalDate, getLegalPage } from '@/lib/queries/legalPages';
 
 export const revalidate = 86400;
 
@@ -11,21 +12,32 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-const LAST_UPDATED = '23 May 2026';
+const DEFAULT_LAST_UPDATED = '23 May 2026';
+const DEFAULT_EYEBROW = 'Legal';
+const DEFAULT_TITLE = 'Terms & Conditions';
 
 export default async function TermsPage() {
-  const settings = await getSiteSettings();
+  const [settings, legal] = await Promise.all([getSiteSettings(), getLegalPage('terms')]);
   const businessName = settings.business_name;
   const email = settings.email;
   const phone = settings.phone;
   const address = settings.address ?? '';
 
+  const lastUpdated = legal
+    ? formatLegalDate(legal.last_reviewed_at, DEFAULT_LAST_UPDATED)
+    : DEFAULT_LAST_UPDATED;
+  const eyebrow = legal?.eyebrow ?? DEFAULT_EYEBROW;
+  const title = legal?.title ?? DEFAULT_TITLE;
+  const intro =
+    legal?.intro ??
+    `These Terms & Conditions ("Terms") govern your use of the website at chartersgold.co.uk (the "Site") and any transaction in which ${businessName} buys precious metals, jewellery, watches, handbags or related items from you. By using the Site or submitting items to us, you agree to be bound by these Terms.`;
+
   return (
     <LegalPageLayout
-      eyebrow="Legal"
-      title="Terms & Conditions"
-      lastUpdated={LAST_UPDATED}
-      intro={`These Terms & Conditions ("Terms") govern your use of the website at chartersgold.co.uk (the "Site") and any transaction in which ${businessName} buys precious metals, jewellery, watches, handbags or related items from you. By using the Site or submitting items to us, you agree to be bound by these Terms.`}
+      eyebrow={eyebrow}
+      title={title}
+      lastUpdated={lastUpdated}
+      intro={intro}
     >
       <h2>1. Definitions</h2>
       <p>In these Terms, unless the context requires otherwise:</p>

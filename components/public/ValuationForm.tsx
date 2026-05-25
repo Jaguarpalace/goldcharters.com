@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { createContext, useContext, useMemo, useState, useTransition } from 'react';
 import { submitValuationRequest } from '@/lib/actions/valuationRequests';
 import { MultiImageUploader, type SelectedFile } from './MultiImageUploader';
 import type { FormVariant } from '@/types/database';
@@ -8,15 +8,76 @@ import {
   BOX_PAPERS_OPTIONS,
   CONDITION_OPTIONS,
   GEMSTONE_OPTIONS,
+  GOLD_PURITY,
   HANDBAG_BRANDS,
   ITEM_FORM_OPTIONS,
   JEWELLERY_TYPE_OPTIONS,
   METAL_OPTIONS,
+  PLATINUM_PURITY,
+  SILVER_PURITY,
   WATCH_BRANDS,
   purityHintFor,
   purityLabelFor,
-  purityOptionsFor,
 } from '@/lib/schemas/valuationFormOptions';
+
+/**
+ * DB-backed form-option sets supplied by the parent server page. When the
+ * `options` prop isn't passed (or a particular set is empty) the form
+ * falls back to the schema constants imported above — the public site
+ * stays functional whether or not migration 020 has been applied yet.
+ */
+type DisplayOption = { value: string; label: string };
+type FormOptionSets = {
+  metal: DisplayOption[];
+  item_form: DisplayOption[];
+  jewellery_type: DisplayOption[];
+  gemstone: DisplayOption[];
+  watch_brand: DisplayOption[];
+  handbag_brand: DisplayOption[];
+  condition: DisplayOption[];
+  box_papers: DisplayOption[];
+  purity_gold: DisplayOption[];
+  purity_silver: DisplayOption[];
+  purity_platinum: DisplayOption[];
+};
+
+function buildFallbackSets(): FormOptionSets {
+  const simple = (arr: readonly string[]): DisplayOption[] =>
+    arr.map((v) => ({ value: v, label: v }));
+  const fromPurity = (
+    arr: readonly { value: string; label: string }[],
+  ): DisplayOption[] =>
+    arr.filter((p) => p.value.length > 0).map((p) => ({ value: p.value, label: p.label }));
+  return {
+    metal: simple(METAL_OPTIONS),
+    item_form: simple(ITEM_FORM_OPTIONS),
+    jewellery_type: simple(JEWELLERY_TYPE_OPTIONS),
+    gemstone: simple(GEMSTONE_OPTIONS),
+    watch_brand: simple(WATCH_BRANDS),
+    handbag_brand: simple(HANDBAG_BRANDS),
+    condition: simple(CONDITION_OPTIONS),
+    box_papers: simple(BOX_PAPERS_OPTIONS),
+    purity_gold: fromPurity(GOLD_PURITY),
+    purity_silver: fromPurity(SILVER_PURITY),
+    purity_platinum: fromPurity(PLATINUM_PURITY),
+  };
+}
+
+const FormOptionsContext = createContext<FormOptionSets | null>(null);
+function useFormOptions(): FormOptionSets {
+  // Falling back at the call site (rather than passing a default to
+  // createContext) lets us memoise the fallback once instead of allocating
+  // it on every render when no provider is present.
+  const ctx = useContext(FormOptionsContext);
+  return ctx ?? FALLBACK_SETS;
+}
+const FALLBACK_SETS = buildFallbackSets();
+
+function purityOptionsFor(metal: string, sets: FormOptionSets): DisplayOption[] {
+  if (metal === 'Silver') return sets.purity_silver;
+  if (metal === 'Platinum') return sets.purity_platinum;
+  return sets.purity_gold;
+}
 
 // ---------------------------------------------------------------------------
 //  Component
@@ -29,7 +90,69 @@ type Props = {
   defaultItemType?: string;
 };
 
-export function ValuationForm({ variant = 'metal', defaultItemType }: Props) {
+export function ValuationForm({
+  variant = 'metal',
+  defaultItemType,
+  options,
+}: Props & { options?: Partial<FormOptionSets> }) {
+  // Merge any DB-backed sets passed from the server with the schema-based
+  // fallback so a partial DB seed (or a single missing set) never breaks
+  // the form. Memoise so re-renders don't allocate fresh option arrays.
+  const mergedOptions: FormOptionSets = useMemo(() => {
+    if (!options) return FALLBACK_SETS;
+    return {
+      metal: options.metal && options.metal.length > 0 ? options.metal : FALLBACK_SETS.metal,
+      item_form:
+        options.item_form && options.item_form.length > 0
+          ? options.item_form
+          : FALLBACK_SETS.item_form,
+      jewellery_type:
+        options.jewellery_type && options.jewellery_type.length > 0
+          ? options.jewellery_type
+          : FALLBACK_SETS.jewellery_type,
+      gemstone:
+        options.gemstone && options.gemstone.length > 0
+          ? options.gemstone
+          : FALLBACK_SETS.gemstone,
+      watch_brand:
+        options.watch_brand && options.watch_brand.length > 0
+          ? options.watch_brand
+          : FALLBACK_SETS.watch_brand,
+      handbag_brand:
+        options.handbag_brand && options.handbag_brand.length > 0
+          ? options.handbag_brand
+          : FALLBACK_SETS.handbag_brand,
+      condition:
+        options.condition && options.condition.length > 0
+          ? options.condition
+          : FALLBACK_SETS.condition,
+      box_papers:
+        options.box_papers && options.box_papers.length > 0
+          ? options.box_papers
+          : FALLBACK_SETS.box_papers,
+      purity_gold:
+        options.purity_gold && options.purity_gold.length > 0
+          ? options.purity_gold
+          : FALLBACK_SETS.purity_gold,
+      purity_silver:
+        options.purity_silver && options.purity_silver.length > 0
+          ? options.purity_silver
+          : FALLBACK_SETS.purity_silver,
+      purity_platinum:
+        options.purity_platinum && options.purity_platinum.length > 0
+          ? options.purity_platinum
+          : FALLBACK_SETS.purity_platinum,
+    };
+  }, [options]);
+
+  return (
+    <FormOptionsContext.Provider value={mergedOptions}>
+      <ValuationFormInner variant={variant} defaultItemType={defaultItemType} />
+    </FormOptionsContext.Provider>
+  );
+}
+
+function ValuationFormInner({ variant = 'metal', defaultItemType }: Props) {
   const [files, setFiles] = useState<SelectedFile[]>([]);
   const [serverError, setServerError] = useState<string | null>(null);
   const [success, setSuccess] = useState<
@@ -229,24 +352,21 @@ function MetalBranch() {
   // option list. Default to Gold since that's the most common case and
   // matches the first (auto-checked) chip.
   const [metal, setMetal] = useState<string>('Gold');
-  const purityOptions = purityOptionsFor(metal);
+  const opts = useFormOptions();
+  const purityOptions = purityOptionsFor(metal, opts);
 
   return (
     <>
       <Question number={1} label="Which metal?" required>
         <ChipGroup
           name="metal_type"
-          options={METAL_OPTIONS.map((m) => ({ value: m, label: m }))}
+          options={opts.metal}
           required
           onChange={setMetal}
         />
       </Question>
       <Question number={2} label="What form is it in?" required>
-        <ChipGroup
-          name="item_category"
-          options={ITEM_FORM_OPTIONS.map((c) => ({ value: c, label: c }))}
-          required
-        />
+        <ChipGroup name="item_category" options={opts.item_form} required />
       </Question>
       <Question
         number={3}
@@ -293,20 +413,14 @@ function MetalBranch() {
 }
 
 function JewelleryBranch() {
+  const opts = useFormOptions();
   return (
     <>
       <Question number={1} label="What type of piece?" required>
-        <ChipGroup
-          name="jewellery_type"
-          options={JEWELLERY_TYPE_OPTIONS.map((j) => ({ value: j, label: j }))}
-          required
-        />
+        <ChipGroup name="jewellery_type" options={opts.jewellery_type} required />
       </Question>
       <Question number={2} label="Main gemstone?" hint="Optional — leave blank if none or unsure.">
-        <ChipGroup
-          name="gemstone"
-          options={GEMSTONE_OPTIONS.map((g) => ({ value: g, label: g }))}
-        />
+        <ChipGroup name="gemstone" options={opts.gemstone} />
       </Question>
       <Question number={3} label="Brand or designer?" hint="Optional — Cartier, Tiffany, Boodles, etc.">
         <input name="brand" placeholder="e.g. Cartier" className="gc-input max-w-md" />
@@ -316,56 +430,41 @@ function JewelleryBranch() {
 }
 
 function WatchBranch() {
+  const opts = useFormOptions();
   return (
     <>
       <Question number={1} label="Brand?" required>
-        <ChipGroup
-          name="brand"
-          options={WATCH_BRANDS.map((b) => ({ value: b, label: b }))}
-          required
-        />
+        <ChipGroup name="brand" options={opts.watch_brand} required />
       </Question>
       <Question number={2} label="Model" hint="Optional — e.g. Submariner 116610LN, Nautilus 5711.">
         <input name="model" placeholder="e.g. Submariner Date" className="gc-input max-w-md" />
       </Question>
       <Question number={3} label="Box & papers?" hint="Optional — affects valuation but not required.">
-        <ChipGroup
-          name="box_papers"
-          options={BOX_PAPERS_OPTIONS.map((b) => ({ value: b, label: b }))}
-        />
+        <ChipGroup name="box_papers" options={opts.box_papers} />
       </Question>
     </>
   );
 }
 
 function HandbagBranch() {
+  const opts = useFormOptions();
   return (
     <>
       <Question number={1} label="Brand?" required>
-        <ChipGroup
-          name="brand"
-          options={HANDBAG_BRANDS.map((b) => ({ value: b, label: b }))}
-          required
-        />
+        <ChipGroup name="brand" options={opts.handbag_brand} required />
       </Question>
       <Question number={2} label="Model" hint="Optional — e.g. Birkin 30, Classic Flap Medium.">
         <input name="model" placeholder="e.g. Birkin 30" className="gc-input max-w-md" />
       </Question>
       <Question number={3} label="Condition?" hint="Optional.">
-        <ChipGroup
-          name="condition"
-          options={CONDITION_OPTIONS.map((c) => ({ value: c, label: c }))}
-        />
+        <ChipGroup name="condition" options={opts.condition} />
       </Question>
       <Question
         number={4}
         label="Original box / dustbag / receipt?"
         hint="Optional."
       >
-        <ChipGroup
-          name="box_papers"
-          options={BOX_PAPERS_OPTIONS.map((b) => ({ value: b, label: b }))}
-        />
+        <ChipGroup name="box_papers" options={opts.box_papers} />
       </Question>
     </>
   );

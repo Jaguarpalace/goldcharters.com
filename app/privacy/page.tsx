@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { getSiteSettings } from '@/lib/queries/homepage';
 import { LegalPageLayout } from '@/components/public/LegalPageLayout';
+import { formatLegalDate, getLegalPage } from '@/lib/queries/legalPages';
 
 export const revalidate = 86400; // legal pages change rarely — refresh daily
 
@@ -11,21 +12,32 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-const LAST_UPDATED = '23 May 2026';
+const DEFAULT_LAST_UPDATED = '23 May 2026';
+const DEFAULT_EYEBROW = 'Legal';
+const DEFAULT_TITLE = 'Privacy Policy';
 
 export default async function PrivacyPage() {
-  const settings = await getSiteSettings();
+  const [settings, legal] = await Promise.all([getSiteSettings(), getLegalPage('privacy')]);
   const businessName = settings.business_name;
   const email = settings.email;
   const phone = settings.phone;
   const address = settings.address ?? '';
 
+  const lastUpdated = legal
+    ? formatLegalDate(legal.last_reviewed_at, DEFAULT_LAST_UPDATED)
+    : DEFAULT_LAST_UPDATED;
+  const eyebrow = legal?.eyebrow ?? DEFAULT_EYEBROW;
+  const title = legal?.title ?? DEFAULT_TITLE;
+  const intro =
+    legal?.intro ??
+    `${businessName} ("we", "us", "our") is committed to protecting and respecting your privacy. This Privacy Policy explains how we collect, use, store, share and protect your personal data when you interact with our website, request a valuation, send items for inspection, or otherwise transact with us.`;
+
   return (
     <LegalPageLayout
-      eyebrow="Legal"
-      title="Privacy Policy"
-      lastUpdated={LAST_UPDATED}
-      intro={`${businessName} ("we", "us", "our") is committed to protecting and respecting your privacy. This Privacy Policy explains how we collect, use, store, share and protect your personal data when you interact with our website, request a valuation, send items for inspection, or otherwise transact with us.`}
+      eyebrow={eyebrow}
+      title={title}
+      lastUpdated={lastUpdated}
+      intro={intro}
     >
       <h2>1. About This Policy</h2>
       <p>

@@ -82,7 +82,9 @@ export default async function HomePage() {
         ]}
       />
       <Hero section={findHomepageSection(sections, 'hero')} />
-      {BUY_ENABLED && <SellBuyPathways />}
+      {BUY_ENABLED && (
+        <SellBuyPathways section={findHomepageSection(sections, 'sell_buy_pathways')} />
+      )}
       <ServiceCards services={services} />
       <SellSection section={findHomepageSection(sections, 'sell_intro')} variant="gold" />
       <SellSection section={findHomepageSection(sections, 'jewellery_intro')} variant="jewellery" />
@@ -94,7 +96,10 @@ export default async function HomePage() {
       )}
       <ItemsWeBuy items={items} />
       <ValuationExplanation section={findHomepageSection(sections, 'valuation_explainer')} />
-      <HowItWorks />
+      <HowItWorks
+        sellSection={findHomepageSection(sections, 'how_it_works_sell')}
+        buySection={findHomepageSection(sections, 'how_it_works_buy')}
+      />
       <TrustSection cards={trust} />
 
       <section className="relative py-6 lg:py-10" id="valuation-form">
@@ -112,7 +117,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <BrandIntro />
+      <BrandIntro section={findHomepageSection(sections, 'brand_intro')} />
       <FAQSection faqs={faqs} />
     </>
   );

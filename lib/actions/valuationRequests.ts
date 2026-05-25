@@ -8,6 +8,7 @@ import { sendNewRequestNotification } from '@/lib/email/sendNewRequestNotificati
 import { sendCustomerConfirmation } from '@/lib/email/sendCustomerConfirmation';
 import { getMetalSpots } from '@/lib/services/metalPrice';
 import { purityToPercent } from '@/lib/schemas/valuationFormOptions';
+import { logAdminAction } from './auditLog';
 import type {
   FormVariant,
   PaymentMethod,
@@ -27,6 +28,7 @@ import {
   ALLOWED_METALS,
   ALLOWED_PURITIES,
 } from '@/lib/schemas/valuationFormOptions';
+import { getAllFormOptionSets } from '@/lib/queries/formOptions';
 
 // Form variants, item types and contact methods are independent of the
 // public-form option lists (they're branch identifiers / DB enum mirrors),
@@ -100,18 +102,46 @@ export async function submitValuationRequest(
   const variant: FormVariant = ALLOWED_VARIANTS.has(variantRaw) ? variantRaw : 'metal';
 
   // --- Branch-specific fields ---
+  // Pull the live form-option sets so the server validates against the
+  // same values the admin has configured in /admin/form-options. Falls
+  // back to the schema constants in lib/schemas/valuationFormOptions.ts
+  // automatically when the DB is unreachable.
+  const dbSets = await getAllFormOptionSets();
+  const dbAllow = (key: keyof typeof dbSets, fallback: Set<string>): Set<string> => {
+    const fromDb = new Set(dbSets[key].map((o) => o.value));
+    return fromDb.size > 0 ? fromDb : fallback;
+  };
+
   // Metal branch
-  const metalType = optionalFromSet(formData.get('metal_type'), ALLOWED_METALS);
-  const itemCategory = optionalFromSet(formData.get('item_category'), ALLOWED_ITEM_FORMS);
+  const metalType = optionalFromSet(
+    formData.get('metal_type'),
+    dbAllow('metal', ALLOWED_METALS),
+  );
+  const itemCategory = optionalFromSet(
+    formData.get('item_category'),
+    dbAllow('item_form', ALLOWED_ITEM_FORMS),
+  );
   const carat = optional(formData.get('carat'), 40);
   // Jewellery branch
-  const jewelleryType = optionalFromSet(formData.get('jewellery_type'), ALLOWED_JEWELLERY_TYPES);
-  const gemstone = optionalFromSet(formData.get('gemstone'), ALLOWED_GEMSTONES);
+  const jewelleryType = optionalFromSet(
+    formData.get('jewellery_type'),
+    dbAllow('jewellery_type', ALLOWED_JEWELLERY_TYPES),
+  );
+  const gemstone = optionalFromSet(
+    formData.get('gemstone'),
+    dbAllow('gemstone', ALLOWED_GEMSTONES),
+  );
   // Watch & handbag branches
   const brand = optional(formData.get('brand'), 80);
   const model = optional(formData.get('model'), 120);
-  const condition = optionalFromSet(formData.get('condition'), ALLOWED_CONDITIONS);
-  const boxPapers = optionalFromSet(formData.get('box_papers'), ALLOWED_BOX_PAPERS);
+  const condition = optionalFromSet(
+    formData.get('condition'),
+    dbAllow('condition', ALLOWED_CONDITIONS),
+  );
+  const boxPapers = optionalFromSet(
+    formData.get('box_papers'),
+    dbAllow('box_papers', ALLOWED_BOX_PAPERS),
+  );
 
   // Free text / numbers — used by any branch
   const description = optional(formData.get('description'), 2000);
@@ -521,8 +551,10 @@ export async function updateValuationStatus(
   const admin = getAdminSupabase();
   if (!admin) return { ok: false, error: 'Server error.' };
 
-  // Confirm the caller is an admin via their session.
+  // Confirm the caller is an admin via their session, and capture the
+  // actor id for the audit log in the same step.
   const session = getServerSupabase();
+  let actorId: string | null = null;
   if (session) {
     const { data: { user } } = await session.auth.getUser();
     if (!user) return { ok: false, error: 'Not authenticated.' };
@@ -532,7 +564,15 @@ export async function updateValuationStatus(
       .eq('id', user.id)
       .maybeSingle();
     if (!profile) return { ok: false, error: 'Not authorised.' };
+    actorId = user.id;
   }
+
+  // Capture the previous status so the audit log records the transition.
+  const { data: prior } = await admin
+    .from('valuation_requests')
+    .select('status')
+    .eq('id', id)
+    .maybeSingle();
 
   const { error } = await admin
     .from('valuation_requests')
@@ -546,6 +586,23 @@ export async function updateValuationStatus(
 
   revalidatePath('/admin/valuation-requests');
   revalidatePath('/admin');
+
+  // Only log when we have a signed-in admin to attribute the change to.
+  if (actorId) {
+    {
+      await logAdminAction({
+        admin,
+        actorId,
+        entity_type: 'valuation_request',
+        entity_id: id,
+        action: 'change_status',
+        before: prior ?? null,
+        after: { status },
+        note: `Status → ${status}`,
+      });
+    }
+  }
+
   return { ok: true };
 }
 

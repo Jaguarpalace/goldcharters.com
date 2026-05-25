@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { requireAdminContext, errResult, type SaveResult } from './_helpers';
+import { logAdminAction } from './auditLog';
 import type { PageSeo } from '@/types/database';
 
 /**
@@ -84,6 +85,16 @@ export async function updatePageSeo(
   // request.
   revalidatePath('/admin/seo');
   revalidatePath(slug);
+
+  await logAdminAction({
+    admin: ctx.admin,
+    actorId: ctx.userId,
+    entity_type: 'page_seo',
+    entity_id: slug,
+    action: 'update',
+    after: { title: data.title, description: data.description },
+    note: `Updated SEO for ${slug}`,
+  });
 
   return { ok: true, data };
 }

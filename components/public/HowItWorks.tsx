@@ -2,10 +2,20 @@
 
 import { useState } from 'react';
 import { BUY_ENABLED } from '@/lib/features';
+import type { HomepageSection } from '@/types/database';
 
+/**
+ * "How It Works" three-step process. Steps are now driven by two CMS rows:
+ *   - section_key='how_it_works_sell'  (selling-side steps)
+ *   - section_key='how_it_works_buy'   (buying-side steps, BUY_ENABLED only)
+ *
+ * Each row stores its 3 steps inside `extra.steps` as an array of
+ * { title, body } objects. Hardcoded DEFAULT_SELL_STEPS / DEFAULT_BUY_STEPS
+ * keep the page intact if the row is absent or shape-drifted.
+ */
 type Step = { title: string; body: string };
 
-const SELL_STEPS: Step[] = [
+const DEFAULT_SELL_STEPS: readonly Step[] = [
   {
     title: 'Upload Details or Visit Us',
     body: 'Tell us what you have, use the calculator, upload photos, or arrange a private valuation.',
@@ -20,7 +30,7 @@ const SELL_STEPS: Step[] = [
   },
 ];
 
-const BUY_STEPS: Step[] = [
+const DEFAULT_BUY_STEPS: readonly Step[] = [
   {
     title: 'Browse The Collection',
     body: 'Explore selected jewellery and gold pieces available to purchase.',
@@ -35,9 +45,42 @@ const BUY_STEPS: Step[] = [
   },
 ];
 
-export function HowItWorks({ asH1 = false }: { asH1?: boolean }) {
+function readSteps(extra: HomepageSection['extra']): Step[] | null {
+  if (!extra || typeof extra !== 'object') return null;
+  const raw = (extra as Record<string, unknown>).steps;
+  if (!Array.isArray(raw)) return null;
+  const parsed = raw
+    .filter((s): s is Record<string, unknown> => !!s && typeof s === 'object')
+    .map((s): Step | null => {
+      const title = typeof s.title === 'string' ? s.title : null;
+      const body = typeof s.body === 'string' ? s.body : null;
+      if (!title || !body) return null;
+      return { title, body };
+    })
+    .filter((s): s is Step => s !== null);
+  return parsed.length > 0 ? parsed : null;
+}
+
+export function HowItWorks({
+  asH1 = false,
+  sellSection,
+  buySection,
+}: {
+  asH1?: boolean;
+  sellSection?: HomepageSection;
+  buySection?: HomepageSection;
+}) {
   const [tab, setTab] = useState<'sell' | 'buy'>('sell');
-  const steps = tab === 'sell' ? SELL_STEPS : BUY_STEPS;
+  const sellSteps =
+    (sellSection ? readSteps(sellSection.extra) : null) ?? [...DEFAULT_SELL_STEPS];
+  const buySteps =
+    (buySection ? readSteps(buySection.extra) : null) ?? [...DEFAULT_BUY_STEPS];
+  const steps = tab === 'sell' ? sellSteps : buySteps;
+  // Heading + eyebrow come from whichever side is showing — keeps the
+  // admin's labels in sync with the visible tab.
+  const sourceSection = tab === 'sell' ? sellSection : buySection;
+  const eyebrow = sourceSection?.subtitle ?? 'How It Works';
+  const heading = sourceSection?.title ?? 'A Considered, Step-by-Step Process';
   const HeadingTag = asH1 ? 'h1' : 'h2';
   const headingClass = asH1 ? 'gc-heading-xl mt-4' : 'gc-heading mt-3';
 
@@ -46,8 +89,8 @@ export function HowItWorks({ asH1 = false }: { asH1?: boolean }) {
       <div className="gc-container">
         <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
           <div>
-            <span className="gc-eyebrow">How It Works</span>
-            <HeadingTag className={headingClass}>A Considered, Step-by-Step Process</HeadingTag>
+            <span className="gc-eyebrow">{eyebrow}</span>
+            <HeadingTag className={headingClass}>{heading}</HeadingTag>
           </div>
           {BUY_ENABLED && (
             <div className="inline-flex rounded-full border border-gold-metallic/30 bg-ink-900/80 p-1">
