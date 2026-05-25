@@ -35,11 +35,11 @@ export function BrandIntro() {
             </p>
 
             <p>
-              We have served private clients across Surrey, London and the wider South-East for
-              over a decade and routinely act as the trusted alternative to Hatton Garden for
-              sellers who prefer a quieter, appointment-led service. Use the live gold calculator
-              below for an instant guide price per gram across 9ct, 14ct, 18ct, 22ct and 24ct
-              gold, then request a private valuation when you are ready for a firm offer.
+              We work by private appointment from our Surrey base and welcome clients from across
+              London and the wider South-East who prefer a quiet, considered service over a busy
+              high-street counter. Use the live gold calculator below for an instant guide price
+              per gram across 9ct, 14ct, 18ct, 22ct and 24ct gold, then request a private
+              valuation when you are ready for a firm offer.
             </p>
           </div>
         </div>
