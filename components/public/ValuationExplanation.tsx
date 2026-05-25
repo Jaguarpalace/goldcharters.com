@@ -12,8 +12,7 @@ export function ValuationExplanation({ section }: { section?: HomepageSection })
       <div className="gc-container">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr,1.1fr] lg:gap-12">
           <div>
-            <span className="gc-eyebrow">Transparent Valuations</span>
-            <h2 className="gc-heading mt-3">{section.title}</h2>
+            <h2 className="gc-heading">{section.title}</h2>
             {section.subtitle && (
               <p className="mt-3 text-sm uppercase tracking-luxe text-gold-tint">{section.subtitle}</p>
             )}

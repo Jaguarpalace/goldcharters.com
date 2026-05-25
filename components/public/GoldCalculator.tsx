@@ -52,11 +52,10 @@ export function GoldCalculator({
         {/* Header strip: title left, total card right */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-[1.4fr,1fr] md:items-end md:gap-8">
           <div>
-            <span className="gc-eyebrow">Sell Your Gold Calculator</span>
             {asH1 ? (
-              <h1 className="gc-heading-xl mt-4">Gold Calculator</h1>
+              <h1 className="gc-heading-xl">Gold Calculator</h1>
             ) : (
-              <h2 className="gc-heading mt-3">Gold Calculator</h2>
+              <h2 className="gc-heading">Gold Calculator</h2>
             )}
             <p className="gc-subhead mt-3 max-w-xl">
               Enter your item weights in grams to receive an instant guide price. Rates are managed by our
