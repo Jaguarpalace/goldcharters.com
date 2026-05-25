@@ -7,6 +7,36 @@ import { AdminImageUpload } from '@/components/admin/AdminImageUpload';
 
 type LocalSection = HomepageSection & { _dirty?: boolean };
 
+/**
+ * Per-section field-visibility map. Some sections (brand_intro, sell_buy_pathways,
+ * how_it_works_*, valuation_explainer) don't have a CTA button or image
+ * surface on the public site, so the admin editor hides those fields for
+ * them rather than offering ghost inputs the public renderer ignores.
+ *
+ * `hero` ignores body too — its descriptive text lives in `subtitle` and
+ * the hero badges already cover the secondary detail.
+ */
+const SECTIONS_WITHOUT_BODY = new Set<string>(['hero']);
+const SECTIONS_WITHOUT_CTA = new Set<string>([
+  'brand_intro',
+  'sell_buy_pathways',
+  'how_it_works_sell',
+  'how_it_works_buy',
+  'valuation_explainer',
+]);
+const SECTIONS_WITHOUT_IMAGE = new Set<string>([
+  'brand_intro',
+  'sell_buy_pathways',
+  'how_it_works_sell',
+  'how_it_works_buy',
+  'valuation_explainer',
+  'shop_intro',
+]);
+
+const usesBody = (key: string) => !SECTIONS_WITHOUT_BODY.has(key);
+const usesCta = (key: string) => !SECTIONS_WITHOUT_CTA.has(key);
+const usesImage = (key: string) => !SECTIONS_WITHOUT_IMAGE.has(key);
+
 export function HomepageEditor({ initial }: { initial: HomepageSection[] }) {
   const [sections, setSections] = useState<LocalSection[]>(initial);
   const [pending, startTransition] = useTransition();
@@ -84,35 +114,43 @@ export function HomepageEditor({ initial }: { initial: HomepageSection[] }) {
               value={s.subtitle ?? ''}
               onChange={(v) => update(s.id, { subtitle: v || null })}
             />
-            <Field
-              label="CTA label"
-              value={s.cta_label ?? ''}
-              onChange={(v) => update(s.id, { cta_label: v || null })}
-            />
-            <Field
-              label="CTA link"
-              value={s.cta_href ?? ''}
-              onChange={(v) => update(s.id, { cta_href: v || null })}
-              placeholder="/sell-gold"
-            />
+            {usesCta(s.section_key) && (
+              <>
+                <Field
+                  label="CTA label"
+                  value={s.cta_label ?? ''}
+                  onChange={(v) => update(s.id, { cta_label: v || null })}
+                />
+                <Field
+                  label="CTA link"
+                  value={s.cta_href ?? ''}
+                  onChange={(v) => update(s.id, { cta_href: v || null })}
+                  placeholder="/sell-gold"
+                />
+              </>
+            )}
           </div>
 
-          <div className="mt-5">
-            <TextArea
-              label="Body"
-              value={s.body ?? ''}
-              onChange={(v) => update(s.id, { body: v || null })}
-              rows={4}
-            />
-          </div>
+          {usesBody(s.section_key) && (
+            <div className="mt-5">
+              <TextArea
+                label="Body"
+                value={s.body ?? ''}
+                onChange={(v) => update(s.id, { body: v || null })}
+                rows={4}
+              />
+            </div>
+          )}
 
-          <div className="mt-5">
-            <AdminImageUpload
-              label="Image"
-              value={s.image_url}
-              onChange={(url) => update(s.id, { image_url: url })}
-            />
-          </div>
+          {usesImage(s.section_key) && (
+            <div className="mt-5">
+              <AdminImageUpload
+                label="Image"
+                value={s.image_url}
+                onChange={(url) => update(s.id, { image_url: url })}
+              />
+            </div>
+          )}
 
           <ExtraEditor section={s} update={update} />
 

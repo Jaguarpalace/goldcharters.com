@@ -76,11 +76,12 @@ export function HowItWorks({
   const buySteps =
     (buySection ? readSteps(buySection.extra) : null) ?? [...DEFAULT_BUY_STEPS];
   const steps = tab === 'sell' ? sellSteps : buySteps;
-  // Heading + eyebrow come from whichever side is showing — keeps the
-  // admin's labels in sync with the visible tab.
+  // Heading + eyebrow + optional body subhead all come from whichever side
+  // is showing — keeps the admin's labels in sync with the visible tab.
   const sourceSection = tab === 'sell' ? sellSection : buySection;
   const eyebrow = sourceSection?.subtitle ?? 'How It Works';
   const heading = sourceSection?.title ?? 'A Considered, Step-by-Step Process';
+  const subhead = sourceSection?.body ?? null;
   const HeadingTag = asH1 ? 'h1' : 'h2';
   const headingClass = asH1 ? 'gc-heading-xl mt-4' : 'gc-heading mt-3';
 
@@ -88,9 +89,10 @@ export function HowItWorks({
     <section className="relative border-y border-gold-metallic/15 py-6 lg:py-10">
       <div className="gc-container">
         <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
-          <div>
+          <div className="max-w-2xl">
             <span className="gc-eyebrow">{eyebrow}</span>
             <HeadingTag className={headingClass}>{heading}</HeadingTag>
+            {subhead && <p className="gc-subhead mt-3">{subhead}</p>}
           </div>
           {BUY_ENABLED && (
             <div className="inline-flex rounded-full border border-gold-metallic/30 bg-ink-900/80 p-1">

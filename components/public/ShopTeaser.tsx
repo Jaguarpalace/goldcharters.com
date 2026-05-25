@@ -15,7 +15,9 @@ export function ShopTeaser({
       <div className="gc-container">
         <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
           <div>
-            <span className="gc-eyebrow">Shop The Collection</span>
+            {/* Eyebrow defers to the CMS subtitle so admins can override
+                "Shop The Collection" without a code change. */}
+            <span className="gc-eyebrow">{section?.subtitle || 'Shop The Collection'}</span>
             <h2 className="gc-heading mt-3">{section?.title ?? 'Shop Gold & Jewellery'}</h2>
             <p className="gc-subhead mt-4 max-w-xl">{section?.body}</p>
           </div>
