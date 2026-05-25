@@ -362,6 +362,57 @@ export type AdminProfile = {
   created_at: string;
 };
 
+export type CustomerDocumentType =
+  | 'id'
+  | 'passport'
+  | 'driving_licence'
+  | 'proof_of_address'
+  | 'other';
+
+export const CUSTOMER_DOCUMENT_TYPES: CustomerDocumentType[] = [
+  'id',
+  'passport',
+  'driving_licence',
+  'proof_of_address',
+  'other',
+];
+
+export const CUSTOMER_DOCUMENT_TYPE_LABELS: Record<CustomerDocumentType, string> = {
+  id: 'ID Card',
+  passport: 'Passport',
+  driving_licence: 'Driving Licence',
+  proof_of_address: 'Proof of Address',
+  other: 'Other',
+};
+
+export type Customer = {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string | null;
+  address_line1: string | null;
+  address_line2: string | null;
+  city: string | null;
+  postcode: string | null;
+  country: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type CustomerDocument = {
+  id: string;
+  customer_id: string;
+  doc_type: CustomerDocumentType;
+  storage_path: string;
+  file_name: string | null;
+  mime_type: string | null;
+  size_bytes: number | null;
+  uploaded_by: string | null;
+  uploaded_at: string;
+};
+
 export type NotificationRecipient = {
   id: string;
   email: string;

@@ -28,6 +28,7 @@ const NAV: NavItem[] = [
   { href: '/admin/stock', label: 'Stock Movements', shopOnly: true },
   { href: '/admin/orders', label: 'Orders', shopOnly: true },
   { href: '/admin/valuation-requests', label: 'Valuation Requests' },
+  { href: '/admin/customers', label: 'Customers' },
   { href: '/admin/faqs', label: 'FAQs' },
   { href: '/admin/contact', label: 'Contact Details' },
   { href: '/admin/media', label: 'Media Library' },
