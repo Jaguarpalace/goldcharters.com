@@ -9,6 +9,7 @@ export async function listHeldStockItems(): Promise<StockItem[]> {
     .from('stock_items')
     .select('*')
     .eq('status', 'held')
+    .is('deleted_at', null)
     .order('acquired_at', { ascending: false });
   if (error || !data) return [];
   return data as StockItem[];
@@ -25,6 +26,7 @@ export async function listSoldStockItems(opts?: {
     .from('stock_items')
     .select('*')
     .eq('status', 'sold')
+    .is('deleted_at', null)
     .order('sold_at', { ascending: false });
   if (opts?.from) q = q.gte('sold_at', opts.from);
   if (opts?.to) q = q.lte('sold_at', opts.to);
@@ -33,14 +35,28 @@ export async function listSoldStockItems(opts?: {
   return data as StockItem[];
 }
 
-/** Full ledger — every row, every status. Used by CSV export. */
+/** Full ledger — every active row, every status. Used by CSV export. */
 export async function listAllStockItems(): Promise<StockItem[]> {
   const supabase = getServerSupabase();
   if (!supabase) return [];
   const { data, error } = await supabase
     .from('stock_items')
     .select('*')
+    .is('deleted_at', null)
     .order('acquired_at', { ascending: false });
+  if (error || !data) return [];
+  return data as StockItem[];
+}
+
+/** Soft-deleted stock items — surfaced on /admin/trash. */
+export async function listDeletedStockItems(): Promise<StockItem[]> {
+  const supabase = getServerSupabase();
+  if (!supabase) return [];
+  const { data, error } = await supabase
+    .from('stock_items')
+    .select('*')
+    .not('deleted_at', 'is', null)
+    .order('deleted_at', { ascending: false });
   if (error || !data) return [];
   return data as StockItem[];
 }
@@ -52,6 +68,7 @@ export async function getStockItem(id: string): Promise<StockItem | null> {
     .from('stock_items')
     .select('*')
     .eq('id', id)
+    .is('deleted_at', null)
     .maybeSingle();
   if (error || !data) return null;
   return data as StockItem;
@@ -65,6 +82,7 @@ export async function getStockItemsForCustomer(customerId: string): Promise<Stoc
     .from('stock_items')
     .select('*')
     .eq('customer_id', customerId)
+    .is('deleted_at', null)
     .order('acquired_at', { ascending: false });
   if (error || !data) return [];
   return data as StockItem[];
@@ -80,6 +98,7 @@ export async function getStockItemByValuationId(
     .from('stock_items')
     .select('*')
     .eq('valuation_request_id', valuationRequestId)
+    .is('deleted_at', null)
     .maybeSingle();
   if (error || !data) return null;
   return data as StockItem;

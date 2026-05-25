@@ -220,6 +220,8 @@ export type ValuationRequest = {
   paid_at: string | null;
   created_at: string;
   updated_at: string;
+  /** ISO timestamp when soft-deleted, or null while active. */
+  deleted_at: string | null;
 };
 
 export const PAYMENT_METHODS = ['cash', 'bank_transfer', 'cheque', 'card', 'other'] as const;
@@ -404,6 +406,8 @@ export type Customer = {
   notes: string | null;
   created_at: string;
   updated_at: string;
+  /** ISO timestamp when soft-deleted, or null while active. */
+  deleted_at: string | null;
 };
 
 export type CustomerDocument = {
@@ -463,6 +467,8 @@ export type StockItem = {
   notes: string | null;
   created_at: string;
   updated_at: string;
+  /** ISO timestamp when soft-deleted, or null while active. */
+  deleted_at: string | null;
 };
 
 export type NotificationRecipient = {

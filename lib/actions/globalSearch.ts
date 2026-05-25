@@ -30,26 +30,29 @@ export async function globalSearch(rawQuery: string): Promise<SearchHit[]> {
   const pat = `%${query.replace(/[%_]/g, (m) => `\\${m}`)}%`;
 
   const [customersRes, requestsRes, holdingsRes, blogRes, productsRes] = await Promise.all([
-    // Customers — name or email
+    // Customers — name or email (active rows only)
     ctx.admin
       .from('customers')
       .select('id, first_name, last_name, email')
       .or(`first_name.ilike.${pat},last_name.ilike.${pat},email.ilike.${pat}`)
+      .is('deleted_at', null)
       .limit(8),
-    // Valuation requests — name, email, brand, model
+    // Valuation requests — name, email, brand, model (active rows only)
     ctx.admin
       .from('valuation_requests')
       .select('id, first_name, last_name, email, brand, model, status')
       .or(
         `first_name.ilike.${pat},last_name.ilike.${pat},email.ilike.${pat},brand.ilike.${pat},model.ilike.${pat}`,
       )
+      .is('deleted_at', null)
       .order('created_at', { ascending: false })
       .limit(8),
-    // Stock items — stock number or description
+    // Stock items — stock number or description (active rows only)
     ctx.admin
       .from('stock_items')
       .select('id, stock_number, metal_type, carat, description, status')
       .or(`stock_number.ilike.${pat},description.ilike.${pat}`)
+      .is('deleted_at', null)
       .order('acquired_at', { ascending: false })
       .limit(8),
     // Blog posts — title or slug

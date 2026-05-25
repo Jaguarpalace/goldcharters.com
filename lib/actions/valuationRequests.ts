@@ -3,9 +3,10 @@
 import { revalidatePath } from 'next/cache';
 import { getAdminSupabase, getServerSupabase } from '@/lib/supabase/server';
 import { isSupabaseAdminConfigured } from '@/lib/supabase/env';
-import { requireAdminContext } from './_helpers';
+import { requireAdminContext, requireAdminRole } from './_helpers';
 import { sendNewRequestNotification } from '@/lib/email/sendNewRequestNotification';
 import { sendCustomerConfirmation } from '@/lib/email/sendCustomerConfirmation';
+import { sendStatusEmail } from '@/lib/email/sendStatusEmail';
 import { getMetalSpots } from '@/lib/services/metalPrice';
 import { purityToPercent } from '@/lib/schemas/valuationFormOptions';
 import { logAdminAction } from './auditLog';
@@ -400,6 +401,7 @@ export async function listValuationRequests(): Promise<ValuationRequestRow[]> {
   const { data, error } = await supabase
     .from('valuation_requests')
     .select('*, valuation_request_images(*)')
+    .is('deleted_at', null)
     .order('created_at', { ascending: false });
 
   if (error || !data || data.length === 0) return [];
@@ -510,6 +512,19 @@ export async function listValuationRequests(): Promise<ValuationRequestRow[]> {
   });
 }
 
+/** Soft-deleted valuation requests — surfaced on /admin/trash. */
+export async function listDeletedValuationRequests(): Promise<ValuationRequest[]> {
+  const supabase = getServerSupabase();
+  if (!supabase) return [];
+  const { data, error } = await supabase
+    .from('valuation_requests')
+    .select('*')
+    .not('deleted_at', 'is', null)
+    .order('deleted_at', { ascending: false });
+  if (error || !data) return [];
+  return data as ValuationRequest[];
+}
+
 /** Count of requests still needing action — drives the sidebar badge. */
 export async function countOutstandingRequests(): Promise<number> {
   const supabase = getServerSupabase();
@@ -518,6 +533,7 @@ export async function countOutstandingRequests(): Promise<number> {
   const { count, error } = await supabase
     .from('valuation_requests')
     .select('id', { count: 'exact', head: true })
+    .is('deleted_at', null)
     .not('status', 'in', '("bought","completed","rejected")');
 
   if (error) {
@@ -567,12 +583,13 @@ export async function updateValuationStatus(
     actorId = user.id;
   }
 
-  // Capture the previous status so the audit log records the transition.
+  // Capture the previous row so the audit log records the transition AND
+  // the customer email has the full record available to render.
   const { data: prior } = await admin
     .from('valuation_requests')
-    .select('status')
+    .select('*')
     .eq('id', id)
-    .maybeSingle();
+    .maybeSingle<ValuationRequest>();
 
   const { error } = await admin
     .from('valuation_requests')
@@ -582,6 +599,12 @@ export async function updateValuationStatus(
   if (error) {
     console.error('[valuation:update-status]', error);
     return { ok: false, error: error.message };
+  }
+
+  // Fire the customer-facing status email when the new status maps to one
+  // (offer_sent / rejected). Best-effort: never blocks the status change.
+  if (prior && prior.status !== status) {
+    await sendStatusEmail({ ...prior, status: status as typeof prior.status }, status);
   }
 
   revalidatePath('/admin/valuation-requests');
@@ -596,7 +619,7 @@ export async function updateValuationStatus(
         entity_type: 'valuation_request',
         entity_id: id,
         action: 'change_status',
-        before: prior ?? null,
+        before: prior ? { status: prior.status } : null,
         after: { status },
         note: `Status → ${status}`,
       });
@@ -857,42 +880,24 @@ export async function updateValuationPayment(
  * Intended for cleaning up test submissions or removing data on customer
  * request. There is no undo.
  */
+/**
+ * Soft-delete a valuation request. Uploaded photos stay in storage in
+ * case the row is restored later; they're only purged on hard delete.
+ */
 export async function deleteValuationRequest(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const ctx = await requireAdminContext();
   if ('error' in ctx) return { ok: false, error: ctx.error };
 
-  // Look up the image paths first so we can remove the storage objects.
-  // valuation_request_images has CASCADE on delete, so the rows themselves
-  // will go automatically when we drop the parent row — but the storage
-  // bucket has no FK to anything, so we must do that ourselves.
-  const { data: images } = await ctx.admin
-    .from('valuation_request_images')
-    .select('image_url')
-    .eq('valuation_request_id', id);
-
-  if (images && images.length > 0) {
-    const paths = (images as { image_url: string }[])
-      .map((row) => extractStoragePath(row.image_url, 'valuation-uploads'))
-      .filter((p): p is string => Boolean(p));
-    if (paths.length > 0) {
-      const { error } = await ctx.admin.storage
-        .from('valuation-uploads')
-        .remove(paths);
-      // Log but don't fail — orphan storage objects are recoverable, an
-      // orphan DB row is not.
-      if (error) console.error('[valuation:delete-storage]', error);
-    }
-  }
-
   const { error } = await ctx.admin
     .from('valuation_requests')
-    .delete()
-    .eq('id', id);
+    .update({ deleted_at: new Date().toISOString() })
+    .eq('id', id)
+    .is('deleted_at', null);
 
   if (error) {
-    console.error('[valuation:delete]', error);
+    console.error('[valuation:soft-delete]', error);
     return { ok: false, error: error.message };
   }
 
@@ -901,7 +906,79 @@ export async function deleteValuationRequest(
   return { ok: true };
 }
 
-/** Permanently delete many valuation requests at once. */
+/** Restore a soft-deleted valuation request. Idempotent. */
+export async function restoreValuationRequest(
+  id: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const ctx = await requireAdminContext();
+  if ('error' in ctx) return { ok: false, error: ctx.error };
+
+  const { error } = await ctx.admin
+    .from('valuation_requests')
+    .update({ deleted_at: null })
+    .eq('id', id);
+
+  if (error) {
+    console.error('[valuation:restore]', error);
+    return { ok: false, error: error.message };
+  }
+  revalidatePath('/admin/valuation-requests');
+  revalidatePath('/admin');
+  return { ok: true };
+}
+
+/**
+ * Permanently delete a valuation request including its uploaded photos.
+ * Only acts on rows already in trash so accidental clicks can't bypass
+ * the two-step workflow.
+ */
+export async function purgeValuationRequest(
+  id: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const ctx = await requireAdminRole();
+  if ('error' in ctx) return { ok: false, error: ctx.error };
+
+  const { data: row } = await ctx.admin
+    .from('valuation_requests')
+    .select('id, deleted_at')
+    .eq('id', id)
+    .maybeSingle();
+  if (!row) return { ok: true };
+  if ((row as { deleted_at: string | null }).deleted_at === null) {
+    return {
+      ok: false,
+      error: 'Move the request to trash first before permanent delete.',
+    };
+  }
+
+  // Look up the image paths first so we can remove the storage objects.
+  const { data: images } = await ctx.admin
+    .from('valuation_request_images')
+    .select('image_url')
+    .eq('valuation_request_id', id);
+
+  if (images && images.length > 0) {
+    const paths = (images as { image_url: string }[])
+      .map((r) => extractStoragePath(r.image_url, 'valuation-uploads'))
+      .filter((p): p is string => Boolean(p));
+    if (paths.length > 0) {
+      const { error } = await ctx.admin.storage.from('valuation-uploads').remove(paths);
+      if (error) console.error('[valuation:purge-storage]', error);
+    }
+  }
+
+  const { error } = await ctx.admin.from('valuation_requests').delete().eq('id', id);
+  if (error) {
+    console.error('[valuation:purge]', error);
+    return { ok: false, error: error.message };
+  }
+
+  revalidatePath('/admin/valuation-requests');
+  revalidatePath('/admin');
+  return { ok: true };
+}
+
+/** Soft-delete many valuation requests at once. */
 export async function bulkDeleteValuationRequests(
   ids: string[],
 ): Promise<{ ok: true; deleted: number } | { ok: false; error: string }> {
@@ -911,32 +988,15 @@ export async function bulkDeleteValuationRequests(
   if (!Array.isArray(ids) || ids.length === 0) return { ok: true, deleted: 0 };
   if (ids.length > 500) return { ok: false, error: 'Too many records selected.' };
 
-  // Storage cleanup first (same approach as single delete).
-  const { data: images } = await ctx.admin
-    .from('valuation_request_images')
-    .select('image_url')
-    .in('valuation_request_id', ids);
-
-  if (images && images.length > 0) {
-    const paths = (images as { image_url: string }[])
-      .map((row) => extractStoragePath(row.image_url, 'valuation-uploads'))
-      .filter((p): p is string => Boolean(p));
-    if (paths.length > 0) {
-      const { error } = await ctx.admin.storage
-        .from('valuation-uploads')
-        .remove(paths);
-      if (error) console.error('[valuation:bulk-delete-storage]', error);
-    }
-  }
-
   const { error, data } = await ctx.admin
     .from('valuation_requests')
-    .delete()
+    .update({ deleted_at: new Date().toISOString() })
     .in('id', ids)
+    .is('deleted_at', null)
     .select('id');
 
   if (error) {
-    console.error('[valuation:bulk-delete]', error);
+    console.error('[valuation:bulk-soft-delete]', error);
     return { ok: false, error: error.message };
   }
 

@@ -9,6 +9,7 @@ import {
   type MetalKey,
 } from '@/lib/queries/stockItems';
 import { listAuditLog, type AuditLogEntry } from '@/lib/queries/auditLog';
+import { SpotStaleBanner } from './_components/SpotStaleBanner';
 import {
   VALUATION_STATUS_LABELS,
   type ValuationRequest,
@@ -99,6 +100,8 @@ export default async function AdminOverview() {
           Live · {new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
         </p>
       </header>
+
+      <SpotStaleBanner snapshot={spots} />
 
       {/* QUICK ACTIONS — the four highest-frequency entry points */}
       <section className="flex flex-wrap gap-2">

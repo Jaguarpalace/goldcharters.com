@@ -5,6 +5,7 @@ import {
   listHeldStockItems,
   type MetalKey,
 } from '@/lib/queries/stockItems';
+import { SpotStaleBanner } from '../_components/SpotStaleBanner';
 import { HoldingsBoard } from './HoldingsBoard';
 
 export const dynamic = 'force-dynamic';
@@ -42,6 +43,8 @@ export default async function AdminHoldingsPage() {
           Connect Supabase to view real holdings. Preview mode does not persist edits.
         </div>
       )}
+
+      <SpotStaleBanner snapshot={spots} />
 
       <HoldingsBoard
         initialItems={items}

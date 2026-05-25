@@ -1,11 +1,11 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { optionalText, requireAdminContext, sanitiseText, type SaveResult } from './_helpers';
+import { optionalText, requireAdminRole, sanitiseText, type SaveResult } from './_helpers';
 
 export async function updateSiteSettings(id: string, patch: Record<string, unknown>): Promise<SaveResult> {
-  const ctx = await requireAdminContext();
-  if ('error' in ctx) return { ok: false, error: ctx.error };
+  const ctx = await requireAdminRole();
+  if ('error' in ctx) return { ok: false, error: ctx.error, code: ctx.code };
 
   const { error } = await ctx.admin
     .from('site_settings')

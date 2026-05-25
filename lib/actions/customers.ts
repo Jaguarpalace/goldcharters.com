@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { requireAdminContext, type SaveResult } from './_helpers';
+import { requireAdminContext, requireAdminRole, type SaveResult } from './_helpers';
 import {
   CUSTOMER_DOCUMENT_TYPES,
   type Customer,
@@ -92,12 +92,72 @@ export async function upsertCustomer(input: UpsertCustomer): Promise<SaveResult<
   return { ok: true, data: customer };
 }
 
+/**
+ * Soft-delete a customer. The row stays in the table with deleted_at
+ * stamped, so the admin can restore from /admin/trash. KYC documents
+ * are preserved — they're only purged on a hard delete.
+ */
 export async function deleteCustomer(id: string): Promise<SaveResult> {
   const ctx = await requireAdminContext();
   if ('error' in ctx) return { ok: false, error: ctx.error };
 
-  // Storage objects aren't deleted by the FK cascade — fetch their paths first
-  // so we can remove them after the row deletion succeeds.
+  const { error } = await ctx.admin
+    .from('customers')
+    .update({ deleted_at: new Date().toISOString() })
+    .eq('id', id)
+    .is('deleted_at', null);
+  if (error) {
+    console.error('[customers:soft-delete]', error);
+    return { ok: false, error: error.message };
+  }
+
+  refresh();
+  return { ok: true };
+}
+
+/** Restore a soft-deleted customer. Idempotent. */
+export async function restoreCustomer(id: string): Promise<SaveResult> {
+  const ctx = await requireAdminContext();
+  if ('error' in ctx) return { ok: false, error: ctx.error };
+
+  const { error } = await ctx.admin
+    .from('customers')
+    .update({ deleted_at: null })
+    .eq('id', id);
+  if (error) {
+    console.error('[customers:restore]', error);
+    return { ok: false, error: error.message };
+  }
+
+  refresh();
+  return { ok: true };
+}
+
+/**
+ * Permanently delete a customer. Removes KYC documents from storage too —
+ * irreversible. Only callable on rows that are already soft-deleted, to
+ * force a two-step "trash then purge" workflow.
+ */
+export async function purgeCustomer(id: string): Promise<SaveResult> {
+  const ctx = await requireAdminRole();
+  if ('error' in ctx) return { ok: false, error: ctx.error, code: ctx.code };
+
+  // Refuse to purge anything that isn't in the trash already.
+  const { data: row } = await ctx.admin
+    .from('customers')
+    .select('id, deleted_at')
+    .eq('id', id)
+    .maybeSingle();
+  if (!row) return { ok: true }; // already gone
+  if ((row as { deleted_at: string | null }).deleted_at === null) {
+    return {
+      ok: false,
+      error: 'Move the customer to trash first before permanent delete.',
+    };
+  }
+
+  // Storage objects aren't deleted by the FK cascade — fetch paths so we
+  // can clean them up after the row goes.
   const { data: docs } = await ctx.admin
     .from('customer_documents')
     .select('storage_path')
@@ -105,7 +165,7 @@ export async function deleteCustomer(id: string): Promise<SaveResult> {
 
   const { error } = await ctx.admin.from('customers').delete().eq('id', id);
   if (error) {
-    console.error('[customers:delete]', error);
+    console.error('[customers:purge]', error);
     return { ok: false, error: error.message };
   }
 
@@ -196,8 +256,8 @@ export async function uploadCustomerDocument(
 }
 
 export async function deleteCustomerDocument(id: string): Promise<SaveResult> {
-  const ctx = await requireAdminContext();
-  if ('error' in ctx) return { ok: false, error: ctx.error };
+  const ctx = await requireAdminRole();
+  if ('error' in ctx) return { ok: false, error: ctx.error, code: ctx.code };
 
   const { data: row, error: readError } = await ctx.admin
     .from('customer_documents')

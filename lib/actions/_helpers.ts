@@ -1,12 +1,20 @@
 import { getAdminSupabase, getServerSupabase } from '@/lib/supabase/server';
 import { isSupabaseAdminConfigured } from '@/lib/supabase/env';
 
+/** Roles defined on admin_profiles.role. */
+export type AdminRole = 'admin' | 'editor';
+
 // Discriminated union return type so callers can do `if ('error' in ctx)`
 // and TypeScript narrows ctx.error to a guaranteed string. The optional
 // `code` field lines up with SaveErrorCode below so an action that hits
 // the guard can propagate the auth failure with the right typed code.
 type AdminContext =
-  | { admin: NonNullable<ReturnType<typeof getAdminSupabase>>; userId: string }
+  | {
+      admin: NonNullable<ReturnType<typeof getAdminSupabase>>;
+      userId: string;
+      /** Role of the signed-in admin. Drives requireRole gates below. */
+      role: AdminRole;
+    }
   | { error: string; code?: SaveErrorCode };
 
 /**
@@ -29,15 +37,34 @@ export async function requireAdminContext(): Promise<AdminContext> {
 
   const { data: profile } = await supabase
     .from('admin_profiles')
-    .select('id')
+    .select('id, role')
     .eq('id', user.id)
-    .maybeSingle();
+    .maybeSingle<{ id: string; role: AdminRole }>();
   if (!profile) return { error: 'Not authorised.', code: 'FORBIDDEN' };
 
   const admin = getAdminSupabase();
   if (!admin) return { error: 'Server error.', code: 'UPSTREAM' };
 
-  return { admin, userId: user.id };
+  return { admin, userId: user.id, role: profile.role };
+}
+
+/**
+ * Stricter variant: only admin-role users are allowed through. Editors get
+ * a typed FORBIDDEN error suitable for surfacing to the client. Use at the
+ * top of irreversible / privileged actions (delete, settings, KYC docs).
+ */
+export async function requireAdminRole(): Promise<
+  AdminContext extends infer T ? T : never
+> {
+  const ctx = await requireAdminContext();
+  if ('error' in ctx) return ctx;
+  if (ctx.role !== 'admin') {
+    return {
+      error: 'This action is restricted to admin-role users.',
+      code: 'FORBIDDEN',
+    };
+  }
+  return ctx;
 }
 
 /**

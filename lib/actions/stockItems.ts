@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { requireAdminContext, type SaveResult } from './_helpers';
+import { requireAdminContext, requireAdminRole, type SaveResult } from './_helpers';
 import { logAdminAction } from './auditLog';
 import { getMetalSpots, spotForPurity } from '@/lib/services/metalPrice';
 import { purityToPercent } from '@/lib/schemas/valuationFormOptions';
@@ -339,21 +339,30 @@ export async function unmarkStockItemSale(id: string): Promise<SaveResult<StockI
 
 /* ------------------------------------------------------------- Delete --- */
 
+/**
+ * Soft-delete: the row is hidden from every dashboard but recoverable
+ * from /admin/trash. Stock numbers are NOT reused — a restored item
+ * keeps its original CG-NNNNNN.
+ */
 export async function deleteStockItem(id: string): Promise<SaveResult> {
   const ctx = await requireAdminContext();
   if ('error' in ctx) return { ok: false, error: ctx.error };
 
-  // Capture identifying fields before the row vanishes so the audit log
-  // retains a human-readable summary of what was deleted.
+  // Snapshot a couple of identifying fields so the audit log retains a
+  // human-readable summary of what was removed.
   const { data: existing } = await ctx.admin
     .from('stock_items')
     .select('stock_number, metal_type, acquired_paid_gbp')
     .eq('id', id)
     .maybeSingle();
 
-  const { error } = await ctx.admin.from('stock_items').delete().eq('id', id);
+  const { error } = await ctx.admin
+    .from('stock_items')
+    .update({ deleted_at: new Date().toISOString() })
+    .eq('id', id)
+    .is('deleted_at', null);
   if (error) {
-    console.error('[holdings:delete]', error);
+    console.error('[holdings:soft-delete]', error);
     return { ok: false, error: error.message };
   }
   refresh();
@@ -365,9 +374,56 @@ export async function deleteStockItem(id: string): Promise<SaveResult> {
     action: 'delete',
     before: existing ?? null,
     note: existing
-      ? `Deleted ${(existing as { stock_number: string }).stock_number}`
-      : 'Deleted stock item',
+      ? `Moved ${(existing as { stock_number: string }).stock_number} to trash`
+      : 'Moved stock item to trash',
   });
+  return { ok: true };
+}
+
+/** Restore a soft-deleted stock item. Idempotent. */
+export async function restoreStockItem(id: string): Promise<SaveResult> {
+  const ctx = await requireAdminContext();
+  if ('error' in ctx) return { ok: false, error: ctx.error };
+
+  const { error } = await ctx.admin
+    .from('stock_items')
+    .update({ deleted_at: null })
+    .eq('id', id);
+  if (error) {
+    console.error('[holdings:restore]', error);
+    return { ok: false, error: error.message };
+  }
+  refresh();
+  return { ok: true };
+}
+
+/**
+ * Permanently delete a stock item. Refuses to act on rows that haven't
+ * been moved to trash first, forcing a deliberate two-step workflow.
+ */
+export async function purgeStockItem(id: string): Promise<SaveResult> {
+  const ctx = await requireAdminRole();
+  if ('error' in ctx) return { ok: false, error: ctx.error, code: ctx.code };
+
+  const { data: row } = await ctx.admin
+    .from('stock_items')
+    .select('id, stock_number, deleted_at')
+    .eq('id', id)
+    .maybeSingle();
+  if (!row) return { ok: true };
+  if ((row as { deleted_at: string | null }).deleted_at === null) {
+    return {
+      ok: false,
+      error: 'Move the stock item to trash first before permanent delete.',
+    };
+  }
+
+  const { error } = await ctx.admin.from('stock_items').delete().eq('id', id);
+  if (error) {
+    console.error('[holdings:purge]', error);
+    return { ok: false, error: error.message };
+  }
+  refresh();
   return { ok: true };
 }
 
