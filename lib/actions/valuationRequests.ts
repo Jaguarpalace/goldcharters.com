@@ -15,9 +15,19 @@ import type {
   ValuationRequestStatus,
 } from '@/types/database';
 import { PAYMENT_METHODS } from '@/types/database';
+import {
+  ALLOWED_BOX_PAPERS,
+  ALLOWED_CONDITIONS,
+  ALLOWED_GEMSTONES,
+  ALLOWED_ITEM_FORMS,
+  ALLOWED_JEWELLERY_TYPES,
+  ALLOWED_METALS,
+  ALLOWED_PURITIES,
+} from '@/lib/schemas/valuationFormOptions';
 
-// Allowed values per branch — server validates against these, regardless of
-// what the client sends.
+// Form variants, item types and contact methods are independent of the
+// public-form option lists (they're branch identifiers / DB enum mirrors),
+// so they stay defined here.
 const ALLOWED_VARIANTS = new Set<FormVariant>(['metal', 'jewellery', 'watch', 'handbag']);
 
 const ALLOWED_ITEM_TYPES = new Set<string>([
@@ -34,19 +44,6 @@ const ALLOWED_ITEM_TYPES = new Set<string>([
 ]);
 
 const ALLOWED_CONTACT = new Set<string>(['phone', 'email', 'whatsapp']);
-const ALLOWED_METAL = new Set<string>(['Gold', 'Silver', 'Platinum']);
-const ALLOWED_ITEM_FORM = new Set<string>(['Coins', 'Bullion', 'Scrap', 'Jewellery', 'Other']);
-const ALLOWED_JEWELLERY_TYPE = new Set<string>([
-  'Ring',
-  'Necklace',
-  'Bracelet',
-  'Earrings',
-  'Pendant',
-  'Other',
-]);
-const ALLOWED_GEMSTONE = new Set<string>(['Diamond', 'Sapphire', 'Ruby', 'Emerald', 'Other', 'None']);
-const ALLOWED_BOX_PAPERS = new Set<string>(['All', 'Box only', 'Papers only', 'Some', 'Neither']);
-const ALLOWED_CONDITION = new Set<string>(['Excellent', 'Good', 'Fair', 'Worn']);
 
 const MAX_PHOTO_BYTES = 12 * 1024 * 1024;
 const MAX_PHOTOS = 12;
@@ -101,16 +98,16 @@ export async function submitValuationRequest(
 
   // --- Branch-specific fields ---
   // Metal branch
-  const metalType = optionalFromSet(formData.get('metal_type'), ALLOWED_METAL);
-  const itemCategory = optionalFromSet(formData.get('item_category'), ALLOWED_ITEM_FORM);
+  const metalType = optionalFromSet(formData.get('metal_type'), ALLOWED_METALS);
+  const itemCategory = optionalFromSet(formData.get('item_category'), ALLOWED_ITEM_FORMS);
   const carat = optional(formData.get('carat'), 40);
   // Jewellery branch
-  const jewelleryType = optionalFromSet(formData.get('jewellery_type'), ALLOWED_JEWELLERY_TYPE);
-  const gemstone = optionalFromSet(formData.get('gemstone'), ALLOWED_GEMSTONE);
+  const jewelleryType = optionalFromSet(formData.get('jewellery_type'), ALLOWED_JEWELLERY_TYPES);
+  const gemstone = optionalFromSet(formData.get('gemstone'), ALLOWED_GEMSTONES);
   // Watch & handbag branches
   const brand = optional(formData.get('brand'), 80);
   const model = optional(formData.get('model'), 120);
-  const condition = optionalFromSet(formData.get('condition'), ALLOWED_CONDITION);
+  const condition = optionalFromSet(formData.get('condition'), ALLOWED_CONDITIONS);
   const boxPapers = optionalFromSet(formData.get('box_papers'), ALLOWED_BOX_PAPERS);
 
   // Free text / numbers — used by any branch

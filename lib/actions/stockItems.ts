@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { requireAdminContext, type SaveResult } from './_helpers';
 import { getMetalSpots, spotForPurity } from '@/lib/services/metalPrice';
+import { purityToPercent } from '@/lib/schemas/valuationFormOptions';
 import type { StockItem } from '@/types/database';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -337,7 +338,7 @@ export async function createStockItemFromValuation(
 
   // Map carat strings like '22ct' → purity %.
   const carat = clean(vr.carat as string | null, 20);
-  const purity = caratToPurity(carat);
+  const purity = purityToPercent(carat);
 
   // Try to find the matching customer by email so the Holdings tab on the
   // KYC page lights up automatically. Not fatal if absent.
@@ -363,17 +364,6 @@ export async function createStockItemFromValuation(
     acquired_paid_gbp: paid,
     acquired_at: (vr.paid_at as string | null) ?? new Date().toISOString(),
   });
-}
-
-function caratToPurity(carat: string | null): number | null {
-  if (!carat) return null;
-  const c = carat.toLowerCase().replace(/\s+/g, '');
-  if (c.includes('9ct')) return 37.5;
-  if (c.includes('14ct')) return 58.5;
-  if (c.includes('18ct')) return 75.0;
-  if (c.includes('22ct')) return 91.6;
-  if (c.includes('24ct')) return 99.9;
-  return null;
 }
 
 function composeDescription(vr: Record<string, unknown>): string | null {

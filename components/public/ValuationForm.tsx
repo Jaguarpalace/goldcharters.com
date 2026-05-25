@@ -4,104 +4,19 @@ import { useState, useTransition } from 'react';
 import { submitValuationRequest } from '@/lib/actions/valuationRequests';
 import { MultiImageUploader, type SelectedFile } from './MultiImageUploader';
 import type { FormVariant } from '@/types/database';
-
-// ---------------------------------------------------------------------------
-//  Branch-specific option lists. Server validates against the same sets.
-// ---------------------------------------------------------------------------
-
-const METAL_OPTIONS = ['Gold', 'Silver', 'Platinum'] as const;
-const ITEM_FORM_OPTIONS = ['Coins', 'Bullion', 'Scrap', 'Jewellery', 'Other'] as const;
-
-/**
- * Purity options are metal-specific. Gold uses carats (a fraction of 24);
- * silver and platinum use fineness expressed as parts per 1,000. The
- * field stored in the DB is `carat: text`, so we just write the chosen
- * label into it ("18ct", "925", "950 platinum", etc.) — the admin sees it
- * as a free-text string and reads it correctly regardless of metal.
- */
-const GOLD_PURITY = [
-  { value: '', label: "I'm not sure" },
-  { value: '9ct', label: '9ct (37.5%)' },
-  { value: '10ct', label: '10ct (41.7%)' },
-  { value: '14ct', label: '14ct (58.5%)' },
-  { value: '18ct', label: '18ct (75.0%)' },
-  { value: '20ct', label: '20ct (83.3%)' },
-  { value: '21ct', label: '21ct (87.5%)' },
-  { value: '22ct', label: '22ct (91.6%)' },
-  { value: '24ct', label: '24ct (99.9%)' },
-];
-
-const SILVER_PURITY = [
-  { value: '', label: "I'm not sure" },
-  { value: '999 silver', label: 'Fine silver — 999 (99.9%)' },
-  { value: '958 silver', label: 'Britannia — 958 (95.8%)' },
-  { value: '925 silver', label: 'Sterling — 925 (92.5%)' },
-  { value: '900 silver', label: 'Coin silver — 900 (90%)' },
-];
-
-const PLATINUM_PURITY = [
-  { value: '', label: "I'm not sure" },
-  { value: '950 platinum', label: '950 (95%)' },
-  { value: '900 platinum', label: '900 (90%)' },
-  { value: '850 platinum', label: '850 (85%)' },
-];
-
-function purityOptionsFor(metal: string) {
-  if (metal === 'Silver') return SILVER_PURITY;
-  if (metal === 'Platinum') return PLATINUM_PURITY;
-  return GOLD_PURITY;
-}
-
-function purityLabelFor(metal: string) {
-  if (metal === 'Silver') return 'What silver fineness?';
-  if (metal === 'Platinum') return 'What platinum fineness?';
-  return 'What carat?';
-}
-
-function purityHintFor(metal: string) {
-  if (metal === 'Silver') {
-    return 'Silver purity is stamped as parts per 1,000. Common marks: 925 (Sterling) or 999 (fine).';
-  }
-  if (metal === 'Platinum') {
-    return 'Platinum purity is stamped as parts per 1,000. 950 is the most common.';
-  }
-  return "Look for a hallmark stamp — 9, 14, 18, 22, 24 etc. Leave blank if you're not sure.";
-}
-
-const JEWELLERY_TYPE_OPTIONS = [
-  'Ring',
-  'Necklace',
-  'Bracelet',
-  'Earrings',
-  'Pendant',
-  'Other',
-] as const;
-const GEMSTONE_OPTIONS = ['Diamond', 'Sapphire', 'Ruby', 'Emerald', 'Other', 'None'] as const;
-
-const WATCH_BRANDS = [
-  'Rolex',
-  'Patek Philippe',
-  'Audemars Piguet',
-  'Omega',
-  'Cartier',
-  'IWC',
-  'Jaeger-LeCoultre',
-  'Other',
-] as const;
-
-const HANDBAG_BRANDS = [
-  'Hermès',
-  'Chanel',
-  'Louis Vuitton',
-  'Dior',
-  'Gucci',
-  'Prada',
-  'Bottega Veneta',
-  'Other',
-] as const;
-
-const CONDITION_OPTIONS = ['Excellent', 'Good', 'Fair', 'Worn'] as const;
-const BOX_PAPERS_OPTIONS = ['All', 'Box only', 'Papers only', 'Neither'] as const;
+import {
+  BOX_PAPERS_OPTIONS,
+  CONDITION_OPTIONS,
+  GEMSTONE_OPTIONS,
+  HANDBAG_BRANDS,
+  ITEM_FORM_OPTIONS,
+  JEWELLERY_TYPE_OPTIONS,
+  METAL_OPTIONS,
+  WATCH_BRANDS,
+  purityHintFor,
+  purityLabelFor,
+  purityOptionsFor,
+} from '@/lib/schemas/valuationFormOptions';
 
 // ---------------------------------------------------------------------------
 //  Component

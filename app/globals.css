@@ -204,13 +204,19 @@ body {
    ------------------------------------------------------------------------ */
 .admin-shell[data-admin-theme='light'] {
   color-scheme: light;
+  /* Surfaces — cream page, white cards, beige raised panels */
   --ink-950-light: #f9f6ef;
   --ink-900-light: #ffffff;
-  --ink-800-light: #f1ead8;
-  --text-strong-light: #1c1a17;
-  --text-muted-light: #5a544c;
-  --gold-on-light: #8a6a08;
-  --gold-on-light-strong: #6e5300;
+  --ink-800-light: #ede5d0;
+  /* Text — strong/muted/faint, all hand-checked for WCAG AA against cream */
+  --text-strong-light: #1a1714;       /* body  ~16:1 vs cream */
+  --text-muted-light: #4a4338;        /* labels ~9:1  vs cream */
+  --text-faint-light: #6b6354;        /* helper ~5:1  vs cream — minimum allowed */
+  /* Gold accents — deep so they don't dissolve into the cream */
+  --gold-on-light: #705500;           /* eyebrows, links            ~7:1 */
+  --gold-on-light-strong: #5a4400;    /* hover / emphasis           ~9:1 */
+  /* Border base — used at varying alpha so even /15 stays visible */
+  --border-gold-base: 110, 80, 0;
   background: var(--ink-950-light);
   color: var(--text-strong-light);
 }
@@ -220,51 +226,79 @@ body {
 .admin-shell[data-admin-theme='light'] .bg-ink-900 { background-color: var(--ink-900-light) !important; }
 .admin-shell[data-admin-theme='light'] .bg-ink-800 { background-color: var(--ink-800-light) !important; }
 
-/* Translucent backgrounds — common in the admin */
-.admin-shell[data-admin-theme='light'] .bg-ink-950\/60 { background-color: rgba(249, 246, 239, 0.7) !important; }
-.admin-shell[data-admin-theme='light'] .bg-ink-950\/80 { background-color: rgba(249, 246, 239, 0.9) !important; }
-.admin-shell[data-admin-theme='light'] .bg-ink-900\/40 { background-color: rgba(255, 255, 255, 0.5) !important; }
-.admin-shell[data-admin-theme='light'] .bg-ink-900\/60 { background-color: rgba(255, 255, 255, 0.75) !important; }
-.admin-shell[data-admin-theme='light'] .bg-ink-900\/70 { background-color: rgba(255, 255, 255, 0.85) !important; }
-.admin-shell[data-admin-theme='light'] .bg-ink-900\/80 { background-color: rgba(255, 255, 255, 0.92) !important; }
-.admin-shell[data-admin-theme='light'] .bg-ink-800\/40 { background-color: rgba(241, 234, 216, 0.55) !important; }
+/* Translucent surfaces — opaque enough on cream that text on them
+   stays readable. The old values dropped to 0.5 which left text floating. */
+.admin-shell[data-admin-theme='light'] .bg-ink-950\/60 { background-color: rgba(249, 246, 239, 0.95) !important; }
+.admin-shell[data-admin-theme='light'] .bg-ink-950\/80 { background-color: rgba(249, 246, 239, 0.98) !important; }
+.admin-shell[data-admin-theme='light'] .bg-ink-900\/40 { background-color: rgba(255, 255, 255, 0.92) !important; }
+.admin-shell[data-admin-theme='light'] .bg-ink-900\/60 { background-color: rgba(255, 255, 255, 0.95) !important; }
+.admin-shell[data-admin-theme='light'] .bg-ink-900\/70 { background-color: rgba(255, 255, 255, 0.98) !important; }
+.admin-shell[data-admin-theme='light'] .bg-ink-900\/80 { background-color: #ffffff !important; }
+.admin-shell[data-admin-theme='light'] .bg-ink-800\/40 { background-color: rgba(237, 229, 208, 0.85) !important; }
 
-/* Text */
+/* Text — solid colours, no opacity drop. Opacity on light backgrounds
+   washes type out; a darker base at full alpha reads cleanly. */
 .admin-shell[data-admin-theme='light'] .text-white { color: var(--text-strong-light) !important; }
 .admin-shell[data-admin-theme='light'] .text-warmgrey { color: var(--text-muted-light) !important; }
-.admin-shell[data-admin-theme='light'] .text-warmgrey\/70 { color: rgba(90, 84, 76, 0.78) !important; }
-.admin-shell[data-admin-theme='light'] .text-warmgrey\/60 { color: rgba(90, 84, 76, 0.65) !important; }
-.admin-shell[data-admin-theme='light'] .text-warmgrey\/50 { color: rgba(90, 84, 76, 0.55) !important; }
-.admin-shell[data-admin-theme='light'] .text-warmgrey\/40 { color: rgba(90, 84, 76, 0.45) !important; }
+.admin-shell[data-admin-theme='light'] .text-warmgrey\/70 { color: var(--text-muted-light) !important; }
+.admin-shell[data-admin-theme='light'] .text-warmgrey\/60 { color: var(--text-faint-light) !important; }
+.admin-shell[data-admin-theme='light'] .text-warmgrey\/50 { color: var(--text-faint-light) !important; }
+.admin-shell[data-admin-theme='light'] .text-warmgrey\/40 { color: var(--text-faint-light) !important; }
 
 /* Gold accents — deeper on cream for proper contrast */
 .admin-shell[data-admin-theme='light'] .text-gold-tint { color: var(--gold-on-light) !important; }
 .admin-shell[data-admin-theme='light'] .text-gold-metallic { color: var(--gold-on-light) !important; }
 .admin-shell[data-admin-theme='light'] .text-gold-bright { color: var(--gold-on-light-strong) !important; }
 
-/* Borders */
-.admin-shell[data-admin-theme='light'] .border-gold-metallic\/15 { border-color: rgba(184, 134, 11, 0.25) !important; }
-.admin-shell[data-admin-theme='light'] .border-gold-metallic\/20 { border-color: rgba(184, 134, 11, 0.3) !important; }
-.admin-shell[data-admin-theme='light'] .border-gold-metallic\/25 { border-color: rgba(184, 134, 11, 0.35) !important; }
-.admin-shell[data-admin-theme='light'] .border-gold-metallic\/30 { border-color: rgba(184, 134, 11, 0.4) !important; }
-.admin-shell[data-admin-theme='light'] .border-gold-metallic\/40 { border-color: rgba(184, 134, 11, 0.5) !important; }
-.admin-shell[data-admin-theme='light'] .border-gold-metallic\/50 { border-color: rgba(184, 134, 11, 0.6) !important; }
+/* Borders — visible at every alpha. Base colour is much darker than the
+   original #b8860b so even /15 reads as a real line, not a ghost. */
+.admin-shell[data-admin-theme='light'] .border-gold-metallic\/15 { border-color: rgba(var(--border-gold-base), 0.45) !important; }
+.admin-shell[data-admin-theme='light'] .border-gold-metallic\/20 { border-color: rgba(var(--border-gold-base), 0.55) !important; }
+.admin-shell[data-admin-theme='light'] .border-gold-metallic\/25 { border-color: rgba(var(--border-gold-base), 0.6) !important; }
+.admin-shell[data-admin-theme='light'] .border-gold-metallic\/30 { border-color: rgba(var(--border-gold-base), 0.7) !important; }
+.admin-shell[data-admin-theme='light'] .border-gold-metallic\/40 { border-color: rgba(var(--border-gold-base), 0.8) !important; }
+.admin-shell[data-admin-theme='light'] .border-gold-metallic\/50 { border-color: rgba(var(--border-gold-base), 0.9) !important; }
+.admin-shell[data-admin-theme='light'] .border-gold-metallic { border-color: rgba(var(--border-gold-base), 1) !important; }
 
-/* Placeholder text */
+/* Row dividers — divide-gold-metallic/10 etc. — same logic */
+.admin-shell[data-admin-theme='light'] .divide-gold-metallic\/10 > * + * { border-color: rgba(var(--border-gold-base), 0.25) !important; }
+.admin-shell[data-admin-theme='light'] .divide-gold-metallic\/15 > * + * { border-color: rgba(var(--border-gold-base), 0.35) !important; }
+.admin-shell[data-admin-theme='light'] .divide-gold-metallic\/20 > * + * { border-color: rgba(var(--border-gold-base), 0.45) !important; }
+
+/* Placeholder text — readable, not whispered */
+.admin-shell[data-admin-theme='light'] .placeholder\:text-warmgrey\/70::placeholder,
 .admin-shell[data-admin-theme='light'] .placeholder\:text-warmgrey\/60::placeholder,
 .admin-shell[data-admin-theme='light'] .placeholder\:text-warmgrey\/50::placeholder,
 .admin-shell[data-admin-theme='light'] .placeholder\:text-warmgrey\/40::placeholder {
-  color: rgba(90, 84, 76, 0.55) !important;
+  color: var(--text-faint-light) !important;
+  opacity: 1 !important;
 }
 
 /* gc-card surface */
 .admin-shell[data-admin-theme='light'] .gc-card {
   background: #ffffff !important;
   backdrop-filter: none !important;
-  box-shadow: inset 0 0 0 1px rgba(184, 134, 11, 0.28),
-    0 4px 24px -8px rgba(120, 90, 0, 0.12) !important;
+  box-shadow: inset 0 0 0 1px rgba(var(--border-gold-base), 0.4),
+    0 4px 24px -8px rgba(120, 90, 0, 0.18) !important;
 }
 
-/* Gold-gradient buttons keep their gradient — they look great on cream */
-/* Form inputs (.gc-input) inherit the bg-ink-900 override above */
+/* Focus ring on form fields — gold against cream */
+.admin-shell[data-admin-theme='light'] .focus\:border-gold-metallic:focus {
+  border-color: var(--gold-on-light) !important;
+}
+
+/* Hover surface in tables / nav rows — subtle warm tint instead of dark wash */
+.admin-shell[data-admin-theme='light'] .hover\:bg-ink-900\/40:hover,
+.admin-shell[data-admin-theme='light'] .hover\:bg-ink-800:hover {
+  background-color: rgba(var(--border-gold-base), 0.08) !important;
+}
+
+/* Sticky table headers — give them an explicit warm-grey tint so they
+   visually separate from the rows below on a white card surface. */
+.admin-shell[data-admin-theme='light'] thead.bg-ink-900\/80 {
+  background-color: #f4ecd6 !important;
+}
+.admin-shell[data-admin-theme='light'] thead.bg-ink-900\/80 .text-warmgrey {
+  color: var(--text-muted-light) !important;
+}
 
