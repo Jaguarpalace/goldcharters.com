@@ -36,7 +36,12 @@ export function SellSection({
       <div className="gc-container">
         <div className={`grid grid-cols-1 items-center gap-6 md:grid-cols-2 md:gap-10 lg:gap-14 ${flip ? 'md:[&>*:first-child]:order-2' : ''}`}>
           <div>
-            <span className="gc-eyebrow">{variant === 'gold' ? 'Sell Gold' : 'Sell Jewellery'}</span>
+            {/* Eyebrow uses the CMS subtitle when set, falling back to the
+                variant default. Lets admins override "Sell Gold" / "Sell
+                Jewellery" with their own phrasing from /admin/homepage. */}
+            <span className="gc-eyebrow">
+              {section.subtitle || (variant === 'gold' ? 'Sell Gold' : 'Sell Jewellery')}
+            </span>
             <HeadingTag className={headingClass}>{section.title}</HeadingTag>
             <p className="gc-subhead mt-4 max-w-xl sm:mt-5">{section.body}</p>
             <ul className="mt-5 grid grid-cols-1 gap-2.5 sm:mt-7 sm:grid-cols-2">
