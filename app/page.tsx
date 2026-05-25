@@ -9,6 +9,7 @@ import { JsonLd } from '@/lib/seo/JsonLd';
 import { faqPageSchema, serviceSchema, SITE_URL } from '@/lib/seo/structuredData';
 
 import { Hero } from '@/components/public/Hero';
+import { BrandIntro } from '@/components/public/BrandIntro';
 import { SellBuyPathways } from '@/components/public/SellBuyPathways';
 import { ServiceCards } from '@/components/public/ServiceCards';
 import { SellSection } from '@/components/public/SellSection';
@@ -81,6 +82,7 @@ export default async function HomePage() {
         ]}
       />
       <Hero section={findHomepageSection(sections, 'hero')} />
+      <BrandIntro />
       {BUY_ENABLED && <SellBuyPathways />}
       <ServiceCards services={services} />
       <SellSection section={findHomepageSection(sections, 'sell_intro')} variant="gold" />
