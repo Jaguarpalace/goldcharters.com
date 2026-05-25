@@ -65,7 +65,11 @@ export function PrintShell({ children }: { children: ReactNode }) {
  * here).
  */
 const PRINT_CSS = `
-  @page { size: A4; margin: 18mm 16mm; }
+  /* No @page margin — the page background needs to bleed to the very edge of
+     the paper. The visible "margin" lives inside .print-sheet so the dark
+     theme prints as a full-bleed gilt document, not a coloured rectangle on
+     a white border. */
+  @page { size: A4; margin: 0; }
 
   .print-page {
     font-family: 'Manrope', system-ui, sans-serif;
@@ -79,7 +83,10 @@ const PRINT_CSS = `
   .print-sheet {
     max-width: 720px;
     margin: 0 auto;
-    padding: 32px 24px 64px;
+    /* These act as the visible margin between paper edge and content. Bigger
+       than typical screen padding so the printed document doesn't feel
+       cramped against the paper edge. */
+    padding: 22mm 18mm 28mm;
   }
 
   /* ---------- Layout primitives (theme-neutral) ---------- */
@@ -285,7 +292,18 @@ const PRINT_CSS = `
 
   /* ---------- Print rules — kill the action bar and lock colours ---------- */
   @media print {
+    /* Zero out the browser/body chrome so .print-page can paint the entire
+       paper. Without this, html/body's default white shows through and the
+       dark theme prints with a stubborn white frame. */
+    html, body {
+      margin: 0 !important;
+      padding: 0 !important;
+      background: transparent !important;
+    }
     .print-actions { display: none !important; }
+    .print-page {
+      min-height: 0 !important;
+    }
     .print-page.theme-classic { background: #ffffff !important; }
     .print-page.theme-blackgold { background: #0a0a0a !important; }
   }
