@@ -549,9 +549,17 @@ export const FORM_OPTION_SET_LABELS: Record<FormOptionSetKey, string> = {
  */
 export type LegalPage = {
   slug: string;
+  /** @deprecated kept for backwards compat — UI no longer surfaces it. */
   eyebrow: string | null;
+  /** @deprecated kept for backwards compat — UI no longer surfaces it. */
   title: string | null;
+  /** @deprecated kept for backwards compat — UI no longer surfaces it. */
   intro: string | null;
+  /**
+   * Override HTML body. When non-null, the public page renders this in
+   * place of the hardcoded clauses. When null, the hardcoded body is used.
+   */
+  body_html: string | null;
   last_reviewed_at: string;
   updated_at: string;
 };

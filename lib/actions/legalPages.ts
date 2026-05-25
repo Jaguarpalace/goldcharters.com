@@ -8,9 +8,8 @@ import type { LegalPage } from '@/types/database';
 const VALID_SLUGS = new Set(['terms', 'privacy', 'cookies']);
 
 export type LegalPagePatch = {
-  eyebrow?: string | null;
-  title?: string | null;
-  intro?: string | null;
+  /** Override HTML for the page body. Pass null to revert to the hardcoded default. */
+  body_html?: string | null;
 };
 
 function clean(v: string | null | undefined, max: number): string | null {
@@ -38,9 +37,8 @@ export async function updateLegalPage(
   }
 
   const update: Record<string, string | null> = {
-    eyebrow: clean(patch.eyebrow, 80),
-    title: clean(patch.title, 120),
-    intro: clean(patch.intro, 1200),
+    // 200 KB is generous for an HTML legal page (most are ~30 KB).
+    body_html: clean(patch.body_html, 200_000),
   };
 
   const { data, error } = await ctx.admin
@@ -62,7 +60,7 @@ export async function updateLegalPage(
     entity_id: slug,
     action: 'update',
     after: update,
-    note: `Updated ${slug} cosmetic overrides`,
+    note: `Updated ${slug} body`,
   });
   return { ok: true, data };
 }

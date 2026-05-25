@@ -38,6 +38,7 @@ export default async function TermsPage() {
       title={title}
       lastUpdated={lastUpdated}
       intro={intro}
+      bodyHtml={legal?.body_html ?? null}
     >
       <h2>1. Definitions</h2>
       <p>In these Terms, unless the context requires otherwise:</p>

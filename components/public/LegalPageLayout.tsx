@@ -5,6 +5,14 @@ type LegalPageLayoutProps = {
   title: string;
   lastUpdated: string;
   intro?: string;
+  /**
+   * Optional HTML override for the body, sourced from the admin
+   * (legal_pages.body_html). When present, replaces the JSX `children`.
+   * Rendered with dangerouslySetInnerHTML — the table is admin-write-only,
+   * the public site only reads it, so there's no untrusted-input path
+   * here.
+   */
+  bodyHtml?: string | null;
   children: ReactNode;
 };
 
@@ -18,8 +26,10 @@ export function LegalPageLayout({
   title,
   lastUpdated,
   intro,
+  bodyHtml,
   children,
 }: LegalPageLayoutProps) {
+  const useOverride = typeof bodyHtml === 'string' && bodyHtml.trim().length > 0;
   return (
     <>
       <section className="relative overflow-hidden border-b border-gold-metallic/15">
@@ -42,7 +52,11 @@ export function LegalPageLayout({
       <section className="py-6 lg:py-8">
         <div className="gc-container">
           <article className="mx-auto max-w-3xl text-sm leading-relaxed text-warmgrey legal-prose">
-            {children}
+            {useOverride ? (
+              <div dangerouslySetInnerHTML={{ __html: bodyHtml as string }} />
+            ) : (
+              children
+            )}
           </article>
         </div>
       </section>

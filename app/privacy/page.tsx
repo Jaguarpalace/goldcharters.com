@@ -38,6 +38,7 @@ export default async function PrivacyPage() {
       title={title}
       lastUpdated={lastUpdated}
       intro={intro}
+      bodyHtml={legal?.body_html ?? null}
     >
       <h2>1. About This Policy</h2>
       <p>

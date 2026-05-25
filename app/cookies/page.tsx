@@ -37,6 +37,7 @@ export default async function CookiesPage() {
       title={title}
       lastUpdated={lastUpdated}
       intro={intro}
+      bodyHtml={legal?.body_html ?? null}
     >
       <h2>1. What Are Cookies?</h2>
       <p>
