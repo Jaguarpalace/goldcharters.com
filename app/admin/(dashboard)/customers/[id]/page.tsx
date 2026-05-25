@@ -5,6 +5,7 @@ import {
   getCustomerDocuments,
   getCustomerHistory,
 } from '@/lib/queries/customers';
+import { getStockItemsForCustomer } from '@/lib/queries/stockItems';
 import { CustomerDetail } from './CustomerDetail';
 
 export const dynamic = 'force-dynamic';
@@ -17,9 +18,10 @@ export default async function AdminCustomerDetailPage({
   const customer = await getCustomer(params.id);
   if (!customer) notFound();
 
-  const [documents, history] = await Promise.all([
+  const [documents, history, holdings] = await Promise.all([
     getCustomerDocuments(customer.id),
     getCustomerHistory(customer.email),
+    getStockItemsForCustomer(customer.id),
   ]);
 
   return (
@@ -40,6 +42,7 @@ export default async function AdminCustomerDetailPage({
         customer={customer}
         initialDocuments={documents}
         history={history}
+        holdings={holdings}
       />
     </div>
   );

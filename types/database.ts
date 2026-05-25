@@ -413,6 +413,53 @@ export type CustomerDocument = {
   uploaded_at: string;
 };
 
+export type StockItemStatus = 'held' | 'sold' | 'written_off';
+
+export const STOCK_ITEM_STATUS_LABELS: Record<StockItemStatus, string> = {
+  held: 'Held',
+  sold: 'Sold',
+  written_off: 'Written off',
+};
+
+/**
+ * One physical piece we have actually bought from a seller. Spot price is
+ * frozen at acquisition / sale time so margins don't drift as live spot
+ * moves later — live portfolio value is computed at read time.
+ */
+export type StockItem = {
+  id: string;
+  stock_number: string;
+  valuation_request_id: string | null;
+  customer_id: string | null;
+
+  // Frozen item snapshot
+  item_type: string | null;
+  description: string | null;
+  metal_type: string | null;
+  carat: string | null;
+  purity_percentage: number | null;
+  weight_grams: number | null;
+
+  // Acquisition
+  acquired_at: string;
+  acquired_paid_gbp: number;
+  acquired_spot_gbp_per_g: number | null;
+
+  // Lifecycle
+  status: StockItemStatus;
+
+  // Sale (null until sold)
+  sold_at: string | null;
+  sold_to_name: string | null;
+  sold_to_email: string | null;
+  sold_amount_gbp: number | null;
+  sold_spot_gbp_per_g: number | null;
+
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
 export type NotificationRecipient = {
   id: string;
   email: string;

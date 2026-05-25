@@ -15,6 +15,7 @@ import {
   updateValuationPayment,
   type PaymentInput,
 } from '@/lib/actions/valuationRequests';
+import { createStockItemFromValuation } from '@/lib/actions/stockItems';
 import { StatusPipeline } from './StatusPipeline';
 
 type Row = ValuationRequest & { valuation_request_images?: ValuationRequestImage[] };
@@ -145,7 +146,70 @@ export function RequestDetail({
             }
           />
         )}
+        {request.status === 'bought' && request.payment_amount !== null && (
+          <AddToHoldingsBlock requestId={request.id} />
+        )}
         {onDelete && <DeleteRequestBlock onDelete={onDelete} />}
+      </div>
+    </div>
+  );
+}
+
+/* ----------------------------- Add to holdings -------------------------- */
+
+function AddToHoldingsBlock({ requestId }: { requestId: string }) {
+  const [pending, startTransition] = useTransition();
+  const [feedback, setFeedback] = useState<
+    | { ok: true; stockNumber: string; stockId: string }
+    | { ok: false; error: string }
+    | null
+  >(null);
+
+  const submit = () => {
+    setFeedback(null);
+    startTransition(async () => {
+      const result = await createStockItemFromValuation(requestId);
+      if (result.ok && result.data) {
+        setFeedback({ ok: true, stockNumber: result.data.stock_number, stockId: result.data.id });
+      } else if (!result.ok) {
+        setFeedback({ ok: false, error: result.error });
+      }
+    });
+  };
+
+  return (
+    <div className="rounded-lg border border-gold-metallic/25 bg-ink-900/70 p-4">
+      <h3 className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">
+        Holdings ledger
+      </h3>
+      <p className="mt-2 text-[11px] leading-relaxed text-warmgrey">
+        Add this piece to the holdings ledger. Metal, weight, carat and payment are pre-filled
+        from this request, and the live spot price is stamped automatically.
+      </p>
+      <div className="mt-3 flex items-center justify-end gap-3">
+        {feedback?.ok === true && (
+          <p className="text-[11px] text-gold-tint">
+            Added as{' '}
+            <Link
+              href={`/admin/holdings/${feedback.stockId}`}
+              className="font-mono font-semibold text-gold-bright hover:underline"
+            >
+              {feedback.stockNumber}
+            </Link>
+            .
+          </p>
+        )}
+        {feedback?.ok === false && (
+          <p className="text-[11px] text-amber-400">{feedback.error}</p>
+        )}
+        <button
+          type="button"
+          onClick={submit}
+          disabled={pending || feedback?.ok === true}
+          className="rounded-md border border-gold-metallic bg-gold-metallic/15 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-luxe text-gold-tint transition hover:bg-gold-metallic/25 hover:text-gold-bright disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {pending ? 'Adding…' : feedback?.ok === true ? 'Added' : 'Add to holdings'}
+        </button>
       </div>
     </div>
   );

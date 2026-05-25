@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useState, useTransition } from 'react';
 import {
   CUSTOMER_DOCUMENT_TYPE_LABELS,
@@ -8,6 +9,7 @@ import {
   type Customer,
   type CustomerDocument,
   type CustomerDocumentType,
+  type StockItem,
   type ValuationRequest,
 } from '@/types/database';
 import {
@@ -19,16 +21,18 @@ import {
 } from '@/lib/actions/customers';
 import { useRouter } from 'next/navigation';
 
-type Tab = 'details' | 'documents' | 'history';
+type Tab = 'details' | 'documents' | 'history' | 'holdings';
 
 export function CustomerDetail({
   customer,
   initialDocuments,
   history,
+  holdings,
 }: {
   customer: Customer;
   initialDocuments: CustomerDocument[];
   history: ValuationRequest[];
+  holdings: StockItem[];
 }) {
   const [tab, setTab] = useState<Tab>('details');
   const [docs, setDocs] = useState<CustomerDocument[]>(initialDocuments);
@@ -47,6 +51,10 @@ export function CustomerDetail({
           History{' '}
           <span className="ml-1 text-[10px] text-warmgrey">({history.length})</span>
         </TabButton>
+        <TabButton active={tab === 'holdings'} onClick={() => setTab('holdings')}>
+          Holdings{' '}
+          <span className="ml-1 text-[10px] text-warmgrey">({holdings.length})</span>
+        </TabButton>
       </div>
 
       {tab === 'details' && <DetailsTab customer={customer} />}
@@ -54,6 +62,7 @@ export function CustomerDetail({
         <DocumentsTab customerId={customer.id} docs={docs} setDocs={setDocs} />
       )}
       {tab === 'history' && <HistoryTab history={history} />}
+      {tab === 'holdings' && <HoldingsTab holdings={holdings} />}
     </div>
   );
 }
@@ -569,4 +578,74 @@ function summariseRequest(r: ValuationRequest): string {
     Boolean,
   );
   return bits.length > 0 ? bits.join(' · ') : 'Valuation enquiry';
+}
+
+/* --------------------------------- Holdings ------------------------------- */
+
+function HoldingsTab({ holdings }: { holdings: StockItem[] }) {
+  if (holdings.length === 0) {
+    return (
+      <p className="rounded-lg border border-gold-metallic/15 px-3 py-10 text-center text-sm text-warmgrey">
+        Nothing in the holdings ledger from this customer yet. When you import a paid valuation
+        request into the ledger, it'll appear here.
+      </p>
+    );
+  }
+
+  return (
+    <div className="overflow-x-auto rounded-lg border border-gold-metallic/15">
+      <table className="w-full min-w-[480px] text-sm">
+        <thead className="bg-ink-900/80 text-[10px] uppercase tracking-luxe text-warmgrey">
+          <tr>
+            <th className="px-3 py-2 text-left">Stock #</th>
+            <th className="px-2 py-2 text-left">Item</th>
+            <th className="px-2 py-2 text-right">Paid</th>
+            <th className="px-2 py-2 text-left">Status</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gold-metallic/10">
+          {holdings.map((h) => (
+            <tr key={h.id} className="align-top hover:bg-ink-900/40">
+              <td className="whitespace-nowrap px-3 py-2.5">
+                <Link
+                  href={`/admin/holdings/${h.id}`}
+                  className="font-mono text-[12px] font-medium text-white hover:text-gold-bright"
+                >
+                  {h.stock_number}
+                </Link>
+                <div className="text-[10px] text-warmgrey">
+                  {new Date(h.acquired_at).toLocaleDateString('en-GB')}
+                </div>
+              </td>
+              <td className="px-2 py-2.5">
+                <div className="text-[12px] text-white">
+                  {[h.metal_type, h.carat, h.item_type].filter(Boolean).join(' · ') || 'Item'}
+                </div>
+                {h.description && (
+                  <div className="line-clamp-1 text-[11px] text-warmgrey">{h.description}</div>
+                )}
+              </td>
+              <td className="whitespace-nowrap px-2 py-2.5 text-right text-[12px] text-white">
+                £{Number(h.acquired_paid_gbp).toLocaleString('en-GB', { minimumFractionDigits: 2 })}
+              </td>
+              <td className="px-2 py-2.5">
+                <span
+                  className={
+                    'rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-luxe ' +
+                    (h.status === 'sold'
+                      ? 'bg-emerald-500/15 text-emerald-300'
+                      : h.status === 'written_off'
+                      ? 'bg-red-500/15 text-red-300'
+                      : 'bg-ink-950 text-gold-tint')
+                  }
+                >
+                  {h.status === 'held' ? 'Held' : h.status === 'sold' ? 'Sold' : 'Written off'}
+                </span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }
