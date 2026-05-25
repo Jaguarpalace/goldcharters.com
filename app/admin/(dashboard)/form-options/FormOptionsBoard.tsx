@@ -117,21 +117,61 @@ function SetCard({
 
       {expanded && (
         <div className="space-y-3 border-t border-gold-metallic/15 bg-ink-950/60 p-4">
+          {/* Plain-English explainer of what the two text columns do.
+              Closing the confusion the previous layout caused — the two
+              boxes weren't duplicates, they were Value + Label. */}
+          <div className="rounded-md border border-gold-metallic/15 bg-ink-900/40 p-3 text-[11px] leading-relaxed text-warmgrey">
+            <p>
+              <strong className="text-white">How this works.</strong> Each
+              row is one dropdown option the customer can pick. Most options
+              only need one piece of text — the second box is for the rare
+              case where you want the dropdown to <em>display</em> something
+              different from what gets <em>saved</em>.
+            </p>
+            <ul className="mt-2 space-y-0.5">
+              <li>
+                <strong className="text-gold-tint">Value</strong> — what
+                gets stored. Keep it short and stable (renaming this later
+                breaks reports).
+              </li>
+              <li>
+                <strong className="text-gold-tint">Label</strong> — what
+                the customer sees in the dropdown. Leave it the same as
+                Value unless you want a fancier display.
+              </li>
+              <li>
+                <strong className="text-gold-tint">Order</strong> —
+                position in the dropdown. Lower numbers appear first.
+              </li>
+            </ul>
+          </div>
+
           {options.length === 0 ? (
             <p className="text-[12px] text-warmgrey">
               No options yet. Add the first one below.
             </p>
           ) : (
-            <ul className="space-y-2">
-              {options.map((opt) => (
-                <OptionRow
-                  key={opt.id}
-                  option={opt}
-                  onUpdated={onUpsert}
-                  onRemoved={() => onRemove(opt.id)}
-                />
-              ))}
-            </ul>
+            <>
+              {/* Sticky-style column header so the inputs are never
+                  unlabelled, even on a long set. */}
+              <div className="hidden grid-cols-[100px,1fr,1fr,auto] gap-2 px-1 text-[9px] font-semibold uppercase tracking-luxe text-warmgrey md:grid">
+                <span>Order</span>
+                <span>Value (stored)</span>
+                <span>Label (customer-facing)</span>
+                <span className="text-right">Actions</span>
+              </div>
+
+              <ul className="space-y-2">
+                {options.map((opt) => (
+                  <OptionRow
+                    key={opt.id}
+                    option={opt}
+                    onUpdated={onUpsert}
+                    onRemoved={() => onRemove(opt.id)}
+                  />
+                ))}
+              </ul>
+            </>
           )}
 
           <AddOptionForm
@@ -212,28 +252,46 @@ function OptionRow({
 
   return (
     <li className="grid items-start gap-2 rounded-md border border-gold-metallic/15 bg-ink-900/40 p-3 md:grid-cols-[100px,1fr,1fr,auto]">
-      <input
-        type="number"
-        value={order}
-        onChange={(e) => setOrder(e.target.value)}
-        title="Display order"
-        className="rounded-md border border-gold-metallic/20 bg-ink-950 px-2 py-1.5 text-sm text-white focus:border-gold-metallic focus:outline-none"
-      />
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        placeholder="Stored value"
-        className="rounded-md border border-gold-metallic/20 bg-ink-950 px-2 py-1.5 text-sm text-white focus:border-gold-metallic focus:outline-none"
-      />
-      <input
-        type="text"
-        value={label}
-        onChange={(e) => setLabel(e.target.value)}
-        placeholder="Label shown to customer"
-        className="rounded-md border border-gold-metallic/20 bg-ink-950 px-2 py-1.5 text-sm text-white focus:border-gold-metallic focus:outline-none"
-      />
-      <div className="flex items-center gap-2">
+      {/* Mobile-only micro-label (the desktop grid has its own column header) */}
+      <label className="block md:contents">
+        <span className="mb-0.5 block text-[9px] font-semibold uppercase tracking-luxe text-warmgrey md:hidden">
+          Order
+        </span>
+        <input
+          type="number"
+          value={order}
+          onChange={(e) => setOrder(e.target.value)}
+          aria-label="Display order"
+          className="w-full rounded-md border border-gold-metallic/20 bg-ink-950 px-2 py-1.5 text-sm text-white focus:border-gold-metallic focus:outline-none"
+        />
+      </label>
+      <label className="block md:contents">
+        <span className="mb-0.5 block text-[9px] font-semibold uppercase tracking-luxe text-warmgrey md:hidden">
+          Value (stored)
+        </span>
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          aria-label="Value stored when this option is selected"
+          placeholder="e.g. Gold"
+          className="w-full rounded-md border border-gold-metallic/20 bg-ink-950 px-2 py-1.5 text-sm text-white placeholder:text-warmgrey/50 focus:border-gold-metallic focus:outline-none"
+        />
+      </label>
+      <label className="block md:contents">
+        <span className="mb-0.5 block text-[9px] font-semibold uppercase tracking-luxe text-warmgrey md:hidden">
+          Label (customer-facing)
+        </span>
+        <input
+          type="text"
+          value={label}
+          onChange={(e) => setLabel(e.target.value)}
+          aria-label="Label the customer sees in the dropdown"
+          placeholder="e.g. Gold"
+          className="w-full rounded-md border border-gold-metallic/20 bg-ink-950 px-2 py-1.5 text-sm text-white placeholder:text-warmgrey/50 focus:border-gold-metallic focus:outline-none"
+        />
+      </label>
+      <div className="flex items-center gap-2 md:justify-end">
         <button
           type="button"
           onClick={toggleVisible}
