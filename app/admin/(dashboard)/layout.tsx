@@ -38,7 +38,6 @@ const NAV: NavItem[] = [
   { href: '/admin/media', label: 'Media Library' },
   { href: '/admin/blog', label: 'Blog' },
   { href: '/admin/seo', label: 'Page SEO' },
-  { href: '/admin/form-options', label: 'Form Options' },
   { href: '/admin/legal', label: 'Legal Pages' },
   { href: '/admin/email-templates', label: 'Email Templates' },
   { href: '/admin/notifications', label: 'Notifications' },
