@@ -15,6 +15,27 @@ export type HomepageSectionPatch = {
   extra?: Record<string, unknown> | null;
 };
 
+/**
+ * Sanitise the `extra` JSONB payload before it's written. Specifically: any
+ * string-array value (badges, bullets, criteria) gets trimmed and stripped
+ * of empty entries here, NOT during typing in the admin editor — typing
+ * sanitisation breaks Enter and trailing-space presses in the textarea.
+ */
+function sanitiseExtra(
+  extra: Record<string, unknown> | null | undefined,
+): Record<string, unknown> | null {
+  if (!extra || typeof extra !== 'object') return null;
+  const out: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(extra)) {
+    if (Array.isArray(value) && value.every((v) => typeof v === 'string')) {
+      out[key] = (value as string[]).map((s) => s.trim()).filter((s) => s.length > 0);
+    } else {
+      out[key] = value;
+    }
+  }
+  return out;
+}
+
 export async function updateHomepageSection(
   id: string,
   patch: HomepageSectionPatch,
@@ -22,9 +43,14 @@ export async function updateHomepageSection(
   const ctx = await requireAdminContext();
   if ('error' in ctx) return { ok: false, error: ctx.error };
 
+  const cleanedPatch =
+    patch.extra !== undefined
+      ? { ...patch, extra: sanitiseExtra(patch.extra) }
+      : patch;
+
   const { error } = await ctx.admin
     .from('homepage_sections')
-    .update({ ...patch, updated_at: new Date().toISOString() })
+    .update({ ...cleanedPatch, updated_at: new Date().toISOString() })
     .eq('id', id);
 
   if (error) {

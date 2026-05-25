@@ -172,10 +172,13 @@ function ExtraEditor({
             update(section.id, {
               extra: {
                 ...extra,
-                [key]: e.target.value
-                  .split('\n')
-                  .map((line) => line.trim())
-                  .filter(Boolean),
+                // Raw split only — no .trim(), no .filter(Boolean). Doing
+                // either during typing strips trailing spaces and empty
+                // lines the moment they're typed, which makes Enter and
+                // Space presses appear broken. The server action trims +
+                // filters at save time, so empty lines and stray
+                // whitespace never persist.
+                [key]: e.target.value.split('\n'),
               },
             })
           }
