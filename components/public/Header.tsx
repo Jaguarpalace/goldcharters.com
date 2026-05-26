@@ -44,8 +44,17 @@ export function Header({ settings }: { settings: SiteSettings }) {
   return (
     <header className="sticky top-0 z-20 border-b border-gold-metallic/15 bg-ink-950/85 backdrop-blur-md">
       <div className="gc-container flex h-24 items-center justify-between gap-4 sm:h-32">
-        {/* Compact logo, left */}
-        <Logo businessName={settings.business_name} size="compact" />
+        {/* Left cluster: logo + (desktop only) Get a Valuation CTA. Pulling
+            the primary CTA next to the brand on lg+ makes it the first
+            thing the eye lands on without having to track all the way
+            across the header. The right-side instance below is hidden on
+            lg so we don't end up with two of them. */}
+        <div className="flex items-center gap-3 lg:gap-5">
+          <Logo businessName={settings.business_name} size="compact" />
+          <GetValuationLink className="gc-btn-primary hidden whitespace-nowrap !px-7 !py-3.5 text-[15px] lg:inline-flex">
+            Get a Valuation
+          </GetValuationLink>
+        </div>
 
         {/* Centre nav, desktop only */}
         <nav aria-label="Primary" className="hidden items-center gap-6 lg:flex">
@@ -98,7 +107,9 @@ export function Header({ settings }: { settings: SiteSettings }) {
             Calculator
           </Link>
 
-          <GetValuationLink className="gc-btn-primary hidden whitespace-nowrap sm:inline-flex">
+          {/* Tablet-only instance — desktop shows the bigger CTA next to the
+              logo in the left cluster, so we hide this one from lg up. */}
+          <GetValuationLink className="gc-btn-primary hidden whitespace-nowrap sm:inline-flex lg:hidden">
             Get a Valuation
           </GetValuationLink>
 
