@@ -70,32 +70,19 @@ export function GoldCalculator({
   return (
     <section className="relative py-6 lg:py-10" id={sectionId}>
       <div className="gc-container">
-        {/* Header strip: title left, total card right */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-[1.4fr,1fr] md:items-end md:gap-8">
-          <div>
-            {asH1 ? (
-              <h1 className="gc-heading-xl">{heading}</h1>
-            ) : (
-              <h2 className="gc-heading">{heading}</h2>
-            )}
-            <p className="gc-subhead mt-3 max-w-xl">{subhead}</p>
-          </div>
-
-          <div className="gc-card gc-card-gold-edge p-5">
-            <p className="text-[10px] font-semibold uppercase tracking-luxe text-gold-metallic">
-              Estimated Total
-            </p>
-            <p className="mt-1 font-display text-3xl font-semibold text-white sm:text-4xl">
-              {formatGBP(total)}
-            </p>
-            <p className="mt-1 text-[11px] text-warmgrey">Guide price · Subject to inspection</p>
-            <Link
-              href={ctaHref}
-              className="gc-btn-primary mt-4 inline-flex"
-            >
-              Request Full Valuation
-            </Link>
-          </div>
+        {/* Header: title + subhead only. The Estimated Total / "Request Full
+            Valuation" block now slots into the calculator card itself as the
+            last row of the right column (or the last item in the mobile
+            single column), so the previously-empty bottom-right gap of the
+            calculator becomes useful surface and the running total sits
+            visually next to the rate rows that drive it. */}
+        <div>
+          {asH1 ? (
+            <h1 className="gc-heading-xl">{heading}</h1>
+          ) : (
+            <h2 className="gc-heading">{heading}</h2>
+          )}
+          <p className="gc-subhead mt-3 max-w-2xl">{subhead}</p>
         </div>
 
         {/*
@@ -109,16 +96,21 @@ export function GoldCalculator({
           desktop, by toggling visibility with Tailwind responsive classes.
 
           Row counts are balanced to within 1 (7 vs 6 for 13 rates) so the
-          two desktop columns end at roughly the same vertical line.
+          two desktop columns end at roughly the same vertical line — the
+          TotalRow added at the bottom of the right column closes that 1-row
+          gap, leaving both columns visually aligned at the bottom.
         */}
         <div className="mt-6 gc-card gc-card-gold-edge overflow-hidden">
-          {/* MOBILE: single column with one header */}
+          {/* MOBILE: single column with one header. TotalRow sits at the very
+              bottom so the running total + Request Full Valuation CTA are
+              the last thing the user sees as they scroll the list. */}
           <div className="lg:hidden">
             <RateHeader />
             <div className="divide-y divide-gold-metallic/10">
               {rows.map((row) => (
                 <RateRow key={row.rate.id} row={row} onChangeWeight={onChangeWeight} />
               ))}
+              <TotalRow total={total} ctaHref={ctaHref} />
             </div>
           </div>
 
@@ -138,18 +130,9 @@ export function GoldCalculator({
                 {rightRows.map((row) => (
                   <RateRow key={`r-${row.rate.id}`} row={row} onChangeWeight={onChangeWeight} />
                 ))}
+                <TotalRow total={total} ctaHref={ctaHref} />
               </div>
             </div>
-          </div>
-
-          {/* Grand total bar spanning the whole calculator */}
-          <div className="flex items-center justify-between gap-4 border-t border-gold-metallic/20 bg-ink-900/80 px-4 py-3">
-            <span className="text-[11px] font-semibold uppercase tracking-luxe text-gold-tint">
-              Estimated Grand Total
-            </span>
-            <span className="font-display text-lg font-semibold text-gold-bright">
-              {formatGBP(total)}
-            </span>
           </div>
         </div>
 
@@ -159,6 +142,36 @@ export function GoldCalculator({
         </p>
       </div>
     </section>
+  );
+}
+
+/**
+ * Sits at the bottom of the right column on desktop (and at the very end of
+ * the single column on mobile). Uses the same 3-column grid as RateRow so
+ * the cell labels line up with "Type & Carat / Weight / Item Price" — the
+ * label + hint occupy the type column, the CTA fills the weight column,
+ * and the running total lands in the item-price column where every per-row
+ * price already lives.
+ */
+function TotalRow({ total, ctaHref }: { total: number; ctaHref: string }) {
+  return (
+    <div className="grid grid-cols-[1.4fr,1fr,1fr] items-center gap-3 bg-ink-900/60 px-4 py-2.5">
+      <div className="min-w-0">
+        <div className="text-[11px] font-semibold uppercase tracking-luxe text-gold-tint">
+          Estimated Total
+        </div>
+        <div className="text-[10px] text-warmgrey">Guide price · Subject to inspection</div>
+      </div>
+      <Link
+        href={ctaHref}
+        className="gc-btn-primary inline-flex w-full items-center justify-center whitespace-nowrap !px-3 !py-1.5 text-[11px]"
+      >
+        Request Valuation
+      </Link>
+      <div className="text-right font-display text-lg font-semibold text-gold-bright">
+        {formatGBP(total)}
+      </div>
+    </div>
   );
 }
 
