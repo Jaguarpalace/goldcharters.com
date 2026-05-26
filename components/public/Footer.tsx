@@ -49,21 +49,12 @@ export function Footer({ settings }: { settings: SiteSettings }) {
             stripe layout we had before, no duplication.
         */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.6fr,1fr,1fr,1fr,1fr] lg:items-start lg:gap-8">
-          {/* Brand block — uses the dedicated 'footer' size: bigger than
-              the compact header crest but smaller than the hero variant,
-              so the foot of the page feels balanced not top-heavy. */}
+          {/* Brand block — logo only. The descriptive paragraph used to
+              sit here in a narrow column and wrap to 4 lines; it now
+              lives as its own full-width row below the columns grid
+              where the full sentence has room to read on one line. */}
           <div className="lg:max-w-sm">
             <Logo businessName={settings.business_name} size="footer" />
-            {/* Description: one-line clamp from sm upward (mobile hides it
-                so the footer stays tight on phones). Note we deliberately
-                DON'T use `sm:block` here — that sets display:block which
-                overrides line-clamp-1's display:-webkit-box, defeating
-                the clamp. Using `sm:line-clamp-1` lets the same class
-                handle both visibility (it sets display:-webkit-box, not
-                none) and the actual line truncation. */}
-            <p className="mt-3 hidden text-xs text-warmgrey sm:line-clamp-1">
-              {settings.footer_description}
-            </p>
           </div>
 
           <div className="grid grid-cols-2 gap-6 lg:contents">
@@ -138,6 +129,16 @@ export function Footer({ settings }: { settings: SiteSettings }) {
             </FooterCol>
           </div>
         </div>
+
+        {/* Brand description — pulled out of the narrow brand column and
+            rendered full-width here so the whole sentence fits on one
+            line on desktop. Hidden on phones to keep the mobile footer
+            tight. */}
+        {settings.footer_description && (
+          <p className="mt-6 hidden text-xs text-warmgrey sm:block lg:mt-8">
+            {settings.footer_description}
+          </p>
+        )}
 
         <div className="my-4 gc-divider lg:my-5" />
 

@@ -51,7 +51,14 @@ export function Hero({ section }: { section?: HomepageSection }) {
           </div>
 
           {badges.length > 0 && (
-            <ul className="mt-7 grid grid-cols-1 gap-2 text-sm text-warmgrey sm:mt-10 sm:grid-cols-2">
+            <ul
+              className={
+                'mt-7 grid gap-2 text-sm text-warmgrey sm:mt-10 sm:grid-cols-2 ' +
+                // Mobile: 2 columns once we go past 5 badges so a long list
+                // doesn't push the hero CTA off-screen.
+                (badges.length > 5 ? 'grid-cols-2' : 'grid-cols-1')
+              }
+            >
               {badges.map((badge) => (
                 <li key={badge} className="flex items-start gap-2.5">
                   <span

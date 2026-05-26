@@ -47,7 +47,16 @@ export function SellSection({
               </p>
             )}
             <p className="gc-subhead mt-4 max-w-xl sm:mt-5">{section.body}</p>
-            <ul className="mt-5 grid grid-cols-1 gap-2.5 sm:mt-7 sm:grid-cols-2">
+            {/* Bullets: 2 columns from sm upward at all list lengths. On
+                mobile we flip to 2 columns automatically once the list
+                exceeds 5 items, so 6+ bullets render as compact 3+3 / 5+5
+                grids instead of a long stack. */}
+            <ul
+              className={
+                'mt-5 grid gap-2.5 sm:mt-7 sm:grid-cols-2 ' +
+                (bullets.length > 5 ? 'grid-cols-2' : 'grid-cols-1')
+              }
+            >
               {bullets.map((b) => (
                 <li key={b} className="flex items-start gap-2.5 text-sm text-warmgrey">
                   <Bullet />
