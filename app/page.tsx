@@ -92,7 +92,7 @@ export default async function HomePage() {
           the precious-metal block. */}
       <SellSection section={findHomepageSection(sections, 'silver_intro')} variant="gold" flip />
       <SellSection section={findHomepageSection(sections, 'jewellery_intro')} variant="jewellery" />
-      <SellSection section={findHomepageSection(sections, 'handbag_intro')} variant="jewellery" />
+      <SellSection section={findHomepageSection(sections, 'handbag_intro')} variant="jewellery" flip={false} />
       <SellSection section={findHomepageSection(sections, 'watch_intro')} variant="gold" />
       <GoldCalculator rates={rates} />
       {BUY_ENABLED && (
