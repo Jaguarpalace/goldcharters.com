@@ -54,9 +54,12 @@ export function Footer({ settings }: { settings: SiteSettings }) {
               so the foot of the page feels balanced not top-heavy. */}
           <div className="lg:max-w-sm">
             <Logo businessName={settings.business_name} size="footer" />
-            {/* Description: hidden on phones, 2-line clamp on tablets+, full on lg+.
-                Keeps mobile footer tight while preserving the brand voice elsewhere. */}
-            <p className="mt-3 hidden text-xs leading-relaxed text-warmgrey sm:line-clamp-2 sm:block lg:line-clamp-none">
+            {/* Description: one-line clamp on every breakpoint (with an
+                ellipsis if it overflows). Keeps the footer tight — the
+                full text is still indexed for SEO and read aloud by
+                screen readers, just not allowed to spill across multiple
+                lines of vertical space. */}
+            <p className="mt-3 hidden line-clamp-1 text-xs text-warmgrey sm:block">
               {settings.footer_description}
             </p>
           </div>
