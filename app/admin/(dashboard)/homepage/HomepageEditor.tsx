@@ -244,7 +244,11 @@ function ExtraEditor({
       </div>
     );
   }
-  if (section.section_key === 'sell_intro' || section.section_key === 'jewellery_intro') {
+  if (
+    section.section_key === 'sell_intro' ||
+    section.section_key === 'silver_intro' ||
+    section.section_key === 'jewellery_intro'
+  ) {
     return <div className="mt-5">{arrayField('bullets', 'Bullet points')}</div>;
   }
   if (section.section_key === 'valuation_explainer') {

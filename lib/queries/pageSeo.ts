@@ -20,6 +20,11 @@ const SEO_DEFAULTS: Record<string, { title: string; description: string }> = {
     description:
       'Sell gold rings, chains, bracelets, coins, bars and scrap gold to a discreet UK private valuation house. Same-day payment, live spot pricing, no obligation.',
   },
+  '/sell-silver': {
+    title: 'Sell Silver For Cash · Private UK Specialists',
+    description:
+      'Sell sterling silver, silver coins, bars, scrap silver and hallmarked pieces to a discreet UK private valuation house. Same-day payment, live spot pricing, no obligation.',
+  },
   '/sell-jewellery': {
     title: 'Sell Fine Jewellery · Diamond, Antique & Branded Specialists',
     description:

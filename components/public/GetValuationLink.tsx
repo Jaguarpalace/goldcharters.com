@@ -9,8 +9,8 @@ import type { ReactNode } from 'react';
  * Behaviour (per Rishi's brief):
  *   - Always lands the customer on the METAL form by default.
  *   - If they're already on a page that renders the metal variant
- *     (homepage or /sell-gold), smooth-scroll instead of navigating to
- *     avoid a wasted page load.
+ *     (homepage, /sell-gold, /sell-silver), smooth-scroll instead of
+ *     navigating to avoid a wasted page load.
  *   - Anywhere else — including /sell-jewellery, /sell-watches and
  *     /sell-handbags which render their own contextual forms — navigate
  *     to /sell-gold so the user lands on the metal form, not the
@@ -32,7 +32,8 @@ export function GetValuationLink({
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     onNavigate?.();
 
-    const onMetalPage = pathname === '/' || pathname === '/sell-gold';
+    const onMetalPage =
+      pathname === '/' || pathname === '/sell-gold' || pathname === '/sell-silver';
     if (onMetalPage && typeof document !== 'undefined' && document.getElementById('valuation-form')) {
       e.preventDefault();
       window.history.replaceState(null, '', `${pathname}#valuation-form`);

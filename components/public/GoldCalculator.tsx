@@ -14,25 +14,46 @@ type CalculatedRow = {
   itemPrice: number;
 };
 
+/**
+ * Calculator block — defaults to the full multi-metal table used on /sell-gold
+ * and /gold-calculator. When `metal` is supplied (e.g. "Silver"), the rates
+ * array is filtered to that metal only, the heading switches to
+ * "<Metal> Calculator", the section anchor + CTA route are derived from
+ * the metal slug, and the "Request Full Valuation" button points at the
+ * matching /sell-<slug> page. This lets us reuse one battle-tested
+ * component for every dedicated metal page instead of cloning it.
+ */
 export function GoldCalculator({
   rates,
   asH1 = false,
+  metal,
 }: {
   rates: CalculatorRate[];
   asH1?: boolean;
+  metal?: CalculatorRate['metal_type'];
 }) {
   const [weights, setWeights] = useState<Weights>({});
+  const filteredRates = metal ? rates.filter((r) => r.metal_type === metal) : rates;
+  const metalSlug = metal ? metal.toLowerCase() : 'gold';
+  const heading = metal ? `${metal} Calculator` : 'Gold Calculator';
+  const sectionId = `${metalSlug}-calculator`;
+  const ctaHref = `/sell-${metalSlug}#valuation-form`;
+  // Subhead phrasing adapts to single-metal mode so we don't claim
+  // "live gold prices" on a silver page.
+  const subhead = metal
+    ? `Enter your ${metal.toLowerCase()} item weights in grams to receive an instant guide price. Rates reflect live ${metal.toLowerCase()} spot prices.`
+    : 'Enter your item weights in grams to receive an instant guide price. Rates are managed by our specialists and reflect current market conditions.';
 
   const rows = useMemo<CalculatedRow[]>(
     () =>
-      rates.map((rate) => {
+      filteredRates.map((rate) => {
         const raw = weights[rate.id] ?? '';
         const weight = parseFloat(raw);
         const valid = Number.isFinite(weight) && weight > 0;
         const itemPrice = valid ? weight * rate.price_per_gram : 0;
         return { rate, raw, weight: valid ? weight : 0, itemPrice };
       }),
-    [rates, weights],
+    [filteredRates, weights],
   );
 
   const total = rows.reduce((sum, r) => sum + r.itemPrice, 0);
@@ -47,20 +68,17 @@ export function GoldCalculator({
     setWeights((w) => ({ ...w, [id]: value }));
 
   return (
-    <section className="relative py-6 lg:py-10" id="gold-calculator">
+    <section className="relative py-6 lg:py-10" id={sectionId}>
       <div className="gc-container">
         {/* Header strip: title left, total card right */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-[1.4fr,1fr] md:items-end md:gap-8">
           <div>
             {asH1 ? (
-              <h1 className="gc-heading-xl">Gold Calculator</h1>
+              <h1 className="gc-heading-xl">{heading}</h1>
             ) : (
-              <h2 className="gc-heading">Gold Calculator</h2>
+              <h2 className="gc-heading">{heading}</h2>
             )}
-            <p className="gc-subhead mt-3 max-w-xl">
-              Enter your item weights in grams to receive an instant guide price. Rates are managed by our
-              specialists and reflect current market conditions.
-            </p>
+            <p className="gc-subhead mt-3 max-w-xl">{subhead}</p>
           </div>
 
           <div className="gc-card gc-card-gold-edge p-5">
@@ -72,7 +90,7 @@ export function GoldCalculator({
             </p>
             <p className="mt-1 text-[11px] text-warmgrey">Guide price · Subject to inspection</p>
             <Link
-              href="/sell-gold#valuation-form"
+              href={ctaHref}
               className="gc-btn-primary mt-4 inline-flex"
             >
               Request Full Valuation

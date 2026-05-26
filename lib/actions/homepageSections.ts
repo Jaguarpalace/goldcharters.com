@@ -61,6 +61,7 @@ export async function updateHomepageSection(
   // Refresh every public page that pulls homepage_sections.
   revalidatePath('/');
   revalidatePath('/sell-gold');
+  revalidatePath('/sell-silver');
   revalidatePath('/sell-jewellery');
   revalidatePath('/how-it-works');
   revalidatePath('/admin/homepage');

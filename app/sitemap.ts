@@ -50,6 +50,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages: MetadataRoute.Sitemap = [
     { url: `${SITE_URL}/`,                 lastModified: lastMod('/'),                 changeFrequency: 'daily',   priority: 1.0 },
     { url: `${SITE_URL}/sell-gold`,        lastModified: lastMod('/sell-gold'),        changeFrequency: 'weekly',  priority: 0.9 },
+    { url: `${SITE_URL}/sell-silver`,      lastModified: lastMod('/sell-silver'),      changeFrequency: 'weekly',  priority: 0.9 },
     { url: `${SITE_URL}/sell-jewellery`,   lastModified: lastMod('/sell-jewellery'),   changeFrequency: 'weekly',  priority: 0.9 },
     { url: `${SITE_URL}/sell-handbags`,    lastModified: lastMod('/sell-handbags'),    changeFrequency: 'weekly',  priority: 0.9 },
     { url: `${SITE_URL}/sell-watches`,     lastModified: lastMod('/sell-watches'),     changeFrequency: 'weekly',  priority: 0.9 },

@@ -12,6 +12,7 @@ import { buildWhatsappUrl } from '@/lib/whatsapp';
 
 const SELL_LINKS = [
   { label: 'Sell Gold', href: '/sell-gold' },
+  { label: 'Sell Silver', href: '/sell-silver' },
   { label: 'Sell Jewellery', href: '/sell-jewellery' },
   { label: 'Sell Handbags', href: '/sell-handbags' },
   { label: 'Sell Watches', href: '/sell-watches' },
