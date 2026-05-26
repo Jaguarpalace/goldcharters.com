@@ -49,9 +49,11 @@ export function Footer({ settings }: { settings: SiteSettings }) {
             stripe layout we had before, no duplication.
         */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.6fr,1fr,1fr,1fr,1fr] lg:items-start lg:gap-8">
-          {/* Brand block */}
+          {/* Brand block — uses the larger 'default' logo since the footer
+              has the vertical real-estate for it, and the bigger crest
+              reads cleanly at the foot of the page. */}
           <div className="lg:max-w-sm">
-            <Logo businessName={settings.business_name} size="compact" />
+            <Logo businessName={settings.business_name} size="default" />
             {/* Description: hidden on phones, 2-line clamp on tablets+, full on lg+.
                 Keeps mobile footer tight while preserving the brand voice elsewhere. */}
             <p className="mt-3 hidden text-xs leading-relaxed text-warmgrey sm:line-clamp-2 sm:block lg:line-clamp-none">

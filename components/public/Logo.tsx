@@ -34,13 +34,13 @@ export function Logo({ businessName, size = 'default', href = '/' }: LogoProps) 
         priority
         sizes={
           compact
-            ? '(max-width: 640px) 64px, 88px'
-            : '(max-width: 640px) 128px, (max-width: 1024px) 160px, 192px'
+            ? '(max-width: 640px) 96px, 132px'
+            : '(max-width: 640px) 168px, (max-width: 1024px) 192px, 240px'
         }
         className={
           compact
-            ? 'h-16 w-16 object-contain sm:h-20 sm:w-20 lg:h-[88px] lg:w-[88px]'
-            : 'h-28 w-28 object-contain transition-transform duration-300 group-hover:scale-105 sm:h-32 sm:w-32 lg:h-40 lg:w-40'
+            ? 'h-24 w-24 object-contain sm:h-[120px] sm:w-[120px] lg:h-[132px] lg:w-[132px]'
+            : 'h-[168px] w-[168px] object-contain transition-transform duration-300 group-hover:scale-105 sm:h-48 sm:w-48 lg:h-60 lg:w-60'
         }
       />
       {/*
