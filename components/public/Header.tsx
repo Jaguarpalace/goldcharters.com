@@ -42,7 +42,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
 
   return (
     <header className="sticky top-0 z-20 border-b border-gold-metallic/15 bg-ink-950/85 backdrop-blur-md">
-      <div className="gc-container flex h-28 items-center justify-between gap-4 sm:h-[152px]">
+      <div className="gc-container flex h-24 items-center justify-between gap-4 sm:h-32">
         {/* Compact logo, left */}
         <Logo businessName={settings.business_name} size="compact" />
 

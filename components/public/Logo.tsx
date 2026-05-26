@@ -3,8 +3,12 @@ import Link from 'next/link';
 
 type LogoProps = {
   businessName: string;
-  /** `default` for hero / login (large); `compact` for header / footer (smaller). */
-  size?: 'default' | 'compact';
+  /**
+   * `default` — large variant for the hero and login (240 px on lg).
+   * `footer`  — mid-size variant for the footer (192 px on lg).
+   * `compact` — small variant for the sticky header (112 px on lg).
+   */
+  size?: 'default' | 'footer' | 'compact';
   /** Where clicking the logo navigates. Defaults to `/` (the public homepage). */
   href?: string;
 };
@@ -19,6 +23,24 @@ type LogoProps = {
  */
 export function Logo({ businessName, size = 'default', href = '/' }: LogoProps) {
   const compact = size === 'compact';
+  const footer = size === 'footer';
+
+  const imageClass =
+    compact
+      ? // Header: 80 / 96 / 112 px — 20% smaller than the previous compact
+        // so it sits comfortably in a slimmer sticky header.
+        'h-20 w-20 object-contain sm:h-24 sm:w-24 lg:h-28 lg:w-28'
+      : footer
+      ? // Footer: 128 / 160 / 192 px — 20% smaller than the hero/login.
+        'h-32 w-32 object-contain sm:h-40 sm:w-40 lg:h-48 lg:w-48'
+      : // Hero / login (default): full-size brand statement.
+        'h-[168px] w-[168px] object-contain transition-transform duration-300 group-hover:scale-105 sm:h-48 sm:w-48 lg:h-60 lg:w-60';
+
+  const sizesAttr = compact
+    ? '(max-width: 640px) 80px, 112px'
+    : footer
+    ? '(max-width: 640px) 128px, (max-width: 1024px) 160px, 192px'
+    : '(max-width: 640px) 168px, (max-width: 1024px) 192px, 240px';
 
   return (
     <Link
@@ -32,16 +54,8 @@ export function Logo({ businessName, size = 'default', href = '/' }: LogoProps) 
         width={520}
         height={520}
         priority
-        sizes={
-          compact
-            ? '(max-width: 640px) 96px, 132px'
-            : '(max-width: 640px) 168px, (max-width: 1024px) 192px, 240px'
-        }
-        className={
-          compact
-            ? 'h-24 w-24 object-contain sm:h-[120px] sm:w-[120px] lg:h-[132px] lg:w-[132px]'
-            : 'h-[168px] w-[168px] object-contain transition-transform duration-300 group-hover:scale-105 sm:h-48 sm:w-48 lg:h-60 lg:w-60'
-        }
+        sizes={sizesAttr}
+        className={imageClass}
       />
       {/*
         The logo image already has "Charters Gold" baked into the artwork,
