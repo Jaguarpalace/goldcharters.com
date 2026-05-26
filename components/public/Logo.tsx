@@ -27,19 +27,20 @@ export function Logo({ businessName, size = 'default', href = '/' }: LogoProps) 
 
   const imageClass =
     compact
-      ? // Header: 80 / 96 / 112 px — 20% smaller than the previous compact
-        // so it sits comfortably in a slimmer sticky header.
-        'h-20 w-20 object-contain sm:h-24 sm:w-24 lg:h-28 lg:w-28'
+      ? // Header: 70 / 94 / 100 px — sized to sit unobtrusively in the
+        // sticky nav while keeping the crest legible.
+        'h-[70px] w-[70px] object-contain sm:h-[94px] sm:w-[94px] lg:h-[100px] lg:w-[100px]'
       : footer
-      ? // Footer: 128 / 160 / 192 px — 20% smaller than the hero/login.
-        'h-32 w-32 object-contain sm:h-40 sm:w-40 lg:h-48 lg:w-48'
+      ? // Footer: 100 / 140 / 160 px — clearly larger than the header
+        // crest, smaller than the hero brand statement.
+        'h-[100px] w-[100px] object-contain sm:h-[140px] sm:w-[140px] lg:h-40 lg:w-40'
       : // Hero / login (default): full-size brand statement.
         'h-[168px] w-[168px] object-contain transition-transform duration-300 group-hover:scale-105 sm:h-48 sm:w-48 lg:h-60 lg:w-60';
 
   const sizesAttr = compact
-    ? '(max-width: 640px) 80px, 112px'
+    ? '(max-width: 640px) 70px, 100px'
     : footer
-    ? '(max-width: 640px) 128px, (max-width: 1024px) 160px, 192px'
+    ? '(max-width: 640px) 100px, (max-width: 1024px) 140px, 160px'
     : '(max-width: 640px) 168px, (max-width: 1024px) 192px, 240px';
 
   return (
