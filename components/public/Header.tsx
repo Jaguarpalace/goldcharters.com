@@ -49,7 +49,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
             thing the eye lands on without having to track all the way
             across the header. The right-side instance below is hidden on
             lg so we don't end up with two of them. */}
-        <div className="flex items-center gap-3 lg:gap-5">
+        <div className="flex items-center gap-3 lg:gap-10">
           <Logo businessName={settings.business_name} size="compact" />
           <GetValuationLink className="gc-btn-primary hidden whitespace-nowrap !px-7 !py-3.5 text-[15px] lg:inline-flex">
             Get a Valuation
