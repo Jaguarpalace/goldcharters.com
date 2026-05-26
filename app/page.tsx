@@ -87,6 +87,10 @@ export default async function HomePage() {
       )}
       <ServiceCards services={services} />
       <SellSection section={findHomepageSection(sections, 'sell_intro')} variant="gold" />
+      {/* Silver sits directly under gold and mirrors it (image on the left,
+          text on the right) so the page reads as a left/right rhythm down
+          the precious-metal block. */}
+      <SellSection section={findHomepageSection(sections, 'silver_intro')} variant="gold" flip />
       <SellSection section={findHomepageSection(sections, 'jewellery_intro')} variant="jewellery" />
       <SellSection section={findHomepageSection(sections, 'handbag_intro')} variant="jewellery" />
       <SellSection section={findHomepageSection(sections, 'watch_intro')} variant="gold" />

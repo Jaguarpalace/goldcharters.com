@@ -8,16 +8,24 @@ export function SellSection({
   section,
   variant,
   asH1 = false,
+  flip,
 }: {
   section: HomepageSection | undefined;
   variant: 'gold' | 'jewellery';
   /** When this section is the top-of-page hero, render the title as <h1> for SEO. */
   asH1?: boolean;
+  /**
+   * Force image-left / text-right (true) or text-left / image-right (false).
+   * Defaults to `true` for the jewellery variant and `false` for gold so
+   * existing pages keep their current layout. Useful when stacking two
+   * gold-variant sections on the homepage and you want them to mirror.
+   */
+  flip?: boolean;
 }) {
   if (!section) return null;
   const extra = (section.extra ?? {}) as Extra;
   const bullets = extra.bullets ?? [];
-  const flip = variant === 'jewellery';
+  const isFlipped = flip ?? variant === 'jewellery';
   const HeadingTag = asH1 ? 'h1' : 'h2';
   const headingClass = asH1 ? 'gc-heading-xl mt-4' : 'gc-heading mt-3';
 
@@ -34,7 +42,7 @@ export function SellSection({
       }`}
     >
       <div className="gc-container">
-        <div className={`grid grid-cols-1 items-center gap-6 md:grid-cols-2 md:gap-10 lg:gap-14 ${flip ? 'md:[&>*:first-child]:order-2' : ''}`}>
+        <div className={`grid grid-cols-1 items-center gap-6 md:grid-cols-2 md:gap-10 lg:gap-14 ${isFlipped ? 'md:[&>*:first-child]:order-2' : ''}`}>
           <div>
             {/* Eyebrow removed — every variant duplicated the title
                 ('Sell Gold' / 'Sell Jewellery' above 'Sell Your Gold With
