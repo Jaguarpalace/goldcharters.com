@@ -54,12 +54,14 @@ export function Footer({ settings }: { settings: SiteSettings }) {
               so the foot of the page feels balanced not top-heavy. */}
           <div className="lg:max-w-sm">
             <Logo businessName={settings.business_name} size="footer" />
-            {/* Description: one-line clamp on every breakpoint (with an
-                ellipsis if it overflows). Keeps the footer tight — the
-                full text is still indexed for SEO and read aloud by
-                screen readers, just not allowed to spill across multiple
-                lines of vertical space. */}
-            <p className="mt-3 hidden line-clamp-1 text-xs text-warmgrey sm:block">
+            {/* Description: one-line clamp from sm upward (mobile hides it
+                so the footer stays tight on phones). Note we deliberately
+                DON'T use `sm:block` here — that sets display:block which
+                overrides line-clamp-1's display:-webkit-box, defeating
+                the clamp. Using `sm:line-clamp-1` lets the same class
+                handle both visibility (it sets display:-webkit-box, not
+                none) and the actual line truncation. */}
+            <p className="mt-3 hidden text-xs text-warmgrey sm:line-clamp-1">
               {settings.footer_description}
             </p>
           </div>
