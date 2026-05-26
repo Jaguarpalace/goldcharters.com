@@ -147,29 +147,40 @@ export function GoldCalculator({
 
 /**
  * Sits at the bottom of the right column on desktop (and at the very end of
- * the single column on mobile). Uses the same 3-column grid as RateRow so
- * the cell labels line up with "Type & Carat / Weight / Item Price" — the
- * label + hint occupy the type column, the CTA fills the weight column,
- * and the running total lands in the item-price column where every per-row
- * price already lives.
+ * the single column on mobile).
+ *
+ * Responsive layout strategy:
+ *   - Desktop (lg+): a 3-column grid matching RateRow so the label, the CTA
+ *     and the running total line up with "Type & Carat / Weight / Item
+ *     Price" — the cell visually reads as the calculator's "total row".
+ *   - Mobile: a stacked two-row layout. Top row is the label + hint, bottom
+ *     row is the CTA on the left and the total on the right. Cramming all
+ *     three cells onto one row on a phone-width screen broke the label
+ *     into 5 wrapped lines and overlapped the CTA, so we explicitly stack
+ *     instead of inheriting the grid.
  */
 function TotalRow({ total, ctaHref }: { total: number; ctaHref: string }) {
   return (
-    <div className="grid grid-cols-[1.4fr,1fr,1fr] items-center gap-3 bg-ink-900/60 px-4 py-2.5">
+    <div className="bg-ink-900/60 px-4 py-3 lg:grid lg:grid-cols-[1.4fr,1fr,1fr] lg:items-center lg:gap-3 lg:py-2.5">
       <div className="min-w-0">
         <div className="text-[11px] font-semibold uppercase tracking-luxe text-gold-tint">
           Estimated Total
         </div>
         <div className="text-[10px] text-warmgrey">Guide price · Subject to inspection</div>
       </div>
-      <Link
-        href={ctaHref}
-        className="gc-btn-primary inline-flex w-full items-center justify-center whitespace-nowrap !px-3 !py-1.5 text-[11px]"
-      >
-        Request Valuation
-      </Link>
-      <div className="text-right font-display text-lg font-semibold text-gold-bright">
-        {formatGBP(total)}
+      {/* On mobile this wrapper is a flex row (CTA + total). On desktop the
+          `lg:contents` makes the wrapper transparent so its two children
+          participate as columns 2 and 3 of the outer grid directly. */}
+      <div className="mt-3 flex items-center justify-between gap-3 lg:contents lg:mt-0">
+        <Link
+          href={ctaHref}
+          className="gc-btn-primary inline-flex items-center justify-center whitespace-nowrap !px-3 !py-1.5 text-[11px] lg:w-full"
+        >
+          Request Valuation
+        </Link>
+        <div className="font-display text-lg font-semibold text-gold-bright lg:text-right">
+          {formatGBP(total)}
+        </div>
       </div>
     </div>
   );
