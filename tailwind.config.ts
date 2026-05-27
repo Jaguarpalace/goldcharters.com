@@ -15,12 +15,17 @@ const config: Config = {
           950: '#050505',
         },
         charcoal: '#141414',
+        // Brand-mandated single gold. Every text-gold-* and bg-gold-* used
+        // to vary between deep/metallic/bright/antique/tint to give surface
+        // depth; per brief, all gold renders as one solid hex so the page
+        // reads with one consistent gold tone. The five keys are kept so
+        // we don't have to find-and-replace every classname in the codebase.
         gold: {
-          deep: '#B8860B',
-          metallic: '#D4AF37',
-          bright: '#FFD700',
-          antique: '#A67C00',
-          tint: '#F3D675',
+          deep: '#F3CC0F',
+          metallic: '#F3CC0F',
+          bright: '#F3CC0F',
+          antique: '#F3CC0F',
+          tint: '#F3CC0F',
         },
         warmgrey: '#B8B8B8',
       },

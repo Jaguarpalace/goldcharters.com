@@ -8,11 +8,15 @@
      so the entire site speaks with one voice. */
   --font-sans: var(--font-manrope), system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-display: var(--font-manrope), system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --gold-deep: #b8860b;
-  --gold-metallic: #d4af37;
-  --gold-bright: #ffd700;
-  --gold-antique: #a67c00;
-  --gold-tint: #f3d675;
+  /* Single brand gold. The five tokens used to be different shades for
+     surface depth; now they're all the same hex per brand brief. The
+     names are kept so existing var(--gold-*) usages don't have to be
+     hunted down and renamed. */
+  --gold-deep: #f3cc0f;
+  --gold-metallic: #f3cc0f;
+  --gold-bright: #f3cc0f;
+  --gold-antique: #f3cc0f;
+  --gold-tint: #f3cc0f;
   --ink-950: #050505;
   --ink-900: #0b0b0b;
   --ink-800: #141414;
@@ -66,22 +70,19 @@ body {
     @apply inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-luxe text-gold-metallic;
   }
 
+  /* Headlines used to be background-clip:text gradients in 3 stops of gold;
+     brand brief flattens them to a single solid #f3cc0f. The drop-shadow
+     glow on the XL variant is kept (decorative, not the text colour). */
   .gc-heading {
     @apply font-display text-2xl font-semibold leading-tight tracking-tight sm:text-3xl lg:text-[2rem];
-    background: linear-gradient(135deg, #a67c00 0%, #d4af37 35%, #ffd700 55%, #d4af37 75%, #b8860b 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: #f3cc0f;
   }
 
   .gc-heading-xl {
     @apply font-display text-3xl font-bold leading-[1.1] tracking-tight sm:text-4xl lg:text-[2.75rem];
-    background: linear-gradient(135deg, #a67c00 0%, #d4af37 30%, #ffd700 50%, #d4af37 70%, #b8860b 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: #f3cc0f;
     /* Soft gold glow behind the headline — barely visible, adds depth */
-    filter: drop-shadow(0 0 16px rgba(212, 175, 55, 0.15));
+    filter: drop-shadow(0 0 16px rgba(243, 204, 15, 0.15));
   }
 
   .gc-subhead {
@@ -162,11 +163,11 @@ body {
     @apply inline-flex items-center gap-1.5 rounded-full border border-gold-metallic/30 bg-ink-900/70 px-3 py-1 text-xs text-gold-tint;
   }
 
+  /* Was a multi-stop gold gradient via background-clip:text. Brand brief
+     flattens to a single solid #f3cc0f — the class name is kept so every
+     site usage that imports it still works without churn. */
   .gc-text-gold-gradient {
-    background: linear-gradient(135deg, #a67c00, #d4af37 35%, #ffd700 55%, #d4af37 75%, #b8860b);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: #f3cc0f;
   }
 
   .gc-bg-noise {
