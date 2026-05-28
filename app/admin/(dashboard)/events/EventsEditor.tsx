@@ -12,26 +12,14 @@ type Draft = {
   address: string;
   postcode: string;
   description: string;
-  starts_on: string;
-  ends_on: string;
+  // One event = one date. Add more events for more dates.
+  date: string;
   day_start_time: string;
   day_end_time: string;
   slot_minutes: number;
-  weekdays: number[];
   is_published: boolean;
   display_order: number;
 };
-
-// Weekday chips, Monday-first. value matches JS getUTCDay (0=Sun..6=Sat).
-const WEEKDAYS: Array<{ value: number; label: string }> = [
-  { value: 1, label: 'Mon' },
-  { value: 2, label: 'Tue' },
-  { value: 3, label: 'Wed' },
-  { value: 4, label: 'Thu' },
-  { value: 5, label: 'Fri' },
-  { value: 6, label: 'Sat' },
-  { value: 0, label: 'Sun' },
-];
 
 function todayISO(offset = 0): string {
   const d = new Date(Date.now() + offset * 86_400_000);
@@ -46,12 +34,10 @@ const EMPTY_DRAFT: Draft = {
   address: '',
   postcode: '',
   description: '',
-  starts_on: todayISO(7),
-  ends_on: todayISO(9),
+  date: todayISO(7),
   day_start_time: '10:00',
   day_end_time: '17:00',
   slot_minutes: 30,
-  weekdays: [],
   is_published: true,
   display_order: 0,
 };
@@ -64,12 +50,10 @@ function toDraft(ev: AppointmentEvent): Draft {
     address: ev.address ?? '',
     postcode: ev.postcode ?? '',
     description: ev.description ?? '',
-    starts_on: ev.starts_on,
-    ends_on: ev.ends_on,
+    date: ev.starts_on,
     day_start_time: ev.day_start_time.slice(0, 5),
     day_end_time: ev.day_end_time.slice(0, 5),
     slot_minutes: ev.slot_minutes,
-    weekdays: ev.weekdays ?? [],
     is_published: ev.is_published,
     display_order: ev.display_order,
   };
@@ -86,14 +70,6 @@ export function EventsEditor({ initial }: { initial: AppointmentEvent[] }) {
 
   const set = <K extends keyof Draft>(key: K, value: Draft[K]) => setDraft((d) => ({ ...d, [key]: value }));
 
-  const toggleWeekday = (value: number) =>
-    setDraft((d) => ({
-      ...d,
-      weekdays: d.weekdays.includes(value)
-        ? d.weekdays.filter((v) => v !== value)
-        : [...d.weekdays, value],
-    }));
-
   const save = () => {
     setFeedback(null);
     const input = {
@@ -103,12 +79,10 @@ export function EventsEditor({ initial }: { initial: AppointmentEvent[] }) {
       address: draft.address || null,
       postcode: draft.postcode || null,
       description: draft.description || null,
-      starts_on: draft.starts_on,
-      ends_on: draft.ends_on,
+      date: draft.date,
       day_start_time: draft.day_start_time,
       day_end_time: draft.day_end_time,
       slot_minutes: Number(draft.slot_minutes) || 30,
-      weekdays: draft.weekdays.length > 0 ? draft.weekdays : null,
       is_published: draft.is_published,
       display_order: Number(draft.display_order) || 0,
     };
@@ -145,11 +119,10 @@ export function EventsEditor({ initial }: { initial: AppointmentEvent[] }) {
     setEditingId(null);
     setDraft({
       ...toDraft(ev),
-      starts_on: todayISO(7),
-      ends_on: todayISO(7),
+      date: todayISO(7),
       is_published: true,
     });
-    setFeedback({ kind: 'ok', text: `Re-adding “${ev.title}” — set the new date(s) and click Add event.` });
+    setFeedback({ kind: 'ok', text: `Re-adding “${ev.title}” — set the new date and click Add event.` });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -222,12 +195,9 @@ export function EventsEditor({ initial }: { initial: AppointmentEvent[] }) {
 
         <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <label className="gc-label">First day</label>
-            <input type="date" value={draft.starts_on} onChange={(e) => set('starts_on', e.target.value)} className="gc-input" />
-          </div>
-          <div>
-            <label className="gc-label">Last day</label>
-            <input type="date" value={draft.ends_on} onChange={(e) => set('ends_on', e.target.value)} className="gc-input" />
+            <label className="gc-label">Date</label>
+            <input type="date" value={draft.date} onChange={(e) => set('date', e.target.value)} className="gc-input" />
+            <p className="mt-1 text-[11px] text-warmgrey/70">One date per event. Add another event for another day.</p>
           </div>
           <div>
             <label className="gc-label">Opens</label>
@@ -252,39 +222,6 @@ export function EventsEditor({ initial }: { initial: AppointmentEvent[] }) {
             </p>
           </div>
         </div>
-
-        {/* Weekday filter only makes sense across a multi-day range. For a
-            single-day event it's meaningless, so we hide it to avoid the
-            "why am I seeing Mon/Tue/… for one day?" confusion. */}
-        {draft.starts_on !== draft.ends_on && (
-        <div className="mt-4">
-          <label className="gc-label">Which days of the week?</label>
-          <p className="mb-2 text-[11px] text-warmgrey/70">
-            Your range spans several days — tick the weekdays you’ll actually be open. Leave all
-            unticked to open every day in the range.
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {WEEKDAYS.map((w) => {
-              const on = draft.weekdays.includes(w.value);
-              return (
-                <button
-                  key={w.value}
-                  type="button"
-                  onClick={() => toggleWeekday(w.value)}
-                  className={
-                    'rounded-lg border px-3 py-1.5 text-sm transition ' +
-                    (on
-                      ? 'border-gold-metallic bg-ink-800 text-gold-bright'
-                      : 'border-gold-metallic/25 bg-ink-900/60 text-white hover:border-gold-metallic/50')
-                  }
-                >
-                  {w.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-        )}
 
         <div className="mt-5 flex items-center justify-between">
           <label className="inline-flex items-center gap-2 text-sm text-white">

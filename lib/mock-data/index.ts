@@ -1128,11 +1128,11 @@ export function mockAppointmentEvents(): AppointmentEvent[] {
       description:
         'Our private valuation rooms in Egham, Surrey. Discreet, by appointment, with same-day payment available.',
       starts_on: dayOffset(1),
-      ends_on: dayOffset(90),
+      ends_on: dayOffset(1),
       day_start_time: '10:00',
       day_end_time: '18:00',
       slot_minutes: 30,
-      weekdays: [1, 2, 3, 4, 5, 6], // Mon–Sat
+      weekdays: null,
       is_published: true,
       display_order: 1,
       created_at: ts,
@@ -1150,7 +1150,7 @@ export function mockAppointmentEvents(): AppointmentEvent[] {
       description:
         "We're bringing our valuation service to Bracknell for a few days. Book a private slot to have your gold, jewellery, watches or handbags valued in person.",
       starts_on: dayOffset(7),
-      ends_on: dayOffset(9),
+      ends_on: dayOffset(7),
       day_start_time: '10:00',
       day_end_time: '17:00',
       slot_minutes: 30,
@@ -1172,7 +1172,7 @@ export function mockAppointmentEvents(): AppointmentEvent[] {
       description:
         'Visiting Leeds next month. Reserve a private appointment with one of our specialists — no obligation to sell.',
       starts_on: dayOffset(35),
-      ends_on: dayOffset(36),
+      ends_on: dayOffset(35),
       day_start_time: '11:00',
       day_end_time: '18:00',
       slot_minutes: 45,
@@ -1194,7 +1194,7 @@ export function mockAppointmentEvents(): AppointmentEvent[] {
       description:
         'Our specialists head to Manchester. Book ahead to guarantee a private slot during the visit.',
       starts_on: dayOffset(63),
-      ends_on: dayOffset(64),
+      ends_on: dayOffset(63),
       day_start_time: '10:00',
       day_end_time: '17:00',
       slot_minutes: 30,

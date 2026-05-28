@@ -401,12 +401,11 @@ export type EventInput = {
   address?: string | null;
   postcode?: string | null;
   description?: string | null;
-  starts_on: string;
-  ends_on: string;
+  /** One event = one date. starts_on and ends_on are both set to this. */
+  date: string;
   day_start_time: string;
   day_end_time: string;
   slot_minutes: number;
-  weekdays?: number[] | null;
   is_published: boolean;
   display_order: number;
 };
@@ -421,20 +420,13 @@ const TIME_RE = /^\d{2}:\d{2}(:\d{2})?$/;
 function validateEventInput(input: EventInput): string | null {
   if (!clean(input.title)) return 'Title is required.';
   if (!clean(input.city)) return 'City / location is required.';
-  if (!DATE_RE.test(input.starts_on) || !DATE_RE.test(input.ends_on)) return 'Please provide valid dates.';
-  if (input.ends_on < input.starts_on) return 'The end date must be on or after the start date.';
+  if (!DATE_RE.test(input.date)) return 'Please provide a valid date.';
   if (!TIME_RE.test(input.day_start_time) || !TIME_RE.test(input.day_end_time))
     return 'Please provide valid opening and closing times.';
   if (input.day_end_time <= input.day_start_time) return 'Closing time must be after opening time.';
   if (!Number.isFinite(input.slot_minutes) || input.slot_minutes < 5 || input.slot_minutes > 480)
     return 'Slot length must be between 5 and 480 minutes.';
   return null;
-}
-
-function normaliseWeekdays(weekdays: number[] | null | undefined): number[] | null {
-  if (!weekdays || weekdays.length === 0) return null;
-  const valid = Array.from(new Set(weekdays.filter((d) => d >= 0 && d <= 6))).sort((a, b) => a - b);
-  return valid.length === 7 || valid.length === 0 ? null : valid;
 }
 
 function eventPatch(input: EventInput) {
@@ -445,12 +437,13 @@ function eventPatch(input: EventInput) {
     address: cleanOpt(input.address, 300),
     postcode: cleanOpt(input.postcode, 12),
     description: cleanOpt(input.description, 2000),
-    starts_on: input.starts_on,
-    ends_on: input.ends_on,
+    // A single-day event: start and end are the same date, no weekday filter.
+    starts_on: input.date,
+    ends_on: input.date,
     day_start_time: input.day_start_time.slice(0, 5),
     day_end_time: input.day_end_time.slice(0, 5),
     slot_minutes: Math.round(input.slot_minutes),
-    weekdays: normaliseWeekdays(input.weekdays),
+    weekdays: null,
     is_published: Boolean(input.is_published),
     display_order: Number.isFinite(input.display_order) ? Math.round(input.display_order) : 0,
   };
