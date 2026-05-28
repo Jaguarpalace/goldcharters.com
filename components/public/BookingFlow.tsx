@@ -2,14 +2,8 @@
 
 import { useMemo, useRef, useState, useTransition } from 'react';
 import { bookAppointment, findNearestEvents, type NearestResult } from '@/lib/actions/appointments';
-import { APPOINTMENT_SERVICES, type ComputedDay, type ComputedEvent, type ComputedSlot } from '@/lib/appointments/slots';
+import { APPOINTMENT_SERVICES, type ComputedEvent, type ComputedSlot } from '@/lib/appointments/slots';
 import { formatDistance } from '@/lib/appointments/geo';
-
-const MONTHS = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
-];
-const WEEKDAY_HEADERS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 type SuccessState = {
   reference: string;
@@ -257,7 +251,7 @@ function NearestSearch({ onResult }: { onResult: (res: Extract<NearestResult, { 
 }
 
 // ---------------------------------------------------------------------------
-//  Calendar + slots + form for the selected event
+//  Availability list + booking form for the selected event
 // ---------------------------------------------------------------------------
 
 function BookingForEvent({
@@ -269,44 +263,23 @@ function BookingForEvent({
   onSlotBooked: (eventId: string, startsAt: string) => void;
   onBooked: (success: SuccessState) => void;
 }) {
-  const dayMap = useMemo(() => {
-    const m = new Map<string, ComputedDay>();
-    for (const d of event.days) m.set(d.date, d);
-    return m;
-  }, [event]);
-
-  const firstAvailable = event.days.find((d) => d.availableCount > 0) ?? event.days[0] ?? null;
-
-  const [selectedDate, setSelectedDate] = useState<string>(firstAvailable?.date ?? '');
+  // Show a manageable run of the published days; long-running events (the
+  // showroom) expand on demand rather than dumping months of slots at once.
+  const INITIAL_DAYS = 6;
+  const [visibleDays, setVisibleDays] = useState(INITIAL_DAYS);
   const [selectedSlot, setSelectedSlot] = useState<ComputedSlot | null>(null);
-  const [viewMonth, setViewMonth] = useState<{ y: number; m: number }>(() => {
-    const base = firstAvailable?.date ?? event.days[0]?.date ?? new Date().toISOString().slice(0, 10);
-    const [y, m] = base.split('-').map(Number);
-    return { y, m: m - 1 };
-  });
-
+  const [selectedDayLabel, setSelectedDayLabel] = useState('');
   const [serverError, setServerError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
 
-  const monthBounds = useMemo(() => {
-    if (event.days.length === 0) return null;
-    const toKey = (date: string) => {
-      const [y, m] = date.split('-').map(Number);
-      return y * 12 + (m - 1);
-    };
-    const keys = event.days.map((d) => toKey(d.date));
-    return { min: Math.min(...keys), max: Math.max(...keys) };
-  }, [event]);
+  // event.days already contains only the days the admin made bookable.
+  const shownDays = event.days.slice(0, visibleDays);
+  const hasMore = event.days.length > visibleDays;
 
-  const viewKey = viewMonth.y * 12 + viewMonth.m;
-  const canPrev = monthBounds ? viewKey > monthBounds.min : false;
-  const canNext = monthBounds ? viewKey < monthBounds.max : false;
-
-  const selectedDay = selectedDate ? dayMap.get(selectedDate) ?? null : null;
-
-  const onPickSlot = (slot: ComputedSlot) => {
+  const onPickSlot = (slot: ComputedSlot, dayLabel: string) => {
     setSelectedSlot(slot);
+    setSelectedDayLabel(dayLabel);
     setServerError(null);
     requestAnimationFrame(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }));
   };
@@ -360,112 +333,62 @@ function BookingForEvent({
 
   return (
     <>
-      {/* Step 2 — pick a date + time */}
+      {/* Step 2 — choose from the times the admin has published */}
       <section>
-        <StepHeading n={2} title="Pick a date & time" />
-        <div className="mt-4 grid gap-6 lg:grid-cols-[minmax(0,340px),1fr]">
-          <div className="gc-card gc-card-gold-edge p-4 sm:p-5">
-            <div className="mb-3 flex items-center justify-between">
-              <button
-                type="button"
-                onClick={() => canPrev && setViewMonth(shiftMonth(viewMonth, -1))}
-                disabled={!canPrev}
-                aria-label="Previous month"
-                className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-gold-metallic/30 text-gold-metallic transition enabled:hover:border-gold-metallic enabled:hover:text-gold-bright disabled:opacity-30"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 6l-6 6 6 6" strokeLinecap="round" strokeLinejoin="round" /></svg>
-              </button>
-              <p className="text-sm font-semibold text-white">{MONTHS[viewMonth.m]} {viewMonth.y}</p>
-              <button
-                type="button"
-                onClick={() => canNext && setViewMonth(shiftMonth(viewMonth, 1))}
-                disabled={!canNext}
-                aria-label="Next month"
-                className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-gold-metallic/30 text-gold-metallic transition enabled:hover:border-gold-metallic enabled:hover:text-gold-bright disabled:opacity-30"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" /></svg>
-              </button>
-            </div>
+        <StepHeading n={2} title="Choose a time" />
+        <p className="mt-2 text-[13px] text-warmgrey">
+          Available appointments at <span className="text-gold-tint">{event.city}</span>
+          {event.venue_name ? ` · ${event.venue_name}` : ''}.
+        </p>
 
-            <div className="grid grid-cols-7 gap-1 text-center">
-              {WEEKDAY_HEADERS.map((w) => (
-                <div key={w} className="py-1 text-[10px] font-semibold uppercase tracking-wide text-warmgrey/70">{w}</div>
-              ))}
-              {buildMonthCells(viewMonth.y, viewMonth.m).map((cell, i) => {
-                if (cell === null) return <div key={`b-${i}`} aria-hidden />;
-                const day = dayMap.get(cell.date);
-                const bookable = !!day && day.availableCount > 0;
-                const fullDay = !!day && day.availableCount === 0;
-                const isSelected = cell.date === selectedDate;
-                return (
-                  <button
-                    key={cell.date}
-                    type="button"
-                    disabled={!bookable}
-                    onClick={() => { setSelectedDate(cell.date); setSelectedSlot(null); }}
-                    className={
-                      'relative aspect-square rounded-lg text-sm transition ' +
-                      (isSelected
-                        ? 'bg-gradient-to-br from-gold-bright to-gold-deep font-semibold text-ink-950'
-                        : bookable
-                          ? 'text-white hover:bg-ink-800 ring-1 ring-gold-metallic/30'
-                          : fullDay
-                            ? 'text-warmgrey/40 line-through'
-                            : 'text-warmgrey/25')
-                    }
-                  >
-                    {cell.dayNumber}
-                    {bookable && !isSelected && (
-                      <span className="absolute bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-gold-bright" aria-hidden />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-            <p className="mt-3 flex items-center gap-2 text-[11px] text-warmgrey/70">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-gold-bright" aria-hidden />
-              Days with availability
+        <div className="mt-4 space-y-3">
+          {shownDays.length === 0 && (
+            <p className="rounded-xl border border-gold-metallic/20 bg-ink-900/40 p-5 text-sm text-warmgrey">
+              No appointments are available here at the moment — please try another location.
             </p>
-          </div>
-
-          <div>
-            {selectedDay ? (
-              <>
-                <p className="text-sm font-medium text-white">{selectedDay.full}</p>
-                <p className="mt-0.5 text-[12px] text-warmgrey">
-                  {selectedDay.availableCount > 0
-                    ? `${selectedDay.availableCount} time${selectedDay.availableCount === 1 ? '' : 's'} available · ${event.city}`
-                    : 'No times left on this day'}
-                </p>
-                <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4">
-                  {selectedDay.slots.map((slot) => {
-                    const active = selectedSlot?.startsAt === slot.startsAt;
-                    return (
-                      <button
-                        key={slot.startsAt}
-                        type="button"
-                        disabled={!slot.available}
-                        onClick={() => onPickSlot(slot)}
-                        className={
-                          'rounded-lg border px-2 py-2.5 text-center text-sm transition ' +
-                          (active
-                            ? 'border-gold-metallic bg-gold-metallic/15 font-semibold text-gold-bright shadow-[0_0_14px_rgba(243,204,15,0.25)]'
-                            : slot.available
-                              ? 'border-gold-metallic/25 bg-ink-900/60 text-white hover:border-gold-metallic/60 hover:bg-ink-800'
-                              : 'cursor-not-allowed border-transparent bg-ink-900/30 text-warmgrey/30 line-through')
-                        }
-                      >
-                        {slot.time}
-                      </button>
-                    );
-                  })}
-                </div>
-              </>
-            ) : (
-              <p className="text-sm text-warmgrey">Select a highlighted day to see available times.</p>
-            )}
-          </div>
+          )}
+          {shownDays.map((day) => (
+            <div key={day.date} className="rounded-2xl border border-gold-metallic/20 bg-ink-900/40 p-4 sm:p-5">
+              <div className="mb-3 flex items-baseline justify-between gap-3">
+                <p className="font-display text-base font-semibold text-white">{day.full}</p>
+                <span className="flex-none text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">
+                  {day.availableCount > 0 ? `${day.availableCount} available` : 'Fully booked'}
+                </span>
+              </div>
+              <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
+                {day.slots.map((slot) => {
+                  const active = selectedSlot?.startsAt === slot.startsAt;
+                  return (
+                    <button
+                      key={slot.startsAt}
+                      type="button"
+                      disabled={!slot.available}
+                      onClick={() => onPickSlot(slot, day.full)}
+                      className={
+                        'rounded-lg border px-2 py-2.5 text-center text-sm transition ' +
+                        (active
+                          ? 'border-gold-metallic bg-gold-metallic/15 font-semibold text-gold-bright shadow-[0_0_14px_rgba(243,204,15,0.25)]'
+                          : slot.available
+                            ? 'border-gold-metallic/25 bg-ink-900/60 text-white hover:border-gold-metallic/60 hover:bg-ink-800'
+                            : 'cursor-not-allowed border-transparent bg-ink-900/30 text-warmgrey/30 line-through')
+                      }
+                    >
+                      {slot.time}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </div>
+
+        {hasMore && (
+          <div className="mt-4 text-center">
+            <button type="button" onClick={() => setVisibleDays((n) => n + 7)} className="gc-btn-ghost">
+              Show more dates
+            </button>
+          </div>
+        )}
       </section>
 
       {/* Step 3 — details */}
@@ -475,7 +398,7 @@ function BookingForEvent({
           <form ref={formRef} onSubmit={onSubmit} className="mt-4 gc-card gc-card-gold-edge space-y-6 p-6 sm:p-7">
             <div className="rounded-xl border border-gold-metallic/20 bg-ink-950/50 p-4">
               <p className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">Your appointment</p>
-              <p className="mt-1 text-white">{event.city} · {selectedDay?.full}, {selectedSlot.time}</p>
+              <p className="mt-1 text-white">{event.city} · {selectedDayLabel}, {selectedSlot.time}</p>
               {event.venue_name && <p className="mt-0.5 text-[13px] text-warmgrey">{event.venue_name}</p>}
             </div>
 
@@ -664,31 +587,8 @@ function PinIcon() {
 }
 
 // ---------------------------------------------------------------------------
-//  Calendar / ICS helpers
+//  Calendar export helpers
 // ---------------------------------------------------------------------------
-
-function shiftMonth({ y, m }: { y: number; m: number }, delta: number): { y: number; m: number } {
-  const total = y * 12 + m + delta;
-  return { y: Math.floor(total / 12), m: ((total % 12) + 12) % 12 };
-}
-
-type Cell = { date: string; dayNumber: number } | null;
-
-/** A Monday-first 6×7 grid of cells for the given month; null = padding. */
-function buildMonthCells(year: number, month: number): Cell[] {
-  const pad2 = (n: number) => (n < 10 ? `0${n}` : String(n));
-  const firstDow = new Date(Date.UTC(year, month, 1)).getUTCDay(); // 0=Sun
-  const lead = (firstDow + 6) % 7; // Monday-first offset
-  const daysInMonth = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
-
-  const cells: Cell[] = [];
-  for (let i = 0; i < lead; i++) cells.push(null);
-  for (let d = 1; d <= daysInMonth; d++) {
-    cells.push({ date: `${year}-${pad2(month + 1)}-${pad2(d)}`, dayNumber: d });
-  }
-  while (cells.length % 7 !== 0) cells.push(null);
-  return cells;
-}
 
 /** Google Calendar event-template URL — opens GCal pre-filled; one Save adds it. */
 function buildGoogleCalendarUrl(s: SuccessState): string {
