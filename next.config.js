@@ -11,10 +11,12 @@ const securityHeaders = [
   { key: 'X-Content-Type-Options', value: 'nosniff' },
   // Limit referrer leakage on outbound clicks
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-  // Restrict powerful browser APIs we don't use
+  // Restrict powerful browser APIs. Geolocation is allowed for our own origin
+  // (self) so the booking page's "Use my location" works; camera/microphone
+  // stay fully disabled, and third-party/iframe geolocation is still blocked.
   {
     key: 'Permissions-Policy',
-    value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
+    value: 'camera=(), microphone=(), geolocation=(self), interest-cohort=()',
   },
   // Speed up DNS lookups for outbound assets
   { key: 'X-DNS-Prefetch-Control', value: 'on' },
