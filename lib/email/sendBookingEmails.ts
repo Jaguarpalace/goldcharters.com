@@ -27,6 +27,7 @@ function locationLine(event: AppointmentEvent): string {
 export async function sendBookingEmails(
   appointment: Appointment,
   event: AppointmentEvent,
+  photoCount = 0,
 ): Promise<void> {
   if (!isEmailConfigured()) {
     console.info('[email:booking] skipped — RESEND_API_KEY not set');
@@ -65,6 +66,7 @@ export async function sendBookingEmails(
       logoUrl,
       when,
       where,
+      photoCount,
     }),
   ]).catch((err) => console.error('[email:booking] threw', err));
 }
@@ -158,6 +160,7 @@ async function sendAdminAlert(
     logoUrl: string;
     when: string;
     where: string;
+    photoCount: number;
   },
 ): Promise<void> {
   const recipients = await getAdminRecipients();
@@ -185,6 +188,7 @@ async function sendAdminAlert(
       <tr><td style="padding:6px 12px 6px 0;color:#9a9a9a;font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Where</td><td style="padding:6px 0;color:#f6f6f6;font-size:14px;">${esc(v.where)}</td></tr>
       ${a.service_type ? `<tr><td style="padding:6px 12px 6px 0;color:#9a9a9a;font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Bringing</td><td style="padding:6px 0;color:#f6f6f6;font-size:14px;">${esc(a.service_type)}</td></tr>` : ''}
       <tr><td style="padding:6px 12px 6px 0;color:#9a9a9a;font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Preferred contact</td><td style="padding:6px 0;color:#f6f6f6;font-size:14px;">${esc(a.preferred_contact_method)}</td></tr>
+      ${v.photoCount > 0 ? `<tr><td style="padding:6px 12px 6px 0;color:#9a9a9a;font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Photos</td><td style="padding:6px 0;color:#f6f6f6;font-size:14px;">${v.photoCount} attached — view in admin</td></tr>` : ''}
     </table>
     ${a.notes ? `<p style="margin:14px 0 0;color:#cfcfcf;font-size:14px;line-height:1.6;white-space:pre-wrap;">${esc(a.notes)}</p>` : ''}
   </td></tr>

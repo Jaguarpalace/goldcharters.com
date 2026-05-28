@@ -121,6 +121,23 @@ function Group({
               </p>
               {r.service_type && <p className="mt-1 text-[12px] text-warmgrey">Bringing: {r.service_type}</p>}
               {r.notes && <p className="mt-1 text-[12px] text-warmgrey/80">“{r.notes}”</p>}
+              {r.appointment_images && r.appointment_images.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {r.appointment_images.map((img) => (
+                    <a
+                      key={img.id}
+                      href={img.image_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block h-14 w-14 overflow-hidden rounded-md border border-gold-metallic/25 transition hover:border-gold-metallic"
+                      title={img.file_name ?? 'Photo'}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={img.image_url} alt={img.file_name ?? 'Customer photo'} className="h-full w-full object-cover" />
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div className="flex flex-row items-center gap-2 lg:flex-col lg:items-end">

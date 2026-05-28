@@ -4,6 +4,7 @@ import { useMemo, useRef, useState, useTransition } from 'react';
 import { bookAppointment, findNearestEvents, type NearestResult } from '@/lib/actions/appointments';
 import { APPOINTMENT_SERVICES, type ComputedEvent, type ComputedSlot } from '@/lib/appointments/slots';
 import { formatDistance } from '@/lib/appointments/geo';
+import { MultiImageUploader, type SelectedFile } from './MultiImageUploader';
 
 type SuccessState = {
   reference: string;
@@ -13,8 +14,6 @@ type SuccessState = {
   title: string;
   venue: string | null;
   address: string | null;
-  startsAt: string;
-  endsAt: string;
   cancelToken: string | null;
 };
 
@@ -269,6 +268,7 @@ function BookingForEvent({
   const [visibleDays, setVisibleDays] = useState(INITIAL_DAYS);
   const [selectedSlot, setSelectedSlot] = useState<ComputedSlot | null>(null);
   const [selectedDayLabel, setSelectedDayLabel] = useState('');
+  const [files, setFiles] = useState<SelectedFile[]>([]);
   const [serverError, setServerError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
@@ -302,6 +302,7 @@ function BookingForEvent({
       notes: String(fd.get('notes') ?? '') || null,
       preferredContactMethod: String(fd.get('preferred_contact_method') ?? 'phone'),
       consent: fd.get('consent') === 'on',
+      photos: files.map((f) => f.file),
     };
 
     startTransition(async () => {
@@ -316,8 +317,6 @@ function BookingForEvent({
           title: event.title,
           venue: event.venue_name,
           address: event.address,
-          startsAt: slot.startsAt,
-          endsAt: slot.endsAt,
           cancelToken: result.cancelToken,
         });
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -442,6 +441,13 @@ function BookingForEvent({
               <textarea id="notes" name="notes" rows={3} placeholder="e.g. an 18ct chain and a Rolex Datejust" className="gc-input" />
             </div>
 
+            <div>
+              <p className="mb-2 text-[12px] text-warmgrey">
+                Photos of your items <span className="text-warmgrey/60">(optional, up to 5)</span> — helps our specialist prepare for your visit.
+              </p>
+              <MultiImageUploader files={files} onChange={setFiles} max={5} />
+            </div>
+
             <label className="flex items-start gap-3 text-sm text-warmgrey">
               <input type="checkbox" name="consent" required className="mt-1 h-4 w-4 accent-gold-metallic" />
               <span>I agree to be contacted about this appointment.</span>
@@ -473,9 +479,6 @@ function BookingForEvent({
 // ---------------------------------------------------------------------------
 
 function SuccessCard({ success, onReset }: { success: SuccessState; onReset: () => void }) {
-  const icsHref = useMemo(() => buildIcsHref(success), [success]);
-  const googleHref = useMemo(() => buildGoogleCalendarUrl(success), [success]);
-
   return (
     <div className="gc-card gc-card-gold-edge p-8 text-center sm:p-10">
       <div
@@ -494,13 +497,7 @@ function SuccessCard({ success, onReset }: { success: SuccessState; onReset: () 
         {success.address && <Row label="Address" value={success.address} />}
       </div>
 
-      <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-        <a href={googleHref} target="_blank" rel="noopener noreferrer" className="gc-btn-primary">
-          Add to Google Calendar
-        </a>
-        <a href={icsHref} download="charters-gold-appointment.ics" className="gc-btn-secondary">
-          Apple / Outlook (.ics)
-        </a>
+      <div className="mt-6 flex justify-center">
         <button type="button" onClick={onReset} className="gc-btn-ghost">Book another</button>
       </div>
 
@@ -589,41 +586,3 @@ function PinIcon() {
   );
 }
 
-// ---------------------------------------------------------------------------
-//  Calendar export helpers
-// ---------------------------------------------------------------------------
-
-/** Google Calendar event-template URL — opens GCal pre-filled; one Save adds it. */
-function buildGoogleCalendarUrl(s: SuccessState): string {
-  const stamp = (iso: string) => iso.replace(/[-:]/g, '').replace(/\.\d{3}/, '');
-  const loc = [s.venue, s.address, s.city].filter(Boolean).join(', ');
-  const params = new URLSearchParams({
-    action: 'TEMPLATE',
-    text: 'Charters Gold — private appointment',
-    dates: `${stamp(s.startsAt)}/${stamp(s.endsAt)}`,
-    details: 'Your private valuation appointment with Charters Gold.',
-    location: loc,
-  });
-  return `https://calendar.google.com/calendar/render?${params.toString()}`;
-}
-
-function buildIcsHref(s: SuccessState): string {
-  const stamp = (iso: string) => iso.replace(/[-:]/g, '').replace(/\.\d{3}/, '');
-  const loc = [s.venue, s.address, s.city].filter(Boolean).join(', ');
-  const lines = [
-    'BEGIN:VCALENDAR',
-    'VERSION:2.0',
-    'PRODID:-//Charters Gold//Appointment//EN',
-    'BEGIN:VEVENT',
-    `UID:${s.reference}@chartersgold.co.uk`,
-    `DTSTAMP:${stamp(new Date().toISOString())}`,
-    `DTSTART:${stamp(s.startsAt)}`,
-    `DTEND:${stamp(s.endsAt)}`,
-    'SUMMARY:Charters Gold — private appointment',
-    `LOCATION:${loc.replace(/,/g, '\\,')}`,
-    'DESCRIPTION:Your private valuation appointment with Charters Gold.',
-    'END:VEVENT',
-    'END:VCALENDAR',
-  ];
-  return `data:text/calendar;charset=utf-8,${encodeURIComponent(lines.join('\r\n'))}`;
-}

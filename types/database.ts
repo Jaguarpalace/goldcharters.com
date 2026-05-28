@@ -646,6 +646,17 @@ export const APPOINTMENT_STATUS_LABELS: Record<AppointmentStatus, string> = {
   no_show: 'No-show',
 };
 
+/** A photo a customer attached to their booking. */
+export type AppointmentImage = {
+  id: string;
+  appointment_id: string;
+  /** Storage path in `valuation-uploads`; signed to a URL on read. */
+  image_url: string;
+  file_name: string | null;
+  display_order: number;
+  created_at: string;
+};
+
 /** A single booked appointment slot against an event. */
 export type Appointment = {
   id: string;

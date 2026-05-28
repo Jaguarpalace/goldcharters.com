@@ -15,9 +15,8 @@ export default async function BlogIndex() {
 
   return (
     <>
-      <section className="relative overflow-hidden border-b border-gold-metallic/15">
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink-950 via-ink-900 to-ink-950" />
-        <div className="gc-container relative py-7 lg:py-14">
+      <section className="py-7 lg:py-14">
+        <div className="gc-container">
           <div className="max-w-3xl">
             <span className="gc-eyebrow">Insights & Guides</span>
             <h1 className="gc-heading-xl mt-3">Notes from the valuation house</h1>

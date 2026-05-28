@@ -31,7 +31,8 @@ export async function getUpcomingEvents(): Promise<AppointmentEvent[]> {
   return data as AppointmentEvent[];
 }
 
-/** Every event including unpublished + past — for the admin editor. */
+/** Every event including unpublished + past — for the admin editor.
+ *  Most recently created first so the admin's latest work is at the top. */
 export async function getAllEvents(): Promise<AppointmentEvent[]> {
   const supabase = getServerSupabase();
   if (!supabase) return mockAppointmentEvents();
@@ -39,8 +40,7 @@ export async function getAllEvents(): Promise<AppointmentEvent[]> {
   const { data, error } = await supabase
     .from('appointment_events')
     .select('*')
-    .order('display_order', { ascending: true })
-    .order('starts_on', { ascending: true });
+    .order('created_at', { ascending: false });
 
   if (error || !data) return [];
   return data as AppointmentEvent[];

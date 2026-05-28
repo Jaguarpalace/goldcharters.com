@@ -81,6 +81,8 @@ export function EventsEditor({ initial }: { initial: AppointmentEvent[] }) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   const [feedback, setFeedback] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null);
+  // Show the 5 most recent first, then reveal 10 more on each "Show more".
+  const [visibleCount, setVisibleCount] = useState(5);
 
   const set = <K extends keyof Draft>(key: K, value: Draft[K]) => setDraft((d) => ({ ...d, [key]: value }));
 
@@ -118,7 +120,7 @@ export function EventsEditor({ initial }: { initial: AppointmentEvent[] }) {
       }
       const saved = result.data;
       setEvents((list) =>
-        editingId ? list.map((e) => (e.id === editingId ? saved : e)) : [...list, saved],
+        editingId ? list.map((e) => (e.id === editingId ? saved : e)) : [saved, ...list],
       );
       setDraft({ ...EMPTY_DRAFT });
       setEditingId(null);
@@ -135,6 +137,20 @@ export function EventsEditor({ initial }: { initial: AppointmentEvent[] }) {
   const cancelEdit = () => {
     setEditingId(null);
     setDraft({ ...EMPTY_DRAFT });
+  };
+
+  // Clone an existing (often past) event into a fresh draft with future dates,
+  // ready to publish again for a new visit. Saves as a brand-new event.
+  const reAdd = (ev: AppointmentEvent) => {
+    setEditingId(null);
+    setDraft({
+      ...toDraft(ev),
+      starts_on: todayISO(7),
+      ends_on: todayISO(7),
+      is_published: true,
+    });
+    setFeedback({ kind: 'ok', text: `Re-adding “${ev.title}” — set the new date(s) and click Add event.` });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const remove = (id: string) => {
@@ -300,7 +316,7 @@ export function EventsEditor({ initial }: { initial: AppointmentEvent[] }) {
           {events.length === 0 && (
             <li className="gc-card p-8 text-center text-sm text-warmgrey">No events yet — add the first one above.</li>
           )}
-          {events.map((ev) => (
+          {events.slice(0, visibleCount).map((ev) => (
             <li key={ev.id} className="gc-card flex flex-col gap-4 p-5 sm:flex-row sm:items-start sm:justify-between">
               <div className="flex-1">
                 <div className="flex flex-wrap items-center gap-2">
@@ -318,8 +334,9 @@ export function EventsEditor({ initial }: { initial: AppointmentEvent[] }) {
                   {formatDateRange(ev.starts_on, ev.ends_on)} · {ev.day_start_time.slice(0, 5)}–{ev.day_end_time.slice(0, 5)} · {ev.slot_minutes} min slots
                 </p>
               </div>
-              <div className="flex flex-row gap-2 sm:flex-col">
+              <div className="flex flex-row flex-wrap gap-2 sm:flex-col sm:items-end">
                 <button type="button" onClick={() => startEdit(ev)} className="gc-btn-ghost text-[10px]">Edit</button>
+                <button type="button" onClick={() => reAdd(ev)} className="gc-btn-ghost text-[10px]">Re-add</button>
                 <button type="button" onClick={() => togglePublish(ev)} disabled={pending} className="text-[10px] uppercase tracking-luxe text-warmgrey hover:text-gold-bright">
                   {ev.is_published ? 'Unpublish' : 'Publish'}
                 </button>
@@ -330,6 +347,18 @@ export function EventsEditor({ initial }: { initial: AppointmentEvent[] }) {
             </li>
           ))}
         </ul>
+
+        {events.length > visibleCount && (
+          <div className="mt-4 text-center">
+            <button
+              type="button"
+              onClick={() => setVisibleCount((n) => n + 10)}
+              className="gc-btn-ghost"
+            >
+              Show more ({events.length - visibleCount} more)
+            </button>
+          </div>
+        )}
       </section>
     </div>
   );

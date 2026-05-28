@@ -19,7 +19,7 @@ const SELL_LINKS = [
 
 const INFO_LINKS = [
   ...(BUY_ENABLED ? [{ label: 'Shop Collection', href: '/shop' }] : []),
-  { label: 'Book / Visit Us', href: '/book' },
+  { label: 'Book a visit', href: '/book' },
   { label: 'How It Works', href: '/how-it-works' },
   { label: 'Areas We Cover', href: '/locations' },
   { label: 'Blog', href: '/blog' },

@@ -20,6 +20,7 @@ import {
   APPOINTMENT_STATUSES,
   type Appointment,
   type AppointmentEvent,
+  type AppointmentImage,
   type AppointmentStatus,
   type PreferredContactMethod,
 } from '@/types/database';
@@ -27,6 +28,18 @@ import {
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const CONTACT_METHODS = new Set<PreferredContactMethod>(['phone', 'email', 'whatsapp']);
 const SERVICE_SET = new Set<string>(APPOINTMENT_SERVICES);
+
+// Customers may attach up to 5 photos of the items they'll bring.
+const MAX_PHOTOS = 5;
+const MAX_PHOTO_BYTES = 12 * 1024 * 1024;
+const ALLOWED_PHOTO_MIME = new Set([
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/heic',
+  'image/heif',
+]);
+const APPOINTMENT_BUCKET = 'valuation-uploads';
 
 function clean(v: unknown, max = 500): string {
   return typeof v === 'string' ? v.trim().slice(0, max) : '';
@@ -52,6 +65,7 @@ export type BookAppointmentInput = {
   notes?: string | null;
   preferredContactMethod: string;
   consent: boolean;
+  photos?: File[];
 };
 
 export type BookResult =
@@ -166,13 +180,71 @@ export async function bookAppointment(input: BookAppointmentInput): Promise<Book
     return { ok: false, error: 'Could not save your booking. Please try again.' };
   }
 
-  await sendBookingEmails(row, event);
+  // Upload any attached photos (best-effort — never fails the booking).
+  const photoCount = await uploadAppointmentPhotos(admin, row.id, input.photos ?? []);
+
+  await sendBookingEmails(row, event, photoCount);
 
   revalidatePath('/book');
   revalidatePath('/');
   revalidatePath('/admin/appointments');
 
   return { ok: true, reference: row.id.slice(0, 8), persisted: true, when, cancelToken: row.cancel_token };
+}
+
+/**
+ * Upload booking photos to the private bucket and record their storage paths.
+ * Returns the number stored. Best-effort: a failed upload is logged and skipped
+ * so the booking itself is never blocked.
+ */
+async function uploadAppointmentPhotos(
+  admin: NonNullable<ReturnType<typeof getAdminSupabase>>,
+  appointmentId: string,
+  photos: File[],
+): Promise<number> {
+  const valid = photos
+    .filter((p): p is File => p instanceof File && p.size > 0)
+    .slice(0, MAX_PHOTOS);
+  if (valid.length === 0) return 0;
+
+  const rows: Array<{
+    appointment_id: string;
+    image_url: string;
+    file_name: string;
+    display_order: number;
+  }> = [];
+
+  for (const [index, photo] of valid.entries()) {
+    if (photo.size > MAX_PHOTO_BYTES) continue;
+    if (photo.type && !ALLOWED_PHOTO_MIME.has(photo.type)) continue;
+    const safeName = photo.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    const path = `appointments/${appointmentId}/${Date.now()}-${index}-${safeName}`;
+    try {
+      const buffer = await photo.arrayBuffer();
+      const { error } = await admin.storage.from(APPOINTMENT_BUCKET).upload(path, buffer, {
+        contentType: photo.type || 'image/jpeg',
+        cacheControl: '3600',
+      });
+      if (error) {
+        console.error('[appointment:photo-upload]', error);
+        continue;
+      }
+      rows.push({
+        appointment_id: appointmentId,
+        image_url: path,
+        file_name: photo.name,
+        display_order: index + 1,
+      });
+    } catch (e) {
+      console.error('[appointment:photo-upload]', e);
+    }
+  }
+
+  if (rows.length > 0) {
+    const { error } = await admin.from('appointment_images').insert(rows);
+    if (error) console.error('[appointment:photo-rows]', error);
+  }
+  return rows.length;
 }
 
 // ---------------------------------------------------------------------------
@@ -236,6 +308,7 @@ export type AppointmentWithEvent = Appointment & {
     city: string;
     venue_name: string | null;
   } | null;
+  appointment_images?: AppointmentImage[];
 };
 
 export async function listAppointments(): Promise<AppointmentWithEvent[]> {
@@ -243,10 +316,29 @@ export async function listAppointments(): Promise<AppointmentWithEvent[]> {
   if (!supabase) return [];
   const { data, error } = await supabase
     .from('appointments')
-    .select('*, appointment_events(title, city, venue_name)')
+    .select('*, appointment_events(title, city, venue_name), appointment_images(*)')
     .order('starts_at', { ascending: true });
   if (error || !data) return [];
-  return data as AppointmentWithEvent[];
+  const rows = data as AppointmentWithEvent[];
+
+  // Sign the private storage paths so the board can render thumbnails. Short
+  // expiry, regenerated on every load, so links never go stale.
+  const paths = rows.flatMap((r) => (r.appointment_images ?? []).map((i) => i.image_url));
+  if (paths.length > 0) {
+    const { data: signed } = await supabase.storage
+      .from(APPOINTMENT_BUCKET)
+      .createSignedUrls(paths, 60 * 60);
+    const byPath = new Map<string, string>();
+    for (const s of signed ?? []) {
+      if (s.path && s.signedUrl) byPath.set(s.path, s.signedUrl);
+    }
+    for (const r of rows) {
+      for (const img of r.appointment_images ?? []) {
+        img.image_url = byPath.get(img.image_url) ?? img.image_url;
+      }
+    }
+  }
+  return rows;
 }
 
 /** Count of upcoming, not-yet-cancelled appointments — drives the nav badge. */

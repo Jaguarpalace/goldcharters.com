@@ -25,12 +25,37 @@ const BUY_LINKS = [
 ];
 
 const INFO_LINKS = [
-  { label: 'Book / Visit Us', href: '/book' },
   { label: 'How It Works', href: '/how-it-works' },
   { label: 'Blog', href: '/blog' },
   { label: 'FAQs', href: '/faqs' },
   { label: 'Contact', href: '/contact' },
 ];
+
+/** Standalone "Book a visit" CTA — a glowing gold-edged pill with a calendar
+ *  glyph. Distinct from the solid-gold primary so it draws the eye without
+ *  competing with "Get a Valuation". */
+function BookVisitButton({ className = '', onClick }: { className?: string; onClick?: () => void }) {
+  return (
+    <Link
+      href="/book"
+      onClick={onClick}
+      className={
+        'group relative inline-flex items-center justify-center gap-2 rounded-full border border-gold-metallic/60 ' +
+        'bg-gradient-to-r from-ink-900/80 via-ink-800/70 to-ink-900/80 px-5 py-2.5 text-[12px] font-semibold ' +
+        'uppercase tracking-luxe text-gold-bright shadow-[0_0_18px_-5px_rgba(243,204,15,0.55)] transition ' +
+        'hover:border-gold-bright hover:text-white hover:shadow-[0_0_26px_-3px_rgba(243,204,15,0.85)] ' +
+        className
+      }
+    >
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden>
+        <rect x="3" y="4.5" width="18" height="16" rx="2" />
+        <path d="M3 9h18M8 2.5v4M16 2.5v4" strokeLinecap="round" />
+        <path d="M9.5 14l1.8 1.8 3.7-3.8" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+      Book a visit
+    </Link>
+  );
+}
 
 export function Header({ settings }: { settings: SiteSettings }) {
   const pathname = usePathname();
@@ -70,6 +95,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
               {l.label}
             </Link>
           ))}
+          <BookVisitButton />
         </nav>
 
         {/* Right cluster: phone · calculator · valuation CTA · basket · mobile menu */}
@@ -169,6 +195,8 @@ export function Header({ settings }: { settings: SiteSettings }) {
               <MobileSection label="Shop" links={BUY_LINKS} onClick={() => setMobileOpen(false)} />
             )}
             <MobileSection label="More" links={INFO_LINKS} onClick={() => setMobileOpen(false)} />
+
+            <BookVisitButton className="mt-2 w-full !py-3" onClick={() => setMobileOpen(false)} />
 
             <div className="mt-2 grid grid-cols-2 gap-2">
               <Link

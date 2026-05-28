@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-const MAX_FILES = 12;
+const DEFAULT_MAX_FILES = 12;
 const MAX_BYTES_PER_FILE = 12 * 1024 * 1024;
 const ACCEPT = 'image/jpeg,image/png,image/webp,image/heic,image/heif';
 
@@ -15,10 +15,14 @@ export type SelectedFile = {
 export function MultiImageUploader({
   files,
   onChange,
+  max = DEFAULT_MAX_FILES,
 }: {
   files: SelectedFile[];
   onChange: (next: SelectedFile[]) => void;
+  /** Maximum number of photos allowed. Defaults to 12. */
+  max?: number;
 }) {
+  const MAX_FILES = max;
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -61,7 +65,7 @@ export function MultiImageUploader({
       onChange(merged.slice(0, MAX_FILES));
       setError(errors.join(' · ') || null);
     },
-    [files, onChange],
+    [files, onChange, MAX_FILES],
   );
 
   const onSelect = (e: React.ChangeEvent<HTMLInputElement>) => {

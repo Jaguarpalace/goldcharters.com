@@ -36,9 +36,8 @@ export default async function BookPage({
         )}
       />
 
-      <section className="relative overflow-hidden border-b border-gold-metallic/15">
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink-950 via-ink-900 to-ink-950" />
-        <div className="gc-container relative py-7 lg:py-14">
+      <section className="py-7 lg:py-14">
+        <div className="gc-container">
           <span className="gc-eyebrow">Book An Appointment</span>
           <h1 className="gc-heading-xl mt-5">Reserve a Private Valuation Slot</h1>
           <p className="gc-subhead mt-6 max-w-2xl">
