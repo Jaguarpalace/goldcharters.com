@@ -108,3 +108,22 @@ insert into public.product_categories (name, slug, display_order) values
   ('Diamond jewellery','diamond-jewellery',8),('Watches','watches',9),
   ('Antique jewellery','antique-jewellery',10),('Branded jewellery','branded-jewellery',11)
 on conflict (slug) do nothing;
+
+-- Appointment events (pop-up locations + showroom).
+-- Dates are relative to current_date so a fresh seed always has future
+-- availability. Idempotent on (title) — re-running won't create duplicates.
+insert into public.appointment_events
+  (title, city, venue_name, address, postcode, latitude, longitude, description, starts_on, ends_on, day_start_time, day_end_time, slot_minutes, weekdays, display_order)
+select * from (values
+  ('Egham Showroom', 'Egham (Head Office)', 'Avalon House',
+   'Unit 7A, Egham Business Village, Crabtree Road, Egham, Surrey, TW20 8RB', 'TW20 8RB', 51.4309, -0.5563,
+   'Our private valuation rooms in Egham, Surrey. Discreet, by appointment, with same-day payment available.',
+   current_date + 1, current_date + 90, time '10:00', time '18:00', 30, array[1,2,3,4,5,6]::smallint[], 1),
+  ('Bracknell Pop-Up', 'Bracknell', 'Bracknell — venue confirmed on booking', 'Central Bracknell, Berkshire', 'RG12 1AA', 51.4154, -0.7536,
+   'We are bringing our valuation service to Bracknell for a few days. Book a private slot to have your gold, jewellery, watches or handbags valued in person.',
+   current_date + 7, current_date + 9, time '10:00', time '17:00', 30, null::smallint[], 2),
+  ('Leeds Pop-Up', 'Leeds', 'Leeds city centre — venue confirmed on booking', 'Leeds, West Yorkshire', 'LS1 1BA', 53.8008, -1.5491,
+   'Visiting Leeds next month. Reserve a private appointment with one of our specialists — no obligation to sell.',
+   current_date + 35, current_date + 36, time '11:00', time '18:00', 45, null::smallint[], 3)
+) as v(title, city, venue_name, address, postcode, latitude, longitude, description, starts_on, ends_on, day_start_time, day_end_time, slot_minutes, weekdays, display_order)
+where not exists (select 1 from public.appointment_events e where e.title = v.title);

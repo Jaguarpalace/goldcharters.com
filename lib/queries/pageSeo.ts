@@ -45,6 +45,11 @@ const SEO_DEFAULTS: Record<string, { title: string; description: string }> = {
     description:
       'Speak with a Charters Gold specialist. Telephone, email, WhatsApp or in-person appointment in Egham, Surrey.',
   },
+  '/book': {
+    title: 'Book a Private Appointment · Gold & Jewellery Valuations',
+    description:
+      'Reserve a private valuation slot at our Egham showroom or a UK pop-up location. Pick a date and time, meet a specialist in person — no obligation to sell.',
+  },
   '/blog': {
     title: 'Insights & Guides · Charters Gold',
     description:

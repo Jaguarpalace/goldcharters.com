@@ -5,6 +5,7 @@ import { getServerSupabase } from '@/lib/supabase/server';
 import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { BUY_ENABLED } from '@/lib/features';
 import { countOutstandingRequests } from '@/lib/actions/valuationRequests';
+import { countUpcomingAppointments } from '@/lib/actions/appointments';
 import { ThemeToggle, type AdminTheme } from './ThemeToggle';
 import { AdminBrand } from './AdminBrand';
 import { AdminShell } from './AdminShell';
@@ -31,6 +32,8 @@ const NAV: NavItem[] = [
   { href: '/admin/orders', label: 'Orders', shopOnly: true },
   { href: '/admin/walk-in', label: 'New Walk-in Purchase' },
   { href: '/admin/valuation-requests', label: 'Valuation Requests' },
+  { href: '/admin/appointments', label: 'Appointments' },
+  { href: '/admin/events', label: 'Pop-Up Locations' },
   { href: '/admin/customers', label: 'Customers' },
   { href: '/admin/holdings', label: 'Holdings' },
   { href: '/admin/faqs', label: 'FAQs' },
@@ -58,7 +61,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
     }
   }
 
-  const outstandingCount = isSupabaseConfigured() ? await countOutstandingRequests() : 0;
+  const [outstandingCount, appointmentCount] = isSupabaseConfigured()
+    ? await Promise.all([countOutstandingRequests(), countUpcomingAppointments()])
+    : [0, 0];
 
   const cookieStore = cookies();
   const themeCookie = cookieStore.get('admin-theme')?.value;
@@ -85,6 +90,13 @@ export default async function DashboardLayout({ children }: { children: React.Re
             const inactive = item.shopOnly && !BUY_ENABLED;
             const showOutstandingBadge =
               item.href === '/admin/valuation-requests' && outstandingCount > 0;
+            const showAppointmentBadge =
+              item.href === '/admin/appointments' && appointmentCount > 0;
+            const badgeCount = showOutstandingBadge
+              ? outstandingCount
+              : showAppointmentBadge
+                ? appointmentCount
+                : 0;
             return (
               <li key={item.href}>
                 <NavLink
@@ -93,16 +105,20 @@ export default async function DashboardLayout({ children }: { children: React.Re
                   inactive={inactive}
                   inactiveTitle="Shop is disabled — click to view paused tools"
                   badge={
-                    showOutstandingBadge ? (
+                    badgeCount > 0 ? (
                       <span
                         className="inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full px-1.5 text-[10px] font-semibold text-ink-950"
                         style={{
                           background: 'linear-gradient(135deg, #FFD700, #B8860B)',
                           boxShadow: '0 0 8px rgba(212,175,55,0.55)',
                         }}
-                        title={`${outstandingCount} outstanding request${outstandingCount === 1 ? '' : 's'}`}
+                        title={
+                          showAppointmentBadge
+                            ? `${appointmentCount} upcoming appointment${appointmentCount === 1 ? '' : 's'}`
+                            : `${outstandingCount} outstanding request${outstandingCount === 1 ? '' : 's'}`
+                        }
                       >
-                        {outstandingCount}
+                        {badgeCount}
                       </span>
                     ) : null
                   }

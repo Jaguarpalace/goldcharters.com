@@ -25,6 +25,7 @@ const BUY_LINKS = [
 ];
 
 const INFO_LINKS = [
+  { label: 'Book / Visit Us', href: '/book' },
   { label: 'How It Works', href: '/how-it-works' },
   { label: 'Blog', href: '/blog' },
   { label: 'FAQs', href: '/faqs' },

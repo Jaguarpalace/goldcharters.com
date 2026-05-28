@@ -55,6 +55,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/sell-handbags`,    lastModified: lastMod('/sell-handbags'),    changeFrequency: 'weekly',  priority: 0.9 },
     { url: `${SITE_URL}/sell-watches`,     lastModified: lastMod('/sell-watches'),     changeFrequency: 'weekly',  priority: 0.9 },
     { url: `${SITE_URL}/gold-calculator`,  lastModified: lastMod('/gold-calculator'),  changeFrequency: 'daily',   priority: 0.85 },
+    { url: `${SITE_URL}/book`,             lastModified: now,                          changeFrequency: 'daily',   priority: 0.8 },
     { url: `${SITE_URL}/blog`,             lastModified: lastMod('/blog'),             changeFrequency: 'weekly',  priority: 0.75 },
     { url: `${SITE_URL}/faqs`,             lastModified: lastMod('/faqs'),             changeFrequency: 'weekly',  priority: 0.7 },
     { url: `${SITE_URL}/how-it-works`,     lastModified: lastMod('/how-it-works'),     changeFrequency: 'monthly', priority: 0.6 },

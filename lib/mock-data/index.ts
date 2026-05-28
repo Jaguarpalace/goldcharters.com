@@ -1,4 +1,5 @@
 import type {
+  AppointmentEvent,
   BlogPost,
   CalculatorRate,
   EmailTemplate,
@@ -1099,6 +1100,112 @@ const DEFAULT_CUSTOMER_CONFIRMATION_HTML = `<!DOCTYPE html>
 </table>
 </body>
 </html>`;
+
+/**
+ * Pop-up location events for dev / preview (no Supabase). Dates are computed
+ * relative to today so the calendar always has live future availability to
+ * demonstrate. In production these come from the appointment_events table.
+ */
+export function mockAppointmentEvents(): AppointmentEvent[] {
+  const now = new Date();
+  const ts = now.toISOString();
+  const pad = (n: number) => (n < 10 ? `0${n}` : String(n));
+  const dayOffset = (days: number): string => {
+    const d = new Date(now.getTime() + days * 86_400_000);
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  };
+
+  return [
+    {
+      id: 'evt-egham',
+      title: 'Egham Showroom',
+      city: 'Egham (Head Office)',
+      venue_name: 'Avalon House',
+      address: 'Unit 7A, Egham Business Village, Crabtree Road, Egham, Surrey, TW20 8RB',
+      postcode: 'TW20 8RB',
+      latitude: 51.4309,
+      longitude: -0.5563,
+      description:
+        'Our private valuation rooms in Egham, Surrey. Discreet, by appointment, with same-day payment available.',
+      starts_on: dayOffset(1),
+      ends_on: dayOffset(90),
+      day_start_time: '10:00',
+      day_end_time: '18:00',
+      slot_minutes: 30,
+      weekdays: [1, 2, 3, 4, 5, 6], // Mon–Sat
+      is_published: true,
+      display_order: 1,
+      created_at: ts,
+      updated_at: ts,
+    },
+    {
+      id: 'evt-bracknell',
+      title: 'Bracknell Pop-Up',
+      city: 'Bracknell',
+      venue_name: 'Bracknell — venue confirmed on booking',
+      address: 'Central Bracknell, Berkshire',
+      postcode: 'RG12 1AA',
+      latitude: 51.4154,
+      longitude: -0.7536,
+      description:
+        "We're bringing our valuation service to Bracknell for a few days. Book a private slot to have your gold, jewellery, watches or handbags valued in person.",
+      starts_on: dayOffset(7),
+      ends_on: dayOffset(9),
+      day_start_time: '10:00',
+      day_end_time: '17:00',
+      slot_minutes: 30,
+      weekdays: null,
+      is_published: true,
+      display_order: 2,
+      created_at: ts,
+      updated_at: ts,
+    },
+    {
+      id: 'evt-leeds',
+      title: 'Leeds Pop-Up',
+      city: 'Leeds',
+      venue_name: 'Leeds city centre — venue confirmed on booking',
+      address: 'Leeds, West Yorkshire',
+      postcode: 'LS1 1BA',
+      latitude: 53.8008,
+      longitude: -1.5491,
+      description:
+        'Visiting Leeds next month. Reserve a private appointment with one of our specialists — no obligation to sell.',
+      starts_on: dayOffset(35),
+      ends_on: dayOffset(36),
+      day_start_time: '11:00',
+      day_end_time: '18:00',
+      slot_minutes: 45,
+      weekdays: null,
+      is_published: true,
+      display_order: 3,
+      created_at: ts,
+      updated_at: ts,
+    },
+    {
+      id: 'evt-manchester',
+      title: 'Manchester Pop-Up',
+      city: 'Manchester',
+      venue_name: 'Manchester — venue confirmed on booking',
+      address: 'Manchester city centre',
+      postcode: 'M1 1AE',
+      latitude: 53.4808,
+      longitude: -2.2426,
+      description:
+        'Our specialists head to Manchester. Book ahead to guarantee a private slot during the visit.',
+      starts_on: dayOffset(63),
+      ends_on: dayOffset(64),
+      day_start_time: '10:00',
+      day_end_time: '17:00',
+      slot_minutes: 30,
+      weekdays: null,
+      is_published: true,
+      display_order: 4,
+      created_at: ts,
+      updated_at: ts,
+    },
+  ];
+}
 
 export function mockProductImages(): ProductImage[] {
   // Each mock product gets a placeholder; the gallery renders CSS treatments when image_url is empty.

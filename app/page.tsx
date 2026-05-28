@@ -4,6 +4,7 @@ import { getItemsWeBuy, getTrustCards } from '@/lib/queries/items';
 import { getFaqs } from '@/lib/queries/faqs';
 import { getCalculatorRates } from '@/lib/queries/calculator';
 import { getProducts } from '@/lib/queries/products';
+import { getEventSummaries } from '@/lib/queries/appointments';
 import { BUY_ENABLED } from '@/lib/features';
 import { JsonLd } from '@/lib/seo/JsonLd';
 import { faqPageSchema, serviceSchema, SITE_URL } from '@/lib/seo/structuredData';
@@ -21,11 +22,12 @@ import { HowItWorks } from '@/components/public/HowItWorks';
 import { TrustSection } from '@/components/public/TrustSection';
 import { ValuationForm } from '@/components/public/ValuationForm';
 import { FAQSection } from '@/components/public/FAQSection';
+import { WhereToFindUs } from '@/components/public/WhereToFindUs';
 
 export const revalidate = 120;
 
 export default async function HomePage() {
-  const [sections, allServices, items, trust, faqs, rates, products] = await Promise.all([
+  const [sections, allServices, items, trust, faqs, rates, products, events] = await Promise.all([
     getHomepageSections(),
     getServices(),
     getItemsWeBuy(),
@@ -33,6 +35,7 @@ export default async function HomePage() {
     getFaqs(),
     getCalculatorRates(),
     BUY_ENABLED ? getProducts({ featuredOnly: false, limit: 8 }) : Promise.resolve([]),
+    getEventSummaries(),
   ]);
 
   // When buy is disabled, only show services on the sell pathway.
@@ -105,6 +108,7 @@ export default async function HomePage() {
         buySection={findHomepageSection(sections, 'how_it_works_buy')}
       />
       <TrustSection cards={trust} />
+      <WhereToFindUs events={events} />
 
       <section className="relative py-6 lg:py-10" id="valuation-form">
         <div className="gc-container">

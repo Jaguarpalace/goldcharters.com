@@ -231,4 +231,40 @@ export function locationFaqSchema(faqs: Array<{ question: string; answer: string
   };
 }
 
+/**
+ * Event schema for a pop-up valuation day. Helps the location + dates surface
+ * in Google's event experiences and rich results.
+ */
+export function appointmentEventSchema(input: {
+  settings: SiteSettings;
+  title: string;
+  city: string;
+  venueName: string | null;
+  address: string | null;
+  startDate: string; // YYYY-MM-DD
+  endDate: string; // YYYY-MM-DD
+}) {
+  const { settings, title, city, venueName, address, startDate, endDate } = input;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    name: `${settings.business_name} — ${title}`,
+    description: `Private valuation appointments in ${city} with ${settings.business_name}. Book a slot to sell gold, jewellery, watches or designer handbags.`,
+    startDate,
+    endDate,
+    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    eventStatus: 'https://schema.org/EventScheduled',
+    location: {
+      '@type': 'Place',
+      name: venueName ?? city,
+      address: address
+        ? { '@type': 'PostalAddress', streetAddress: address, addressLocality: city, addressCountry: 'GB' }
+        : { '@type': 'PostalAddress', addressLocality: city, addressCountry: 'GB' },
+    },
+    organizer: { '@id': `${SITE_URL}#organization` },
+    image: `${SITE_URL}/logo/charters_gold_true_transparent.png`,
+    url: `${SITE_URL}/book`,
+  };
+}
+
 export { SITE_URL };

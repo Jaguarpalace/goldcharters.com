@@ -588,3 +588,80 @@ export type EmailTemplate = {
   enabled: boolean;
   updated_at: string;
 };
+
+// ---------------------------------------------------------------------------
+//  Appointments & pop-up location events
+// ---------------------------------------------------------------------------
+
+/**
+ * A date-bounded place we'll be — the Egham showroom or a travelling pop-up
+ * (e.g. "Bracknell, first week of June"). The bookable slots are derived from
+ * the window (date range + daily hours) and `slot_minutes`; no slot rows are
+ * pre-generated. See `lib/appointments/slots.ts`.
+ */
+export type AppointmentEvent = {
+  id: string;
+  title: string;
+  city: string;
+  venue_name: string | null;
+  address: string | null;
+  /** Venue postcode — geocoded to lat/lng for the nearest-location search. */
+  postcode: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  description: string | null;
+  /** First bookable day (YYYY-MM-DD). */
+  starts_on: string;
+  /** Last bookable day (YYYY-MM-DD). */
+  ends_on: string;
+  /** Daily opening time, "HH:mm" or "HH:mm:ss". */
+  day_start_time: string;
+  /** Daily closing time, "HH:mm" or "HH:mm:ss". */
+  day_end_time: string;
+  /** Length of each appointment slot, in minutes. */
+  slot_minutes: number;
+  /** null = every day in range; else weekday numbers 0(Sun)..6(Sat). */
+  weekdays: number[] | null;
+  is_published: boolean;
+  display_order: number;
+  created_at: string;
+  updated_at: string;
+};
+
+export const APPOINTMENT_STATUSES = [
+  'booked',
+  'confirmed',
+  'attended',
+  'cancelled',
+  'no_show',
+] as const;
+
+export type AppointmentStatus = (typeof APPOINTMENT_STATUSES)[number];
+
+export const APPOINTMENT_STATUS_LABELS: Record<AppointmentStatus, string> = {
+  booked: 'Booked',
+  confirmed: 'Confirmed',
+  attended: 'Attended',
+  cancelled: 'Cancelled',
+  no_show: 'No-show',
+};
+
+/** A single booked appointment slot against an event. */
+export type Appointment = {
+  id: string;
+  event_id: string;
+  starts_at: string;
+  ends_at: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  service_type: string | null;
+  notes: string | null;
+  preferred_contact_method: PreferredContactMethod;
+  consent_accepted: boolean;
+  status: AppointmentStatus;
+  cancel_token: string;
+  created_at: string;
+  updated_at: string;
+};
