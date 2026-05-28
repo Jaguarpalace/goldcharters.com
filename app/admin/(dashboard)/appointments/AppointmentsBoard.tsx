@@ -109,8 +109,8 @@ function Group({
               </div>
               <p className="mt-1 text-[13px] text-white">{formatSlotLong(r.starts_at)}</p>
               <p className="mt-0.5 text-[12px] text-gold-tint">
-                {r.appointment_events?.city ?? '—'}
-                {r.appointment_events?.venue_name ? ` · ${r.appointment_events.venue_name}` : ''}
+                {r.appointment_events?.title ?? '—'}
+                {r.appointment_events?.city ? ` · ${r.appointment_events.city}` : ''}
               </p>
               <p className="mt-2 text-[12px] text-warmgrey">
                 <a href={`mailto:${r.email}`} className="hover:text-gold-bright">{r.email}</a>

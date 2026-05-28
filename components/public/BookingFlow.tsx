@@ -135,8 +135,8 @@ export function BookingFlow({
                         : 'border-gold-metallic/25 bg-ink-900/60 hover:border-gold-metallic/60 hover:bg-ink-800/70')
                     }
                   >
-                    <p className="font-display text-lg font-semibold text-white">{ev.city}</p>
-                    <p className="mt-0.5 text-[13px] text-warmgrey">{ev.dateRangeLabel}</p>
+                    <p className="font-display text-lg font-semibold text-white">{ev.title}</p>
+                    <p className="mt-0.5 text-[13px] text-warmgrey">{ev.city} · {ev.dateRangeLabel}</p>
                     {dist != null && (
                       <p className="mt-1 inline-flex items-center gap-1 text-[12px] font-medium text-gold-tint">
                         <PinIcon />
@@ -337,8 +337,8 @@ function BookingForEvent({
       <section>
         <StepHeading n={2} title="Choose a time" />
         <p className="mt-2 text-[13px] text-warmgrey">
-          Available appointments at <span className="text-gold-tint">{event.city}</span>
-          {event.venue_name ? ` · ${event.venue_name}` : ''}.
+          Available appointments at <span className="text-gold-tint">{event.title}</span>
+          {event.city ? ` · ${event.city}` : ''}.
         </p>
 
         <div className="mt-4 space-y-3">
@@ -398,8 +398,11 @@ function BookingForEvent({
           <form ref={formRef} onSubmit={onSubmit} className="mt-4 gc-card gc-card-gold-edge space-y-6 p-6 sm:p-7">
             <div className="rounded-xl border border-gold-metallic/20 bg-ink-950/50 p-4">
               <p className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">Your appointment</p>
-              <p className="mt-1 text-white">{event.city} · {selectedDayLabel}, {selectedSlot.time}</p>
-              {event.venue_name && <p className="mt-0.5 text-[13px] text-warmgrey">{event.venue_name}</p>}
+              <p className="mt-1 text-white">{event.title} · {selectedDayLabel}, {selectedSlot.time}</p>
+              <p className="mt-0.5 text-[13px] text-warmgrey">
+                {event.city}
+                {event.venue_name ? ` · ${event.venue_name}` : ''}
+              </p>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

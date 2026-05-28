@@ -173,16 +173,18 @@ export function EventsEditor({ initial }: { initial: AppointmentEvent[] }) {
 
         <div className="mt-4 grid gap-4 lg:grid-cols-2">
           <div>
-            <label className="gc-label">Title</label>
-            <input value={draft.title} onChange={(e) => set('title', e.target.value)} placeholder="e.g. Bracknell Pop-Up" className="gc-input" />
+            <label className="gc-label">Title (main heading)</label>
+            <input value={draft.title} onChange={(e) => set('title', e.target.value)} placeholder="e.g. Tesco — Car Park" className="gc-input" />
+            <p className="mt-1 text-[11px] text-warmgrey/70">Shown to customers as the big heading.</p>
           </div>
           <div>
-            <label className="gc-label">City / location</label>
-            <input value={draft.city} onChange={(e) => set('city', e.target.value)} placeholder="e.g. Bracknell" className="gc-input" />
+            <label className="gc-label">City / town</label>
+            <input value={draft.city} onChange={(e) => set('city', e.target.value)} placeholder="e.g. Egham" className="gc-input" />
+            <p className="mt-1 text-[11px] text-warmgrey/70">Shown beneath the title.</p>
           </div>
           <div>
             <label className="gc-label">Venue name (optional)</label>
-            <input value={draft.venue_name} onChange={(e) => set('venue_name', e.target.value)} placeholder="e.g. Bracknell Hilton" className="gc-input" />
+            <input value={draft.venue_name} onChange={(e) => set('venue_name', e.target.value)} placeholder="e.g. Tesco Egham" className="gc-input" />
           </div>
           <div>
             <label className="gc-label">Address (optional)</label>
@@ -229,12 +231,22 @@ export function EventsEditor({ initial }: { initial: AppointmentEvent[] }) {
           <div>
             <label className="gc-label">Display order</label>
             <input type="number" value={draft.display_order} onChange={(e) => set('display_order', Number(e.target.value) || 0)} className="gc-input" />
+            <p className="mt-1 text-[11px] text-warmgrey/70">
+              Lower number shows first (0 before 1, etc.) when locations aren’t being sorted by distance.
+            </p>
           </div>
         </div>
 
+        {/* Weekday filter only makes sense across a multi-day range. For a
+            single-day event it's meaningless, so we hide it to avoid the
+            "why am I seeing Mon/Tue/… for one day?" confusion. */}
+        {draft.starts_on !== draft.ends_on && (
         <div className="mt-4">
-          <label className="gc-label">Available days</label>
-          <p className="mb-2 text-[11px] text-warmgrey/70">Leave all unticked for every day in the range.</p>
+          <label className="gc-label">Which days of the week?</label>
+          <p className="mb-2 text-[11px] text-warmgrey/70">
+            Your range spans several days — tick the weekdays you’ll actually be open. Leave all
+            unticked to open every day in the range.
+          </p>
           <div className="flex flex-wrap gap-2">
             {WEEKDAYS.map((w) => {
               const on = draft.weekdays.includes(w.value);
@@ -256,6 +268,7 @@ export function EventsEditor({ initial }: { initial: AppointmentEvent[] }) {
             })}
           </div>
         </div>
+        )}
 
         <div className="mt-5 flex items-center justify-between">
           <label className="inline-flex items-center gap-2 text-sm text-white">
@@ -291,17 +304,19 @@ export function EventsEditor({ initial }: { initial: AppointmentEvent[] }) {
             <li key={ev.id} className="gc-card flex flex-col gap-4 p-5 sm:flex-row sm:items-start sm:justify-between">
               <div className="flex-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-display text-lg font-semibold text-white">{ev.city}</span>
+                  <span className="font-display text-lg font-semibold text-white">{ev.title}</span>
                   <span className="text-[10px] uppercase tracking-luxe text-gold-tint">order {ev.display_order}</span>
                   {!ev.is_published && (
                     <span className="rounded-full bg-ink-800 px-2 py-0.5 text-[9px] uppercase tracking-luxe text-warmgrey">Hidden</span>
                   )}
                 </div>
-                <p className="mt-1 text-sm text-warmgrey">{ev.title}</p>
+                <p className="mt-1 text-sm text-warmgrey">
+                  {ev.city}
+                  {ev.venue_name ? ` · ${ev.venue_name}` : ''}
+                </p>
                 <p className="mt-1 text-[13px] text-white">
                   {formatDateRange(ev.starts_on, ev.ends_on)} · {ev.day_start_time.slice(0, 5)}–{ev.day_end_time.slice(0, 5)} · {ev.slot_minutes} min slots
                 </p>
-                {ev.venue_name && <p className="mt-1 text-[12px] text-warmgrey/80">{ev.venue_name}</p>}
               </div>
               <div className="flex flex-row gap-2 sm:flex-col">
                 <button type="button" onClick={() => startEdit(ev)} className="gc-btn-ghost text-[10px]">Edit</button>

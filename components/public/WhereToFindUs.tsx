@@ -36,8 +36,8 @@ export function WhereToFindUs({ events }: { events: EventSummary[] }) {
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="font-display text-xl font-semibold text-white">{ev.city}</p>
-                    <p className="mt-0.5 text-[13px] text-warmgrey">{ev.dateRangeLabel}</p>
+                    <p className="font-display text-xl font-semibold text-white">{ev.title}</p>
+                    <p className="mt-0.5 text-[13px] text-warmgrey">{ev.city} · {ev.dateRangeLabel}</p>
                   </div>
                   <span className="mt-1 text-gold-metallic transition group-hover:translate-x-0.5">
                     <svg width="16" height="16" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M2 7h10M8 3l4 4-4 4" /></svg>
