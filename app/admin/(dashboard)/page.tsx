@@ -79,22 +79,17 @@ export default async function AdminOverview() {
     .filter((r) => r.status === 'new' && +new Date(r.created_at) < slaCutoff)
     .slice(0, 6);
 
-  // Recent activity feed — last 5 by updated_at (status change, note, etc.).
-  const recent = [...requests]
-    .sort((a, b) => +new Date(b.updated_at) - +new Date(a.updated_at))
-    .slice(0, 5);
-
   const goldGram = spots.gold?.per_gram_gbp ?? null;
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-6">
       {/* HEADER */}
       <header className="flex items-end justify-between gap-4">
         <div>
           <span className="text-[10px] font-semibold uppercase tracking-luxe text-gold-metallic">
             Dashboard
           </span>
-          <h1 className="font-display text-3xl text-white mt-1 sm:text-4xl">Welcome back</h1>
+          <h1 className="font-display text-2xl text-white mt-1">Welcome back</h1>
         </div>
         <p className="hidden text-[10px] uppercase tracking-luxe text-warmgrey sm:block">
           Live · {new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
@@ -111,122 +106,85 @@ export default async function AdminOverview() {
         <QuickAction href="/admin/customers" label="Customers" />
       </section>
 
-      {/* HERO METRICS - typography led, no cards, hairline gold dividers */}
-      <section className="grid grid-cols-1 sm:grid-cols-3">
-        <Metric
-          label="Today"
-          enquiries={today.length}
-          paid={paidIn(today)}
-        />
-        <Metric
-          label="This week"
-          enquiries={week.length}
-          paid={paidIn(week)}
-          withDivider
-        />
-        <Metric
-          label="This month"
-          enquiries={month.length}
-          paid={paidIn(month)}
-          withDivider
-        />
+      {/* HERO METRICS - three self-contained stat cards */}
+      <section className="grid gap-4 sm:grid-cols-3">
+        <Metric label="Today" enquiries={today.length} paid={paidIn(today)} />
+        <Metric label="This week" enquiries={week.length} paid={paidIn(week)} />
+        <Metric label="This month" enquiries={month.length} paid={paidIn(month)} />
       </section>
 
-      {/* HOLDINGS SNAPSHOT - live cost basis vs current value */}
-      <section>
-        <div className="flex items-baseline justify-between gap-4">
-          <span className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">
-            Holdings
-          </span>
-          <Link
-            href="/admin/holdings"
-            className="text-[10px] uppercase tracking-luxe text-warmgrey transition hover:text-gold-bright"
-          >
-            View all →
-          </Link>
-        </div>
-        <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-4">
-          <HoldingStat label="Items held" value={portfolio.combined.count.toString()} />
-          <HoldingStat
-            label="Cost basis"
-            value={formatGBP(portfolio.combined.total_cost_gbp)}
-          />
-          <HoldingStat
-            label="Current value"
-            value={formatGBP(portfolio.combined.total_current_value_gbp)}
-            sub={
-              portfolio.spot_fetched_at
-                ? `Spot · ${new Date(portfolio.spot_fetched_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}`
-                : 'Live spot unavailable'
-            }
-          />
-          <HoldingStat
-            label="Unrealised P&L"
-            value={`${formatGBPSigned(portfolio.combined.pl_gbp)} · ${formatPct(portfolio.combined.pl_pct)}`}
-            tone={portfolio.combined.pl_gbp >= 0 ? 'positive' : 'negative'}
-          />
-        </div>
-      </section>
+      {/* HOLDINGS + PIPELINE - two panels side by side on wide screens */}
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Panel title="Holdings" action={<ViewAll href="/admin/holdings" />}>
+          <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+            <HoldingStat label="Items held" value={portfolio.combined.count.toString()} />
+            <HoldingStat
+              label="Cost basis"
+              value={formatGBP(portfolio.combined.total_cost_gbp)}
+            />
+            <HoldingStat
+              label="Current value"
+              value={formatGBP(portfolio.combined.total_current_value_gbp)}
+              sub={
+                portfolio.spot_fetched_at
+                  ? `Spot · ${new Date(portfolio.spot_fetched_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}`
+                  : 'Live spot unavailable'
+              }
+            />
+            <HoldingStat
+              label="Unrealised P&L"
+              value={`${formatGBPSigned(portfolio.combined.pl_gbp)} · ${formatPct(portfolio.combined.pl_pct)}`}
+              tone={portfolio.combined.pl_gbp >= 0 ? 'positive' : 'negative'}
+            />
+          </div>
+        </Panel>
 
-      {/* PIPELINE - single line of stages, arrows in between */}
-      <section>
-        <div className="flex items-baseline justify-between gap-4">
-          <span className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">
-            Pipeline
-          </span>
-          <Link
-            href="/admin/valuation-requests"
-            className="text-[10px] uppercase tracking-luxe text-warmgrey transition hover:text-gold-bright"
-          >
-            View all →
-          </Link>
-        </div>
-        <ol className="mt-5 flex items-center gap-1 overflow-x-auto pb-1">
-          {PIPELINE.map((stage, i) => (
-            <li key={stage} className="flex flex-none items-center gap-1">
-              <Stage
-                label={VALUATION_STATUS_LABELS[stage]}
-                count={pipelineCounts[stage] ?? 0}
-              />
-              {i < PIPELINE.length - 1 && (
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 14 14"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.4"
-                  className="flex-none text-gold-metallic/40"
-                  aria-hidden
-                >
-                  <path d="M3 7h8M8 4l3 3-3 3" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              )}
-            </li>
-          ))}
-        </ol>
-      </section>
+        <Panel title="Pipeline" action={<ViewAll href="/admin/valuation-requests" />}>
+          <ol className="flex items-center gap-1 overflow-x-auto pb-1">
+            {PIPELINE.map((stage, i) => (
+              <li key={stage} className="flex flex-none items-center gap-1">
+                <Stage
+                  label={VALUATION_STATUS_LABELS[stage]}
+                  count={pipelineCounts[stage] ?? 0}
+                />
+                {i < PIPELINE.length - 1 && (
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 14 14"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.4"
+                    className="flex-none text-gold-metallic/40"
+                    aria-hidden
+                  >
+                    <path d="M3 7h8M8 4l3 3-3 3" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                )}
+              </li>
+            ))}
+          </ol>
+        </Panel>
+      </div>
 
-      {/* NEEDS ATTENTION + RECENT ACTIVITY */}
-      <section className="grid grid-cols-1 gap-10 lg:grid-cols-2">
-        <Column
-          title="Needs your attention"
-          empty="Nothing waiting - every new enquiry has been picked up within the last 18 hours."
-        >
-          {needsAction.length > 0 && (
+      {/* NEEDS ATTENTION + RECENT ACTIVITY - paired panels */}
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Panel title="Needs your attention">
+          {needsAction.length > 0 ? (
             <ul className="divide-y divide-gold-metallic/10">
               {needsAction.map((r) => (
                 <AttentionRow key={r.id} request={r} now={now} />
               ))}
             </ul>
+          ) : (
+            <p className="text-[12px] leading-relaxed text-warmgrey">
+              Nothing waiting - every new enquiry has been picked up within the last 18 hours.
+            </p>
           )}
-        </Column>
+        </Panel>
 
-        <Column
-          title="Recent admin activity"
-          empty="Nothing logged yet - the audit trail starts collecting from the next admin write."
-        >
-          {auditEntries.length > 0 && (
+        <Panel title="Recent admin activity">
+          {auditEntries.length > 0 ? (
             <ul className="divide-y divide-gold-metallic/10">
               {auditEntries.map((e) => (
                 <AuditRow key={e.id} entry={e} now={now} />
@@ -240,61 +198,98 @@ export default async function AdminOverview() {
                 </Link>
               </li>
             </ul>
+          ) : (
+            <p className="text-[12px] leading-relaxed text-warmgrey">
+              Nothing logged yet - the audit trail starts collecting from the next admin write.
+            </p>
           )}
-        </Column>
-      </section>
+        </Panel>
+      </div>
 
       {/* LIVE SPOT - gold carats on top row, other metals on bottom */}
-      <section className="space-y-3 border-t border-gold-metallic/15 pt-6">
-        <div className="flex flex-wrap items-baseline gap-x-8 gap-y-3">
-          <span className="text-[10px] font-semibold uppercase tracking-luxe text-gold-metallic">
-            Live spot · gold
-          </span>
-          {goldGram ? (
-            <>
-              <SpotRow label="24ct" value={goldGram} />
-              <SpotRow label="22ct" value={spotForPurity(goldGram, 91.6)} />
-              <SpotRow label="18ct" value={spotForPurity(goldGram, 75.0)} />
-              <SpotRow label="14ct" value={spotForPurity(goldGram, 58.5)} />
-              <SpotRow label="9ct" value={spotForPurity(goldGram, 37.5)} />
-            </>
-          ) : (
-            <span className="text-[11px] text-warmgrey">Live feed temporarily unavailable.</span>
-          )}
+      <Panel title="Live spot">
+        <div className="space-y-3">
+          <div className="flex flex-wrap items-baseline gap-x-8 gap-y-3">
+            <span className="w-20 text-[10px] font-semibold uppercase tracking-luxe text-gold-metallic">
+              Gold
+            </span>
+            {goldGram ? (
+              <>
+                <SpotRow label="24ct" value={goldGram} />
+                <SpotRow label="22ct" value={spotForPurity(goldGram, 91.6)} />
+                <SpotRow label="18ct" value={spotForPurity(goldGram, 75.0)} />
+                <SpotRow label="14ct" value={spotForPurity(goldGram, 58.5)} />
+                <SpotRow label="9ct" value={spotForPurity(goldGram, 37.5)} />
+              </>
+            ) : (
+              <span className="text-[11px] text-warmgrey">Live feed temporarily unavailable.</span>
+            )}
+          </div>
+          <div className="flex flex-wrap items-baseline gap-x-8 gap-y-3">
+            <span className="w-20 text-[10px] font-semibold uppercase tracking-luxe text-warmgrey">
+              Other metals
+            </span>
+            <SpotRow label="Silver" value={spotMap.silver} />
+            <SpotRow label="Platinum" value={spotMap.platinum} />
+            <SpotRow label="Palladium" value={spotMap.palladium} />
+          </div>
         </div>
-        <div className="flex flex-wrap items-baseline gap-x-8 gap-y-3">
-          <span className="text-[10px] font-semibold uppercase tracking-luxe text-warmgrey">
-            Other metals
-          </span>
-          <SpotRow label="Silver" value={spotMap.silver} />
-          <SpotRow label="Platinum" value={spotMap.platinum} />
-          <SpotRow label="Palladium" value={spotMap.palladium} />
-        </div>
-      </section>
+      </Panel>
     </div>
   );
 }
 
 /* ----------------------------- Components -------------------------------- */
 
+function Panel({
+  title,
+  action,
+  children,
+}: {
+  title: string;
+  action?: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="gc-card p-5">
+      <div className="flex items-baseline justify-between gap-4">
+        <h2 className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">
+          {title}
+        </h2>
+        {action}
+      </div>
+      <div className="mt-4">{children}</div>
+    </section>
+  );
+}
+
+function ViewAll({ href }: { href: string }) {
+  return (
+    <Link
+      href={href}
+      className="text-[10px] uppercase tracking-luxe text-warmgrey transition hover:text-gold-bright"
+    >
+      View all →
+    </Link>
+  );
+}
+
 function Metric({
   label,
   enquiries,
   paid,
-  withDivider = false,
 }: {
   label: string;
   enquiries: number;
   paid: number;
-  withDivider?: boolean;
 }) {
   return (
-    <div className={withDivider ? 'border-t border-gold-metallic/15 pt-5 sm:border-l sm:border-t-0 sm:pl-8 sm:pt-0' : ''}>
+    <div className="gc-card p-5">
       <p className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">
         {label}
       </p>
       <p className="mt-3 flex items-baseline gap-2">
-        <span className="font-display text-4xl font-semibold text-white sm:text-5xl">
+        <span className="font-display text-3xl font-semibold text-white">
           {enquiries}
         </span>
         <span className="text-[11px] uppercase tracking-luxe text-warmgrey">
@@ -327,35 +322,6 @@ function Stage({ label, count }: { label: string; count: number }) {
   );
 }
 
-function Column({
-  title,
-  empty,
-  children,
-}: {
-  title: string;
-  empty: string;
-  children: React.ReactNode;
-}) {
-  // Children is null/undefined when the list is empty; we render the
-  // empty-state copy instead. Keeps both columns visually aligned.
-  const hasContent =
-    children !== null && children !== undefined && children !== false;
-  return (
-    <div>
-      <h2 className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">
-        {title}
-      </h2>
-      <div className="mt-4">
-        {hasContent ? (
-          children
-        ) : (
-          <p className="py-4 text-[12px] leading-relaxed text-warmgrey">{empty}</p>
-        )}
-      </div>
-    </div>
-  );
-}
-
 function AttentionRow({ request, now }: { request: ValuationRequest; now: number }) {
   const ageHours = Math.floor((now - +new Date(request.created_at)) / (60 * 60 * 1000));
   return (
@@ -374,34 +340,6 @@ function AttentionRow({ request, now }: { request: ValuationRequest; now: number
         </span>
         <span className="whitespace-nowrap text-[11px] uppercase tracking-luxe text-amber-300">
           {ageHours}h waiting
-        </span>
-      </Link>
-    </li>
-  );
-}
-
-function ActivityRow({ request, now }: { request: ValuationRequest; now: number }) {
-  const ago = relativeTime(now - +new Date(request.updated_at));
-  return (
-    <li>
-      <Link
-        href="/admin/valuation-requests"
-        className="group flex items-center justify-between gap-4 py-3 transition hover:bg-ink-900/40"
-      >
-        <span className="min-w-0 flex-1">
-          <span className="block truncate text-[13px] text-white">
-            {request.first_name} {request.last_name}
-            <span className="ml-2 text-[10px] uppercase tracking-luxe text-gold-tint">
-              {VALUATION_STATUS_LABELS[request.status as ValuationRequestStatus] ??
-                request.status.replace(/_/g, ' ')}
-            </span>
-          </span>
-          <span className="mt-0.5 block truncate text-[11px] text-warmgrey">
-            {summarise(request)}
-          </span>
-        </span>
-        <span className="whitespace-nowrap text-[10px] uppercase tracking-luxe text-warmgrey">
-          {ago}
         </span>
       </Link>
     </li>

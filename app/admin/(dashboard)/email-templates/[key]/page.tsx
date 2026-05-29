@@ -21,7 +21,7 @@ export default async function EditTemplatePage({ params }: { params: { key: stri
         >
           ← All templates
         </Link>
-        <h1 className="font-display text-3xl text-white mt-2 sm:text-4xl">{template.name}</h1>
+        <h1 className="font-display text-2xl text-white mt-2">{template.name}</h1>
         <p className="mt-2 max-w-2xl text-sm text-warmgrey">
           {template.description ?? 'Edit the subject and HTML body. Use the variable list to insert dynamic values.'}
         </p>

@@ -15,7 +15,7 @@ export default async function AdminProductsPage() {
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <span className="text-xs uppercase tracking-luxe text-gold-metallic">Stock Control</span>
-          <h1 className="font-display text-4xl text-white mt-2">Products</h1>
+          <h1 className="font-display text-2xl text-white mt-2">Products</h1>
           <p className="mt-2 max-w-2xl text-sm text-warmgrey">
             Manage your collection - upload photos, set prices and toggle availability. Sold and reserved
             pieces automatically reflect on the public shop.

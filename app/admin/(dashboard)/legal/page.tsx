@@ -11,7 +11,7 @@ export default async function AdminLegalPage() {
     <div className="space-y-5">
       <header>
         <span className="text-xs uppercase tracking-luxe text-gold-metallic">Legal</span>
-        <h1 className="mt-1 font-display text-3xl text-white">Legal Pages</h1>
+        <h1 className="mt-1 font-display text-2xl text-white">Legal Pages</h1>
         <p className="mt-1 max-w-3xl text-xs text-warmgrey">
           Edit the cosmetic copy on the Terms, Privacy and Cookie pages, and bump the
           "Last updated" stamp after a legal review. The numbered clauses themselves are kept

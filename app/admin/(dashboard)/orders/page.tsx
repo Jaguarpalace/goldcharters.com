@@ -23,7 +23,7 @@ export default async function AdminOrdersPage() {
       {!BUY_ENABLED && <ShopDisabledBanner />}
       <header>
         <span className="text-xs uppercase tracking-luxe text-gold-metallic">Shop</span>
-        <h1 className="font-display text-4xl text-white mt-2">Orders</h1>
+        <h1 className="font-display text-2xl text-white mt-2">Orders</h1>
         <p className="mt-2 text-sm text-warmgrey">
           Customer orders from the public shop. Connect Supabase to populate this view.
         </p>

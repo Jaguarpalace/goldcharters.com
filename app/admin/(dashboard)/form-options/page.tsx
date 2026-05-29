@@ -11,7 +11,7 @@ export default async function AdminFormOptionsPage() {
     <div className="space-y-5">
       <header>
         <span className="text-xs uppercase tracking-luxe text-gold-metallic">Public form</span>
-        <h1 className="mt-1 font-display text-3xl text-white">Form Options</h1>
+        <h1 className="mt-1 font-display text-2xl text-white">Form Options</h1>
         <p className="mt-1 max-w-3xl text-xs text-warmgrey">
           Manage every dropdown shown on the public valuation form. Add, rename, reorder, or
           hide an option without a code change. The public form and the server-side validator

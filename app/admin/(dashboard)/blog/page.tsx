@@ -11,7 +11,7 @@ export default async function AdminBlogPage() {
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <span className="text-xs uppercase tracking-luxe text-gold-metallic">SEO</span>
-          <h1 className="font-display text-4xl text-white mt-2">Blog & Articles</h1>
+          <h1 className="font-display text-2xl text-white mt-2">Blog & Articles</h1>
           <p className="mt-2 max-w-2xl text-sm text-warmgrey">
             Long-form content for organic search. Every published article is included in your
             sitemap and indexed by Google.

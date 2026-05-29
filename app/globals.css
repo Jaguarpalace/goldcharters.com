@@ -238,10 +238,18 @@ body {
 .admin-shell[data-admin-theme='light'] .bg-ink-900\/80 { background-color: #ffffff !important; }
 .admin-shell[data-admin-theme='light'] .bg-ink-800\/40 { background-color: var(--ink-800-light) !important; }
 
+/* Desktop sidebar rail uses the `lg:`-prefixed background/border, which the
+   plain selectors above don't catch — without these the rail stayed dark in
+   light mode while the rest of the console (and the mobile drawer) went
+   white, hiding the gold-on-dark links like "Back to public site". */
+.admin-shell[data-admin-theme='light'] .lg\:bg-ink-900\/80 { background-color: #ffffff !important; }
+.admin-shell[data-admin-theme='light'] .lg\:border-gold-metallic\/15 { border-color: rgba(var(--border-base), 0.25) !important; }
+
 /* Text — every gradient of the original dark palette flattens to one of
    three very-dark colours. Opacity is forced to 1 so /40 etc. don't
    re-introduce washy text. */
-.admin-shell[data-admin-theme='light'] .text-white { color: var(--text-strong-light) !important; }
+.admin-shell[data-admin-theme='light'] .text-white,
+.admin-shell[data-admin-theme='light'] .text-white\/85 { color: var(--text-strong-light) !important; }
 .admin-shell[data-admin-theme='light'] .text-warmgrey { color: var(--text-muted-light) !important; }
 .admin-shell[data-admin-theme='light'] .text-warmgrey\/70,
 .admin-shell[data-admin-theme='light'] .text-warmgrey\/60,
@@ -303,5 +311,65 @@ body {
 }
 .admin-shell[data-admin-theme='light'] thead.bg-ink-900\/80 .text-warmgrey {
   color: var(--text-muted-light) !important;
+}
+
+/* ------------------------------------------------------------------------
+   Admin "crisp & utilitarian" density (both themes)
+   Scoped to .admin-shell so the public marketing site keeps its luxe,
+   round, glowing styling. These rules don't touch the public site.
+
+   The shared gc-* classes were tuned for marketing pages: big 16px
+   corners, glowing gold pill buttons and a soft 60px gold halo on cards.
+   That reads as "soft full-screen modal" in a back-office tool. Here we
+   tighten corners, flatten the glow and turn the CTA pills into compact
+   rectangular controls — without editing any page markup.
+
+   Specificity note: card/button overrides use .admin-shell (0,2,0), which
+   wins over the single-class gc-* definitions but stays below the
+   .admin-shell[data-admin-theme='light'] (0,3,0) light overrides above,
+   so light-mode surfaces keep their dedicated treatment.
+   ------------------------------------------------------------------------ */
+
+/* Cards: tighter corners, hairline border + a flat shadow instead of the
+   marketing halo. Light theme keeps its own gc-card box-shadow (higher
+   specificity), so we only restyle the radius there. */
+.admin-shell .gc-card {
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.14), 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+.admin-shell[data-admin-theme='light'] .gc-card {
+  border-radius: 10px;
+}
+
+/* Primary button: keep the gold identity but drop the pill shape and the
+   24px glow; smaller, rectangular, no lift on hover. */
+.admin-shell .gc-btn-primary {
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 13px;
+  box-shadow: inset 0 0 0 1px rgba(255, 215, 0, 0.45);
+}
+.admin-shell .gc-btn-primary:hover {
+  transform: none;
+  box-shadow: inset 0 0 0 1px rgba(255, 215, 0, 0.7);
+}
+
+/* Secondary + ghost buttons: rectangular, compact, no glow. */
+.admin-shell .gc-btn-secondary {
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 13px;
+}
+.admin-shell .gc-btn-secondary:hover {
+  box-shadow: none;
+}
+.admin-shell .gc-btn-ghost {
+  border-radius: 8px;
+  padding: 0.45rem 0.85rem;
+}
+
+/* Inputs: square off the corners a touch to match the crisp controls. */
+.admin-shell .gc-input {
+  border-radius: 6px;
 }
 

@@ -14,7 +14,7 @@ export default async function EditBlogPostPage({ params }: { params: { id: strin
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <span className="text-xs uppercase tracking-luxe text-gold-metallic">Edit article</span>
-          <h1 className="font-display text-3xl text-white mt-1 sm:text-4xl">{post.title}</h1>
+          <h1 className="font-display text-2xl text-white mt-1">{post.title}</h1>
           <p className="mt-1 text-xs text-warmgrey">
             /blog/{post.slug} · {post.published ? 'Live' : 'Draft'}
           </p>

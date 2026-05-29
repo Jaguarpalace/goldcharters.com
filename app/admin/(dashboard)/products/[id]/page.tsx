@@ -23,7 +23,7 @@ export default async function AdminProductDetailPage({ params }: { params: { id:
     <div className="space-y-8">
       <header>
         <span className="text-xs uppercase tracking-luxe text-gold-metallic">Edit Product</span>
-        <h1 className="font-display text-4xl text-white mt-2">{product.title}</h1>
+        <h1 className="font-display text-2xl text-white mt-2">{product.title}</h1>
         <p className="mt-2 text-sm text-warmgrey">Status: {product.status} · SKU {product.sku ?? '—'}</p>
       </header>
 

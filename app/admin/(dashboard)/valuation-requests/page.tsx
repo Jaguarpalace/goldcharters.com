@@ -11,7 +11,7 @@ export default async function AdminValuationRequestsPage() {
     <div className="space-y-5">
       <header>
         <span className="text-xs uppercase tracking-luxe text-gold-metallic">Enquiries</span>
-        <h1 className="font-display text-3xl text-white mt-1">Valuation Requests</h1>
+        <h1 className="font-display text-2xl text-white mt-1">Valuation Requests</h1>
         <p className="mt-1 text-xs text-warmgrey">
           Search, filter and progress requests through the pipeline. Add internal notes, record
           payments and export anything to CSV.

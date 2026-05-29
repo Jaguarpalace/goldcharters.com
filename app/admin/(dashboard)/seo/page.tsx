@@ -11,7 +11,7 @@ export default async function AdminSeoPage() {
     <div className="space-y-5">
       <header>
         <span className="text-xs uppercase tracking-luxe text-gold-metallic">Search</span>
-        <h1 className="mt-1 font-display text-3xl text-white">Page SEO</h1>
+        <h1 className="mt-1 font-display text-2xl text-white">Page SEO</h1>
         <p className="mt-1 max-w-3xl text-xs text-warmgrey">
           Every public page on the site. Edit the title and description that appears in Google,
           plus the keywords and social-share metadata. URLs are locked - renaming a page is a

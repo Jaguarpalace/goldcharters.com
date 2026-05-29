@@ -12,7 +12,7 @@ export default async function AdminNotificationsPage() {
     <div className="space-y-5">
       <header>
         <span className="text-xs uppercase tracking-luxe text-gold-metallic">Alerts</span>
-        <h1 className="font-display text-3xl text-white mt-1">Notification Recipients</h1>
+        <h1 className="font-display text-2xl text-white mt-1">Notification Recipients</h1>
         <p className="mt-1 max-w-2xl text-xs text-warmgrey">
           People who receive the internal alert email when a customer submits a valuation request.
           Add as many addresses as you like - they can be staff, shared inboxes (e.g.

@@ -32,7 +32,7 @@ export default async function AdminCustomerDetailPage({
             ← Customers
           </Link>
         </div>
-        <h1 className="mt-2 font-display text-3xl text-white">
+        <h1 className="mt-2 font-display text-2xl text-white">
           {customer.first_name} {customer.last_name}
         </h1>
         <p className="mt-1 text-xs text-warmgrey">{customer.email}</p>

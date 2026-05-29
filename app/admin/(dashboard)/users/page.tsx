@@ -26,7 +26,7 @@ export default async function AdminUsersPage() {
     <div className="space-y-5">
       <header>
         <span className="text-xs uppercase tracking-luxe text-gold-metallic">Access</span>
-        <h1 className="font-display text-3xl text-white mt-1">Team</h1>
+        <h1 className="font-display text-2xl text-white mt-1">Team</h1>
         <p className="mt-1 text-xs text-warmgrey">
           Invite teammates and set their permissions. Admins can manage everything; staff can edit
           content but cannot invite or remove team members.

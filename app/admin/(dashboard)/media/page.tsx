@@ -11,7 +11,7 @@ export default async function AdminMediaPage() {
     <div className="space-y-5">
       <header>
         <span className="text-xs uppercase tracking-luxe text-gold-metallic">Media</span>
-        <h1 className="font-display text-3xl text-white mt-1">Media Library</h1>
+        <h1 className="font-display text-2xl text-white mt-1">Media Library</h1>
         <p className="mt-1 text-xs text-warmgrey">
           Upload, organise and copy URLs for images used across the public site. JPG, PNG, WEBP or
           SVG, up to 8MB each.

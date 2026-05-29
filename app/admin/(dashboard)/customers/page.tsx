@@ -11,7 +11,7 @@ export default async function AdminCustomersPage() {
     <div className="space-y-5">
       <header>
         <span className="text-xs uppercase tracking-luxe text-gold-metallic">KYC</span>
-        <h1 className="mt-1 font-display text-3xl text-white">Customers</h1>
+        <h1 className="mt-1 font-display text-2xl text-white">Customers</h1>
         <p className="mt-1 max-w-2xl text-xs text-warmgrey">
           Directory of people we've valued or bought from. Each customer can hold ID, driving
           licence and proof-of-address documents, and shows their full enquiry history matched by

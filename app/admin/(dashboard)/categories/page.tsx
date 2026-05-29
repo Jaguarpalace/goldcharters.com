@@ -12,7 +12,7 @@ export default async function AdminCategoriesPage() {
       <header className="flex items-end justify-between gap-4">
         <div>
           <span className="text-xs uppercase tracking-luxe text-gold-metallic">Shop</span>
-          <h1 className="font-display text-4xl text-white mt-2">Product Categories</h1>
+          <h1 className="font-display text-2xl text-white mt-2">Product Categories</h1>
         </div>
         <button type="button" className="gc-btn-primary">
           Add Category

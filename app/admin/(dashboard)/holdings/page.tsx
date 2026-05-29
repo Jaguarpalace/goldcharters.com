@@ -31,7 +31,7 @@ export default async function AdminHoldingsPage() {
     <div className="space-y-5">
       <header>
         <span className="text-xs uppercase tracking-luxe text-gold-metallic">Inventory</span>
-        <h1 className="mt-1 font-display text-3xl text-white">Holdings</h1>
+        <h1 className="mt-1 font-display text-2xl text-white">Holdings</h1>
         <p className="mt-1 max-w-2xl text-xs text-warmgrey">
           Live portfolio of every piece we currently own. Cost basis is locked at purchase; the
           current value column revalues against the live spot price on each load.

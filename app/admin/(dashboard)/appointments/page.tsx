@@ -10,7 +10,7 @@ export default async function AdminAppointmentsPage() {
     <div className="space-y-8">
       <header>
         <span className="text-xs uppercase tracking-luxe text-gold-metallic">Appointments</span>
-        <h1 className="font-display text-4xl text-white mt-2">Booked Appointments</h1>
+        <h1 className="font-display text-2xl text-white mt-2">Booked Appointments</h1>
         <p className="mt-2 max-w-2xl text-sm text-warmgrey">
           Every slot booked from the public site. Update a status as you contact, confirm or complete each
           appointment. Manage the locations &amp; dates on the{' '}

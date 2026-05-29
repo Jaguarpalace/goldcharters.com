@@ -32,7 +32,7 @@ export default async function StockMovementsPage() {
       {!BUY_ENABLED && <ShopDisabledBanner />}
       <header>
         <span className="text-xs uppercase tracking-luxe text-gold-metallic">Audit</span>
-        <h1 className="font-display text-4xl text-white mt-2">Stock Movements</h1>
+        <h1 className="font-display text-2xl text-white mt-2">Stock Movements</h1>
         <p className="mt-2 text-sm text-warmgrey">Recent inventory activity from the products module.</p>
       </header>
 
