@@ -98,14 +98,14 @@ export function BookingCalendar({ appointments }: { appointments: AppointmentWit
         <span className="text-[11px] text-warmgrey/70">Click a highlighted day to see its bookings</span>
       </div>
 
-      <div className="mt-5 grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
+      <div className="mt-5 grid gap-6 lg:grid-cols-[16rem_minmax(0,1fr)] lg:items-start">
         {/* ---- The month grid ---- */}
         <div>
           <div className="flex items-center justify-between">
             <button type="button" onClick={() => move(-1)} className="gc-btn-ghost text-[11px]" aria-label="Previous month">
               ‹ Prev
             </button>
-            <span className="font-display text-base text-white">
+            <span className="font-display text-sm text-white">
               {MONTH_LONG[view.month]} {view.year}
             </span>
             <button type="button" onClick={() => move(1)} className="gc-btn-ghost text-[11px]" aria-label="Next month">
@@ -113,9 +113,9 @@ export function BookingCalendar({ appointments }: { appointments: AppointmentWit
             </button>
           </div>
 
-          <div className="mt-4 grid grid-cols-7 gap-1.5">
+          <div className="mt-3 grid grid-cols-7 gap-1">
             {WEEKDAY_HEAD.map((w) => (
-              <div key={w} className="pb-1 text-center text-[10px] uppercase tracking-luxe text-warmgrey/60">
+              <div key={w} className="pb-0.5 text-center text-[9px] uppercase tracking-luxe text-warmgrey/60">
                 {w}
               </div>
             ))}
@@ -133,18 +133,18 @@ export function BookingCalendar({ appointments }: { appointments: AppointmentWit
                   disabled={!hasBookings}
                   onClick={() => setSelected(cell.key)}
                   className={
-                    'relative aspect-square rounded-md border text-sm transition ' +
+                    'relative flex h-8 items-center justify-center rounded border text-[11px] transition ' +
                     (isSelected
-                      ? 'border-gold-metallic bg-gold-metallic/15 text-gold-bright shadow-[0_0_12px_-3px_rgba(212,175,55,0.6)]'
+                      ? 'border-gold-metallic bg-gold-metallic/15 text-gold-bright shadow-[0_0_10px_-3px_rgba(212,175,55,0.6)]'
                       : hasBookings
                         ? 'border-gold-metallic/40 bg-ink-950/40 text-white hover:border-gold-metallic hover:bg-gold-metallic/10'
                         : 'border-gold-metallic/10 text-warmgrey/50 cursor-default') +
                     (isToday && !isSelected ? ' ring-1 ring-inset ring-gold-metallic/30' : '')
                   }
                 >
-                  <span className="absolute left-1.5 top-1 text-[11px]">{cell.day}</span>
+                  <span>{cell.day}</span>
                   {hasBookings && (
-                    <span className="absolute bottom-1 right-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-gold-metallic px-1 text-[9px] font-semibold text-ink-950">
+                    <span className="absolute -right-1 -top-1 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-gold-metallic px-1 text-[8px] font-semibold text-ink-950">
                       {count || list.length}
                     </span>
                   )}
