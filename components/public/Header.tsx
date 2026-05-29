@@ -179,8 +179,8 @@ export function Header({ settings }: { settings: SiteSettings }) {
 
       {/* Mobile menu drawer */}
       {mobileOpen && (
-        <div className="lg:hidden border-t border-gold-metallic/15 bg-ink-950">
-          <nav className="gc-container flex flex-col gap-2 py-4">
+        <div className="lg:hidden border-t border-gold-metallic/15 bg-ink-950 max-h-[calc(100dvh-6rem)] overflow-y-auto overscroll-contain">
+          <nav className="gc-container flex flex-col gap-2 py-4 pb-[calc(env(safe-area-inset-bottom)+1rem)]">
             {/* Phone strip at the top of the drawer */}
             <a
               href={`tel:${phoneDigits}`}
