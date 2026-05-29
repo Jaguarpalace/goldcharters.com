@@ -190,9 +190,13 @@ export async function bookAppointment(
 
   await sendBookingEmails(row, event, photoCount);
 
-  revalidatePath('/book');
-  revalidatePath('/');
-  revalidatePath('/admin/appointments');
+  // No revalidatePath here on purpose. Calling it refreshes whatever route the
+  // visitor is on (here, /book), which remounts the BookingFlow client
+  // component and wipes the just-rendered confirmation card. All the routes
+  // that show availability are already fresh without it: /book and
+  // /admin/appointments are force-dynamic, and the homepage is ISR (revalidate
+  // = 120s). The booked slot itself is enforced for everyone else by the
+  // partial unique index.
 
   return { ok: true, reference: row.id.slice(0, 8), persisted: true, when, cancelToken: row.cancel_token };
 }

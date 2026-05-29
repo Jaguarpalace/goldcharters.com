@@ -6,10 +6,20 @@ const DEFAULT_MAX_FILES = 12;
 const MAX_BYTES_PER_FILE = 12 * 1024 * 1024;
 const ACCEPT = 'image/jpeg,image/png,image/webp,image/heic,image/heif';
 
+export type PhotoStatus = 'processing' | 'ready' | 'error';
+
 export type SelectedFile = {
   id: string;
   file: File;
   previewUrl: string;
+  /**
+   * 'processing' until the file's bytes have been read into memory, then
+   * 'ready'. Selecting a photo from a phone or a cloud-synced library (iCloud /
+   * Google Photos) can hand us a placeholder whose bytes aren't on the device
+   * yet; reading them up front forces that download now, so the booking submit
+   * never races a half-available file. 'error' if the read fails.
+   */
+  status: PhotoStatus;
 };
 
 export function MultiImageUploader({
@@ -18,7 +28,7 @@ export function MultiImageUploader({
   max = DEFAULT_MAX_FILES,
 }: {
   files: SelectedFile[];
-  onChange: (next: SelectedFile[]) => void;
+  onChange: React.Dispatch<React.SetStateAction<SelectedFile[]>>;
   /** Maximum number of photos allowed. Defaults to 12. */
   max?: number;
 }) {
@@ -35,6 +45,30 @@ export function MultiImageUploader({
     // We deliberately only run cleanup on unmount.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Pull the file's bytes into memory and swap in a fully in-memory File once
+  // they're available. Status updates go through a functional setState so
+  // several reads finishing out of order can't clobber each other.
+  const materialize = useCallback(
+    (id: string, source: File) => {
+      source
+        .arrayBuffer()
+        .then((buffer) => {
+          const inMemory = new File([buffer], source.name, {
+            type: source.type,
+            lastModified: source.lastModified,
+          });
+          onChange((prev) =>
+            prev.map((f) => (f.id === id ? { ...f, file: inMemory, status: 'ready' } : f)),
+          );
+        })
+        .catch((err) => {
+          console.error('[photo:materialize]', err);
+          onChange((prev) => prev.map((f) => (f.id === id ? { ...f, status: 'error' } : f)));
+        });
+    },
+    [onChange],
+  );
 
   const addFiles = useCallback(
     (incoming: FileList | File[]) => {
@@ -55,6 +89,7 @@ export function MultiImageUploader({
           id: `${file.name}-${file.size}-${file.lastModified}-${Math.random().toString(36).slice(2, 8)}`,
           file,
           previewUrl: URL.createObjectURL(file),
+          status: 'processing',
         });
       }
 
@@ -62,10 +97,17 @@ export function MultiImageUploader({
       if (merged.length > MAX_FILES) {
         errors.push(`You can upload up to ${MAX_FILES} photos. Some files were skipped.`);
       }
-      onChange(merged.slice(0, MAX_FILES));
+      const kept = merged.slice(0, MAX_FILES);
+      onChange(kept);
       setError(errors.join(' · ') || null);
+
+      // Only materialise the files that actually made it past the cap.
+      const keptIds = new Set(kept.map((f) => f.id));
+      for (const f of accepted) {
+        if (keptIds.has(f.id)) materialize(f.id, f.file);
+      }
     },
-    [files, onChange, MAX_FILES],
+    [files, onChange, MAX_FILES, materialize],
   );
 
   const onSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,14 +117,15 @@ export function MultiImageUploader({
   };
 
   const removeFile = (id: string) => {
-    const next = files.filter((f) => {
-      if (f.id === id) {
-        URL.revokeObjectURL(f.previewUrl);
-        return false;
-      }
-      return true;
-    });
-    onChange(next);
+    onChange((prev) =>
+      prev.filter((f) => {
+        if (f.id === id) {
+          URL.revokeObjectURL(f.previewUrl);
+          return false;
+        }
+        return true;
+      }),
+    );
   };
 
   const handleDrop = (e: React.DragEvent) => {
@@ -156,6 +199,22 @@ export function MultiImageUploader({
             <li key={f.id} className="group relative aspect-square overflow-hidden rounded-lg border border-gold-metallic/25 bg-ink-900">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={f.previewUrl} alt={f.file.name} className="h-full w-full object-cover" />
+
+              {f.status === 'processing' && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-ink-950/70 text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">
+                  <svg className="h-5 w-5 animate-spin text-gold-metallic" viewBox="0 0 24 24" fill="none" aria-hidden>
+                    <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2.5" className="opacity-25" />
+                    <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+                  </svg>
+                  Loading
+                </div>
+              )}
+              {f.status === 'error' && (
+                <div className="absolute inset-0 flex items-center justify-center bg-ink-950/80 px-1 text-center text-[10px] font-semibold uppercase tracking-luxe text-amber-400">
+                  Couldn’t read
+                </div>
+              )}
+
               <button
                 type="button"
                 onClick={(e) => {

@@ -284,9 +284,14 @@ function BookingForEvent({
     requestAnimationFrame(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }));
   };
 
+  // Photos are read into memory after selection; don't let a customer submit
+  // while any are still loading, or the upload could race a half-available file.
+  const photosProcessing = files.some((f) => f.status === 'processing');
+
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!selectedSlot) return;
+    if (photosProcessing) return;
     setServerError(null);
     const fd = new FormData(e.currentTarget);
     const slot = selectedSlot;
@@ -309,7 +314,9 @@ function BookingForEvent({
     // Server Actions"). FormData is the supported channel, so the photos travel
     // separately from the JSON payload.
     const photoData = new FormData();
-    for (const f of files) photoData.append('photos', f.file);
+    for (const f of files) {
+      if (f.status === 'ready') photoData.append('photos', f.file);
+    }
 
     startTransition(async () => {
       const result = await bookAppointment(payload, photoData);
@@ -466,11 +473,21 @@ function BookingForEvent({
             )}
 
             <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-              <button type="submit" disabled={isPending} className="gc-btn-primary w-full sm:w-auto">
-                {isPending ? 'Confirming…' : 'Confirm appointment'}
+              <button
+                type="submit"
+                disabled={isPending || photosProcessing}
+                className="gc-btn-primary w-full disabled:opacity-60 sm:w-auto"
+              >
+                {isPending
+                  ? 'Confirming…'
+                  : photosProcessing
+                    ? 'Preparing photos…'
+                    : 'Confirm appointment'}
               </button>
               <p className="text-[11px] leading-relaxed text-warmgrey/70">
-                No obligation to sell. Please bring valid photo ID to your appointment.
+                {photosProcessing
+                  ? 'Please wait a moment while your photos finish loading.'
+                  : 'No obligation to sell. Please bring valid photo ID to your appointment.'}
               </p>
             </div>
           </form>
