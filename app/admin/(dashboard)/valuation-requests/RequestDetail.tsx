@@ -50,7 +50,7 @@ export function RequestDetail({
           onChange={(status) => onPatch({ status })}
         />
 
-        {/* Submission details — dense grid, no card padding */}
+        {/* Submission details - dense grid, no card padding */}
         <div>
           <h3 className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">
             Submission
@@ -328,7 +328,7 @@ function NotesEditor({
         value={value}
         onChange={(e) => setValue(e.target.value)}
         rows={4}
-        placeholder="Add a note for the team — not visible to the customer."
+        placeholder="Add a note for the team - not visible to the customer."
         className="mt-2 w-full rounded-md border border-gold-metallic/20 bg-ink-900/70 px-3 py-2 text-sm text-white placeholder:text-warmgrey/40 focus:border-gold-metallic focus:outline-none focus:ring-1 focus:ring-gold-metallic/40"
       />
       <div className="mt-2 flex items-center justify-end gap-2">

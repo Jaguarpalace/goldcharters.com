@@ -6,14 +6,14 @@ export const reading: LocationContent = {
   region: 'Berkshire / Thames Valley',
   postcodes: 'RG1, RG2, RG4, RG5, RG6, RG30, RG31 and surrounding postcodes',
 
-  metaTitle: 'Sell Gold, Watches & Jewellery in Reading — Charters Gold',
+  metaTitle: 'Sell Gold, Watches & Jewellery in Reading - Charters Gold',
   metaDescription:
-    'Thames Valley specialists for private gold, watch, jewellery and handbag valuations. Reading and the M4 corridor served by appointment in Egham or insured postal — same-day payment.',
+    'Thames Valley specialists for private gold, watch, jewellery and handbag valuations. Reading and the M4 corridor served by appointment in Egham or insured postal - same-day payment.',
 
-  heroEyebrow: 'Selling Gold & Jewellery — Reading',
+  heroEyebrow: 'Selling Gold & Jewellery - Reading',
   heroTitle: 'Specialist Valuations for the Thames Valley',
   heroIntro:
-    'Twenty-two miles from Reading via the M4 and M25, our Egham office serves the Thames Valley’s residential and tech-corridor clients. Many Reading-area enquiries arrive by insured Royal Mail Special Delivery, but the journey is straightforward and we welcome in-person appointments — particularly for higher-value pieces.',
+    'Twenty-two miles from Reading via the M4 and M25, our Egham office serves the Thames Valley’s residential and tech-corridor clients. Many Reading-area enquiries arrive by insured Royal Mail Special Delivery, but the journey is straightforward and we welcome in-person appointments - particularly for higher-value pieces.',
 
   travel: {
     distanceMiles: 22,
@@ -26,7 +26,7 @@ export const reading: LocationContent = {
   whyHere: [
     {
       title: 'Pitched at Thames Valley salaries and pieces',
-      body: 'The Reading corridor — Microsoft, Oracle, Cisco, Thames Water, the M4 professional belt — produces a particular mix of pieces: career-purchased luxury watches, professionally-bought engagement rings, milestone jewellery from City and tech bonuses. We see these constantly and price them on current market, not on dated retail receipts.',
+      body: 'The Reading corridor - Microsoft, Oracle, Cisco, Thames Water, the M4 professional belt - produces a particular mix of pieces: career-purchased luxury watches, professionally-bought engagement rings, milestone jewellery from City and tech bonuses. We see these constantly and price them on current market, not on dated retail receipts.',
     },
     {
       title: 'Easy postal service if the drive is awkward',
@@ -34,7 +34,7 @@ export const reading: LocationContent = {
     },
     {
       title: 'No high-street pressure',
-      body: 'Reading town centre has perfectly competent jewellers and pawnbrokers — most operating on retail margins, with foot-traffic counters. We offer a private, specialist-led alternative for pieces where the figure and the conversation both matter.',
+      body: 'Reading town centre has perfectly competent jewellers and pawnbrokers - most operating on retail margins, with foot-traffic counters. We offer a private, specialist-led alternative for pieces where the figure and the conversation both matter.',
     },
   ],
 
@@ -59,7 +59,7 @@ export const reading: LocationContent = {
     {
       icon: 'post',
       title: 'Insured postal valuation',
-      body: 'Often the easiest route for Reading-area clients — Royal Mail Special Delivery from any RG postbox reaches us next working day, tracked and insured up to £20,000. We provide a free postage label and a step-by-step packing guide.',
+      body: 'Often the easiest route for Reading-area clients - Royal Mail Special Delivery from any RG postbox reaches us next working day, tracked and insured up to £20,000. We provide a free postage label and a step-by-step packing guide.',
     },
     {
       icon: 'in-person',
@@ -82,27 +82,27 @@ export const reading: LocationContent = {
     {
       question: 'Is the postal route safe for a £10,000 watch?',
       answer:
-        'Yes — Royal Mail Special Delivery insures up to £20,000 with tracked, signed-for, next-working-day handling. We provide a packing guide that satisfies the insurance terms. Once posted you receive tracking, and we confirm receipt the same morning it arrives.',
+        'Yes - Royal Mail Special Delivery insures up to £20,000 with tracked, signed-for, next-working-day handling. We provide a packing guide that satisfies the insurance terms. Once posted you receive tracking, and we confirm receipt the same morning it arrives.',
     },
     {
-      question: 'I bought my watch on a corporate finance scheme — can you still buy it?',
+      question: 'I bought my watch on a corporate finance scheme - can you still buy it?',
       answer:
-        "If the watch is paid for and you own it outright, yes. If there's an outstanding finance balance, you would need to settle that first (or we can sometimes pay the dealer directly and release the difference to you — we explain the exact mechanics on a case-by-case basis).",
+        "If the watch is paid for and you own it outright, yes. If there's an outstanding finance balance, you would need to settle that first (or we can sometimes pay the dealer directly and release the difference to you - we explain the exact mechanics on a case-by-case basis).",
     },
     {
       question: 'Do you do company purchases? My business bought the piece.',
       answer:
-        'Yes — we transact with both private individuals and limited companies, and provide VAT-compliant documentation for company purchases. We will confirm the specific tax treatment on the offer.',
+        'Yes - we transact with both private individuals and limited companies, and provide VAT-compliant documentation for company purchases. We will confirm the specific tax treatment on the offer.',
     },
     {
       question: 'What about pieces with original box and papers?',
       answer:
-        'Original box, papers and service records add materially to value, especially for current-production luxury watches. Bring everything you have — we factor it into the offer transparently.',
+        'Original box, papers and service records add materially to value, especially for current-production luxury watches. Bring everything you have - we factor it into the offer transparently.',
     },
   ],
 
   cta: {
     title: 'Begin your Reading valuation',
-    body: 'For most Reading-area clients, posting through the valuation form is the fastest route. Send photographs and a short description — we will confirm a guide figure within one working day.',
+    body: 'For most Reading-area clients, posting through the valuation form is the fastest route. Send photographs and a short description - we will confirm a guide figure within one working day.',
   },
 };

@@ -18,7 +18,7 @@ export function TopTrustBar({ settings }: { settings: SiteSettings }) {
               <span>{item}</span>
             </li>
           ))}
-          {/* Live gold price — renders nothing if the API key isn't configured */}
+          {/* Live gold price - renders nothing if the API key isn't configured */}
           <li className="flex items-center gap-2">
             <LiveGoldTicker />
           </li>

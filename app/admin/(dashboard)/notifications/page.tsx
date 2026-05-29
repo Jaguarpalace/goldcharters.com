@@ -15,7 +15,7 @@ export default async function AdminNotificationsPage() {
         <h1 className="font-display text-3xl text-white mt-1">Notification Recipients</h1>
         <p className="mt-1 max-w-2xl text-xs text-warmgrey">
           People who receive the internal alert email when a customer submits a valuation request.
-          Add as many addresses as you like — they can be staff, shared inboxes (e.g.
+          Add as many addresses as you like - they can be staff, shared inboxes (e.g.
           office@chartersgold.co.uk) or your own personal email.
         </p>
       </header>

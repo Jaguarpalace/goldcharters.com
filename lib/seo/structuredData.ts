@@ -195,7 +195,7 @@ export function locationLocalBusinessSchema(input: {
     '@context': 'https://schema.org',
     '@type': ['LocalBusiness', 'Store'],
     '@id': `${SITE_URL}/locations/${locationSlug}#localbusiness`,
-    name: `${settings.business_name} — ${locationName}`,
+    name: `${settings.business_name} - ${locationName}`,
     description,
     image: `${SITE_URL}/logo/charters_gold_true_transparent.png`,
     url: `${SITE_URL}/locations/${locationSlug}`,
@@ -248,7 +248,7 @@ export function appointmentEventSchema(input: {
   return {
     '@context': 'https://schema.org',
     '@type': 'Event',
-    name: `${settings.business_name} — ${title}`,
+    name: `${settings.business_name} - ${title}`,
     description: `Private valuation appointments in ${city} with ${settings.business_name}. Book a slot to sell gold, jewellery, watches or designer handbags.`,
     startDate,
     endDate,

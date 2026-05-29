@@ -23,7 +23,7 @@ export default async function AdminTrashPage() {
         <p className="mt-1 max-w-3xl text-xs text-warmgrey">
           Recently soft-deleted customers, holdings ledger rows and valuation requests. Restore
           to put a row back exactly where it was, or permanently delete to release the storage
-          and remove all trace. Permanent delete is irreversible — there is no second trash.
+          and remove all trace. Permanent delete is irreversible - there is no second trash.
         </p>
       </header>
 

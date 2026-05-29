@@ -22,7 +22,7 @@ export default async function GoldCalculatorPage() {
         </div>
       </section>
 
-      {/* GoldCalculator acts as the page hero — its title renders as <h1>. */}
+      {/* GoldCalculator acts as the page hero - its title renders as <h1>. */}
       <GoldCalculator rates={rates} asH1 />
 
       <section className="py-6 lg:py-10" id="valuation-form">

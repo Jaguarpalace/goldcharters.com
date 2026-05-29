@@ -25,12 +25,12 @@ export async function sendNewRequestNotification(
   photoCount = 0,
 ): Promise<{ ok: boolean; error?: string; skipped?: boolean }> {
   if (!isEmailConfigured()) {
-    console.info('[email:new-request] skipped — RESEND_API_KEY not set');
+    console.info('[email:new-request] skipped - RESEND_API_KEY not set');
     return { ok: false, skipped: true };
   }
   const recipients = await getAdminRecipients();
   if (recipients.length === 0) {
-    console.warn('[email:new-request] skipped — no notification recipients configured');
+    console.warn('[email:new-request] skipped - no notification recipients configured');
     return { ok: false, skipped: true };
   }
 

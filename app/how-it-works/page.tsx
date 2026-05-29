@@ -15,7 +15,7 @@ export default async function HowItWorksPage() {
 
   return (
     <>
-      {/* HowItWorks acts as the page hero — title renders as <h1>. */}
+      {/* HowItWorks acts as the page hero - title renders as <h1>. */}
       <HowItWorks
         asH1
         sellSection={findHomepageSection(sections, 'how_it_works_sell')}

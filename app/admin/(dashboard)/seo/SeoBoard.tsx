@@ -260,7 +260,7 @@ function SeoEditor({
       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-gold-metallic/15 pt-3">
         <p className="text-[11px] text-warmgrey">
           Saved on <span className="text-white">{new Date(row.updated_at).toLocaleString('en-GB')}</span>
-          {' · '}URL is locked — renames require a code-level redirect.
+          {' · '}URL is locked - renames require a code-level redirect.
         </p>
         <div className="flex items-center gap-3">
           {feedback && (

@@ -26,7 +26,7 @@ export async function sendCustomerConfirmation(
   photoCount = 0,
 ): Promise<{ ok: boolean; error?: string; skipped?: boolean }> {
   if (!isEmailConfigured()) {
-    console.info('[email:customer-confirmation] skipped — email service not configured');
+    console.info('[email:customer-confirmation] skipped - email service not configured');
     return { ok: false, skipped: true };
   }
   if (!request.email) {

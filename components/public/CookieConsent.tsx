@@ -138,8 +138,8 @@ export function CookieConsent() {
           </div>
 
           <p className="mt-3 text-[12px] leading-relaxed text-warmgrey">
-            We use a small number of cookies to run the site, remember your basket and — only with
-            your permission — understand how visitors use the site so we can improve it. You can
+            We use a small number of cookies to run the site, remember your basket and - only with
+            your permission - understand how visitors use the site so we can improve it. You can
             change your choice at any time via the footer.{' '}
             <Link
               href="/cookies"
@@ -153,7 +153,7 @@ export function CookieConsent() {
             <div className="mt-4 space-y-2 rounded-lg border border-gold-metallic/15 bg-ink-900/60 p-3">
               <CategoryRow
                 title="Strictly necessary"
-                description="Authentication, basket and security. Always on — the site can't function without these."
+                description="Authentication, basket and security. Always on - the site can't function without these."
                 locked
                 checked
               />

@@ -78,7 +78,7 @@ export function CalculatorRatesEditor({ initialRates }: { initialRates: Calculat
                     disabled={rate.margin_percentage != null && rate.margin_percentage > 0}
                     title={
                       rate.margin_percentage
-                        ? 'Auto mode is on — manual price is ignored. Clear margin to edit.'
+                        ? 'Auto mode is on - manual price is ignored. Clear margin to edit.'
                         : 'Manual price per gram.'
                     }
                     className="w-28 rounded border border-gold-metallic/25 bg-ink-950 px-2 py-1.5 text-sm text-white focus:border-gold-metallic focus:outline-none disabled:cursor-not-allowed disabled:opacity-40"

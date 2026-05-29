@@ -103,7 +103,7 @@ export default async function AdminOverview() {
 
       <SpotStaleBanner snapshot={spots} />
 
-      {/* QUICK ACTIONS — the four highest-frequency entry points */}
+      {/* QUICK ACTIONS - the four highest-frequency entry points */}
       <section className="flex flex-wrap gap-2">
         <QuickAction href="/admin/walk-in" label="New walk-in purchase" tone="primary" />
         <QuickAction href="/admin/valuation-requests" label="Valuation requests" />
@@ -111,7 +111,7 @@ export default async function AdminOverview() {
         <QuickAction href="/admin/customers" label="Customers" />
       </section>
 
-      {/* HERO METRICS — typography led, no cards, hairline gold dividers */}
+      {/* HERO METRICS - typography led, no cards, hairline gold dividers */}
       <section className="grid grid-cols-1 sm:grid-cols-3">
         <Metric
           label="Today"
@@ -132,7 +132,7 @@ export default async function AdminOverview() {
         />
       </section>
 
-      {/* HOLDINGS SNAPSHOT — live cost basis vs current value */}
+      {/* HOLDINGS SNAPSHOT - live cost basis vs current value */}
       <section>
         <div className="flex items-baseline justify-between gap-4">
           <span className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">
@@ -168,7 +168,7 @@ export default async function AdminOverview() {
         </div>
       </section>
 
-      {/* PIPELINE — single line of stages, arrows in between */}
+      {/* PIPELINE - single line of stages, arrows in between */}
       <section>
         <div className="flex items-baseline justify-between gap-4">
           <span className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">
@@ -211,7 +211,7 @@ export default async function AdminOverview() {
       <section className="grid grid-cols-1 gap-10 lg:grid-cols-2">
         <Column
           title="Needs your attention"
-          empty="Nothing waiting — every new enquiry has been picked up within the last 18 hours."
+          empty="Nothing waiting - every new enquiry has been picked up within the last 18 hours."
         >
           {needsAction.length > 0 && (
             <ul className="divide-y divide-gold-metallic/10">
@@ -224,7 +224,7 @@ export default async function AdminOverview() {
 
         <Column
           title="Recent admin activity"
-          empty="Nothing logged yet — the audit trail starts collecting from the next admin write."
+          empty="Nothing logged yet - the audit trail starts collecting from the next admin write."
         >
           {auditEntries.length > 0 && (
             <ul className="divide-y divide-gold-metallic/10">
@@ -244,7 +244,7 @@ export default async function AdminOverview() {
         </Column>
       </section>
 
-      {/* LIVE SPOT — gold carats on top row, other metals on bottom */}
+      {/* LIVE SPOT - gold carats on top row, other metals on bottom */}
       <section className="space-y-3 border-t border-gold-metallic/15 pt-6">
         <div className="flex flex-wrap items-baseline gap-x-8 gap-y-3">
           <span className="text-[10px] font-semibold uppercase tracking-luxe text-gold-metallic">

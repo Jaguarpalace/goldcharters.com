@@ -51,7 +51,7 @@ export function CustomersBoard({ initialCustomers }: { initialCustomers: Custome
                 <tr>
                   <td colSpan={3} className="px-3 py-10 text-center text-sm text-warmgrey">
                     {customers.length === 0
-                      ? 'No customers yet — add the first one using the form on the right.'
+                      ? 'No customers yet - add the first one using the form on the right.'
                       : 'No customers match that search.'}
                   </td>
                 </tr>
@@ -140,7 +140,7 @@ function AddCustomerForm({ onAdded }: { onAdded: (c: Customer) => void }) {
         Add customer
       </h2>
       <p className="text-[11px] text-warmgrey">
-        Quick add — full address, notes and documents can be filled in on the customer's detail
+        Quick add - full address, notes and documents can be filled in on the customer's detail
         page.
       </p>
 

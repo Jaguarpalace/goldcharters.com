@@ -248,7 +248,7 @@ export function ServicesEditor({ initial }: { initial: Service[] }) {
         <ul className="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           {services.length === 0 && (
             <li className="gc-card p-8 text-center text-sm text-warmgrey md:col-span-2 lg:col-span-3">
-              No services yet — add the first one above.
+              No services yet - add the first one above.
             </li>
           )}
           {services.map((s) => (

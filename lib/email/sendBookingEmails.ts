@@ -30,7 +30,7 @@ export async function sendBookingEmails(
   photoCount = 0,
 ): Promise<void> {
   if (!isEmailConfigured()) {
-    console.info('[email:booking] skipped — RESEND_API_KEY not set');
+    console.info('[email:booking] skipped - RESEND_API_KEY not set');
     return;
   }
   const resend = getResend();
@@ -110,7 +110,7 @@ async function sendCustomerConfirmation(
       </td></tr>
       <tr><td style="padding:14px 16px;border-bottom:1px solid rgba(243,204,15,0.12);">
         <p style="margin:0;color:#9a9a9a;font-size:10px;text-transform:uppercase;letter-spacing:0.16em;">Where</p>
-        <p style="margin:4px 0 0;color:#fff;font-size:15px;font-weight:600;">${esc(v.eventTitle)} — ${esc(v.city)}</p>
+        <p style="margin:4px 0 0;color:#fff;font-size:15px;font-weight:600;">${esc(v.eventTitle)} - ${esc(v.city)}</p>
         <p style="margin:4px 0 0;color:#cfcfcf;font-size:13px;">${esc(v.where)}</p>
       </td></tr>
       ${
@@ -121,7 +121,7 @@ async function sendCustomerConfirmation(
     </table>
   </td></tr>
   <tr><td style="padding:22px 28px 0;color:#9a9a9a;font-size:13px;line-height:1.7;">
-    <p style="margin:0;">Please bring valid photo ID. There's no obligation to sell — the decision is always yours.</p>
+    <p style="margin:0;">Please bring valid photo ID. There's no obligation to sell - the decision is always yours.</p>
   </td></tr>
   <tr><td style="padding:22px 28px 4px;text-align:center;">
     <p style="margin:0;color:#9a9a9a;font-size:12px;">Need to change or cancel?</p>
@@ -142,7 +142,7 @@ async function sendCustomerConfirmation(
     const { error } = await resend.emails.send({
       from: getFromAddress(),
       to: [v.to],
-      subject: `Your appointment is confirmed — ${v.businessName}`,
+      subject: `Your appointment is confirmed - ${v.businessName}`,
       html,
     });
     if (error) console.error('[email:booking-customer] resend error', error);
@@ -174,7 +174,7 @@ async function sendAdminAlert(
 <table role="presentation" width="600" cellspacing="0" cellpadding="0" style="max-width:600px;background:#0b0b0b;border:1px solid rgba(243,204,15,0.25);border-radius:12px;overflow:hidden;">
   <tr><td style="padding:28px 24px 18px;border-bottom:1px solid rgba(243,204,15,0.15);text-align:center;background:#000;">
     <p style="margin:0;color:#f3cc0f;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;font-weight:600;">New Appointment Booked</p>
-    <h1 style="margin:10px 0 0;color:#fff;font-family:Georgia,serif;font-size:21px;">${esc(v.event.title)} — ${esc(v.event.city)}</h1>
+    <h1 style="margin:10px 0 0;color:#fff;font-family:Georgia,serif;font-size:21px;">${esc(v.event.title)} - ${esc(v.event.city)}</h1>
     <p style="margin:6px 0 0;color:#9a9a9a;font-size:13px;">${esc(v.when)}</p>
   </td></tr>
   <tr><td style="padding:18px 24px 0;">
@@ -188,7 +188,7 @@ async function sendAdminAlert(
       <tr><td style="padding:6px 12px 6px 0;color:#9a9a9a;font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Where</td><td style="padding:6px 0;color:#f6f6f6;font-size:14px;">${esc(v.where)}</td></tr>
       ${a.service_type ? `<tr><td style="padding:6px 12px 6px 0;color:#9a9a9a;font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Bringing</td><td style="padding:6px 0;color:#f6f6f6;font-size:14px;">${esc(a.service_type)}</td></tr>` : ''}
       <tr><td style="padding:6px 12px 6px 0;color:#9a9a9a;font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Preferred contact</td><td style="padding:6px 0;color:#f6f6f6;font-size:14px;">${esc(a.preferred_contact_method)}</td></tr>
-      ${v.photoCount > 0 ? `<tr><td style="padding:6px 12px 6px 0;color:#9a9a9a;font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Photos</td><td style="padding:6px 0;color:#f6f6f6;font-size:14px;">${v.photoCount} attached — view in admin</td></tr>` : ''}
+      ${v.photoCount > 0 ? `<tr><td style="padding:6px 12px 6px 0;color:#9a9a9a;font-size:12px;text-transform:uppercase;letter-spacing:0.08em;">Photos</td><td style="padding:6px 0;color:#f6f6f6;font-size:14px;">${v.photoCount} attached - view in admin</td></tr>` : ''}
     </table>
     ${a.notes ? `<p style="margin:14px 0 0;color:#cfcfcf;font-size:14px;line-height:1.6;white-space:pre-wrap;">${esc(a.notes)}</p>` : ''}
   </td></tr>
@@ -203,7 +203,7 @@ async function sendAdminAlert(
       from: getFromAddress(),
       to: recipients,
       replyTo: a.email,
-      subject: `New appointment — ${a.first_name} ${a.last_name} · ${v.event.city}`,
+      subject: `New appointment - ${a.first_name} ${a.last_name} · ${v.event.city}`,
       html,
     });
     if (error) console.error('[email:booking-admin] resend error', error);

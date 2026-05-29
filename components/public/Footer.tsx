@@ -45,13 +45,13 @@ export function Footer({ settings }: { settings: SiteSettings }) {
           Layout strategy:
           - Mobile: brand block full-width on top, then a 2×2 grid of the four
             info columns underneath (was 4 stacked single-column blocks before
-            — half the vertical height now).
+            - half the vertical height now).
           - Desktop (lg+): we use `lg:contents` on the inner wrapper so its
-            children flatten into the parent 5-column grid — same horizontal
+            children flatten into the parent 5-column grid - same horizontal
             stripe layout we had before, no duplication.
         */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.6fr,1fr,1fr,1fr,1fr] lg:items-start lg:gap-8">
-          {/* Brand block — logo only. The descriptive paragraph used to
+          {/* Brand block - logo only. The descriptive paragraph used to
               sit here in a narrow column and wrap to 4 lines; it now
               lives as its own full-width row below the columns grid
               where the full sentence has room to read on one line. */}
@@ -132,7 +132,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
           </div>
         </div>
 
-        {/* Brand description — pulled out of the narrow brand column and
+        {/* Brand description - pulled out of the narrow brand column and
             rendered full-width here so the whole sentence fits on one
             line on desktop. Hidden on phones to keep the mobile footer
             tight. */}

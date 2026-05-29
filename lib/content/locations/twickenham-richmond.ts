@@ -6,14 +6,14 @@ export const twickenhamRichmond: LocationContent = {
   region: 'South West London',
   postcodes: 'TW1, TW2, TW9, TW10, SW13, SW14 and surrounding postcodes',
 
-  metaTitle: 'Sell Gold, Watches & Jewellery in Twickenham & Richmond — Charters Gold',
+  metaTitle: 'Sell Gold, Watches & Jewellery in Twickenham & Richmond - Charters Gold',
   metaDescription:
     'Private valuations for residents of Twickenham, Richmond, Kew, East Sheen and the wider south-west London riverside. Specialist appointments at our Egham office, a short drive or rail journey away.',
 
-  heroEyebrow: 'Selling Gold & Jewellery — Twickenham & Richmond',
+  heroEyebrow: 'Selling Gold & Jewellery - Twickenham & Richmond',
   heroTitle: 'Private Valuations for South-West London Riverside',
   heroIntro:
-    'Twelve miles from Richmond town centre, our Egham office is the closest dedicated private valuation house outside south-west London itself. We work regularly with clients from TW1, TW2, TW9, TW10 and the wider riverside — Twickenham, Richmond, Kew, East Sheen, St Margarets, Petersham and Ham.',
+    'Twelve miles from Richmond town centre, our Egham office is the closest dedicated private valuation house outside south-west London itself. We work regularly with clients from TW1, TW2, TW9, TW10 and the wider riverside - Twickenham, Richmond, Kew, East Sheen, St Margarets, Petersham and Ham.',
 
   travel: {
     distanceMiles: 12,
@@ -26,7 +26,7 @@ export const twickenhamRichmond: LocationContent = {
   whyHere: [
     {
       title: 'Closest valuation specialist west of London',
-      body: 'Richmond and Twickenham have plenty of antique dealers and high-street jewellers — but the closest dedicated, specialist-led valuation house outside the area is ours. The drive or rail journey is short, the office is private, and the offer reflects trade rather than retail.',
+      body: 'Richmond and Twickenham have plenty of antique dealers and high-street jewellers - but the closest dedicated, specialist-led valuation house outside the area is ours. The drive or rail journey is short, the office is private, and the offer reflects trade rather than retail.',
     },
     {
       title: 'Familiar with the SW riverside style of piece',
@@ -34,7 +34,7 @@ export const twickenhamRichmond: LocationContent = {
     },
     {
       title: 'No public-facing showroom',
-      body: 'Every appointment is one specialist, one client, by name — never a walk-in queue. South-west London clients in particular choose us specifically for that discretion.',
+      body: 'Every appointment is one specialist, one client, by name - never a walk-in queue. South-west London clients in particular choose us specifically for that discretion.',
     },
   ],
 
@@ -83,22 +83,22 @@ export const twickenhamRichmond: LocationContent = {
     {
       question: 'Are you affected by rugby international weekends?',
       answer:
-        'The drive into Egham is unaffected — Twickenham traffic mainly impacts the immediate stadium roads. We do recommend planning your route to avoid TW2 around match days. Rail via Twickenham → Staines → Egham is unaffected.',
+        'The drive into Egham is unaffected - Twickenham traffic mainly impacts the immediate stadium roads. We do recommend planning your route to avoid TW2 around match days. Rail via Twickenham → Staines → Egham is unaffected.',
     },
     {
-      question: 'I have a piece from Hatton Garden — how does your offer compare?',
+      question: 'I have a piece from Hatton Garden - how does your offer compare?',
       answer:
         "We benchmark against trade and consumer auction prices for the same piece, not against high-street retailer margins. Most south-west London clients find our figure equals or exceeds Hatton Garden's best offer, with the conversation happening privately.",
     },
     {
       question: 'Can you visit me in Richmond Hill / Petersham?',
       answer:
-        'Yes — by appointment, for pieces of significant value or where a relative cannot travel. Identification on arrival; written acknowledgement before any piece leaves your hand.',
+        'Yes - by appointment, for pieces of significant value or where a relative cannot travel. Identification on arrival; written acknowledgement before any piece leaves your hand.',
     },
     {
-      question: 'I’m downsizing — can you value an entire jewellery box rather than single pieces?',
+      question: 'I’m downsizing - can you value an entire jewellery box rather than single pieces?',
       answer:
-        'Yes — we routinely value full collections. We work through each piece individually, give you a written breakdown, and you can choose to sell some, all, or none. There is no fee for the inspection and no obligation to sell.',
+        'Yes - we routinely value full collections. We work through each piece individually, give you a written breakdown, and you can choose to sell some, all, or none. There is no fee for the inspection and no obligation to sell.',
     },
   ],
 

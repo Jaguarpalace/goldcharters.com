@@ -10,7 +10,7 @@ import {
 } from '@/types/database';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const MAX_DOC_BYTES = 15 * 1024 * 1024; // 15MB — passports as PDFs can be chunky.
+const MAX_DOC_BYTES = 15 * 1024 * 1024; // 15MB - passports as PDFs can be chunky.
 const ALLOWED_DOC_MIME = new Set([
   'image/jpeg',
   'image/png',

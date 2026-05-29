@@ -22,7 +22,7 @@ const FALLBACK_SECTION: HomepageSection = {
   section_key: 'watch_intro',
   title: 'Sell Luxury Watches',
   subtitle: null,
-  body: 'Specialist valuations for fine timepieces — Rolex, Patek Philippe, Audemars Piguet, Omega, Cartier and other premium watchmakers. Movement, condition, papers and box all factored in.',
+  body: 'Specialist valuations for fine timepieces - Rolex, Patek Philippe, Audemars Piguet, Omega, Cartier and other premium watchmakers. Movement, condition, papers and box all factored in.',
   cta_label: 'Sell My Watch',
   cta_href: '#valuation-form',
   image_url: null,
@@ -54,7 +54,7 @@ export default async function SellWatchesPage() {
           serviceSchema({
             name: 'Sell Luxury Watches UK',
             description:
-              'Sell luxury watches — Rolex, Patek Philippe, Audemars Piguet, Omega, Cartier — to a discreet UK specialist. Movement, papers and provenance fully assessed.',
+              'Sell luxury watches - Rolex, Patek Philippe, Audemars Piguet, Omega, Cartier - to a discreet UK specialist. Movement, papers and provenance fully assessed.',
             url: `${SITE_URL}/sell-watches`,
             serviceType: 'Luxury watch buying service',
           }),

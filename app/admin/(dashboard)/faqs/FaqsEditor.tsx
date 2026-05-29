@@ -177,7 +177,7 @@ export function FaqsEditor({ initial }: { initial: Faq[] }) {
         <ul className="mt-4 space-y-3">
           {faqs.length === 0 && (
             <li className="gc-card p-8 text-center text-sm text-warmgrey">
-              No FAQs yet — add the first one above.
+              No FAQs yet - add the first one above.
             </li>
           )}
           {faqs.map((f) => (

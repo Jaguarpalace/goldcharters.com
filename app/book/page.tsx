@@ -42,7 +42,7 @@ export default async function BookPage({
           <h1 className="gc-heading-xl mt-5">Reserve a Private Valuation Slot</h1>
           <p className="gc-subhead mt-6 max-w-2xl">
             Choose a location, pick a time that suits you, and meet a specialist in person. Discreet,
-            unhurried and with no obligation to sell — at our Egham showroom or a pop-up near you.
+            unhurried and with no obligation to sell - at our Egham showroom or a pop-up near you.
           </p>
         </div>
       </section>

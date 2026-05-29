@@ -65,7 +65,6 @@ export type BookAppointmentInput = {
   notes?: string | null;
   preferredContactMethod: string;
   consent: boolean;
-  photos?: File[];
 };
 
 export type BookResult =
@@ -98,7 +97,10 @@ async function getEventForBooking(eventId: string): Promise<AppointmentEvent | n
   return (data as AppointmentEvent) ?? null;
 }
 
-export async function bookAppointment(input: BookAppointmentInput): Promise<BookResult> {
+export async function bookAppointment(
+  input: BookAppointmentInput,
+  photos?: FormData,
+): Promise<BookResult> {
   const firstName = clean(input.firstName, 80);
   const lastName = clean(input.lastName, 80);
   const email = clean(input.email, 160).toLowerCase();
@@ -124,11 +126,11 @@ export async function bookAppointment(input: BookAppointmentInput): Promise<Book
   if (!event) return { ok: false, error: 'That location is no longer available.', code: 'NOT_FOUND' };
 
   if (!isValidSlot(event, startsAt))
-    return { ok: false, error: "That time isn't available — please pick another slot.", code: 'VALIDATION' };
+    return { ok: false, error: "That time isn't available - please pick another slot.", code: 'VALIDATION' };
 
   const startMs = new Date(startsAt).getTime();
   if (Number.isNaN(startMs) || startMs < Date.now() + MIN_LEAD_MINUTES * 60_000)
-    return { ok: false, error: 'That time has passed — please pick a later slot.', code: 'VALIDATION' };
+    return { ok: false, error: 'That time has passed - please pick a later slot.', code: 'VALIDATION' };
 
   const when = formatSlotLong(startsAt);
 
@@ -181,7 +183,10 @@ export async function bookAppointment(input: BookAppointmentInput): Promise<Book
   }
 
   // Upload any attached photos (best-effort — never fails the booking).
-  const photoCount = await uploadAppointmentPhotos(admin, row.id, input.photos ?? []);
+  const photoFiles = (photos?.getAll('photos') ?? []).filter(
+    (p): p is File => p instanceof File,
+  );
+  const photoCount = await uploadAppointmentPhotos(admin, row.id, photoFiles);
 
   await sendBookingEmails(row, event, photoCount);
 
@@ -271,7 +276,7 @@ export async function cancelAppointmentByToken(token: string): Promise<CancelRes
     .eq('cancel_token', t)
     .maybeSingle<{ id: string; starts_at: string; status: AppointmentStatus; event_id: string }>();
 
-  if (!appt) return { ok: false, error: 'We could not find that appointment — it may already be cancelled.' };
+  if (!appt) return { ok: false, error: 'We could not find that appointment - it may already be cancelled.' };
 
   let city = '';
   const { data: ev } = await admin
@@ -580,7 +585,7 @@ export async function findNearestEvents(input: {
     if (!pc) return { ok: false, error: 'Please enter your postcode.' };
     origin = await geocodePostcode(pc);
     if (!origin) {
-      return { ok: false, error: "We couldn't find that postcode — please check it and try again." };
+      return { ok: false, error: "We couldn't find that postcode - please check it and try again." };
     }
     originLabel = pc.toUpperCase();
   }
@@ -598,7 +603,7 @@ export async function findNearestEvents(input: {
     .sort((a, b) => a.distanceMiles - b.distanceMiles);
 
   if (results.length === 0) {
-    return { ok: false, error: 'No locations have a mapped address yet — please choose from the list below.' };
+    return { ok: false, error: 'No locations have a mapped address yet - please choose from the list below.' };
   }
   return { ok: true, originLabel, results };
 }

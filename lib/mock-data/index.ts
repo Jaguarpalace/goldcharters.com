@@ -147,7 +147,7 @@ export function mockHomepageSections(): HomepageSection[] {
       section_key: 'handbag_intro',
       title: 'Sell Designer Handbags',
       subtitle: null,
-      body: 'Discreet valuations for pre-loved designer handbags — Hermès, Chanel, Louis Vuitton, Dior, Gucci, Prada, Bottega Veneta and other premium houses. Authenticity verified, fair offers, fast settlement.',
+      body: 'Discreet valuations for pre-loved designer handbags - Hermès, Chanel, Louis Vuitton, Dior, Gucci, Prada, Bottega Veneta and other premium houses. Authenticity verified, fair offers, fast settlement.',
       cta_label: 'Sell My Handbag',
       cta_href: '/sell-handbags',
       image_url: null,
@@ -171,7 +171,7 @@ export function mockHomepageSections(): HomepageSection[] {
       section_key: 'watch_intro',
       title: 'Sell Luxury Watches',
       subtitle: null,
-      body: 'Specialist valuations for fine timepieces — Rolex, Patek Philippe, Audemars Piguet, Omega, Cartier and other premium watchmakers. Movement, condition, papers and box all factored in.',
+      body: 'Specialist valuations for fine timepieces - Rolex, Patek Philippe, Audemars Piguet, Omega, Cartier and other premium watchmakers. Movement, condition, papers and box all factored in.',
       cta_label: 'Sell My Watch',
       cta_href: '/sell-watches',
       image_url: null,
@@ -473,7 +473,7 @@ export function mockFaqs(): Faq[] {
       category: 'selling_jewellery',
       question: 'Can I upload multiple photos?',
       answer:
-        'Yes. You can upload multiple photos from different angles to help us assess your items — hallmarks, stones, clasps, boxes and certificates where available.',
+        'Yes. You can upload multiple photos from different angles to help us assess your items - hallmarks, stones, clasps, boxes and certificates where available.',
       display_order: 5,
       visible: true,
     },
@@ -491,7 +491,7 @@ export function mockFaqs(): Faq[] {
       category: 'selling_gold',
       question: 'What areas do you cover?',
       answer:
-        'We are based in Egham, Surrey, and serve clients across London, Surrey, Berkshire and the Thames Valley — including Windsor, Ascot, Heathrow, Reading, Twickenham, Richmond and Staines. You can visit our office by appointment, we can arrange a private home visit for pieces of significant value, or we accept insured postal valuations from anywhere in the UK. See our Areas We Cover page for region-specific guides.',
+        'We are based in Egham, Surrey, and serve clients across London, Surrey, Berkshire and the Thames Valley - including Windsor, Ascot, Heathrow, Reading, Twickenham, Richmond and Staines. You can visit our office by appointment, we can arrange a private home visit for pieces of significant value, or we accept insured postal valuations from anywhere in the UK. See our Areas We Cover page for region-specific guides.',
       display_order: 10,
       visible: true,
     },
@@ -572,7 +572,7 @@ export function mockProducts(): Product[] {
       weight_grams: 4.2,
       gemstones: '0.75ct brilliant-cut diamond, G colour, VS clarity',
       brand: 'Private collection',
-      condition: 'Excellent — preowned',
+      condition: 'Excellent - preowned',
       certificate_info: 'Independent diamond grading report included',
       box_included: true,
       status: 'active',
@@ -592,7 +592,7 @@ export function mockProducts(): Product[] {
       weight_grams: 56,
       gemstones: null,
       brand: null,
-      condition: 'Very good — preowned',
+      condition: 'Very good - preowned',
       box_included: false,
       status: 'active',
       featured: true,
@@ -650,7 +650,7 @@ export function mockProducts(): Product[] {
       weight_grams: 3.6,
       gemstones: 'Ceylon sapphire, old-cut diamonds',
       brand: null,
-      condition: 'Excellent — antique',
+      condition: 'Excellent - antique',
       box_included: true,
       status: 'reserved',
       featured: false,
@@ -669,7 +669,7 @@ export function mockProducts(): Product[] {
       weight_grams: 11.2,
       gemstones: '3.4ct brilliant-cut diamonds',
       brand: null,
-      condition: 'Excellent — preowned',
+      condition: 'Excellent - preowned',
       box_included: true,
       status: 'active',
       featured: false,
@@ -688,7 +688,7 @@ export function mockProducts(): Product[] {
       weight_grams: 1.8,
       gemstones: '1.00ct brilliant-cut diamonds',
       brand: null,
-      condition: 'Excellent — preowned',
+      condition: 'Excellent - preowned',
       box_included: true,
       status: 'active',
       featured: true,
@@ -707,7 +707,7 @@ export function mockProducts(): Product[] {
       weight_grams: 62,
       gemstones: null,
       brand: null,
-      condition: 'Very good — preowned',
+      condition: 'Very good - preowned',
       box_included: false,
       status: 'sold',
       featured: false,
@@ -759,7 +759,7 @@ export function mockBlogPosts(): BlogPost[] {
         '22ct gold is the most common form of gold jewellery in the UK. Here is how its price per gram is calculated, and what you can expect when you sell.',
       content: `## What 22ct gold actually is
 
-22ct gold means 22 parts pure gold out of 24, or **91.6% pure**. The remaining 8.4% is alloy — usually copper or silver — added to make the metal hard enough to wear daily.
+22ct gold means 22 parts pure gold out of 24, or **91.6% pure**. The remaining 8.4% is alloy - usually copper or silver - added to make the metal hard enough to wear daily.
 
 ## How the price per gram is calculated
 
@@ -784,10 +784,10 @@ Bring in a 10g 22ct chain and you'd expect roughly £520, give or take a couple 
 
 ## What can change the offer
 
-- **Hallmarks** — a stamped piece is faster to verify and gets a better margin
-- **Weight** — bigger pieces are cheaper to refine per gram, so larger lots often get slightly better rates
-- **Condition** — broken jewellery is fine; what matters is weight and purity, not aesthetics
-- **Market movement** — gold prices change minute by minute. We quote based on the price at the moment we make the offer
+- **Hallmarks** - a stamped piece is faster to verify and gets a better margin
+- **Weight** - bigger pieces are cheaper to refine per gram, so larger lots often get slightly better rates
+- **Condition** - broken jewellery is fine; what matters is weight and purity, not aesthetics
+- **Market movement** - gold prices change minute by minute. We quote based on the price at the moment we make the offer
 
 ## Want a live figure?
 
@@ -818,15 +818,15 @@ After valuing hundreds of Rolex watches, the same four factors come up every tim
 
 ## 1. Model and reference
 
-Some references trade at a premium to retail — Submariner Date 116610LN, Daytona 116500LN, GMT-Master II "Pepsi" 126710BLRO. Others sit closer to original retail or below. The reference number on the rehaut (the inner ring around the dial) is the single most important piece of information.
+Some references trade at a premium to retail - Submariner Date 116610LN, Daytona 116500LN, GMT-Master II "Pepsi" 126710BLRO. Others sit closer to original retail or below. The reference number on the rehaut (the inner ring around the dial) is the single most important piece of information.
 
 ## 2. Condition of the dial and case
 
-A heavily polished case loses sharp edges and value. Original, unpolished cases with crisp lugs command 5-15% more than over-polished examples. Dials should be original — refurbished dials drop the value significantly.
+A heavily polished case loses sharp edges and value. Original, unpolished cases with crisp lugs command 5-15% more than over-polished examples. Dials should be original - refurbished dials drop the value significantly.
 
 ## 3. Box and papers
 
-The famous "**full set**" — original box, warranty card with matching serial, service papers — adds **10-25%** depending on the model. For desk-grail references it can mean a difference of several thousand pounds.
+The famous "**full set**" - original box, warranty card with matching serial, service papers - adds **10-25%** depending on the model. For desk-grail references it can mean a difference of several thousand pounds.
 
 ## 4. Service history
 
@@ -834,7 +834,7 @@ A service record from Rolex UK or an authorised service centre adds confidence. 
 
 ## What this means for you
 
-If you have a recent watch with full set and unpolished case, you're in the best position. If you have a vintage piece without box, the value is still strong — just driven mostly by rarity and condition.
+If you have a recent watch with full set and unpolished case, you're in the best position. If you have a vintage piece without box, the value is still strong - just driven mostly by rarity and condition.
 
 [Request a private valuation](/sell-watches) and we'll quote based on the live secondary market.`,
       featured_image_url: null,
@@ -842,7 +842,7 @@ If you have a recent watch with full set and unpolished case, you're in the best
       published: true,
       seo_title: 'Selling a Rolex UK: what affects the offer most | Charters Gold',
       seo_description:
-        'A practical guide to the four factors that determine a Rolex valuation in the UK — model, condition, papers and service history.',
+        'A practical guide to the four factors that determine a Rolex valuation in the UK - model, condition, papers and service history.',
       created_at: now,
       updated_at: now,
     },
@@ -851,17 +851,17 @@ If you have a recent watch with full set and unpolished case, you're in the best
       title: 'What is a Hermès Birkin worth on the resale market?',
       slug: 'hermes-birkin-resale-value-uk',
       excerpt:
-        'Birkins hold their value better than most luxury bags — but not all Birkins are equal. The leather, the hardware, the year and the condition all change the figure dramatically.',
+        'Birkins hold their value better than most luxury bags - but not all Birkins are equal. The leather, the hardware, the year and the condition all change the figure dramatically.',
       content: `## A baseline
 
-In 2026, a **35cm Togo Birkin in a classic colour with palladium hardware** typically resells for between £8,000 and £12,000 depending on condition and provenance. A 30cm in Epsom leather might trade slightly higher; an exotic skin (croc, ostrich) sits in a different bracket entirely — £25,000 and up.
+In 2026, a **35cm Togo Birkin in a classic colour with palladium hardware** typically resells for between £8,000 and £12,000 depending on condition and provenance. A 30cm in Epsom leather might trade slightly higher; an exotic skin (croc, ostrich) sits in a different bracket entirely - £25,000 and up.
 
 ## What moves the price
 
 ### Leather
 - **Togo / Clemence**: most popular, easy to resell
 - **Epsom**: structured, holds shape, slight premium
-- **Box calf**: classic but shows scratches — condition-sensitive
+- **Box calf**: classic but shows scratches - condition-sensitive
 - **Exotics (croc, ostrich, lizard)**: 2-5× the price of standard leathers
 
 ### Hardware
@@ -887,7 +887,7 @@ The resale market for Birkins moves quickly and is brand-sensitive. A model that
       featured_image_url: null,
       category: 'Selling Handbags',
       published: true,
-      seo_title: 'Hermès Birkin resale value UK — what determines the price | Charters Gold',
+      seo_title: 'Hermès Birkin resale value UK - what determines the price | Charters Gold',
       seo_description:
         'Comprehensive guide to Hermès Birkin resale value in the UK: leather type, hardware, size, year and condition explained.',
       created_at: now,
@@ -902,10 +902,10 @@ export function mockEmailTemplates(): EmailTemplate[] {
     {
       id: 'tpl-1',
       key: 'new_request_admin',
-      name: 'New valuation request — internal alert',
+      name: 'New valuation request - internal alert',
       description:
         'Internal notification delivered to the team the moment a customer submits a valuation request.',
-      subject: 'New {{branch_label}} valuation request — {{full_name}}',
+      subject: 'New {{branch_label}} valuation request - {{full_name}}',
       html_body: DEFAULT_NEW_REQUEST_HTML,
       available_variables: [
         { key: 'full_name', label: 'Customer full name', example: 'Sarah Smith' },
@@ -929,10 +929,10 @@ export function mockEmailTemplates(): EmailTemplate[] {
     {
       id: 'tpl-2',
       key: 'customer_request_confirmation',
-      name: 'Valuation request — customer confirmation',
+      name: 'Valuation request - customer confirmation',
       description:
         'Branded confirmation email sent to the customer the moment they submit a valuation request.',
-      subject: 'We’ve received your valuation request — {{business_name}}',
+      subject: 'We’ve received your valuation request - {{business_name}}',
       html_body: DEFAULT_CUSTOMER_CONFIRMATION_HTML,
       available_variables: [
         { key: 'first_name', label: 'Customer first name', example: 'Sarah' },
@@ -1016,7 +1016,7 @@ const DEFAULT_CUSTOMER_CONFIRMATION_HTML = `<!DOCTYPE html>
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Your valuation request — {{business_name}}</title>
+<title>Your valuation request - {{business_name}}</title>
 </head>
 <body style="margin:0; padding:0; background:#050505; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#050505; padding:24px 12px;">
@@ -1142,7 +1142,7 @@ export function mockAppointmentEvents(): AppointmentEvent[] {
       id: 'evt-bracknell',
       title: 'Bracknell Pop-Up',
       city: 'Bracknell',
-      venue_name: 'Bracknell — venue confirmed on booking',
+      venue_name: 'Bracknell - venue confirmed on booking',
       address: 'Central Bracknell, Berkshire',
       postcode: 'RG12 1AA',
       latitude: 51.4154,
@@ -1164,13 +1164,13 @@ export function mockAppointmentEvents(): AppointmentEvent[] {
       id: 'evt-leeds',
       title: 'Leeds Pop-Up',
       city: 'Leeds',
-      venue_name: 'Leeds city centre — venue confirmed on booking',
+      venue_name: 'Leeds city centre - venue confirmed on booking',
       address: 'Leeds, West Yorkshire',
       postcode: 'LS1 1BA',
       latitude: 53.8008,
       longitude: -1.5491,
       description:
-        'Visiting Leeds next month. Reserve a private appointment with one of our specialists — no obligation to sell.',
+        'Visiting Leeds next month. Reserve a private appointment with one of our specialists - no obligation to sell.',
       starts_on: dayOffset(35),
       ends_on: dayOffset(35),
       day_start_time: '11:00',
@@ -1186,7 +1186,7 @@ export function mockAppointmentEvents(): AppointmentEvent[] {
       id: 'evt-manchester',
       title: 'Manchester Pop-Up',
       city: 'Manchester',
-      venue_name: 'Manchester — venue confirmed on booking',
+      venue_name: 'Manchester - venue confirmed on booking',
       address: 'Manchester city centre',
       postcode: 'M1 1AE',
       latitude: 53.4808,

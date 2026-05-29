@@ -132,7 +132,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             localBusinessSchema(settings),
           ]}
         />
-        {/* Live gold ticker removed from the public header — keeps the
+        {/* Live gold ticker removed from the public header - keeps the
             chrome calmer and stops shoppers reading numbers when we'd
             rather they request a private valuation. Live spot data still
             powers the calculator and lives in /admin/price-dashboard. */}

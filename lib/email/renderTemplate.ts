@@ -108,7 +108,7 @@ ${rows
 
 function sampleDescriptionBlock(): string {
   return `<h3 style="margin:24px 0 8px; font-family:Georgia, serif; font-size:14px; color:#d4af37; text-transform:uppercase; letter-spacing:0.12em;">Customer notes</h3>
-<p style="margin:0; color:#cfcfcf; line-height:1.6; font-size:14px;">Inherited from my late father — comes with the original receipt from 2018 and full service history at Rolex. Looking for a fair offer.</p>`;
+<p style="margin:0; color:#cfcfcf; line-height:1.6; font-size:14px;">Inherited from my late father - comes with the original receipt from 2018 and full service history at Rolex. Looking for a fair offer.</p>`;
 }
 
 function sampleCustomerSummaryTable(): string {

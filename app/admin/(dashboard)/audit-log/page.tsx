@@ -38,7 +38,7 @@ export default async function AdminAuditLogPage() {
         <span className="text-xs uppercase tracking-luxe text-gold-metallic">History</span>
         <h1 className="mt-1 font-display text-3xl text-white">Audit Log</h1>
         <p className="mt-1 max-w-3xl text-xs text-warmgrey">
-          Append-only trail of every meaningful admin write — status changes, sales recorded,
+          Append-only trail of every meaningful admin write - status changes, sales recorded,
           settings edited, documents deleted, customers updated. Shown newest first, capped at
           the last 200 events. Older events are still in the database (use Supabase SQL to
           query further back).

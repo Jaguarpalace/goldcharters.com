@@ -42,7 +42,7 @@ export default async function SellSilverPage() {
           ]),
         ]}
       />
-      {/* SellSection acts as the page hero — title renders as <h1>. */}
+      {/* SellSection acts as the page hero - title renders as <h1>. */}
       <SellSection section={findHomepageSection(sections, 'silver_intro')} variant="gold" asH1 />
       {/* Silver-specific live spot badge above the calculator. */}
       <section className="relative py-6 lg:py-10">

@@ -23,7 +23,7 @@ const FALLBACK_SECTION: HomepageSection = {
   section_key: 'handbag_intro',
   title: 'Sell Designer Handbags',
   subtitle: null,
-  body: 'Discreet valuations for pre-loved designer handbags — Hermès, Chanel, Louis Vuitton, Dior, Gucci, Prada, Bottega Veneta and other premium houses. Authenticity verified, fair offers, fast settlement.',
+  body: 'Discreet valuations for pre-loved designer handbags - Hermès, Chanel, Louis Vuitton, Dior, Gucci, Prada, Bottega Veneta and other premium houses. Authenticity verified, fair offers, fast settlement.',
   cta_label: 'Sell My Handbag',
   cta_href: '#valuation-form',
   image_url: null,
@@ -56,7 +56,7 @@ export default async function SellHandbagsPage() {
           serviceSchema({
             name: 'Sell Designer Handbags UK',
             description:
-              'Sell pre-loved designer handbags — Hermès, Chanel, Louis Vuitton, Dior, Gucci, Prada — to a discreet UK private specialist. Authentication included.',
+              'Sell pre-loved designer handbags - Hermès, Chanel, Louis Vuitton, Dior, Gucci, Prada - to a discreet UK private specialist. Authentication included.',
             url: `${SITE_URL}/sell-handbags`,
             serviceType: 'Designer handbag buying service',
           }),

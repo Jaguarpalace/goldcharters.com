@@ -233,13 +233,13 @@ function ValuationFormInner({ variant = 'metal', defaultItemType }: Props) {
       <Question
         number={QUESTION_NUMBER[variant].photos}
         label="Description &amp; photos"
-        hint="Optional — also fine to share via WhatsApp once we're in touch."
+        hint="Optional - also fine to share via WhatsApp once we're in touch."
       >
         <div className="space-y-4">
           <textarea
             name="description"
             rows={3}
-            placeholder="Briefly describe your piece(s) — hallmarks, condition, age, any documents."
+            placeholder="Briefly describe your piece(s) - hallmarks, condition, age, any documents."
             className="gc-input"
           />
           <MultiImageUploader files={files} onChange={setFiles} />
@@ -295,7 +295,7 @@ function ValuationFormInner({ variant = 'metal', defaultItemType }: Props) {
 
       <p className="text-[11px] leading-relaxed text-warmgrey/70">
         Final offers depend on inspection, market price, purity verification and item condition. We never
-        pressure you to sell — the decision is always yours.
+        pressure you to sell - the decision is always yours.
       </p>
     </form>
   );
@@ -310,13 +310,13 @@ const VARIANT_META: Record<FormVariant, { eyebrow: string; title: string; subtit
     eyebrow: 'Selling Gold / Silver / Platinum',
     title: 'Tell us about your precious metal',
     subtitle:
-      'A few quick questions about the metal and form. Only your contact details are required — the rest helps us prepare.',
+      'A few quick questions about the metal and form. Only your contact details are required - the rest helps us prepare.',
   },
   jewellery: {
     eyebrow: 'Selling Fine Jewellery',
     title: 'Tell us about your jewellery',
     subtitle:
-      'Diamond rings, designer pieces, antique jewellery — give us a quick picture and a specialist will reach out.',
+      'Diamond rings, designer pieces, antique jewellery - give us a quick picture and a specialist will reach out.',
   },
   watch: {
     eyebrow: 'Selling a Luxury Watch',
@@ -393,7 +393,7 @@ function MetalBranch() {
       <Question
         number={4}
         label="Approximate weight in grams?"
-        hint="Optional but helps a lot — even a rough figure narrows the valuation."
+        hint="Optional but helps a lot - even a rough figure narrows the valuation."
       >
         <div className="flex items-center gap-2">
           <input
@@ -419,10 +419,10 @@ function JewelleryBranch() {
       <Question number={1} label="What type of piece?" required>
         <ChipGroup name="jewellery_type" options={opts.jewellery_type} required />
       </Question>
-      <Question number={2} label="Main gemstone?" hint="Optional — leave blank if none or unsure.">
+      <Question number={2} label="Main gemstone?" hint="Optional - leave blank if none or unsure.">
         <ChipGroup name="gemstone" options={opts.gemstone} />
       </Question>
-      <Question number={3} label="Brand or designer?" hint="Optional — Cartier, Tiffany, Boodles, etc.">
+      <Question number={3} label="Brand or designer?" hint="Optional - Cartier, Tiffany, Boodles, etc.">
         <input name="brand" placeholder="e.g. Cartier" className="gc-input max-w-md" />
       </Question>
     </>
@@ -436,10 +436,10 @@ function WatchBranch() {
       <Question number={1} label="Brand?" required>
         <ChipGroup name="brand" options={opts.watch_brand} required />
       </Question>
-      <Question number={2} label="Model" hint="Optional — e.g. Submariner 116610LN, Nautilus 5711.">
+      <Question number={2} label="Model" hint="Optional - e.g. Submariner 116610LN, Nautilus 5711.">
         <input name="model" placeholder="e.g. Submariner Date" className="gc-input max-w-md" />
       </Question>
-      <Question number={3} label="Box & papers?" hint="Optional — affects valuation but not required.">
+      <Question number={3} label="Box & papers?" hint="Optional - affects valuation but not required.">
         <ChipGroup name="box_papers" options={opts.box_papers} />
       </Question>
     </>
@@ -453,7 +453,7 @@ function HandbagBranch() {
       <Question number={1} label="Brand?" required>
         <ChipGroup name="brand" options={opts.handbag_brand} required />
       </Question>
-      <Question number={2} label="Model" hint="Optional — e.g. Birkin 30, Classic Flap Medium.">
+      <Question number={2} label="Model" hint="Optional - e.g. Birkin 30, Classic Flap Medium.">
         <input name="model" placeholder="e.g. Birkin 30" className="gc-input max-w-md" />
       </Question>
       <Question number={3} label="Condition?" hint="Optional.">
@@ -654,7 +654,7 @@ function SuccessCard({
       id="valuation-form"
       className="gc-card gc-card-gold-edge p-8 text-center sm:p-10"
     >
-      {/* Animated tick — subtle scale-in for a moment of satisfaction */}
+      {/* Animated tick - subtle scale-in for a moment of satisfaction */}
       <div
         className="mx-auto mb-6 inline-flex h-14 w-14 items-center justify-center rounded-full"
         style={{
@@ -669,7 +669,7 @@ function SuccessCard({
       </div>
 
       <h3 className="font-display text-2xl font-semibold text-white sm:text-3xl">
-        {greeting} — your request is with our team
+        {greeting} - your request is with our team
       </h3>
 
       <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-warmgrey">
@@ -684,7 +684,7 @@ function SuccessCard({
         )}
       </p>
 
-      {/* What happens next — same 3 steps as the customer confirmation email */}
+      {/* What happens next - same 3 steps as the customer confirmation email */}
       <ol className="mx-auto mt-7 max-w-md space-y-3 text-left">
         <NextStep
           n={1}

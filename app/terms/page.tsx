@@ -121,7 +121,7 @@ export default async function TermsPage() {
         warranties in clause 3 and agree to provide all information requested by us.
       </p>
 
-      <h3>5.2 Postal Submissions — At Your Own Risk</h3>
+      <h3>5.2 Postal Submissions - At Your Own Risk</h3>
       <p>
         Where you choose to post Items to us, you do so <strong>entirely at your own risk</strong>.
         You are solely responsible for ensuring adequate insurance, secure packaging and a tracked,

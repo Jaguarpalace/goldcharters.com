@@ -70,7 +70,7 @@ export default async function PriceDashboardPage() {
         <span className="text-xs uppercase tracking-luxe text-gold-metallic">Market</span>
         <h1 className="font-display text-4xl text-white mt-2">Live Spot Prices</h1>
         <p className="mt-2 text-sm text-warmgrey">
-          Server-cached for 1 hour — last refreshed{' '}
+          Server-cached for 1 hour - last refreshed{' '}
           {new Date(spots.fetched_at).toLocaleString('en-GB')}.
         </p>
       </header>
@@ -91,7 +91,7 @@ export default async function PriceDashboardPage() {
       {spots.gold && (
         <section>
           <h2 className="text-xs font-semibold uppercase tracking-luxe text-gold-tint">
-            Gold by carat — pure spot, before margin
+            Gold by carat - pure spot, before margin
           </h2>
           <div className="mt-3 overflow-x-auto rounded-xl border border-gold-metallic/15">
             <table className="min-w-full divide-y divide-gold-metallic/10 text-sm">
@@ -137,7 +137,7 @@ export default async function PriceDashboardPage() {
         </section>
       )}
 
-      {/* DIAGNOSTICS — raw API view so the admin can confirm exactly what
+      {/* DIAGNOSTICS - raw API view so the admin can confirm exactly what
           metalpriceapi.com is returning, separate from the cached display. */}
       <section className="space-y-4 border-t border-gold-metallic/15 pt-8">
         <header className="flex items-baseline justify-between gap-4">
@@ -250,7 +250,7 @@ function SpotCard({
           </p>
         </>
       ) : (
-        <p className="mt-3 text-sm text-warmgrey">No data — API not configured or call failed.</p>
+        <p className="mt-3 text-sm text-warmgrey">No data - API not configured or call failed.</p>
       )}
     </div>
   );

@@ -24,7 +24,7 @@ export default async function AdminBlogPage() {
 
       {posts.length === 0 ? (
         <div className="gc-card p-10 text-center text-sm text-warmgrey">
-          No articles yet — write the first one to start ranking for long-tail queries like
+          No articles yet - write the first one to start ranking for long-tail queries like
           &ldquo;sell 22ct gold UK&rdquo; or &ldquo;sell Rolex Submariner UK&rdquo;.
         </div>
       ) : (

@@ -15,7 +15,7 @@ const ROLE_LABEL: Record<TeamRole, string> = {
 };
 
 const ROLE_DESCRIPTION: Record<TeamRole, string> = {
-  admin: 'Full access — content, settings, team, payments.',
+  admin: 'Full access - content, settings, team, payments.',
   editor: 'Content + valuation requests. Cannot manage the team.',
 };
 

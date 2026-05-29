@@ -84,7 +84,7 @@ export default async function CookiesPage() {
       <h2>3. Controlling Cookies</h2>
       <p>
         Use the button below to review or change your cookie choices on this site at any time. You
-        can also control cookies more broadly through your browser settings — most browsers allow
+        can also control cookies more broadly through your browser settings - most browsers allow
         you to view, delete and block cookies, including blocking cookies from particular sites.
       </p>
       <p>

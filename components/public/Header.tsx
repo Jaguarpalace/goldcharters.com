@@ -100,7 +100,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
 
         {/* Right cluster: phone · calculator · valuation CTA · basket · mobile menu */}
         <div className="flex items-center gap-3 lg:gap-4">
-          {/* Phone — compact, tablet+ only. Live ticker removed from the
+          {/* Phone - compact, tablet+ only. Live ticker removed from the
               public header; live spot data still drives the calculator and
               lives in the admin price-dashboard. */}
           <a
@@ -113,7 +113,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
 
           {BUY_ENABLED && <BasketIndicator />}
 
-          {/* Calculator — secondary CTA. Compact pill so the primary
+          {/* Calculator - secondary CTA. Compact pill so the primary
               "Get a Valuation" gradient still leads the eye. */}
           <Link
             href="/gold-calculator"
@@ -134,13 +134,13 @@ export function Header({ settings }: { settings: SiteSettings }) {
             Calculator
           </Link>
 
-          {/* Tablet-only instance — desktop shows the bigger CTA next to the
+          {/* Tablet-only instance - desktop shows the bigger CTA next to the
               logo in the left cluster, so we hide this one from lg up. */}
           <GetValuationLink className="gc-btn-primary hidden whitespace-nowrap sm:inline-flex lg:hidden">
             Get a Valuation
           </GetValuationLink>
 
-          {/* WhatsApp — mobile only. On md+ the floating WhatsApp pill takes
+          {/* WhatsApp - mobile only. On md+ the floating WhatsApp pill takes
               over (see WhatsAppButton.tsx). Sized to match the hamburger. */}
           {whatsappHref && (
             <a

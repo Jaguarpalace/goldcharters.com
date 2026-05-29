@@ -183,7 +183,7 @@ export default async function LocationPage({ params }: { params: { slug: string 
       <section className="py-8 lg:py-12 border-y border-gold-metallic/15 bg-ink-900/40">
         <div className="gc-container">
           <div className="mx-auto max-w-3xl">
-            <span className="gc-eyebrow">{location.name} — Frequently Asked</span>
+            <span className="gc-eyebrow">{location.name} - Frequently Asked</span>
             <h2 className="gc-heading mt-3">Local questions, answered</h2>
             <ul className="mt-6 space-y-3">
               {location.faqs.map((f) => (

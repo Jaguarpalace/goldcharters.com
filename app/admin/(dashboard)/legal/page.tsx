@@ -15,7 +15,7 @@ export default async function AdminLegalPage() {
         <p className="mt-1 max-w-3xl text-xs text-warmgrey">
           Edit the cosmetic copy on the Terms, Privacy and Cookie pages, and bump the
           "Last updated" stamp after a legal review. The numbered clauses themselves are kept
-          in code, version-controlled and peer-reviewed before merge — a deliberate safeguard
+          in code, version-controlled and peer-reviewed before merge - a deliberate safeguard
           for the legal substance of these documents.
         </p>
       </header>

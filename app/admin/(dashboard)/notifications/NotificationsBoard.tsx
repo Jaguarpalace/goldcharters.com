@@ -40,7 +40,7 @@ export function NotificationsBoard({
               {recipients.length === 0 ? (
                 <tr>
                   <td colSpan={3} className="px-3 py-10 text-center text-sm text-warmgrey">
-                    No recipients yet — add the first one using the form on the right.
+                    No recipients yet - add the first one using the form on the right.
                   </td>
                 </tr>
               ) : (

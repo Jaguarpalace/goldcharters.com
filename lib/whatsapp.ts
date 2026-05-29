@@ -31,7 +31,7 @@ const MESSAGE_RULES: MessageRule[] = [
   },
   {
     match: (p) => p.startsWith('/gold-calculator'),
-    message: "Hi Charters Gold, I have some gold I'd like valued — could you help?",
+    message: "Hi Charters Gold, I have some gold I'd like valued - could you help?",
   },
   {
     match: (p) => p.startsWith('/contact'),
@@ -43,7 +43,7 @@ const MESSAGE_RULES: MessageRule[] = [
   },
   {
     match: (p) => p.startsWith('/locations/'),
-    message: "Hi Charters Gold, I'd like a private valuation — I'm based in this area.",
+    message: "Hi Charters Gold, I'd like a private valuation - I'm based in this area.",
   },
 ];
 

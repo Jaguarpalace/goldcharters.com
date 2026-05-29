@@ -20,7 +20,7 @@ export default function LocationsIndexPage() {
             <h1 className="gc-heading-xl mt-3">Specialist Valuations across the South-East</h1>
             <p className="gc-subhead mt-5">
               From our Egham office we serve clients across London, Surrey, Berkshire and the Thames
-              Valley — in person, by private home visit, or by insured postal service. Choose your
+              Valley - in person, by private home visit, or by insured postal service. Choose your
               area for a tailored guide.
             </p>
           </div>

@@ -109,7 +109,7 @@ export function CheckoutForm() {
             order server action.
           </p>
           <div className="mt-4 rounded-xl border border-gold-metallic/20 bg-ink-900/60 px-4 py-3 text-xs text-warmgrey">
-            Stripe placeholder — server action structure is ready for{' '}
+            Stripe placeholder - server action structure is ready for{' '}
             <code className="text-gold-tint">stripe.paymentIntents.create</code> integration.
           </div>
         </section>

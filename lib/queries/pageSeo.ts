@@ -33,12 +33,12 @@ const SEO_DEFAULTS: Record<string, { title: string; description: string }> = {
   '/sell-handbags': {
     title: 'Sell Designer Handbags · Hermès, Chanel, Louis Vuitton · UK Specialists',
     description:
-      'Sell pre-loved designer handbags — Hermès, Chanel, Louis Vuitton, Dior, Gucci, Prada — to a discreet UK private specialist. Authentication included. Same-day payment available.',
+      'Sell pre-loved designer handbags - Hermès, Chanel, Louis Vuitton, Dior, Gucci, Prada - to a discreet UK private specialist. Authentication included. Same-day payment available.',
   },
   '/sell-watches': {
     title: 'Sell Luxury Watches · Rolex, Patek Philippe, AP · UK Specialists',
     description:
-      'Sell luxury watches — Rolex, Patek Philippe, Audemars Piguet, Omega, Cartier — to a discreet UK specialist. Movement, papers and provenance fully assessed. Same-day payment available.',
+      'Sell luxury watches - Rolex, Patek Philippe, Audemars Piguet, Omega, Cartier - to a discreet UK specialist. Movement, papers and provenance fully assessed. Same-day payment available.',
   },
   '/contact': {
     title: 'Contact · Private Valuations',
@@ -48,17 +48,17 @@ const SEO_DEFAULTS: Record<string, { title: string; description: string }> = {
   '/book': {
     title: 'Book a Private Appointment · Gold & Jewellery Valuations',
     description:
-      'Reserve a private valuation slot at our Egham showroom or a UK pop-up location. Pick a date and time, meet a specialist in person — no obligation to sell.',
+      'Reserve a private valuation slot at our Egham showroom or a UK pop-up location. Pick a date and time, meet a specialist in person - no obligation to sell.',
   },
   '/blog': {
     title: 'Insights & Guides · Charters Gold',
     description:
-      'Practical guides on selling gold, fine jewellery, luxury watches and designer handbags in the UK — written by Charters Gold specialists.',
+      'Practical guides on selling gold, fine jewellery, luxury watches and designer handbags in the UK - written by Charters Gold specialists.',
   },
   '/gold-calculator': {
     title: 'Gold Calculator · Live Price Per Gram',
     description:
-      'Free gold calculator with live spot pricing. Enter weights in grams across 9ct, 14ct, 18ct, 22ct, 24ct gold plus silver, platinum and palladium — instant guide price.',
+      'Free gold calculator with live spot pricing. Enter weights in grams across 9ct, 14ct, 18ct, 22ct, 24ct gold plus silver, platinum and palladium - instant guide price.',
   },
   '/how-it-works': {
     title: 'How It Works · Selling Gold & Jewellery To Us',

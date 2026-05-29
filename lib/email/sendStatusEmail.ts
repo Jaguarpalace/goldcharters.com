@@ -39,7 +39,7 @@ export async function sendStatusEmail(
   if (!templateKey) return { ok: true, skipped: true };
 
   if (!isEmailConfigured()) {
-    console.info(`[email:${templateKey}] skipped — email service not configured`);
+    console.info(`[email:${templateKey}] skipped - email service not configured`);
     return { ok: false, skipped: true };
   }
   if (!request.email) {

@@ -22,7 +22,7 @@ export function newRequestSubject(req: ValuationRequest): string {
     req.jewellery_type ||
     req.item_category ||
     (req.form_variant ? VARIANT_LABEL[req.form_variant] : 'Valuation');
-  return `New ${what} valuation request — ${name}`;
+  return `New ${what} valuation request - ${name}`;
 }
 
 /**

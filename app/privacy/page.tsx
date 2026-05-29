@@ -3,7 +3,7 @@ import { getSiteSettings } from '@/lib/queries/homepage';
 import { LegalPageLayout } from '@/components/public/LegalPageLayout';
 import { formatLegalDate, getLegalPage } from '@/lib/queries/legalPages';
 
-export const revalidate = 86400; // legal pages change rarely — refresh daily
+export const revalidate = 86400; // legal pages change rarely - refresh daily
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',

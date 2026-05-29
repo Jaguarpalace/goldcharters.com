@@ -11,7 +11,7 @@ export const revalidate = 60;
 export const metadata: Metadata = {
   title: 'Shop · Gold & Jewellery Collection',
   description:
-    'Browse our curated collection of jewellery and gold pieces available to buy online — with live stock, multiple photos and secure UK delivery.',
+    'Browse our curated collection of jewellery and gold pieces available to buy online - with live stock, multiple photos and secure UK delivery.',
   // While the shop is hidden from navigation, search engines should not index
   // these routes either. Remove the robots block when re-enabling the shop.
   robots: BUY_ENABLED ? undefined : { index: false, follow: false },
@@ -79,7 +79,7 @@ export default async function ShopPage({ searchParams }: { searchParams: SearchP
           <span className="gc-eyebrow">Shop The Collection</span>
           <h1 className="gc-heading-xl mt-5">Curated Gold & Jewellery</h1>
           <p className="gc-subhead mt-6 max-w-2xl">
-            A small, considered selection of pieces from our private valuation house — diamonds, antique
+            A small, considered selection of pieces from our private valuation house - diamonds, antique
             jewellery, gold bars, sovereigns and contemporary pieces. Live stock availability.
           </p>
         </div>

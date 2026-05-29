@@ -173,7 +173,7 @@ function DetailsTab({ customer }: { customer: Customer }) {
           value={form.notes}
           onChange={update('notes')}
           rows={4}
-          placeholder="Internal notes — anything useful to remember about this customer."
+          placeholder="Internal notes - anything useful to remember about this customer."
           className="mt-1 w-full rounded-md border border-gold-metallic/20 bg-ink-950/60 px-3 py-2 text-sm text-white placeholder:text-warmgrey/50 focus:border-gold-metallic focus:outline-none"
         />
       </label>
@@ -343,7 +343,7 @@ function UploadForm({
         Upload document
       </h2>
       <p className="text-[11px] text-warmgrey">
-        PDF, JPG, PNG, WEBP or HEIC — up to 15MB. Documents are stored privately and only viewable
+        PDF, JPG, PNG, WEBP or HEIC - up to 15MB. Documents are stored privately and only viewable
         by signed-in admins via short-lived links.
       </p>
 

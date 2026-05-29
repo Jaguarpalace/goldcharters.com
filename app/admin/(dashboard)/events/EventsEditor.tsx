@@ -122,7 +122,7 @@ export function EventsEditor({ initial }: { initial: AppointmentEvent[] }) {
       date: todayISO(7),
       is_published: true,
     });
-    setFeedback({ kind: 'ok', text: `Re-adding “${ev.title}” — set the new date and click Add event.` });
+    setFeedback({ kind: 'ok', text: `Re-adding “${ev.title}” - set the new date and click Add event.` });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -163,7 +163,7 @@ export function EventsEditor({ initial }: { initial: AppointmentEvent[] }) {
         <div className="mt-4 grid gap-4 lg:grid-cols-2">
           <div>
             <label className="gc-label">Title (main heading)</label>
-            <input value={draft.title} onChange={(e) => set('title', e.target.value)} placeholder="e.g. Tesco — Car Park" className="gc-input" />
+            <input value={draft.title} onChange={(e) => set('title', e.target.value)} placeholder="e.g. Tesco - Car Park" className="gc-input" />
             <p className="mt-1 text-[11px] text-warmgrey/70">Shown to customers as the big heading.</p>
           </div>
           <div>
@@ -251,7 +251,7 @@ export function EventsEditor({ initial }: { initial: AppointmentEvent[] }) {
         </h2>
         <ul className="mt-4 space-y-3">
           {events.length === 0 && (
-            <li className="gc-card p-8 text-center text-sm text-warmgrey">No events yet — add the first one above.</li>
+            <li className="gc-card p-8 text-center text-sm text-warmgrey">No events yet - add the first one above.</li>
           )}
           {events.slice(0, visibleCount).map((ev) => (
             <li key={ev.id} className="gc-card flex flex-col gap-4 p-5 sm:flex-row sm:items-start sm:justify-between">

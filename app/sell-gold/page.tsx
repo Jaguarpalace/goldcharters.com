@@ -41,7 +41,7 @@ export default async function SellGoldPage() {
           ]),
         ]}
       />
-      {/* SellSection acts as the page hero — title renders as <h1>. */}
+      {/* SellSection acts as the page hero - title renders as <h1>. */}
       <SellSection section={findHomepageSection(sections, 'sell_intro')} variant="gold" asH1 />
       <GoldCalculator rates={rates} />
       <ItemsWeBuy items={items} />

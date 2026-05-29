@@ -17,7 +17,7 @@ export default async function AdminProductsPage() {
           <span className="text-xs uppercase tracking-luxe text-gold-metallic">Stock Control</span>
           <h1 className="font-display text-4xl text-white mt-2">Products</h1>
           <p className="mt-2 max-w-2xl text-sm text-warmgrey">
-            Manage your collection — upload photos, set prices and toggle availability. Sold and reserved
+            Manage your collection - upload photos, set prices and toggle availability. Sold and reserved
             pieces automatically reflect on the public shop.
           </p>
         </div>

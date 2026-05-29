@@ -203,7 +203,7 @@ function ExtraEditor({
     const current = Array.isArray(extra[key]) ? (extra[key] as string[]) : [];
     return (
       <div>
-        <label className="gc-label">{label} — one per line</label>
+        <label className="gc-label">{label} - one per line</label>
         <textarea
           value={current.join('\n')}
           onChange={(e) =>

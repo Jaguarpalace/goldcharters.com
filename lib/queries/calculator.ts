@@ -32,7 +32,7 @@ export async function getCalculatorRates(
     if (rate.margin_percentage == null || rate.margin_percentage <= 0) return rate;
     const key = metalKey[rate.metal_type];
     const spot = spots[key];
-    if (!spot) return rate; // API failed or not configured — fall back to manual price
+    if (!spot) return rate; // API failed or not configured - fall back to manual price
     const purityPrice = spotForPurity(spot.per_gram_gbp, rate.purity_percentage);
     if (!purityPrice) return rate;
     const computed = Number(((purityPrice * rate.margin_percentage) / 100).toFixed(4));

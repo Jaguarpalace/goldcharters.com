@@ -538,9 +538,9 @@ export const FORM_OPTION_SET_LABELS: Record<FormOptionSetKey, string> = {
   handbag_brand: 'Handbag brand',
   condition: 'Condition',
   box_papers: 'Box / papers',
-  purity_gold: 'Purity — Gold',
-  purity_silver: 'Purity — Silver',
-  purity_platinum: 'Purity — Platinum',
+  purity_gold: 'Purity - Gold',
+  purity_silver: 'Purity - Silver',
+  purity_platinum: 'Purity - Platinum',
 };
 
 /**

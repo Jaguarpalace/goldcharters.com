@@ -80,7 +80,7 @@ export function ProductEditor(props: Props) {
             Storage. Multiple images are supported per product; the first is treated as the main image.
           </p>
           <div className="mt-3 rounded-xl border border-dashed border-gold-metallic/40 bg-ink-900/40 px-6 py-12 text-center text-sm text-warmgrey">
-            Photo manager — connect Supabase Storage to enable uploads.
+            Photo manager - connect Supabase Storage to enable uploads.
           </div>
         </Section>
 

@@ -12,7 +12,7 @@ import type { HomepageSection } from '@/types/database';
  */
 const DEFAULT_EYEBROW = 'About Charters Gold';
 const DEFAULT_TITLE = 'A Private Valuation House for Gold & Jewellery';
-const DEFAULT_BODY = `Charters Gold is an independent UK precious-metal buyer based in Egham, Surrey, specialising in the discreet valuation and purchase of gold, fine jewellery, luxury watches and designer handbags. Every piece is assessed in person by an experienced specialist — never weighed in a window or priced by an algorithm — so the offer you receive reflects what your gold and jewellery are genuinely worth on today's market.
+const DEFAULT_BODY = `Charters Gold is an independent UK precious-metal buyer based in Egham, Surrey, specialising in the discreet valuation and purchase of gold, fine jewellery, luxury watches and designer handbags. Every piece is assessed in person by an experienced specialist - never weighed in a window or priced by an algorithm - so the offer you receive reflects what your gold and jewellery are genuinely worth on today's market.
 
 Our approach is built around three principles: a fair price tied to the live spot gold price, total transparency about how that price is calculated, and same-day payment by bank transfer the moment you accept. Whether you are selling a single inherited ring, a collection of scrap gold, sovereigns, gold bars, a Rolex or Patek Philippe watch, or a pre-loved Hermès or Chanel handbag, the process is the same: upload photos and a few details, receive a written valuation within one working day, and choose whether to proceed.
 

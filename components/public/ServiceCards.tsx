@@ -61,7 +61,7 @@ export function ServiceCards({ services }: { services: Service[] }) {
           <h2 className="gc-heading mt-3">A Discreet, Professional Service</h2>
           <p className="gc-subhead mt-3">
             Every enquiry is handled by an experienced specialist. We provide transparent valuations
-            and considered guidance — never pressure.
+            and considered guidance - never pressure.
           </p>
         </div>
 
@@ -69,7 +69,7 @@ export function ServiceCards({ services }: { services: Service[] }) {
             height of the old vertical hero cards, so even an odd number of
             services (e.g. 7) splits 4|3 across the columns and stays visually
             balanced rather than leaving a glaring orphan row. */}
-        {/* `grid-cols-1` is *not* the default for `grid` alone — without an
+        {/* `grid-cols-1` is *not* the default for `grid` alone - without an
             explicit grid-template-columns the children size to their content,
             so a long description was pushing each card wider than the phone
             viewport. Forcing `minmax(0, 1fr)` columns via `grid-cols-1`
@@ -97,7 +97,7 @@ export function ServiceCards({ services }: { services: Service[] }) {
                 {/* Outer wrapper is a `div`, not `<span>`, so `min-w-0` + `flex-1`
                     properly constrain the block children. A `<span>` is inline
                     by default and even as a flex item won't reliably contain
-                    truncate'd children — the description was overflowing the
+                    truncate'd children - the description was overflowing the
                     card width and getting clipped at the viewport edge. */}
                 <div className="min-w-0 flex-1 overflow-hidden">
                   <div className="truncate font-display text-[15px] font-semibold leading-tight text-white">

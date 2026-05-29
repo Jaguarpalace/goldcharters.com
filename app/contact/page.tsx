@@ -19,7 +19,7 @@ export default async function ContactPage() {
           <span className="gc-eyebrow">Contact</span>
           <h1 className="gc-heading-xl mt-5">Speak with a Specialist</h1>
           <p className="gc-subhead mt-6 max-w-2xl">
-            Telephone, email, WhatsApp or in-person appointment — choose what suits you best.
+            Telephone, email, WhatsApp or in-person appointment - choose what suits you best.
           </p>
         </div>
       </section>

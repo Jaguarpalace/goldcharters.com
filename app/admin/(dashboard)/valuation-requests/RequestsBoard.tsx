@@ -236,7 +236,7 @@ export function RequestsBoard({ initialRequests }: { initialRequests: Row[] }) {
         </div>
       </div>
 
-      {/* Bulk action bar — appears only when there's a selection */}
+      {/* Bulk action bar - appears only when there's a selection */}
       {selected.size > 0 && (
         <div className="flex flex-wrap items-center gap-3 rounded-lg border border-gold-metallic/50 bg-gold-metallic/[0.08] px-3 py-2">
           <span className="text-[11px] uppercase tracking-luxe text-gold-tint">
@@ -262,7 +262,7 @@ export function RequestsBoard({ initialRequests }: { initialRequests: Row[] }) {
             <span className="text-[11px] text-gold-tint">{bulkFeedback}</span>
           )}
 
-          {/* Bulk delete — two-step confirm so a stray click can't wipe data */}
+          {/* Bulk delete - two-step confirm so a stray click can't wipe data */}
           {bulkDeleteArmed ? (
             <span className="ml-auto inline-flex items-center gap-1">
               <button
@@ -315,7 +315,7 @@ export function RequestsBoard({ initialRequests }: { initialRequests: Row[] }) {
         </div>
       ) : (
         <>
-          {/* DESKTOP TABLE — full table on lg+; horizontal scroll within
+          {/* DESKTOP TABLE - full table on lg+; horizontal scroll within
               the wrapper if a tablet is narrower than the min-width. */}
           <div className="hidden overflow-x-auto rounded-lg border border-gold-metallic/15 lg:block">
             <table className="w-full min-w-[640px] text-sm">
@@ -354,7 +354,7 @@ export function RequestsBoard({ initialRequests }: { initialRequests: Row[] }) {
             </table>
           </div>
 
-          {/* MOBILE CARDS — stacked layout for phones / small tablets,
+          {/* MOBILE CARDS - stacked layout for phones / small tablets,
               same data + expanded-detail behaviour as the table. */}
           <ul className="space-y-2 lg:hidden">
             <li className="flex items-center justify-between px-1 pb-1 text-[10px] uppercase tracking-luxe text-warmgrey">

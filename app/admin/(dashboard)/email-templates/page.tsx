@@ -13,8 +13,8 @@ export default async function AdminEmailTemplatesPage() {
         <span className="text-xs uppercase tracking-luxe text-gold-metallic">CMS</span>
         <h1 className="font-display text-4xl text-white mt-2">Email Templates</h1>
         <p className="mt-2 max-w-2xl text-sm text-warmgrey">
-          Every transactional email the website sends — internal alerts, customer confirmations and
-          status updates — is composed here. Edit the subject and body and the change is live on
+          Every transactional email the website sends - internal alerts, customer confirmations and
+          status updates - is composed here. Edit the subject and body and the change is live on
           the next send.
         </p>
       </header>

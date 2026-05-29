@@ -14,7 +14,7 @@ export default async function AdminSeoPage() {
         <h1 className="mt-1 font-display text-3xl text-white">Page SEO</h1>
         <p className="mt-1 max-w-3xl text-xs text-warmgrey">
           Every public page on the site. Edit the title and description that appears in Google,
-          plus the keywords and social-share metadata. URLs are locked — renaming a page is a
+          plus the keywords and social-share metadata. URLs are locked - renaming a page is a
           deliberate code change with a 301 redirect so we never lose ranking.
         </p>
       </header>

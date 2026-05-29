@@ -27,11 +27,11 @@ export function Logo({ businessName, size = 'default', href = '/' }: LogoProps) 
 
   const imageClass =
     compact
-      ? // Header: 70 / 94 / 100 px — sized to sit unobtrusively in the
+      ? // Header: 70 / 94 / 100 px - sized to sit unobtrusively in the
         // sticky nav while keeping the crest legible.
         'h-[70px] w-[70px] object-contain sm:h-[94px] sm:w-[94px] lg:h-[100px] lg:w-[100px]'
       : footer
-      ? // Footer: 100 / 140 / 160 px — clearly larger than the header
+      ? // Footer: 100 / 140 / 160 px - clearly larger than the header
         // crest, smaller than the hero brand statement.
         'h-[100px] w-[100px] object-contain sm:h-[140px] sm:w-[140px] lg:h-40 lg:w-40'
       : // Hero / login (default): full-size brand statement.
@@ -47,7 +47,7 @@ export function Logo({ businessName, size = 'default', href = '/' }: LogoProps) 
     <Link
       href={href}
       className="group inline-flex flex-col items-center leading-none"
-      aria-label={`${businessName} — home`}
+      aria-label={`${businessName} - home`}
     >
       <Image
         src="/logo/charters_gold_true_transparent.png"
@@ -61,7 +61,7 @@ export function Logo({ businessName, size = 'default', href = '/' }: LogoProps) 
       {/*
         The logo image already has "Charters Gold" baked into the artwork,
         so we only render the "Precious Metal Traders" tagline on the
-        larger (default) variant — login page, footer, hero contexts where
+        larger (default) variant - login page, footer, hero contexts where
         the extra line has space to breathe. In the header (compact) it
         would either stack on top of the baked-in name or overflow the
         header divider, so we leave it out.

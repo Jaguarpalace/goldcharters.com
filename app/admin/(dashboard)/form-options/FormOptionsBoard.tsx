@@ -118,24 +118,24 @@ function SetCard({
       {expanded && (
         <div className="space-y-3 border-t border-gold-metallic/15 bg-ink-950/60 p-4">
           {/* Plain-English explainer of what the two text columns do.
-              Closing the confusion the previous layout caused — the two
+              Closing the confusion the previous layout caused - the two
               boxes weren't duplicates, they were Value + Label. */}
           <div className="rounded-md border border-gold-metallic/15 bg-ink-900/40 p-3 text-[11px] leading-relaxed text-warmgrey">
             <p>
               <strong className="text-white">How this works.</strong> Each
               row is one dropdown option the customer can pick. Most options
-              only need one piece of text — the second box is for the rare
+              only need one piece of text - the second box is for the rare
               case where you want the dropdown to <em>display</em> something
               different from what gets <em>saved</em>.
             </p>
             <ul className="mt-2 space-y-0.5">
               <li>
-                <strong className="text-gold-tint">Value</strong> — what
+                <strong className="text-gold-tint">Value</strong> - what
                 gets stored. Keep it short and stable (renaming this later
                 breaks reports).
               </li>
               <li>
-                <strong className="text-gold-tint">Label</strong> — what
+                <strong className="text-gold-tint">Label</strong> - what
                 the customer sees in the dropdown. Leave it the same as
                 Value unless you want a fancier display.
               </li>

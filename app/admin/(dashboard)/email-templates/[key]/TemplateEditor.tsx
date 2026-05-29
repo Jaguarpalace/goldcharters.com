@@ -87,7 +87,7 @@ export function TemplateEditor({
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
             className="gc-input"
-            placeholder="e.g. New {{branch_label}} valuation request — {{full_name}}"
+            placeholder="e.g. New {{branch_label}} valuation request - {{full_name}}"
           />
 
           <label htmlFor="html_body" className="gc-label mt-5">
@@ -109,7 +109,7 @@ export function TemplateEditor({
               onChange={(e) => setEnabled(e.target.checked)}
               className="h-4 w-4 accent-gold-metallic"
             />
-            Active — send this email when its trigger fires
+            Active - send this email when its trigger fires
           </label>
 
           <div className="mt-5 flex items-center justify-between gap-3">

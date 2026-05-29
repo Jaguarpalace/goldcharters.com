@@ -23,7 +23,7 @@ export function PrintShell({ children }: { children: ReactNode }) {
     <div className={`print-page theme-${theme}`}>
       <style>{PRINT_CSS}</style>
 
-      {/* On-screen only — hidden by print rules below */}
+      {/* On-screen only - hidden by print rules below */}
       <div className="print-actions">
         <div className="print-theme-toggle" role="group" aria-label="Document theme">
           <button

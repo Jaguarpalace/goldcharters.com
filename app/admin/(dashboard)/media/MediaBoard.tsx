@@ -38,7 +38,7 @@ export function MediaBoard({ initialFiles }: { initialFiles: UploadedImage[] }) 
     if (tooBig.length > 0) {
       setFeedback({
         ok: false,
-        text: `${tooBig.length} file${tooBig.length === 1 ? '' : 's'} skipped — over 8MB.`,
+        text: `${tooBig.length} file${tooBig.length === 1 ? '' : 's'} skipped - over 8MB.`,
       });
     }
     const okFiles = list.filter((f) => f.size <= MAX_BYTES);
@@ -124,7 +124,7 @@ export function MediaBoard({ initialFiles }: { initialFiles: UploadedImage[] }) 
         </div>
       </div>
 
-      {/* Drop zone — compact strip, doubles as click target */}
+      {/* Drop zone - compact strip, doubles as click target */}
       <div
         onDragOver={(e) => {
           e.preventDefault();
@@ -144,7 +144,7 @@ export function MediaBoard({ initialFiles }: { initialFiles: UploadedImage[] }) 
           <path d="M12 16V4M6 10l6-6 6 6M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3" />
         </svg>
         <span>
-          <strong className="text-gold-tint">Drag images here</strong> or click to browse — JPG · PNG · WEBP · SVG · 8MB max
+          <strong className="text-gold-tint">Drag images here</strong> or click to browse - JPG · PNG · WEBP · SVG · 8MB max
         </span>
         <input
           ref={inputRef}

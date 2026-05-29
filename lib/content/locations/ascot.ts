@@ -6,11 +6,11 @@ export const ascot: LocationContent = {
   region: 'Berkshire',
   postcodes: 'SL5 and surrounding postcodes',
 
-  metaTitle: 'Sell Gold, Watches & Fine Jewellery in Ascot — Charters Gold',
+  metaTitle: 'Sell Gold, Watches & Fine Jewellery in Ascot - Charters Gold',
   metaDescription:
     'Private valuations for Ascot, Sunninghill and Sunningdale residents. Specialist house for racing brooches, equestrian pieces, signed jewellery, Rolex and Patek Philippe watches.',
 
-  heroEyebrow: 'Selling Gold & Jewellery — Ascot',
+  heroEyebrow: 'Selling Gold & Jewellery - Ascot',
   heroTitle: 'A Specialist House for Ascot Pieces',
   heroIntro:
     'Eight miles from Ascot Racecourse, our Egham office is the natural choice for residents and visitors of the SL5 postcode. We are particularly well-versed in racing brooches, signed jewellery from Royal Ascot week, equestrian pieces, and the kinds of luxury watches that find their way into Sunningdale and Wentworth homes.',
@@ -26,7 +26,7 @@ export const ascot: LocationContent = {
   whyHere: [
     {
       title: 'A specialist understanding of racing pieces',
-      body: 'Royal Ascot brooches, presentation watches, racing-themed pieces — the SL5 postcode produces these regularly, and they need a specialist eye to value correctly. We price on provenance and signature, not just metal and stones.',
+      body: 'Royal Ascot brooches, presentation watches, racing-themed pieces - the SL5 postcode produces these regularly, and they need a specialist eye to value correctly. We price on provenance and signature, not just metal and stones.',
     },
     {
       title: 'Closest valuation house to Wentworth and Sunningdale',
@@ -34,7 +34,7 @@ export const ascot: LocationContent = {
     },
     {
       title: 'Discretion for a community that expects it',
-      body: 'Many SL5 valuations follow a downsizing, a divorce, an inheritance or a move abroad. We handle each enquiry with that context — no pressure, no fee for an inspection, no obligation to sell.',
+      body: 'Many SL5 valuations follow a downsizing, a divorce, an inheritance or a move abroad. We handle each enquiry with that context - no pressure, no fee for an inspection, no obligation to sell.',
     },
   ],
 
@@ -61,7 +61,7 @@ export const ascot: LocationContent = {
     {
       icon: 'collect',
       title: 'Home visit in SL5',
-      body: 'For pieces of significant value or where a relative cannot travel, we arrange a private visit to an Ascot address by appointment — including the gated estates at Wentworth and Sunningdale.',
+      body: 'For pieces of significant value or where a relative cannot travel, we arrange a private visit to an Ascot address by appointment - including the gated estates at Wentworth and Sunningdale.',
     },
     {
       icon: 'post',
@@ -79,12 +79,12 @@ export const ascot: LocationContent = {
     {
       question: 'Do you value racing brooches and presentation pieces?',
       answer:
-        "Yes — these are a particular speciality given our proximity to the racecourse. Provenance matters for these pieces, so bring any documentation, presentation cases, or photographs of the original event if available. We'll often price these above pure metal-and-stone value where the history can be substantiated.",
+        "Yes - these are a particular speciality given our proximity to the racecourse. Provenance matters for these pieces, so bring any documentation, presentation cases, or photographs of the original event if available. We'll often price these above pure metal-and-stone value where the history can be substantiated.",
     },
     {
       question: 'Can you visit me in Wentworth or Sunningdale?',
       answer:
-        'Yes — by appointment, with identification on arrival and written acknowledgement before any piece leaves your hand. Private home visits are routine for clients in the gated estates.',
+        'Yes - by appointment, with identification on arrival and written acknowledgement before any piece leaves your hand. Private home visits are routine for clients in the gated estates.',
     },
     {
       question: 'Is the drive really only 15 minutes?',
@@ -94,7 +94,7 @@ export const ascot: LocationContent = {
     {
       question: 'What about pieces with provenance from Royal Ascot?',
       answer:
-        'Genuine provenance — presentation cases, original receipts, named recipients — adds materially to value. We are very familiar with race-week pieces and price them on full evidence rather than weight alone.',
+        'Genuine provenance - presentation cases, original receipts, named recipients - adds materially to value. We are very familiar with race-week pieces and price them on full evidence rather than weight alone.',
     },
   ],
 

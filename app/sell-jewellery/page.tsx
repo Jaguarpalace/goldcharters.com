@@ -36,7 +36,7 @@ export default async function SellJewelleryPage() {
           ]),
         ]}
       />
-      {/* SellSection acts as the page hero — title renders as <h1>. */}
+      {/* SellSection acts as the page hero - title renders as <h1>. */}
       <SellSection
         section={findHomepageSection(sections, 'jewellery_intro')}
         variant="jewellery"

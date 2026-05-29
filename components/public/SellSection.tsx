@@ -44,7 +44,7 @@ export function SellSection({
       <div className="gc-container">
         <div className={`grid grid-cols-1 items-center gap-6 md:grid-cols-2 md:gap-10 lg:gap-14 ${isFlipped ? 'md:[&>*:first-child]:order-2' : ''}`}>
           <div>
-            {/* Eyebrow removed — every variant duplicated the title
+            {/* Eyebrow removed - every variant duplicated the title
                 ('Sell Gold' / 'Sell Jewellery' above 'Sell Your Gold With
                 Confidence' was pure visual padding). The title carries
                 the section identity on its own. */}

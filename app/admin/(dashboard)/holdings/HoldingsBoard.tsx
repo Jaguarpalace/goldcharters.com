@@ -119,7 +119,7 @@ export function HoldingsBoard({
             {snapshot.non_metal.count} non-metal item
             {snapshot.non_metal.count === 1 ? '' : 's'} (watches / handbags) valued at cost{' '}
             <span className="text-white">{formatGBP(snapshot.non_metal.total_cost_gbp)}</span>{' '}
-            — not included in the live revaluation above.
+            - not included in the live revaluation above.
           </p>
         )}
       </section>
@@ -175,7 +175,7 @@ export function HoldingsBoard({
               <tr>
                 <td colSpan={6} className="px-3 py-10 text-center text-sm text-warmgrey">
                   {items.length === 0
-                    ? 'No holdings yet — add one above, or import from a paid valuation request.'
+                    ? 'No holdings yet - add one above, or import from a paid valuation request.'
                     : 'No items match that search.'}
                 </td>
               </tr>
@@ -293,7 +293,7 @@ function ReportsBar({ items }: { items: StockItem[] }) {
             Reconciliation
           </h2>
           <p className="mt-1 text-[11px] text-warmgrey">
-            Export ledger slices as CSV — opens cleanly in Excel and Sheets.
+            Export ledger slices as CSV - opens cleanly in Excel and Sheets.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">

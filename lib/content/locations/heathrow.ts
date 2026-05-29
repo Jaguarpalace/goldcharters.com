@@ -6,19 +6,19 @@ export const heathrow: LocationContent = {
   region: 'West London / South Bucks',
   postcodes: 'TW6, UB, TW3, TW4, TW5 and surrounding airport-corridor postcodes',
 
-  metaTitle: 'Sell Gold & Jewellery near Heathrow — Charters Gold',
+  metaTitle: 'Sell Gold & Jewellery near Heathrow - Charters Gold',
   metaDescription:
     'Private valuations for residents and travellers in the Heathrow corridor. Quick same-day appointments at our Egham office, 15 minutes from Terminal 5. Insured postal service for international clients.',
 
-  heroEyebrow: 'Selling Gold & Jewellery — Heathrow',
+  heroEyebrow: 'Selling Gold & Jewellery - Heathrow',
   heroTitle: 'Private Valuations Minutes from the Airport',
   heroIntro:
-    'Our Egham office is 10 miles from Heathrow — typically 15–20 minutes from Terminal 5. We are well used to working with airport-area residents, expatriates moving overseas, returning long-stay travellers and international clients passing through. Same-day appointments where the diary allows.',
+    'Our Egham office is 10 miles from Heathrow - typically 15–20 minutes from Terminal 5. We are well used to working with airport-area residents, expatriates moving overseas, returning long-stay travellers and international clients passing through. Same-day appointments where the diary allows.',
 
   travel: {
     distanceMiles: 10,
     drive:
-      'M25 to Junction 13 (Egham) — typically 15–20 minutes from Heathrow Terminal 5, longer from T2 / T3 in heavy traffic. Free parking on site.',
+      'M25 to Junction 13 (Egham) - typically 15–20 minutes from Heathrow Terminal 5, longer from T2 / T3 in heavy traffic. Free parking on site.',
     publicTransport:
       'From Heathrow Central Bus Station, the 441 / 71 / 71B services run toward Staines and Egham. Easier for most clients: short taxi/Uber (≈£20–25) directly to our office.',
   },
@@ -34,7 +34,7 @@ export const heathrow: LocationContent = {
     },
     {
       title: 'Discreet alternative to airport-area pawnshops',
-      body: 'The Heathrow corridor has its share of jewellery shops and pawnbrokers — most operating on retail margins, with public-facing counters. We offer a private alternative: one specialist, one client, no walk-in foot traffic.',
+      body: 'The Heathrow corridor has its share of jewellery shops and pawnbrokers - most operating on retail margins, with public-facing counters. We offer a private alternative: one specialist, one client, no walk-in foot traffic.',
     },
   ],
 
@@ -58,7 +58,7 @@ export const heathrow: LocationContent = {
     {
       icon: 'in-person',
       title: 'Same-day appointment at our Egham office',
-      body: 'Where the diary allows, we offer same-day appointments for airport-area clients — especially those on tight travel schedules. 15–20 minutes from Terminal 5 by road.',
+      body: 'Where the diary allows, we offer same-day appointments for airport-area clients - especially those on tight travel schedules. 15–20 minutes from Terminal 5 by road.',
     },
     {
       icon: 'collect',
@@ -79,7 +79,7 @@ export const heathrow: LocationContent = {
 
   faqs: [
     {
-      question: 'I’m flying out tomorrow — can you see me today?',
+      question: 'I’m flying out tomorrow - can you see me today?',
       answer:
         'Often yes. Same-day appointments are available where the diary allows. WhatsApp or call us with photographs and a rough description, and we’ll confirm a slot within an hour.',
     },
@@ -91,12 +91,12 @@ export const heathrow: LocationContent = {
     {
       question: 'I have Indian 22ct gold from my family. Do you buy that?',
       answer:
-        'Yes — 22ct, 21ct and 24ct gold are all standard for us. We assay accurately rather than assuming purity, which often produces a higher offer than high-street pawnbrokers who default to a conservative carat assumption.',
+        'Yes - 22ct, 21ct and 24ct gold are all standard for us. We assay accurately rather than assuming purity, which often produces a higher offer than high-street pawnbrokers who default to a conservative carat assumption.',
     },
     {
       question: 'I’m holding a piece for a relative overseas. Can I act on their behalf?',
       answer:
-        'You can — we require photo ID for the person bringing the piece, plus a brief written authority from the owner (an email or signed letter is fine). We provide full documentation of the transaction for the owner’s records.',
+        'You can - we require photo ID for the person bringing the piece, plus a brief written authority from the owner (an email or signed letter is fine). We provide full documentation of the transaction for the owner’s records.',
     },
   ],
 

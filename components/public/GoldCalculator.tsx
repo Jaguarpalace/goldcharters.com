@@ -86,17 +86,17 @@ export function GoldCalculator({
         </div>
 
         {/*
-          Calculator — single column on mobile, two columns on desktop.
+          Calculator - single column on mobile, two columns on desktop.
 
           Layout note: the previous version rendered two side-by-side
           sub-columns, each with its own header. On mobile they stacked,
           which meant the header text "Type & Carat / Weight / Item Price"
-          appeared twice — once at the top of each stacked column. Here we
+          appeared twice - once at the top of each stacked column. Here we
           render the header exactly once on mobile and once per column on
           desktop, by toggling visibility with Tailwind responsive classes.
 
           Row counts are balanced to within 1 (7 vs 6 for 13 rates) so the
-          two desktop columns end at roughly the same vertical line — the
+          two desktop columns end at roughly the same vertical line - the
           TotalRow added at the bottom of the right column closes that 1-row
           gap, leaving both columns visually aligned at the bottom.
         */}

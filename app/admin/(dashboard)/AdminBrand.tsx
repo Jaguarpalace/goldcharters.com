@@ -11,7 +11,7 @@ export function AdminBrand() {
   return (
     <Link
       href="/admin"
-      aria-label="Charters Gold — admin home"
+      aria-label="Charters Gold - admin home"
       className="group flex flex-col items-center leading-none"
     >
       <Image

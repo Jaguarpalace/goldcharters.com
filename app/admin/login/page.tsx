@@ -20,7 +20,7 @@ export default async function LoginPage() {
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-ink-950">
-      {/* Soft radial glow centred behind the card — subtle, premium */}
+      {/* Soft radial glow centred behind the card - subtle, premium */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"

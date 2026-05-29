@@ -53,7 +53,7 @@ export function AdminShell({
 
   return (
     <>
-      {/* MOBILE TOPBAR — visible below lg, sticky so it stays put on scroll */}
+      {/* MOBILE TOPBAR - visible below lg, sticky so it stays put on scroll */}
       <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-3 border-b border-gold-metallic/15 bg-ink-950/95 px-4 backdrop-blur lg:hidden">
         <button
           type="button"
@@ -81,12 +81,12 @@ export function AdminShell({
         <span className="w-10" aria-hidden /> {/* keeps the title centred */}
       </header>
 
-      {/* DESKTOP RAIL — visible lg+ only */}
+      {/* DESKTOP RAIL - visible lg+ only */}
       <aside className="hidden lg:flex lg:fixed lg:inset-y-0 lg:left-0 lg:w-[260px] lg:flex-col lg:overflow-y-auto lg:border-r lg:border-gold-metallic/15 lg:bg-ink-900/80 lg:p-6">
         {sidebar}
       </aside>
 
-      {/* MOBILE DRAWER — slides in from the left */}
+      {/* MOBILE DRAWER - slides in from the left */}
       <div
         aria-hidden={!open}
         className={
@@ -129,7 +129,7 @@ export function AdminShell({
         </div>
       </div>
 
-      {/* CONTENT — full width on mobile, left-padded to clear the rail on lg+ */}
+      {/* CONTENT - full width on mobile, left-padded to clear the rail on lg+ */}
       <div className="px-4 py-5 sm:px-6 sm:py-6 lg:ml-[260px] lg:px-8 lg:py-8">
         {children}
       </div>

@@ -108,7 +108,7 @@ export function BookingFlow({
 
       {revealed && (
         <>
-          {/* Step 1 — choose a location */}
+          {/* Step 1 - choose a location */}
           <section>
             <StepHeading n={1} title="Choose a location" />
             {originLabel && (
@@ -199,7 +199,7 @@ function NearestSearch({ onResult }: { onResult: (res: Extract<NearestResult, { 
   const useMyLocation = () => {
     setError(null);
     if (typeof navigator === 'undefined' || !navigator.geolocation) {
-      setError('Your browser can’t share location — please enter your postcode.');
+      setError('Your browser can’t share location - please enter your postcode.');
       return;
     }
     setGeoPending(true);
@@ -207,7 +207,7 @@ function NearestSearch({ onResult }: { onResult: (res: Extract<NearestResult, { 
       (pos) => run({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
       () => {
         setGeoPending(false);
-        setError('We couldn’t access your location — please enter your postcode instead.');
+        setError('We couldn’t access your location - please enter your postcode instead.');
       },
       { timeout: 10000, maximumAge: 60000 },
     );
@@ -217,10 +217,10 @@ function NearestSearch({ onResult }: { onResult: (res: Extract<NearestResult, { 
     <section className="gc-card gc-card-gold-edge p-5 sm:p-6">
       <div className="flex items-center gap-2">
         <span className="text-gold-metallic"><PinIcon /></span>
-        <h2 className="font-display text-lg font-semibold text-white">Find your nearest location</h2>
+        <h2 className="font-display text-lg font-semibold text-white">Find Your Nearest Valuation Day</h2>
       </div>
       <p className="mt-1 text-[13px] text-warmgrey">
-        Enter your postcode and we’ll sort our valuation days by distance — closest first.
+        Enter your postcode and we’ll sort our valuation days by distance - closest first.
       </p>
       <form onSubmit={onPostcodeSubmit} className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
         <input
@@ -302,11 +302,17 @@ function BookingForEvent({
       notes: String(fd.get('notes') ?? '') || null,
       preferredContactMethod: String(fd.get('preferred_contact_method') ?? 'phone'),
       consent: fd.get('consent') === 'on',
-      photos: files.map((f) => f.file),
     };
 
+    // File instances can't be carried inside a plain-object server-action
+    // argument (Next rejects them with "Only plain objects … can be passed to
+    // Server Actions"). FormData is the supported channel, so the photos travel
+    // separately from the JSON payload.
+    const photoData = new FormData();
+    for (const f of files) photoData.append('photos', f.file);
+
     startTransition(async () => {
-      const result = await bookAppointment(payload);
+      const result = await bookAppointment(payload, photoData);
       if (result.ok) {
         onSlotBooked(event.id, slot.startsAt);
         onBooked({
@@ -332,7 +338,7 @@ function BookingForEvent({
 
   return (
     <>
-      {/* Step 2 — choose from the times the admin has published */}
+      {/* Step 2 - choose from the times the admin has published */}
       <section>
         <StepHeading n={2} title="Choose a time" />
         <p className="mt-2 text-[13px] text-warmgrey">
@@ -343,7 +349,7 @@ function BookingForEvent({
         <div className="mt-4 space-y-3">
           {shownDays.length === 0 && (
             <p className="rounded-xl border border-gold-metallic/20 bg-ink-900/40 p-5 text-sm text-warmgrey">
-              No appointments are available here at the moment — please try another location.
+              No appointments are available here at the moment - please try another location.
             </p>
           )}
           {shownDays.map((day) => (
@@ -390,7 +396,7 @@ function BookingForEvent({
         )}
       </section>
 
-      {/* Step 3 — details */}
+      {/* Step 3 - details */}
       {selectedSlot && (
         <section>
           <StepHeading n={3} title="Your details" />
@@ -443,7 +449,7 @@ function BookingForEvent({
 
             <div>
               <p className="mb-2 text-[12px] text-warmgrey">
-                Photos of your items <span className="text-warmgrey/60">(optional, up to 5)</span> — helps our specialist prepare for your visit.
+                Photos of your items <span className="text-warmgrey/60">(optional, up to 5)</span> - helps our specialist prepare for your visit.
               </p>
               <MultiImageUploader files={files} onChange={setFiles} max={5} />
             </div>
@@ -492,7 +498,7 @@ function SuccessCard({ success, onReset }: { success: SuccessState; onReset: () 
 
       <div className="mx-auto mt-6 max-w-md rounded-2xl border border-gold-metallic/20 bg-ink-950/50 p-5 text-left">
         <Row label="When" value={success.when} />
-        <Row label="Where" value={`${success.title} — ${success.city}`} />
+        <Row label="Where" value={`${success.title} - ${success.city}`} />
         {success.venue && <Row label="Venue" value={success.venue} />}
         {success.address && <Row label="Address" value={success.address} />}
       </div>
@@ -504,7 +510,7 @@ function SuccessCard({ success, onReset }: { success: SuccessState; onReset: () 
       <p className="mx-auto mt-6 max-w-md text-sm leading-relaxed text-warmgrey">
         {success.persisted
           ? 'A confirmation has been sent to your email with a link to cancel if your plans change.'
-          : 'Demo mode — Supabase isn’t connected, so this booking wasn’t saved and no email was sent.'}
+          : 'Demo mode - Supabase isn’t connected, so this booking wasn’t saved and no email was sent.'}
       </p>
 
       <p className="mt-6 text-[10px] uppercase tracking-luxe text-warmgrey/70">

@@ -133,10 +133,10 @@ export const GOLD_PURITY: readonly PurityOption[] = [
 
 export const SILVER_PURITY: readonly PurityOption[] = [
   { value: '', label: "I'm not sure" },
-  { value: '999 silver', label: 'Fine silver — 999 (99.9%)' },
-  { value: '958 silver', label: 'Britannia — 958 (95.8%)' },
-  { value: '925 silver', label: 'Sterling — 925 (92.5%)' },
-  { value: '900 silver', label: 'Coin silver — 900 (90%)' },
+  { value: '999 silver', label: 'Fine silver - 999 (99.9%)' },
+  { value: '958 silver', label: 'Britannia - 958 (95.8%)' },
+  { value: '925 silver', label: 'Sterling - 925 (92.5%)' },
+  { value: '900 silver', label: 'Coin silver - 900 (90%)' },
 ];
 
 export const PLATINUM_PURITY: readonly PurityOption[] = [
@@ -176,7 +176,7 @@ export function purityHintFor(metal: string | null | undefined): string {
   if (metal === 'Platinum') {
     return 'Platinum purity is stamped as parts per 1,000. 950 is the most common.';
   }
-  return "Look for a hallmark stamp — 9, 14, 18, 22, 24 etc. Leave blank if you're not sure.";
+  return "Look for a hallmark stamp - 9, 14, 18, 22, 24 etc. Leave blank if you're not sure.";
 }
 
 /**

@@ -6,11 +6,11 @@ export const surrey: LocationContent = {
   region: 'Surrey',
   postcodes: 'GU, KT, RH, TW20, SM postcode districts',
 
-  metaTitle: 'Sell Gold, Watches & Fine Jewellery in Surrey — Charters Gold',
+  metaTitle: 'Sell Gold, Watches & Fine Jewellery in Surrey - Charters Gold',
   metaDescription:
     'Surrey-based specialists for private gold, diamond, watch and designer handbag valuations. Serving Weybridge, Cobham, Esher, Guildford, Woking, Sunningdale, Virginia Water and the wider stockbroker belt.',
 
-  heroEyebrow: 'Selling Gold & Jewellery — Surrey',
+  heroEyebrow: 'Selling Gold & Jewellery - Surrey',
   heroTitle: 'Your County’s Private Valuation House',
   heroIntro:
     'Charters Gold is based in Egham, Surrey, and serves clients across the county from one of England’s wealthiest commuter belts. From St George’s Hill to Guildford, from Sunningdale to Esher, we offer private valuations, transparent offers and same-day payment for pieces of meaningful value.',
@@ -18,7 +18,7 @@ export const surrey: LocationContent = {
   travel: {
     distanceMiles: 0,
     drive:
-      'We are in Surrey — at Egham, M25 Junction 13. Most of the county is within a 20–35 minute drive. Free parking on site.',
+      'We are in Surrey - at Egham, M25 Junction 13. Most of the county is within a 20–35 minute drive. Free parking on site.',
     publicTransport:
       'South Western Railway services connect Guildford, Woking, Walton-on-Thames, Weybridge and most of north Surrey directly to Egham via Staines or Reading.',
   },
@@ -26,15 +26,15 @@ export const surrey: LocationContent = {
   whyHere: [
     {
       title: 'Local roots, county-wide reach',
-      body: 'We live and work in Surrey. The stockbroker belt — Weybridge, Cobham, Oxshott, Esher, St George’s Hill, Sunningdale, Virginia Water — is on our doorstep, and we understand the kinds of pieces that come out of those homes: serious watches, signed jewellery, designer handbags in good condition.',
+      body: 'We live and work in Surrey. The stockbroker belt - Weybridge, Cobham, Oxshott, Esher, St George’s Hill, Sunningdale, Virginia Water - is on our doorstep, and we understand the kinds of pieces that come out of those homes: serious watches, signed jewellery, designer handbags in good condition.',
     },
     {
       title: 'Built for high-net-worth pieces',
-      body: 'Many of Surrey’s most affluent residents hold significant individual pieces — a five-figure watch, a Birkin in box, a five-stone diamond ring. We handle these regularly and have the trade relationships to give a fair, defensible figure on each.',
+      body: 'Many of Surrey’s most affluent residents hold significant individual pieces - a five-figure watch, a Birkin in box, a five-stone diamond ring. We handle these regularly and have the trade relationships to give a fair, defensible figure on each.',
     },
     {
       title: 'Personal, not transactional',
-      body: 'Every Surrey valuation is one specialist, one client, by name. We never rush a decision. Clients commonly come back with a second piece, a relative’s piece, or a different conversation entirely — the relationship matters more than a single transaction.',
+      body: 'Every Surrey valuation is one specialist, one client, by name. We never rush a decision. Clients commonly come back with a second piece, a relative’s piece, or a different conversation entirely - the relationship matters more than a single transaction.',
     },
   ],
 
@@ -79,17 +79,17 @@ export const surrey: LocationContent = {
 
   commonPieces: {
     title: 'Pieces we frequently value across Surrey',
-    body: 'High-end watches dominate the Surrey case-load — Rolex Daytona and Submariner, Patek Philippe Nautilus and Aquanaut, Audemars Piguet Royal Oak. Designer handbags from Weybridge and Cobham — Hermès Birkin and Kelly in particular. Five-figure diamond rings (often three- and five-stone) from the M25 corridor’s long-established families. Inherited Edwardian and Art Deco pieces from the older Surrey towns (Guildford, Farnham, Dorking).',
+    body: 'High-end watches dominate the Surrey case-load - Rolex Daytona and Submariner, Patek Philippe Nautilus and Aquanaut, Audemars Piguet Royal Oak. Designer handbags from Weybridge and Cobham - Hermès Birkin and Kelly in particular. Five-figure diamond rings (often three- and five-stone) from the M25 corridor’s long-established families. Inherited Edwardian and Art Deco pieces from the older Surrey towns (Guildford, Farnham, Dorking).',
   },
 
   faqs: [
     {
       question: 'Do you cover the whole of Surrey?',
       answer:
-        'Yes — from Guildford in the south-west to Reigate in the east, and everything in between. Our office is in north-west Surrey (Egham) and we travel anywhere in the county for pieces of significant value.',
+        'Yes - from Guildford in the south-west to Reigate in the east, and everything in between. Our office is in north-west Surrey (Egham) and we travel anywhere in the county for pieces of significant value.',
     },
     {
-      question: 'I live in St George’s Hill / Wentworth — can you visit?',
+      question: 'I live in St George’s Hill / Wentworth - can you visit?',
       answer:
         'Yes, regularly. Private home visits are particularly common in the gated estates where clients prefer the conversation to take place at home. Identification on arrival; written acknowledgement before the piece leaves you.',
     },
@@ -101,7 +101,7 @@ export const surrey: LocationContent = {
     {
       question: 'Are you VAT-registered? Will I be charged VAT?',
       answer:
-        'VAT does not apply to second-hand gold and most second-hand jewellery sold to a dealer — we explain the exact treatment for your specific piece when we make the offer.',
+        'VAT does not apply to second-hand gold and most second-hand jewellery sold to a dealer - we explain the exact treatment for your specific piece when we make the offer.',
     },
   ],
 

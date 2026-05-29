@@ -16,7 +16,7 @@ export default async function FaqsPage() {
   return (
     <>
       <JsonLd data={faqPageSchema(faqs)} />
-      {/* FAQSection acts as the page hero — its title renders as <h1>. */}
+      {/* FAQSection acts as the page hero - its title renders as <h1>. */}
       <FAQSection faqs={faqs} asH1 />
     </>
   );

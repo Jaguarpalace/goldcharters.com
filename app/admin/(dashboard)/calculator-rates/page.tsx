@@ -12,7 +12,7 @@ export default async function AdminCalculatorRatesPage() {
         <span className="text-xs uppercase tracking-luxe text-gold-metallic">CMS</span>
         <h1 className="font-display text-4xl text-white mt-2">Gold Calculator Rates</h1>
         <p className="mt-2 max-w-2xl text-sm text-warmgrey">
-          Set the price-per-gram for each metal and carat. The public calculator pulls from this table — your
+          Set the price-per-gram for each metal and carat. The public calculator pulls from this table - your
           changes appear on the website automatically.
         </p>
       </header>
