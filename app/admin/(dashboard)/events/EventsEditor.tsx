@@ -65,8 +65,6 @@ export function EventsEditor({ initial }: { initial: AppointmentEvent[] }) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   const [feedback, setFeedback] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null);
-  // Show the 5 most recent first, then reveal 10 more on each "Show more".
-  const [visibleCount, setVisibleCount] = useState(5);
 
   const set = <K extends keyof Draft>(key: K, value: Draft[K]) => setDraft((d) => ({ ...d, [key]: value }));
 
@@ -154,7 +152,7 @@ export function EventsEditor({ initial }: { initial: AppointmentEvent[] }) {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
       <section className="gc-card gc-card-gold-edge p-6">
         <h2 className="text-xs font-semibold uppercase tracking-luxe text-gold-tint">
           {editingId ? 'Edit event' : 'Add a pop-up / showroom date'}
@@ -192,8 +190,8 @@ export function EventsEditor({ initial }: { initial: AppointmentEvent[] }) {
           <textarea rows={2} value={draft.description} onChange={(e) => set('description', e.target.value)} className="gc-input" />
         </div>
 
-        {/* When — one date per event; whole schedule on a single row */}
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {/* When — one date per event; tidy 2×2 inside the narrower column */}
+        <div className="mt-4 grid gap-3 grid-cols-2">
           <div>
             <label className="gc-label">Date</label>
             <input type="date" value={draft.date} onChange={(e) => set('date', e.target.value)} className="gc-input" />
@@ -245,15 +243,17 @@ export function EventsEditor({ initial }: { initial: AppointmentEvent[] }) {
         )}
       </section>
 
-      <section>
+      {/* Right column: the events list, capped to a scroll area so a long
+          history never dwarfs the form — most recent surface first. */}
+      <section className="lg:sticky lg:top-6">
         <h2 className="text-xs font-semibold uppercase tracking-luxe text-gold-tint">
           All events ({events.length})
         </h2>
-        <ul className="mt-4 space-y-3">
+        <ul className="mt-4 space-y-3 lg:max-h-[calc(100vh-9rem)] lg:overflow-y-auto lg:pr-1">
           {events.length === 0 && (
-            <li className="gc-card p-8 text-center text-sm text-warmgrey">No events yet - add the first one above.</li>
+            <li className="gc-card p-8 text-center text-sm text-warmgrey">No events yet - add the first one on the left.</li>
           )}
-          {events.slice(0, visibleCount).map((ev) => (
+          {events.map((ev) => (
             <li key={ev.id} className="gc-card flex flex-col gap-4 p-5 sm:flex-row sm:items-start sm:justify-between">
               <div className="flex-1">
                 <div className="flex flex-wrap items-center gap-2">
@@ -284,18 +284,6 @@ export function EventsEditor({ initial }: { initial: AppointmentEvent[] }) {
             </li>
           ))}
         </ul>
-
-        {events.length > visibleCount && (
-          <div className="mt-4 text-center">
-            <button
-              type="button"
-              onClick={() => setVisibleCount((n) => n + 10)}
-              className="gc-btn-ghost"
-            >
-              Show more ({events.length - visibleCount} more)
-            </button>
-          </div>
-        )}
       </section>
     </div>
   );
