@@ -160,44 +160,43 @@ export function EventsEditor({ initial }: { initial: AppointmentEvent[] }) {
           {editingId ? 'Edit event' : 'Add a pop-up / showroom date'}
         </h2>
 
-        <div className="mt-4 grid gap-4 lg:grid-cols-2">
-          <div>
-            <label className="gc-label">Title (main heading)</label>
-            <input value={draft.title} onChange={(e) => set('title', e.target.value)} placeholder="e.g. Tesco - Car Park" className="gc-input" />
-            <p className="mt-1 text-[11px] text-warmgrey/70">Shown to customers as the big heading.</p>
-          </div>
+        {/* Title — the public-facing heading */}
+        <div className="mt-4">
+          <label className="gc-label">Title</label>
+          <input value={draft.title} onChange={(e) => set('title', e.target.value)} placeholder="e.g. Tesco - Car Park" className="gc-input" />
+        </div>
+
+        {/* Where — city, venue, address, postcode in a tidy 2×2 */}
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
           <div>
             <label className="gc-label">City / town</label>
             <input value={draft.city} onChange={(e) => set('city', e.target.value)} placeholder="e.g. Egham" className="gc-input" />
-            <p className="mt-1 text-[11px] text-warmgrey/70">Shown beneath the title.</p>
           </div>
           <div>
-            <label className="gc-label">Venue name (optional)</label>
+            <label className="gc-label">Venue <span className="text-warmgrey/50">(optional)</span></label>
             <input value={draft.venue_name} onChange={(e) => set('venue_name', e.target.value)} placeholder="e.g. Tesco Egham" className="gc-input" />
           </div>
           <div>
-            <label className="gc-label">Address (optional)</label>
+            <label className="gc-label">Address <span className="text-warmgrey/50">(optional)</span></label>
             <input value={draft.address} onChange={(e) => set('address', e.target.value)} placeholder="Street, town" className="gc-input" />
           </div>
           <div>
-            <label className="gc-label">Postcode (powers “find nearest”)</label>
-            <input value={draft.postcode} onChange={(e) => set('postcode', e.target.value)} placeholder="e.g. RG12 1AA" className="gc-input" />
-            <p className="mt-1 text-[11px] text-warmgrey/70">
-              Geocoded automatically so customers can find their nearest location.
-            </p>
+            <label className="gc-label">Postcode</label>
+            <input value={draft.postcode} onChange={(e) => set('postcode', e.target.value)} placeholder="e.g. RG12 1AA" className="gc-input" title="Geocoded so customers can find their nearest location" />
           </div>
         </div>
 
-        <div className="mt-4">
-          <label className="gc-label">Description (optional)</label>
+        {/* Description */}
+        <div className="mt-3">
+          <label className="gc-label">Description <span className="text-warmgrey/50">(optional)</span></label>
           <textarea rows={2} value={draft.description} onChange={(e) => set('description', e.target.value)} className="gc-input" />
         </div>
 
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {/* When — one date per event; whole schedule on a single row */}
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <label className="gc-label">Date</label>
             <input type="date" value={draft.date} onChange={(e) => set('date', e.target.value)} className="gc-input" />
-            <p className="mt-1 text-[11px] text-warmgrey/70">One date per event. Add another event for another day.</p>
           </div>
           <div>
             <label className="gc-label">Opens</label>
@@ -207,27 +206,28 @@ export function EventsEditor({ initial }: { initial: AppointmentEvent[] }) {
             <label className="gc-label">Closes</label>
             <input type="time" value={draft.day_end_time} onChange={(e) => set('day_end_time', e.target.value)} className="gc-input" />
           </div>
-        </div>
-
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <label className="gc-label">Slot length (minutes)</label>
-            <input type="number" min={5} max={480} step={5} value={draft.slot_minutes} onChange={(e) => set('slot_minutes', Number(e.target.value) || 30)} className="gc-input" />
-          </div>
-          <div>
-            <label className="gc-label">Display order</label>
-            <input type="number" value={draft.display_order} onChange={(e) => set('display_order', Number(e.target.value) || 0)} className="gc-input" />
-            <p className="mt-1 text-[11px] text-warmgrey/70">
-              Lower number shows first (0 before 1, etc.) when locations aren’t being sorted by distance.
-            </p>
+            <label className="gc-label">Slot length</label>
+            <div className="flex items-center gap-2">
+              <input type="number" min={5} max={480} step={5} value={draft.slot_minutes} onChange={(e) => set('slot_minutes', Number(e.target.value) || 30)} className="gc-input" />
+              <span className="text-[11px] uppercase tracking-luxe text-warmgrey">min</span>
+            </div>
           </div>
         </div>
+        <p className="mt-1.5 text-[11px] text-warmgrey/70">One date per event — add another event for another day.</p>
 
-        <div className="mt-5 flex items-center justify-between">
-          <label className="inline-flex items-center gap-2 text-sm text-white">
-            <input type="checkbox" checked={draft.is_published} onChange={(e) => set('is_published', e.target.checked)} className="h-4 w-4 accent-gold-metallic" />
-            Published (visible on the public site)
-          </label>
+        {/* Footer — publish toggle, sort order and the save buttons together */}
+        <div className="mt-5 flex flex-wrap items-end justify-between gap-4 border-t border-gold-metallic/10 pt-4">
+          <div className="flex items-end gap-5">
+            <label className="inline-flex items-center gap-2 text-sm text-white" title="Visible on the public site">
+              <input type="checkbox" checked={draft.is_published} onChange={(e) => set('is_published', e.target.checked)} className="h-4 w-4 accent-gold-metallic" />
+              Published
+            </label>
+            <div>
+              <label className="gc-label">Order</label>
+              <input type="number" value={draft.display_order} onChange={(e) => set('display_order', Number(e.target.value) || 0)} className="gc-input w-20" title="Lower number shows first when not sorted by distance" />
+            </div>
+          </div>
           <div className="flex items-center gap-2">
             {editingId && (
               <button type="button" onClick={cancelEdit} className="gc-btn-secondary">Cancel</button>
