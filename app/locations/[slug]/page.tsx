@@ -5,6 +5,7 @@ import { getAllLocationSlugs, getLocationBySlug } from '@/lib/content/locations'
 import { getSiteSettings } from '@/lib/queries/homepage';
 import { JsonLd } from '@/lib/seo/JsonLd';
 import {
+  DEFAULT_OG_IMAGE,
   locationFaqSchema,
   locationLocalBusinessSchema,
   SITE_URL,
@@ -37,6 +38,13 @@ export async function generateMetadata({
       title: location.metaTitle,
       description: location.metaDescription,
       locale: 'en_GB',
+      images: [{ url: DEFAULT_OG_IMAGE, alt: location.metaTitle }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: location.metaTitle,
+      description: location.metaDescription,
+      images: [DEFAULT_OG_IMAGE],
     },
   };
 }

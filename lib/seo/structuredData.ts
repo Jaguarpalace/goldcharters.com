@@ -7,6 +7,14 @@ import { FAQ_CATEGORY_LABELS } from '@/lib/format';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://chartersgold.co.uk';
 
+/**
+ * Site-wide default social share card (public/og-card.png, 1200x630). Every
+ * page that declares its own `openGraph` references this as the fallback image
+ * so link previews render at the correct aspect ratio. A CMS `og_image_url`
+ * (page_seo) or a blog post's featured image overrides it per page.
+ */
+const DEFAULT_OG_IMAGE = `${SITE_URL}/og-card.png`;
+
 export function organizationSchema(settings: SiteSettings) {
   return {
     '@context': 'https://schema.org',
@@ -267,4 +275,4 @@ export function appointmentEventSchema(input: {
   };
 }
 
-export { SITE_URL };
+export { SITE_URL, DEFAULT_OG_IMAGE };

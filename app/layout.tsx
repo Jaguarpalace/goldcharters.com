@@ -80,9 +80,9 @@ export async function generateMetadata(): Promise<Metadata> {
       locale: 'en_GB',
       images: [
         {
-          url: '/logo/charters_gold_true_transparent.png',
+          url: '/og-card.png',
           width: 1200,
-          height: 1200,
+          height: 630,
           alt: settings.business_name,
         },
       ],
@@ -91,7 +91,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: 'summary_large_image',
       title: settings.seo_title,
       description: settings.seo_description,
-      images: ['/logo/charters_gold_true_transparent.png'],
+      images: ['/og-card.png'],
     },
     robots: {
       index: true,
@@ -105,8 +105,15 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
     icons: {
-      icon: '/logo/charters_gold_true_transparent.png',
-      apple: '/logo/charters_gold_true_transparent.png',
+      icon: [
+        { url: '/favicon/favicon.ico', sizes: 'any' },
+        { url: '/favicon/favicon-16x16.png', type: 'image/png', sizes: '16x16' },
+        { url: '/favicon/favicon-32x32.png', type: 'image/png', sizes: '32x32' },
+        { url: '/favicon/android-chrome-192x192.png', type: 'image/png', sizes: '192x192' },
+        { url: '/favicon/android-chrome-512x512.png', type: 'image/png', sizes: '512x512' },
+      ],
+      shortcut: '/favicon/favicon.ico',
+      apple: '/favicon/apple-touch-icon.png',
     },
     category: 'business',
   };

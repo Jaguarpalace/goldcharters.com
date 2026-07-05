@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { getServerSupabase } from '@/lib/supabase/server';
-import { SITE_URL } from '@/lib/seo/structuredData';
+import { SITE_URL, DEFAULT_OG_IMAGE } from '@/lib/seo/structuredData';
 import type { PageSeo } from '@/types/database';
 
 /**
@@ -141,15 +141,16 @@ export async function buildPageMetadata(slug: string): Promise<Metadata> {
       url: canonical,
       title: ogTitle,
       description: ogDescription,
-      ...(row?.og_image_url
-        ? { images: [{ url: row.og_image_url, alt: ogTitle }] }
-        : {}),
+      // CMS override if set, otherwise the branded default card. Declaring
+      // openGraph here suppresses Next's auto-injected file-based card, so we
+      // must supply the image explicitly or the page ships with none.
+      images: [{ url: row?.og_image_url ?? DEFAULT_OG_IMAGE, alt: ogTitle }],
     },
     twitter: {
       card: 'summary_large_image',
       title: ogTitle,
       description: ogDescription,
-      ...(row?.og_image_url ? { images: [row.og_image_url] } : {}),
+      images: [row?.og_image_url ?? DEFAULT_OG_IMAGE],
     },
   };
 }

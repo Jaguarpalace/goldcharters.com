@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation';
 import { getBlogPostBySlug, getBlogPosts } from '@/lib/queries/blog';
 import { renderMarkdown } from '@/lib/renderMarkdown';
 import { JsonLd } from '@/lib/seo/JsonLd';
-import { articleSchema, breadcrumbSchema, SITE_URL } from '@/lib/seo/structuredData';
+import { articleSchema, breadcrumbSchema, DEFAULT_OG_IMAGE, SITE_URL } from '@/lib/seo/structuredData';
 
 export const revalidate = 300;
 
@@ -27,14 +27,18 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
       description: post.seo_description ?? post.excerpt ?? undefined,
       publishedTime: post.created_at,
       modifiedTime: post.updated_at,
-      images: post.featured_image_url
-        ? [{ url: post.featured_image_url, alt: post.title }]
-        : undefined,
+      images: [
+        {
+          url: post.featured_image_url ?? DEFAULT_OG_IMAGE,
+          alt: post.title,
+        },
+      ],
     },
     twitter: {
       card: 'summary_large_image',
       title: post.seo_title ?? post.title,
       description: post.seo_description ?? post.excerpt ?? undefined,
+      images: [post.featured_image_url ?? DEFAULT_OG_IMAGE],
     },
   };
 }

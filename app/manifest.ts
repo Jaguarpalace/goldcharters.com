@@ -13,7 +13,8 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
     theme_color: '#050505',
     orientation: 'portrait-primary',
     icons: [
-      { src: '/logo/charters_gold_true_transparent.png', sizes: 'any', type: 'image/png' },
+      { src: '/favicon/android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
+      { src: '/favicon/android-chrome-512x512.png', sizes: '512x512', type: 'image/png' },
     ],
   };
 }
