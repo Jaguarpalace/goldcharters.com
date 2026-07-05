@@ -50,6 +50,6 @@ export async function getAdminRecipients(): Promise<string[]> {
 export function getFromAddress(): string {
   return (
     process.env.EMAIL_FROM ??
-    'Charters Gold <notifications@chartersgold.co.uk>'
+    'Charters Gold <info@chartersgold.co.uk>'
   );
 }
