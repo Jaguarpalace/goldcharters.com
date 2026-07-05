@@ -314,6 +314,46 @@ body {
 }
 
 /* ------------------------------------------------------------------------
+   Contrast hardening (light theme only)
+
+   The admin markup reuses Tailwind's dark-mode-oriented shades: the
+   /100–/400 status colours (amber/red/emerald) and a handful of low-alpha
+   text utilities. Those were tuned to sit on near-black; on the white
+   console they wash out to near-invisible (faint P&L figures, ghostly
+   "Off" badges, unreadable warnings). Remap them to dark, WCAG-AA-legible
+   equivalents. Dark theme is unaffected — every rule here is scoped to
+   [data-admin-theme='light'].
+   ------------------------------------------------------------------------ */
+
+/* Status text — amber / warning (→ dark amber, ~6:1 on white) */
+.admin-shell[data-admin-theme='light'] .text-amber-100,
+.admin-shell[data-admin-theme='light'] .text-amber-200,
+.admin-shell[data-admin-theme='light'] .text-amber-300,
+.admin-shell[data-admin-theme='light'] .text-amber-400 { color: #8a5500 !important; }
+
+/* Status text — red / danger (→ dark red, ~4.7:1 on white) */
+.admin-shell[data-admin-theme='light'] .text-red-200,
+.admin-shell[data-admin-theme='light'] .text-red-300,
+.admin-shell[data-admin-theme='light'] .text-red-400 { color: #be1e1e !important; }
+
+/* Status text — emerald / success (→ dark green, ~4.8:1 on white) */
+.admin-shell[data-admin-theme='light'] .text-emerald-200,
+.admin-shell[data-admin-theme='light'] .text-emerald-300,
+.admin-shell[data-admin-theme='light'] .text-emerald-400 { color: #047857 !important; }
+
+/* Fall-through greys the earlier /40–/70 block doesn't catch */
+.admin-shell[data-admin-theme='light'] .text-warmgrey\/90,
+.admin-shell[data-admin-theme='light'] .text-warmgrey\/80 { color: var(--text-muted-light) !important; }
+.admin-shell[data-admin-theme='light'] .text-warmgrey\/30,
+.admin-shell[data-admin-theme='light'] .text-warmgrey\/25,
+.admin-shell[data-admin-theme='light'] .text-warmgrey\/20 { color: var(--text-faint-light) !important; }
+
+/* Gold accents carrying an alpha suffix (e.g. text-gold-metallic/40) */
+.admin-shell[data-admin-theme='light'] .text-gold-metallic\/40,
+.admin-shell[data-admin-theme='light'] .text-gold-metallic\/50,
+.admin-shell[data-admin-theme='light'] .text-gold-metallic\/70 { color: var(--gold-on-light) !important; }
+
+/* ------------------------------------------------------------------------
    Admin "crisp & utilitarian" density (both themes)
    Scoped to .admin-shell so the public marketing site keeps its luxe,
    round, glowing styling. These rules don't touch the public site.
