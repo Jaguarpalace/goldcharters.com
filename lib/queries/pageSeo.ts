@@ -114,16 +114,19 @@ export async function listPageSeo(): Promise<PageSeo[]> {
  * in one place and ensures every page emits a canonical URL, OG tags and
  * keywords consistently.
  */
-export async function buildPageMetadata(slug: string): Promise<Metadata> {
+export async function buildPageMetadata(
+  slug: string,
+  overrides?: { fallbackTitle?: string; fallbackDescription?: string }
+): Promise<Metadata> {
   const row = await getPageSeo(slug);
   const fallback = SEO_DEFAULTS[slug] ?? {
     title: 'Charters Gold',
     description: 'Private UK valuations for gold, jewellery, watches and handbags.',
   };
 
-  const title = row?.title ?? fallback.title;
-  const description = row?.description ?? fallback.description;
-  const canonical = row?.canonical_url ?? `${SITE_URL}${slug}`;
+  const title = row?.title ?? overrides?.fallbackTitle ?? fallback.title;
+  const description = row?.description ?? overrides?.fallbackDescription ?? fallback.description;
+  const canonical = row?.canonical_url ?? `${SITE_URL}${slug === '/' ? '' : slug}`;
   const ogTitle = row?.og_title ?? title;
   const ogDescription = row?.og_description ?? description;
 

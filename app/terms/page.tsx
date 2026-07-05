@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { getSiteSettings } from '@/lib/queries/homepage';
 import { LegalPageLayout } from '@/components/public/LegalPageLayout';
 import { formatLegalDate, getLegalPage } from '@/lib/queries/legalPages';
+import { SITE_URL } from '@/lib/seo/structuredData';
 
 export const revalidate = 86400;
 
@@ -9,6 +10,7 @@ export const metadata: Metadata = {
   title: 'Terms & Conditions',
   description:
     'The terms and conditions governing use of the Charters Gold website and our private valuation services.',
+  alternates: { canonical: `${SITE_URL}/terms` },
   robots: { index: true, follow: true },
 };
 

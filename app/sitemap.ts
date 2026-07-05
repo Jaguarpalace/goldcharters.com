@@ -13,7 +13,6 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://chartersgold.co.uk
  * next sitemap fetch.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const now = new Date();
   const supabase = getServerSupabase();
 
   // ----- Pull CMS-driven freshness timestamps in parallel ------------------
@@ -44,8 +43,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  /** Last-modified for a slug, falling back to now if no CMS row exists. */
-  const lastMod = (slug: string): Date => cmsFreshness.get(slug) ?? now;
+  /**
+   * Last-modified for a slug. Returns undefined when no CMS row exists so
+   * the <lastmod> tag is simply omitted — a constantly-changing fake date
+   * teaches Google to distrust every lastmod in the file.
+   */
+  const lastMod = (slug: string): Date | undefined => cmsFreshness.get(slug);
 
   const staticPages: MetadataRoute.Sitemap = [
     { url: `${SITE_URL}/`,                 lastModified: lastMod('/'),                 changeFrequency: 'daily',   priority: 1.0 },
@@ -55,15 +58,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/sell-handbags`,    lastModified: lastMod('/sell-handbags'),    changeFrequency: 'weekly',  priority: 0.9 },
     { url: `${SITE_URL}/sell-watches`,     lastModified: lastMod('/sell-watches'),     changeFrequency: 'weekly',  priority: 0.9 },
     { url: `${SITE_URL}/gold-calculator`,  lastModified: lastMod('/gold-calculator'),  changeFrequency: 'daily',   priority: 0.85 },
-    { url: `${SITE_URL}/book`,             lastModified: now,                          changeFrequency: 'daily',   priority: 0.8 },
+    { url: `${SITE_URL}/book`,                                                         changeFrequency: 'daily',   priority: 0.8 },
     { url: `${SITE_URL}/blog`,             lastModified: lastMod('/blog'),             changeFrequency: 'weekly',  priority: 0.75 },
     { url: `${SITE_URL}/faqs`,             lastModified: lastMod('/faqs'),             changeFrequency: 'weekly',  priority: 0.7 },
     { url: `${SITE_URL}/how-it-works`,     lastModified: lastMod('/how-it-works'),     changeFrequency: 'monthly', priority: 0.6 },
     { url: `${SITE_URL}/contact`,          lastModified: lastMod('/contact'),          changeFrequency: 'monthly', priority: 0.6 },
     { url: `${SITE_URL}/locations`,        lastModified: lastMod('/locations'),        changeFrequency: 'monthly', priority: 0.7 },
+    // Location pages are hand-written content files with no CMS timestamp,
+    // so they carry no <lastmod> rather than a fake one.
     ...LOCATIONS.map((l) => ({
       url: `${SITE_URL}/locations/${l.slug}`,
-      lastModified: now,
       changeFrequency: 'monthly' as const,
       priority: 0.8,
     })),
@@ -77,7 +81,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (BUY_ENABLED) {
     staticPages.push({
       url: `${SITE_URL}/shop`,
-      lastModified: now,
       changeFrequency: 'daily',
       priority: 0.8,
     });

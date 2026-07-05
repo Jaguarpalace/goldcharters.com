@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { getSiteSettings } from '@/lib/queries/homepage';
 import { LegalPageLayout } from '@/components/public/LegalPageLayout';
 import { formatLegalDate, getLegalPage } from '@/lib/queries/legalPages';
+import { SITE_URL } from '@/lib/seo/structuredData';
 
 export const revalidate = 86400; // legal pages change rarely - refresh daily
 
@@ -9,6 +10,7 @@ export const metadata: Metadata = {
   title: 'Privacy Policy',
   description:
     'How Charters Gold collects, uses, stores and protects your personal data, under UK GDPR and the Data Protection Act 2018.',
+  alternates: { canonical: `${SITE_URL}/privacy` },
   robots: { index: true, follow: true },
 };
 

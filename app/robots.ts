@@ -1,5 +1,4 @@
 import type { MetadataRoute } from 'next';
-import { BUY_ENABLED } from '@/lib/features';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://chartersgold.co.uk';
 
@@ -13,11 +12,10 @@ export default function robots(): MetadataRoute.Robots {
     '/checkout',
   ];
 
-  // While the shop is paused, also keep crawlers out of /shop and /shop/*
-  // so search engines don't keep stale product URLs indexed.
-  if (!BUY_ENABLED) {
-    disallow.push('/shop', '/shop/');
-  }
+  // Deliberately NOT disallowing /shop while the shop is paused: the shop
+  // pages serve a noindex meta tag, and Google can only see it if it's
+  // allowed to crawl them. Disallowing would leave stale product URLs
+  // stuck in the index as "indexed, though blocked by robots.txt".
 
   return {
     rules: [

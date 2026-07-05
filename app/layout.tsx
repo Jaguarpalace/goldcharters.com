@@ -70,7 +70,9 @@ export async function generateMetadata(): Promise<Metadata> {
       'gold calculator UK',
       'gold price per gram UK',
     ],
-    alternates: { canonical: SITE_URL },
+    // No layout-level canonical: it would cascade to every page that doesn't
+    // declare its own and mark them as duplicates of the homepage. Each
+    // indexable page sets its canonical via buildPageMetadata or locally.
     openGraph: {
       type: 'website',
       url: SITE_URL,

@@ -1,4 +1,6 @@
-import { findHomepageSection, getHomepageSections } from '@/lib/queries/homepage';
+import type { Metadata } from 'next';
+import { findHomepageSection, getHomepageSections, getSiteSettings } from '@/lib/queries/homepage';
+import { buildPageMetadata } from '@/lib/queries/pageSeo';
 import { getServices } from '@/lib/queries/services';
 import { getItemsWeBuy, getTrustCards } from '@/lib/queries/items';
 import { getFaqs } from '@/lib/queries/faqs';
@@ -25,6 +27,17 @@ import { FAQSection } from '@/components/public/FAQSection';
 import { WhereToFindUs } from '@/components/public/WhereToFindUs';
 
 export const revalidate = 120;
+
+// The '/' row in page_seo (editable at /admin/seo) wins; site-settings
+// seo_title/seo_description remain the fallback so a missing row never
+// leaves the homepage untitled.
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return buildPageMetadata('/', {
+    fallbackTitle: settings.seo_title,
+    fallbackDescription: settings.seo_description,
+  });
+}
 
 export default async function HomePage() {
   const [sections, allServices, items, trust, faqs, rates, products, events] = await Promise.all([

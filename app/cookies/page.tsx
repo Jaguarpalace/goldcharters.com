@@ -3,6 +3,7 @@ import { getSiteSettings } from '@/lib/queries/homepage';
 import { LegalPageLayout } from '@/components/public/LegalPageLayout';
 import { CookiePreferencesButton } from '@/components/public/CookiePreferencesButton';
 import { formatLegalDate, getLegalPage } from '@/lib/queries/legalPages';
+import { SITE_URL } from '@/lib/seo/structuredData';
 
 export const revalidate = 86400;
 
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
   title: 'Cookie Policy',
   description:
     'Information about the cookies and similar technologies used on the Charters Gold website.',
+  alternates: { canonical: `${SITE_URL}/cookies` },
   robots: { index: true, follow: true },
 };
 
