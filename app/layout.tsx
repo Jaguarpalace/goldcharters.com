@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Manrope } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 import { getSiteSettings } from '@/lib/queries/homepage';
 import { Header } from '@/components/public/Header';
@@ -150,6 +151,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <Footer settings={settings} />
         <WhatsAppButton whatsapp={settings.whatsapp} />
         <CookieConsent />
+        <Analytics />
       </body>
     </html>
   );
