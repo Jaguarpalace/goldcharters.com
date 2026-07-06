@@ -77,6 +77,11 @@ export const ascot: LocationContent = {
 
   faqs: [
     {
+      question: 'I want to sell my gold - where do I start?',
+      answer:
+        "Three easy routes. For an instant guide figure, enter the carat and weight into our gold calculator. For a written estimate, send a few photographs through the valuation form and a specialist replies within one working day. Or simply book a private appointment at our Ascot office - we check the hallmarks, weigh everything in front of you and explain the figure, with no fee and no obligation to sell.",
+    },
+    {
       question: 'Do you value racing brooches and presentation pieces?',
       answer:
         "Yes - these are a particular speciality given our proximity to the racecourse. Provenance matters for these pieces, so bring any documentation, presentation cases, or photographs of the original event if available. We'll often price these above pure metal-and-stone value where the history can be substantiated.",
