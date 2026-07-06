@@ -11,22 +11,22 @@ export const stainesEgham: LocationContent = {
     'Local Staines and Egham specialists for private gold, diamond, watch and handbag valuations. Walk-in by appointment, transparent offers, same-day payment.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Staines & Egham',
-  heroTitle: 'Your Local Private Valuation House',
+  heroTitle: 'Private Valuations for Staines & Egham',
   heroIntro:
-    'We are based in Egham - your local specialists for gold, fine jewellery, designer handbags and luxury watches. Walk-in clients from Staines, Englefield Green, Virginia Water, Thorpe, Chertsey and the wider TW18 / TW19 / TW20 / GU25 catchment make up the heart of our local business. Private appointments only - no public showroom.',
+    'Staines and Egham sit a short drive from our Ascot office - around 15–20 minutes - and remain a core part of our catchment. We value gold, fine jewellery, designer handbags and luxury watches for clients across Staines, Englefield Green, Virginia Water, Thorpe, Chertsey and the wider TW18 / TW19 / TW20 / GU25 area. Private appointments only - no public showroom.',
 
   travel: {
-    distanceMiles: 0,
+    distanceMiles: 8,
     drive:
-      'We are in Egham, a 4-minute walk from Egham railway station, with free on-site parking. From Staines High Street the drive is 5–7 minutes via the A308.',
+      'Around 15–20 minutes from Staines and Egham to our Ascot office via the A30 and A329, with parking close by.',
     publicTransport:
-      'Egham station is a 4-minute walk from our office. South Western Railway services from Staines, Virginia Water, Wraysbury and the wider area all stop at Egham.',
+      'Egham and Virginia Water sit on the same South Western Railway line as Ascot - a direct train of roughly 15 minutes, then a short walk from Ascot station to the office.',
   },
 
   whyHere: [
     {
-      title: 'Genuinely local - we live and work here',
-      body: 'We are not a chain or a national buy-up scheme. Our team lives in the area, knows the high street, and reinvests locally. Many of our clients are introduced by family or neighbours who have used us before.',
+      title: 'A specialist team that knows the area',
+      body: 'We are not a chain or a national buy-up scheme. Our office is just up the road in Ascot, we know the Staines and Egham high streets well, and many of our clients are introduced by family or neighbours who have used us before.',
     },
     {
       title: 'A specialist alternative to the high-street pawnshop',
@@ -57,8 +57,8 @@ export const stainesEgham: LocationContent = {
   processOptions: [
     {
       icon: 'in-person',
-      title: 'Walk-in private appointment',
-      body: 'For most local clients this is the natural choice - a 5–10 minute drive or short walk from Egham station. Appointments are confidential, by name, with one specialist. Free parking, ground-floor access, refreshments while you wait.',
+      title: 'Private appointment at our Ascot office',
+      body: 'For most local clients a short drive (15–20 minutes) or a direct train from Egham is the natural choice. Appointments are confidential, by name, with one specialist. Parking close by, refreshments while you wait.',
     },
     {
       icon: 'collect',
@@ -84,9 +84,9 @@ export const stainesEgham: LocationContent = {
         "We operate by appointment rather than walk-in, so we can give each client a private, unhurried conversation. Appointments are usually available the same week - sometimes the same day. Call, WhatsApp or use the valuation form to book.",
     },
     {
-      question: 'Where exactly are you in Egham?',
+      question: 'Where exactly are you?',
       answer:
-        'Our office is in central Egham, a 4-minute walk from the station and a short drive from Egham Hill, Staines High Street, Englefield Green and the M25 J13. Exact address and parking instructions arrive when you confirm an appointment.',
+        "Our office is on St George's Lane in Ascot, just off the High Street - about 15–20 minutes by car from Staines and Egham, or a direct 15-minute train from Egham station. The full address and parking details arrive when you confirm an appointment.",
     },
     {
       question: 'I have one broken gold chain - is it worth bringing in?',

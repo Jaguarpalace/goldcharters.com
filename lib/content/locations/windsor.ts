@@ -8,19 +8,19 @@ export const windsor: LocationContent = {
 
   metaTitle: 'Sell Gold, Watches & Jewellery in Windsor - Charters Gold',
   metaDescription:
-    'Local Windsor specialists for gold, diamond, watch and handbag valuations. Six miles from our Egham office - private appointments, transparent offers, same-day payment.',
+    'Local Windsor specialists for gold, diamond, watch and handbag valuations. A short drive from our Ascot office - private appointments, transparent offers, same-day payment.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Windsor',
   heroTitle: 'A Specialist Valuation House on Your Doorstep',
   heroIntro:
-    'Six miles from Windsor Castle, our Egham office is the closest dedicated private valuation house to the Royal Borough. We work with Windsor and Eton residents on everything from heirloom diamonds to current-production luxury watches - privately, fairly, and with the discretion the area expects.',
+    'Six miles from Windsor Castle, our Ascot office is the closest dedicated private valuation house to the Royal Borough. We work with Windsor and Eton residents on everything from heirloom diamonds to current-production luxury watches - privately, fairly, and with the discretion the area expects.',
 
   travel: {
     distanceMiles: 6,
     drive:
-      'Approximately 15 minutes via the A308 and A30 - straightforward outside of school run hours. Free parking on site.',
+      'Around 15 minutes via the A332 through Windsor Great Park - straightforward outside school-run hours. Parking close by.',
     publicTransport:
-      'From Windsor & Eton Riverside, a short journey to Egham via Staines (≈20 minutes total). Egham station is a 4-minute walk from our office.',
+      'Most Windsor clients drive, as it is quicker than the train. By rail, Windsor & Eton Riverside connects to Ascot via Staines (one change), roughly 35–40 minutes.',
   },
 
   whyHere: [
@@ -56,8 +56,8 @@ export const windsor: LocationContent = {
   processOptions: [
     {
       icon: 'in-person',
-      title: 'Private appointment at our Egham office',
-      body: 'A 15-minute drive from Windsor town centre. Appointments are confidential, by name, with a single specialist. Free parking, ground-floor access, refreshments while you wait.',
+      title: 'Private appointment at our Ascot office',
+      body: 'A 15-minute drive from Windsor town centre via the A332. Appointments are confidential, by name, with a single specialist. Parking close by, refreshments while you wait.',
     },
     {
       icon: 'collect',
@@ -80,7 +80,7 @@ export const windsor: LocationContent = {
     {
       question: 'How long does the drive from Windsor really take?',
       answer:
-        'Outside school-run hours, plan 15 minutes via the A308. The route is straightforward - Windsor Bridge, through Datchet, into Egham. We share specific parking instructions when we confirm your appointment.',
+        'Outside school-run hours, plan around 15 minutes via the A332 through Windsor Great Park into Ascot. We share specific parking instructions when we confirm your appointment.',
     },
     {
       question: 'I have a piece with royal provenance - does that affect the valuation?',
@@ -88,7 +88,7 @@ export const windsor: LocationContent = {
         "Yes - genuine provenance (presentation cases, original documentation, named recipient) can materially increase value. We're well-practised at recognising and valuing pieces of historical significance and will price accordingly with supporting evidence.",
     },
     {
-      question: 'Can we meet in Windsor rather than Egham?',
+      question: 'Can we meet in Windsor rather than Ascot?',
       answer:
         "For pieces of significant value or where a relative can't travel, we arrange a private visit to a Windsor address by appointment. Standard valuations of smaller pieces are usually handled most efficiently at our office.",
     },

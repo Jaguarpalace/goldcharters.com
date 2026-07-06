@@ -168,11 +168,11 @@ export function EventsEditor({ initial }: { initial: AppointmentEvent[] }) {
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           <div>
             <label className="gc-label">City / town</label>
-            <input value={draft.city} onChange={(e) => set('city', e.target.value)} placeholder="e.g. Egham" className="gc-input" />
+            <input value={draft.city} onChange={(e) => set('city', e.target.value)} placeholder="e.g. Ascot" className="gc-input" />
           </div>
           <div>
             <label className="gc-label">Venue <span className="text-warmgrey/50">(optional)</span></label>
-            <input value={draft.venue_name} onChange={(e) => set('venue_name', e.target.value)} placeholder="e.g. Tesco Egham" className="gc-input" />
+            <input value={draft.venue_name} onChange={(e) => set('venue_name', e.target.value)} placeholder="e.g. Ascot High Street" className="gc-input" />
           </div>
           <div>
             <label className="gc-label">Address <span className="text-warmgrey/50">(optional)</span></label>

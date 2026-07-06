@@ -164,7 +164,7 @@ function HeroVisual() {
         <div className="absolute inset-x-6 bottom-6 flex items-center justify-between rounded-2xl border border-gold-metallic/20 bg-ink-950/70 px-4 py-3 backdrop-blur-md">
           <div>
             <div className="text-[10px] uppercase tracking-luxe text-gold-tint">Private Valuation</div>
-            <div className="font-display text-lg text-white">Egham · Surrey</div>
+            <div className="font-display text-lg text-white">Ascot · Berkshire</div>
           </div>
           <span className="gc-pill">By appointment</span>
         </div>

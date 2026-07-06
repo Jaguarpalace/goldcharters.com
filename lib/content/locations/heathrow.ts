@@ -8,19 +8,19 @@ export const heathrow: LocationContent = {
 
   metaTitle: 'Sell Gold & Jewellery near Heathrow - Charters Gold',
   metaDescription:
-    'Private valuations for residents and travellers in the Heathrow corridor. Quick same-day appointments at our Egham office, 15 minutes from Terminal 5. Insured postal service for international clients.',
+    'Private valuations for residents and travellers in the Heathrow corridor. Quick same-day appointments at our Ascot office, around 20 minutes from Terminal 5. Insured postal service for international clients.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Heathrow',
-  heroTitle: 'Private Valuations Minutes from the Airport',
+  heroTitle: 'Private Valuations a Short Drive from the Airport',
   heroIntro:
-    'Our Egham office is 10 miles from Heathrow - typically 15–20 minutes from Terminal 5. We are well used to working with airport-area residents, expatriates moving overseas, returning long-stay travellers and international clients passing through. Same-day appointments where the diary allows.',
+    'Our Ascot office is around 10 miles from Heathrow - typically 20–25 minutes from Terminal 5. We are well used to working with airport-area residents, expatriates moving overseas, returning long-stay travellers and international clients passing through. Same-day appointments where the diary allows.',
 
   travel: {
     distanceMiles: 10,
     drive:
-      'M25 to Junction 13 (Egham) - typically 15–20 minutes from Heathrow Terminal 5, longer from T2 / T3 in heavy traffic. Free parking on site.',
+      'By road, around 20–25 minutes from Heathrow Terminal 5 via the A30 and A329, longer from T2 / T3 in heavy traffic. Parking close by.',
     publicTransport:
-      'From Heathrow Central Bus Station, the 441 / 71 / 71B services run toward Staines and Egham. Easier for most clients: short taxi/Uber (≈£20–25) directly to our office.',
+      'Bus services from Heathrow Central run toward Staines and Egham, from where Ascot is a direct train. Easier for most clients on tight timing: a short taxi/Uber directly to our office.',
   },
 
   whyHere: [
@@ -57,8 +57,8 @@ export const heathrow: LocationContent = {
   processOptions: [
     {
       icon: 'in-person',
-      title: 'Same-day appointment at our Egham office',
-      body: 'Where the diary allows, we offer same-day appointments for airport-area clients - especially those on tight travel schedules. 15–20 minutes from Terminal 5 by road.',
+      title: 'Same-day appointment at our Ascot office',
+      body: 'Where the diary allows, we offer same-day appointments for airport-area clients - especially those on tight travel schedules. Around 20–25 minutes from Terminal 5 by road.',
     },
     {
       icon: 'collect',

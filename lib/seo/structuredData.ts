@@ -30,10 +30,10 @@ export function organizationSchema(settings: SiteSettings) {
     address: settings.address
       ? {
           '@type': 'PostalAddress',
-          streetAddress: 'Avalon House, Unit 7A, Egham Business Village, Crabtree Road',
-          addressLocality: 'Egham',
-          addressRegion: 'Surrey',
-          postalCode: 'TW20 8RB',
+          streetAddress: "Index House, St George's Lane",
+          addressLocality: 'Ascot',
+          addressRegion: 'Berkshire',
+          postalCode: 'SL5 7ET',
           addressCountry: 'GB',
         }
       : undefined,
@@ -66,16 +66,16 @@ export function localBusinessSchema(settings: SiteSettings) {
     priceRange: '£££',
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'Avalon House, Unit 7A, Egham Business Village, Crabtree Road',
-      addressLocality: 'Egham',
-      addressRegion: 'Surrey',
-      postalCode: 'TW20 8RB',
+      streetAddress: "Index House, St George's Lane",
+      addressLocality: 'Ascot',
+      addressRegion: 'Berkshire',
+      postalCode: 'SL5 7ET',
       addressCountry: 'GB',
     },
     geo: {
       '@type': 'GeoCoordinates',
-      latitude: 51.4321,
-      longitude: -0.5582,
+      latitude: 51.4084,
+      longitude: -0.6726,
     },
     openingHoursSpecification: [
       {
@@ -212,10 +212,10 @@ export function locationLocalBusinessSchema(input: {
     priceRange: '£££',
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'Avalon House, Unit 7A, Egham Business Village, Crabtree Road',
-      addressLocality: 'Egham',
-      addressRegion: 'Surrey',
-      postalCode: 'TW20 8RB',
+      streetAddress: "Index House, St George's Lane",
+      addressLocality: 'Ascot',
+      addressRegion: 'Berkshire',
+      postalCode: 'SL5 7ET',
       addressCountry: 'GB',
     },
     areaServed: {

@@ -8,19 +8,19 @@ export const twickenhamRichmond: LocationContent = {
 
   metaTitle: 'Sell Gold, Watches & Jewellery in Twickenham & Richmond - Charters Gold',
   metaDescription:
-    'Private valuations for residents of Twickenham, Richmond, Kew, East Sheen and the wider south-west London riverside. Specialist appointments at our Egham office, a short drive or rail journey away.',
+    'Private valuations for residents of Twickenham, Richmond, Kew, East Sheen and the wider south-west London riverside. Specialist appointments at our Ascot office, a straightforward drive or direct train away.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Twickenham & Richmond',
   heroTitle: 'Private Valuations for South-West London Riverside',
   heroIntro:
-    'Twelve miles from Richmond town centre, our Egham office is the closest dedicated private valuation house outside south-west London itself. We work regularly with clients from TW1, TW2, TW9, TW10 and the wider riverside - Twickenham, Richmond, Kew, East Sheen, St Margarets, Petersham and Ham.',
+    'Around fifteen miles from Richmond town centre, our Ascot office is a straightforward drive or a direct train for south-west London riverside clients. We work regularly with clients from TW1, TW2, TW9, TW10 and the wider riverside - Twickenham, Richmond, Kew, East Sheen, St Margarets, Petersham and Ham.',
 
   travel: {
-    distanceMiles: 12,
+    distanceMiles: 15,
     drive:
-      'A316 west, M3 J1, then short hop on the A308 / A30 to Egham. 25 minutes off-peak; longer for Twickenham rugby international weekends. Free parking on site.',
+      'A316 west to the M3, then Junction 3 for Ascot. Around 30–40 minutes off-peak; allow longer for Twickenham rugby international weekends. Parking close by.',
     publicTransport:
-      'Richmond → Egham via Staines on South Western Railway, roughly 30 minutes total including the change. Twickenham → Egham slightly quicker.',
+      'Twickenham and Richmond sit on the same South Western Railway line as Ascot - a direct train of roughly 35 minutes, then a short walk from Ascot station.',
   },
 
   whyHere: [
@@ -59,8 +59,8 @@ export const twickenhamRichmond: LocationContent = {
   processOptions: [
     {
       icon: 'in-person',
-      title: 'Private appointment at our Egham office',
-      body: 'A 25-minute drive via the A316 and M3, or a 30-minute rail journey via Staines. Appointments are confidential, by name, with one specialist. Free parking on site.',
+      title: 'Private appointment at our Ascot office',
+      body: 'A 30–40 minute drive via the A316 and M3, or a direct train of roughly 35 minutes. Appointments are confidential, by name, with one specialist. Parking close by.',
     },
     {
       icon: 'collect',
@@ -83,7 +83,7 @@ export const twickenhamRichmond: LocationContent = {
     {
       question: 'Are you affected by rugby international weekends?',
       answer:
-        'The drive into Egham is unaffected - Twickenham traffic mainly impacts the immediate stadium roads. We do recommend planning your route to avoid TW2 around match days. Rail via Twickenham → Staines → Egham is unaffected.',
+        'The drive to Ascot is unaffected - Twickenham traffic mainly impacts the immediate stadium roads. We do recommend planning your route to avoid TW2 around match days. The direct train from Twickenham to Ascot is unaffected.',
     },
     {
       question: 'I have a piece from Hatton Garden - how does your offer compare?',

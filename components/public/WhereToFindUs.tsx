@@ -3,7 +3,7 @@ import type { EventSummary } from '@/lib/appointments/slots';
 
 /**
  * Homepage "Where to find us" block — the travelling pop-up locations plus the
- * Egham showroom, each linking through to the booking calendar. Renders nothing
+ * Ascot showroom, each linking through to the booking calendar. Renders nothing
  * when there are no published upcoming events so the homepage never shows an
  * empty shell.
  */
@@ -20,7 +20,7 @@ export function WhereToFindUs({ events }: { events: EventSummary[] }) {
           </span>
           <h2 className="gc-heading mt-3">Book a Private Appointment</h2>
           <p className="gc-subhead mt-3">
-            We hold private valuation days at our Egham showroom and travel to pop-up locations across the
+            We hold private valuation days at our Ascot showroom and travel to pop-up locations across the
             UK. Reserve a slot and have your gold, jewellery, watches or handbags valued in person.
           </p>
         </div>

@@ -8,19 +8,19 @@ export const reading: LocationContent = {
 
   metaTitle: 'Sell Gold, Watches & Jewellery in Reading - Charters Gold',
   metaDescription:
-    'Thames Valley specialists for private gold, watch, jewellery and handbag valuations. Reading and the M4 corridor served by appointment in Egham or insured postal - same-day payment.',
+    'Thames Valley specialists for private gold, watch, jewellery and handbag valuations. Reading and the M4 corridor served by appointment in Ascot or insured postal - same-day payment.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Reading',
   heroTitle: 'Specialist Valuations for the Thames Valley',
   heroIntro:
-    'Twenty-two miles from Reading via the M4 and M25, our Egham office serves the Thames Valley’s residential and tech-corridor clients. Many Reading-area enquiries arrive by insured Royal Mail Special Delivery, but the journey is straightforward and we welcome in-person appointments - particularly for higher-value pieces.',
+    "Around twelve miles from Reading via the A329, our Ascot office serves the Thames Valley’s residential and tech-corridor clients. Many Reading-area enquiries arrive by insured Royal Mail Special Delivery, but the journey is straightforward - a direct train, in fact - and we welcome in-person appointments, particularly for higher-value pieces.",
 
   travel: {
-    distanceMiles: 22,
+    distanceMiles: 12,
     drive:
-      'M4 east to Junction 13, then M25 south one junction to J13 (Egham). 30–40 minutes outside peak. Free parking on site.',
+      'Around 25–30 minutes via the A329 and A329(M) through Bracknell, or the M4 to Junction 10. Parking close by.',
     publicTransport:
-      'Reading to Egham is roughly 50 minutes by South Western Railway, changing at Staines. Egham station is a 4-minute walk from our office.',
+      'Reading to Ascot is a direct South Western Railway service of roughly 20–25 minutes, no change required. Ascot station is a short walk from our office.',
   },
 
   whyHere: [
@@ -30,7 +30,7 @@ export const reading: LocationContent = {
     },
     {
       title: 'Easy postal service if the drive is awkward',
-      body: 'For pieces up to £20,000, Royal Mail Special Delivery from any Reading postbox reaches us next working day. Particularly useful for clients in Reading itself, Earley, Woodley and Tilehurst who would rather not navigate the M4 / M25 junction.',
+      body: 'For pieces up to £20,000, Royal Mail Special Delivery from any Reading postbox reaches us next working day. Particularly useful for clients in Reading itself, Earley, Woodley and Tilehurst who would rather not make the drive.',
     },
     {
       title: 'No high-street pressure',
@@ -63,8 +63,8 @@ export const reading: LocationContent = {
     },
     {
       icon: 'in-person',
-      title: 'Private appointment at our Egham office',
-      body: 'A 30–40 minute drive via the M4 and M25. Appointments are confidential, by name, with one specialist. Free parking, ground-floor access.',
+      title: 'Private appointment at our Ascot office',
+      body: 'A 25–30 minute drive via the A329, or a direct train from Reading. Appointments are confidential, by name, with one specialist. Parking close by.',
     },
     {
       icon: 'collect',

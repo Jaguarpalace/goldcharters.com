@@ -8,19 +8,19 @@ export const london: LocationContent = {
 
   metaTitle: 'Sell Gold & Jewellery in London - Private Valuations | Charters Gold',
   metaDescription:
-    'A discreet alternative to Hatton Garden. Private gold, diamond, watch and handbag valuations for London clients. Insured postal service or private appointments at our Egham office.',
+    'A discreet alternative to Hatton Garden. Private gold, diamond, watch and handbag valuations for London clients. Insured postal service or private appointments at our Ascot office.',
 
   heroEyebrow: 'Selling Gold & Jewellery - London',
   heroTitle: 'Discreet Valuations for London Clients',
   heroIntro:
-    'A private, specialist-led alternative to Hatton Garden and high-street pawnshops. We work directly with London clients - by insured Royal Mail Special Delivery, by appointment at our Egham office, or - for pieces of significant value - at your private address by arrangement.',
+    'A private, specialist-led alternative to Hatton Garden and high-street pawnshops. We work directly with London clients - by insured Royal Mail Special Delivery, by appointment at our Ascot office, or - for pieces of significant value - at your private address by arrangement.',
 
   travel: {
-    distanceMiles: 20,
+    distanceMiles: 28,
     drive:
-      'Egham sits at M25 Junction 13 - 35–50 minutes from West London off-peak, longer through morning rush hour. Free parking on site.',
+      'Around 45–60 minutes from West London via the M4 or M3, longer through morning rush hour. Parking close by.',
     publicTransport:
-      'Direct South Western Railway services from London Waterloo to Egham run every 30 minutes, journey time roughly 35–40 minutes. We are a 4-minute walk from Egham station.',
+      'Direct South Western Railway services from London Waterloo to Ascot take roughly 50 minutes. Ascot station is a short walk from our office.',
   },
 
   whyHere: [
@@ -67,8 +67,8 @@ export const london: LocationContent = {
     },
     {
       icon: 'in-person',
-      title: 'Private appointment in Egham',
-      body: 'Direct trains from London Waterloo to Egham (≈35 min) deposit you a 4-minute walk from our office. Appointments are confidential, by name, with one specialist - never a showroom queue.',
+      title: 'Private appointment in Ascot',
+      body: 'Direct trains from London Waterloo to Ascot (≈50 min), then a short walk from the station to our office. Appointments are confidential, by name, with one specialist - never a showroom queue.',
     },
     {
       icon: 'collect',

@@ -40,12 +40,20 @@ export async function generateMetadata(): Promise<Metadata> {
       'cash for gold UK',
       'gold valuation UK',
       'scrap gold buyer UK',
-      // Local long-tail (high intent, lower competition)
+      // Local long-tail (high intent, lower competition) — office in Ascot,
+      // serving the wider Berkshire/Surrey border and the towns we cover.
+      'gold buyer Ascot',
+      'sell gold Ascot',
+      'gold valuation Ascot',
+      'gold buyer Berkshire',
+      'sell gold Berkshire',
+      'gold buyer Windsor',
+      'sell gold Windsor',
+      'gold buyer Sunningdale',
       'gold buyer Surrey',
-      'gold buyer Egham',
-      'sell gold Egham',
       'sell gold Surrey',
       'gold valuation Surrey',
+      'sell gold Egham',
       'Hatton Garden alternative',
       // Specific items
       'sell diamond ring UK',

@@ -11,16 +11,16 @@ export const ascot: LocationContent = {
     'Private valuations for Ascot, Sunninghill and Sunningdale residents. Specialist house for racing brooches, equestrian pieces, signed jewellery, Rolex and Patek Philippe watches.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Ascot',
-  heroTitle: 'A Specialist House for Ascot Pieces',
+  heroTitle: 'A Specialist House in the Heart of Ascot',
   heroIntro:
-    'Eight miles from Ascot Racecourse, our Egham office is the natural choice for residents and visitors of the SL5 postcode. We are particularly well-versed in racing brooches, signed jewellery from Royal Ascot week, equestrian pieces, and the kinds of luxury watches that find their way into Sunningdale and Wentworth homes.',
+    "Our office sits on St George's Lane, just off Ascot High Street and minutes from the racecourse - the natural home for valuations across the SL5 postcode. We are particularly well-versed in racing brooches, signed jewellery from Royal Ascot week, equestrian pieces, and the kinds of luxury watches that find their way into Sunningdale and Wentworth homes.",
 
   travel: {
-    distanceMiles: 8,
+    distanceMiles: 0,
     drive:
-      'Roughly 15–20 minutes via the A329 and A30. Egham is at M25 Junction 13. Free parking on site.',
+      "We are on St George's Lane, just off Ascot High Street, with parking close by. Easily reached from the A329, A330 and the M3 at Junction 3.",
     publicTransport:
-      'Ascot station to Egham via Staines on South Western Railway, roughly 25 minutes including the change. We are 4 minutes from Egham station on foot.',
+      "A 7–10 minute walk from Ascot station (South Western Railway, direct to London Waterloo in around 45 minutes) - up to the High Street, then a short way along St George's Lane.",
   },
 
   whyHere: [
@@ -29,8 +29,8 @@ export const ascot: LocationContent = {
       body: 'Royal Ascot brooches, presentation watches, racing-themed pieces - the SL5 postcode produces these regularly, and they need a specialist eye to value correctly. We price on provenance and signature, not just metal and stones.',
     },
     {
-      title: 'Closest valuation house to Wentworth and Sunningdale',
-      body: 'For residents of Wentworth, Sunningdale Park, Charters and the surrounding gated estates, we are the closest private valuation specialist outside Ascot itself. A brief drive across the M25 brings you to a confidential appointment.',
+      title: 'Right on your doorstep in Ascot',
+      body: 'For residents of Ascot, Sunninghill, Sunningdale, Wentworth and the surrounding gated estates, we are the local private valuation house - a few minutes from home, not a drive to an out-of-town counter. Appointments are confidential and unhurried.',
     },
     {
       title: 'Discretion for a community that expects it',
@@ -55,8 +55,8 @@ export const ascot: LocationContent = {
   processOptions: [
     {
       icon: 'in-person',
-      title: 'Private appointment at our Egham office',
-      body: '15–20 minutes from Ascot town centre via the A329. Appointments are confidential, by name, with one specialist.',
+      title: 'Private appointment at our Ascot office',
+      body: "On St George's Lane, just off the High Street - a short walk from Ascot station. Appointments are confidential, by name, with one specialist.",
     },
     {
       icon: 'collect',
@@ -87,9 +87,9 @@ export const ascot: LocationContent = {
         'Yes - by appointment, with identification on arrival and written acknowledgement before any piece leaves your hand. Private home visits are routine for clients in the gated estates.',
     },
     {
-      question: 'Is the drive really only 15 minutes?',
+      question: 'Where exactly are you in Ascot?',
       answer:
-        'Outside school-run hours, 15 minutes via the A329 is typical. Race-week traffic around Ascot itself can add 10–15 minutes; if your appointment is during Royal Ascot week we suggest leaving a buffer.',
+        "We are on St George's Lane, just off Ascot High Street - a 7–10 minute walk from Ascot station and a few minutes from the racecourse. The full address and parking details arrive when you confirm an appointment. Race-week traffic around Ascot can be busy, so during Royal Ascot we suggest leaving a little extra time.",
     },
     {
       question: 'What about pieces with provenance from Royal Ascot?',

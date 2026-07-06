@@ -13,14 +13,14 @@ export const surrey: LocationContent = {
   heroEyebrow: 'Selling Gold & Jewellery - Surrey',
   heroTitle: 'Your County’s Private Valuation House',
   heroIntro:
-    'Charters Gold is based in Egham, Surrey, and serves clients across the county from one of England’s wealthiest commuter belts. From St George’s Hill to Guildford, from Sunningdale to Esher, we offer private valuations, transparent offers and same-day payment for pieces of meaningful value.',
+    'Charters Gold is based in Ascot, on the Surrey/Berkshire border - minutes from Sunningdale, Virginia Water and Wentworth - and serves clients across the county from one of England’s wealthiest commuter belts. From St George’s Hill to Guildford, from Sunningdale to Esher, we offer private valuations, transparent offers and same-day payment for pieces of meaningful value.',
 
   travel: {
     distanceMiles: 0,
     drive:
-      'We are in Surrey - at Egham, M25 Junction 13. Most of the county is within a 20–35 minute drive. Free parking on site.',
+      'Our Ascot office sits on the Surrey/Berkshire border, minutes from Sunningdale and Virginia Water. Most of the county is within a 20–40 minute drive. Parking close by.',
     publicTransport:
-      'South Western Railway services connect Guildford, Woking, Walton-on-Thames, Weybridge and most of north Surrey directly to Egham via Staines or Reading.',
+      'South Western Railway connects much of Surrey to Ascot - direct trains from Guildford on the Ascot line, and connections via Staines from Weybridge, Woking and the north of the county.',
   },
 
   whyHere: [
@@ -62,8 +62,8 @@ export const surrey: LocationContent = {
   processOptions: [
     {
       icon: 'in-person',
-      title: 'Private appointment at our Egham office',
-      body: 'Most of Surrey is within a 25-minute drive of Egham. Appointments are confidential, by name, with one specialist. Free parking, ground-floor access.',
+      title: 'Private appointment at our Ascot office',
+      body: 'Most of the north Surrey belt is within 20–30 minutes of Ascot. Appointments are confidential, by name, with one specialist. Parking close by.',
     },
     {
       icon: 'collect',
@@ -73,7 +73,7 @@ export const surrey: LocationContent = {
     {
       icon: 'post',
       title: 'Insured postal valuation',
-      body: 'For clients further from Egham (Guildford, Farnham, Godalming) Royal Mail Special Delivery offers a tracked, insured, next-working-day option for pieces up to £20,000.',
+      body: 'For clients further from Ascot (Guildford, Farnham, Godalming) Royal Mail Special Delivery offers a tracked, insured, next-working-day option for pieces up to £20,000.',
     },
   ],
 
@@ -86,7 +86,7 @@ export const surrey: LocationContent = {
     {
       question: 'Do you cover the whole of Surrey?',
       answer:
-        'Yes - from Guildford in the south-west to Reigate in the east, and everything in between. Our office is in north-west Surrey (Egham) and we travel anywhere in the county for pieces of significant value.',
+        "Yes - from Guildford in the south-west to Reigate in the east, and everything in between. Our office is in Ascot, on the county's northern border, and we travel anywhere in Surrey for pieces of significant value.",
     },
     {
       question: 'I live in St George’s Hill / Wentworth - can you visit?',
@@ -96,7 +96,7 @@ export const surrey: LocationContent = {
     {
       question: 'What about pieces from Guildford or further south?',
       answer:
-        'Two routes work well for clients in southern Surrey: either an in-person appointment in Egham (≈35-minute drive up the A3), or insured postal via Royal Mail Special Delivery. We arrange whichever suits your timing.',
+        'Two routes work well for clients in southern Surrey: either an in-person appointment in Ascot (≈35 minutes via the A322), or insured postal via Royal Mail Special Delivery. We arrange whichever suits your timing.',
     },
     {
       question: 'Are you VAT-registered? Will I be charged VAT?',

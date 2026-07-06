@@ -95,7 +95,7 @@ export default async function LocationPage({ params }: { params: { slug: string 
             {/* Travel card */}
             <aside className="gc-card gc-card-gold-edge h-fit p-6 lg:sticky lg:top-28">
               <p className="text-xs font-semibold uppercase tracking-luxe text-gold-metallic">
-                Travel to our Egham office
+                Travel to our Ascot office
               </p>
               <div className="mt-4 space-y-4 text-sm text-warmgrey">
                 <Detail label="Distance" value={`${location.travel.distanceMiles} miles from our office`} />
