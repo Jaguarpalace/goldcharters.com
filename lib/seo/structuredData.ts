@@ -4,6 +4,7 @@
 
 import type { Faq, SiteSettings } from '@/types/database';
 import { FAQ_CATEGORY_LABELS } from '@/lib/format';
+import { geoCoordinates, postalAddress } from '@/lib/seo/nap';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://chartersgold.co.uk';
 
@@ -27,16 +28,7 @@ export function organizationSchema(settings: SiteSettings) {
     description: settings.seo_description,
     email: settings.email,
     telephone: settings.phone,
-    address: settings.address
-      ? {
-          '@type': 'PostalAddress',
-          streetAddress: "Index House, St George's Lane",
-          addressLocality: 'Ascot',
-          addressRegion: 'Berkshire',
-          postalCode: 'SL5 7ET',
-          addressCountry: 'GB',
-        }
-      : undefined,
+    address: postalAddress(settings),
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'customer service',
@@ -64,19 +56,8 @@ export function localBusinessSchema(settings: SiteSettings) {
     telephone: settings.phone,
     email: settings.email,
     priceRange: '£££',
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: "Index House, St George's Lane",
-      addressLocality: 'Ascot',
-      addressRegion: 'Berkshire',
-      postalCode: 'SL5 7ET',
-      addressCountry: 'GB',
-    },
-    geo: {
-      '@type': 'GeoCoordinates',
-      latitude: 51.4084,
-      longitude: -0.6726,
-    },
+    address: postalAddress(settings),
+    geo: geoCoordinates(settings),
     openingHoursSpecification: [
       {
         '@type': 'OpeningHoursSpecification',
@@ -210,14 +191,7 @@ export function locationLocalBusinessSchema(input: {
     telephone: settings.phone,
     email: settings.email,
     priceRange: '£££',
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: "Index House, St George's Lane",
-      addressLocality: 'Ascot',
-      addressRegion: 'Berkshire',
-      postalCode: 'SL5 7ET',
-      addressCountry: 'GB',
-    },
+    address: postalAddress(settings),
     areaServed: {
       '@type': 'Place',
       name: locationName,

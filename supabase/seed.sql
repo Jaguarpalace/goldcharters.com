@@ -5,6 +5,8 @@
 -- Site settings (single row)
 insert into public.site_settings (
   business_name, phone, email, whatsapp, address, opening_hours,
+  address_street, address_locality, address_region, address_postcode,
+  address_latitude, address_longitude,
   top_bar_message, top_bar_review_text, top_bar_trust_text, top_bar_payment_text,
   footer_description, footer_disclaimer, seo_title, seo_description
 ) values (
@@ -12,8 +14,14 @@ insert into public.site_settings (
   '0800 047 2348',
   'office@chartersgold.co.uk',
   '+44 7700 900123',
-  'Avalon House, Unit 7A, Egham Business Village, Crabtree Road, Egham, Surrey, TW20 8RB',
+  'Index House, St George''s Lane, Ascot, Berkshire, SL5 7ET',
   'Monday – Saturday · 10:00 – 18:00 · By appointment',
+  'Index House, St George''s Lane',
+  'Ascot',
+  'Berkshire',
+  'SL5 7ET',
+  51.4084,
+  -0.6726,
   'Discreet UK gold & jewellery specialists',
   'Excellent client reviews',
   'Private valuations · Insured handling',

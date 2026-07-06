@@ -8,7 +8,22 @@ export type SiteSettings = {
   phone: string;
   email: string;
   whatsapp: string | null;
+  /**
+   * Composed one-line display address, e.g.
+   * "Index House, St George's Lane, Ascot, Berkshire, SL5 7ET".
+   * Derived from the structured NAP fields below on every save —
+   * never edited directly. Consumed by the footer, contact page,
+   * legal pages and email templates.
+   */
   address: string | null;
+  /* ---- Structured NAP (single source of truth, edited in /admin/settings).
+          JSON-LD PostalAddress + GeoCoordinates build from these. ---- */
+  address_street: string | null;
+  address_locality: string | null;
+  address_region: string | null;
+  address_postcode: string | null;
+  address_latitude: number | null;
+  address_longitude: number | null;
   opening_hours: string | null;
   top_bar_message: string | null;
   top_bar_review_text: string | null;
