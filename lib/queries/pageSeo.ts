@@ -56,7 +56,9 @@ const SEO_DEFAULTS: Record<string, { title: string; description: string }> = {
       'Practical guides on selling gold, fine jewellery, luxury watches and designer handbags in the UK - written by Charters Gold specialists.',
   },
   '/gold-calculator': {
-    title: 'Scrap Gold Calculator UK · 9ct, 18ct & 22ct Gold Price Per Gram',
+    // 58 chars — Google truncates titles around 60, and "Price Per Gram"
+    // is the money phrase, so it must survive the cut.
+    title: 'Scrap Gold Calculator · 9ct, 18ct & 22ct Price Per Gram UK',
     description:
       'Check today’s 9ct, 14ct, 18ct and 22ct gold price per gram and get an instant figure for your scrap gold. Live UK rates for gold, silver, platinum and palladium.',
   },
