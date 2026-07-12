@@ -7,6 +7,16 @@ import { heathrow } from './heathrow';
 import { reading } from './reading';
 import { twickenhamRichmond } from './twickenham-richmond';
 import { stainesEgham } from './staines-egham';
+import { virginiaWaterWentworth } from './virginia-water-wentworth';
+import { maidenheadBray } from './maidenhead-bray';
+import { weybridgeEsherCobham } from './weybridge-esher-cobham';
+import { guildford } from './guildford';
+import { woking } from './woking';
+import { kingstonUponThames } from './kingston-upon-thames';
+import { beaconsfieldGerrardsCross } from './beaconsfield-gerrards-cross';
+import { hounslow } from './hounslow';
+import { hillingdonUxbridge } from './hillingdon-uxbridge';
+import { ealing } from './ealing';
 
 /**
  * Locations are deliberately ordered by relevance / commercial priority,
@@ -14,13 +24,23 @@ import { stainesEgham } from './staines-egham';
  * index, the footer "Areas We Cover" block, and the sitemap.
  */
 export const LOCATIONS: LocationContent[] = [
-  stainesEgham,
-  london,
+  ascot,
+  virginiaWaterWentworth,
   windsor,
   surrey,
-  ascot,
-  heathrow,
+  stainesEgham,
+  london,
+  weybridgeEsherCobham,
+  maidenheadBray,
+  woking,
+  guildford,
+  kingstonUponThames,
+  beaconsfieldGerrardsCross,
   twickenhamRichmond,
+  hounslow,
+  hillingdonUxbridge,
+  ealing,
+  heathrow,
   reading,
 ];
 

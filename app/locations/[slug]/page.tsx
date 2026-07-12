@@ -80,8 +80,10 @@ export default async function LocationPage({ params }: { params: { slug: string 
             <p className="gc-subhead mt-5">{location.heroIntro}</p>
             <div className="mt-7 flex flex-wrap justify-center gap-3">
               <GetValuationLink className="gc-btn-primary">Get a Valuation</GetValuationLink>
+              {/* Keyword-rich anchor: tells Google what the calculator page
+                  is about from every location page. */}
               <Link href="/gold-calculator" className="gc-btn-secondary">
-                Open Calculator
+                Today&rsquo;s Gold Price Per Gram
               </Link>
             </div>
           </div>
