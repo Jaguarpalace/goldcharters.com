@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { LOCATIONS } from '@/lib/content/locations';
+import { getLocationGroups } from '@/lib/content/locations';
 import { buildPageMetadata } from '@/lib/queries/pageSeo';
 
 export const revalidate = 86400;
@@ -27,11 +27,19 @@ export default function LocationsIndexPage() {
         </div>
       </section>
 
-      <section className="py-8 lg:py-12">
-        <div className="gc-container">
-          <ul className="mx-auto grid max-w-5xl gap-3 sm:grid-cols-2">
-            {LOCATIONS.map((l) => (
-              <li key={l.slug}>
+      {/* Grouped by county — structure for visitors, and county-level
+          topical grouping for crawlers. */}
+      {getLocationGroups().map((group) => (
+        <section key={group.title} className="py-6 lg:py-8">
+          <div className="gc-container">
+            <div className="mx-auto max-w-5xl">
+              <h2 className="font-display text-xl font-semibold text-gold-tint">
+                {group.title}
+              </h2>
+            </div>
+            <ul className="mx-auto mt-4 grid max-w-5xl gap-3 sm:grid-cols-2">
+              {group.locations.map((l) => (
+                <li key={l.slug}>
                 <Link
                   href={`/locations/${l.slug}`}
                   className="group flex h-full items-start gap-4 rounded-xl border border-gold-metallic/20 bg-ink-900/60 p-5 transition hover:border-gold-metallic hover:bg-ink-800/40"
@@ -82,12 +90,13 @@ export default function LocationsIndexPage() {
                   >
                     <path d="M2 7h10M8 3l4 4-4 4" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      ))}
     </>
   );
 }

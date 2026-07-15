@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getAllLocationSlugs, getLocationBySlug } from '@/lib/content/locations';
+import { getAllLocationSlugs, getLocationBySlug, getNearbyLocations } from '@/lib/content/locations';
 import { getSiteSettings } from '@/lib/queries/homepage';
 import { JsonLd } from '@/lib/seo/JsonLd';
 import {
+  breadcrumbSchema,
   DEFAULT_OG_IMAGE,
   locationFaqSchema,
   locationLocalBusinessSchema,
@@ -54,6 +55,7 @@ export default async function LocationPage({ params }: { params: { slug: string 
   if (!location) notFound();
 
   const settings = await getSiteSettings();
+  const nearby = getNearbyLocations(location.slug);
 
   return (
     <>
@@ -67,8 +69,31 @@ export default async function LocationPage({ params }: { params: { slug: string 
             description: location.metaDescription,
           }),
           locationFaqSchema(location.faqs),
+          // Matches the visible Home / Locations / {name} trail below.
+          breadcrumbSchema([
+            { name: 'Home', url: SITE_URL },
+            { name: 'Areas We Cover', url: `${SITE_URL}/locations` },
+            { name: location.name, url: `${SITE_URL}/locations/${location.slug}` },
+          ]),
         ]}
       />
+
+      {/* Visible breadcrumb — mirrors the BreadcrumbList JSON-LD above. */}
+      <nav aria-label="Breadcrumb" className="border-b border-gold-metallic/15">
+        <div className="gc-container py-3 text-xs text-warmgrey">
+          <ol className="flex flex-wrap items-center gap-1.5">
+            <li>
+              <Link href="/" className="hover:text-gold-tint">Home</Link>
+            </li>
+            <li aria-hidden className="text-gold-metallic/50">/</li>
+            <li>
+              <Link href="/locations" className="hover:text-gold-tint">Areas We Cover</Link>
+            </li>
+            <li aria-hidden className="text-gold-metallic/50">/</li>
+            <li aria-current="page" className="text-gold-tint">{location.name}</li>
+          </ol>
+        </div>
+      </nav>
 
       {/* HERO */}
       <section className="relative overflow-hidden border-b border-gold-metallic/15">
@@ -210,8 +235,41 @@ export default async function LocationPage({ params }: { params: { slug: string 
         </div>
       </section>
 
+      {/* NEARBY AREAS — internal links that teach search engines the
+          town-to-page mapping and pass relevance between neighbouring
+          catchments. Curated per location in lib/content/locations. */}
+      {nearby.length > 0 && (
+        <section className="py-8 lg:py-12">
+          <div className="gc-container">
+            <div className="mx-auto max-w-3xl text-center">
+              <span className="gc-eyebrow">Close to {location.name}</span>
+              <h2 className="gc-heading mt-3">We also cover these nearby areas</h2>
+            </div>
+            <ul className="mx-auto mt-8 grid max-w-5xl gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {nearby.map((n) => (
+                <li key={n.slug}>
+                  <Link
+                    href={`/locations/${n.slug}`}
+                    className="group block h-full rounded-xl border border-gold-metallic/20 bg-ink-900/50 p-4 transition hover:border-gold-metallic/60 hover:bg-ink-800/50"
+                  >
+                    <span className="font-display text-base font-semibold text-white group-hover:text-gold-bright">
+                      Sell gold &amp; jewellery in {n.name}
+                    </span>
+                    <span className="mt-1 block text-xs text-warmgrey">
+                      {n.travel.distanceMiles === 0
+                        ? 'Home of our office'
+                        : `${n.travel.distanceMiles} miles from our Ascot office`}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
+
       {/* CTA + INLINE VALUATION FORM */}
-      <section className="py-8 lg:py-12" id="valuation-form">
+      <section className="py-8 lg:py-12 border-t border-gold-metallic/15" id="valuation-form">
         <div className="gc-container">
           <div className="mx-auto max-w-3xl text-center">
             <span className="gc-eyebrow">{location.cta.title}</span>

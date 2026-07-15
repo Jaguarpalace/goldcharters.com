@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { JsonLd } from '@/lib/seo/JsonLd';
 import { breadcrumbSchema, serviceSchema, SITE_URL } from '@/lib/seo/structuredData';
 import { findHomepageSection, getHomepageSections } from '@/lib/queries/homepage';
@@ -43,6 +44,27 @@ export default async function SellJewelleryPage() {
         asH1
       />
       <ValuationExplanation section={findHomepageSection(sections, 'valuation_explainer')} />
+
+      {/* Sibling cross-link: /sell-antique-jewellery owns the period/inherited
+          angle; this page owns modern & designer. Linked both ways so search
+          engines read them as complementary, not competing. */}
+      <section className="py-6 lg:py-8">
+        <div className="gc-container">
+          <div className="mx-auto max-w-3xl rounded-xl border border-gold-metallic/20 bg-ink-900/50 p-6 text-center">
+            <h2 className="font-display text-lg font-semibold text-white">
+              Selling antique or inherited pieces?
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed text-warmgrey">
+              Georgian, Victorian, Art Deco and other period jewellery is valued on era,
+              craftsmanship and provenance - a different discipline from modern pieces.
+            </p>
+            <Link href="/sell-antique-jewellery" className="gc-btn-secondary mt-4 inline-flex">
+              Sell Antique &amp; Vintage Jewellery
+            </Link>
+          </div>
+        </div>
+      </section>
+
       <ItemsWeBuy items={items} />
       <HowItWorks />
       <section className="py-6 lg:py-10" id="valuation-form">
