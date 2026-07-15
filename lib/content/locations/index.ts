@@ -59,7 +59,7 @@ export function getAllLocationSlugs(): string[] {
  * Curated geographic adjacency, used for the "nearby areas" cross-links on
  * each location page. Hand-picked rather than computed so the links always
  * make human sense (real neighbouring catchments, 4-5 per page). These
- * internal links teach Google which page belongs to which town — every
+ * internal links teach Google which page belongs to which town - every
  * entry is resolved through BY_SLUG, so a typo yields a missing link,
  * never a broken one.
  */

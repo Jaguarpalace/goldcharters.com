@@ -74,7 +74,7 @@ export default async function GoldCalculatorPage() {
       {/* GoldCalculator acts as the page hero - its title renders as <h1>. */}
       <GoldCalculator rates={rates} asH1 />
 
-      {/* Crawlable price table — the calculator itself is interactive, so the
+      {/* Crawlable price table - the calculator itself is interactive, so the
           per-gram rates are repeated here as plain HTML for search engines
           (and anyone who just wants today's number without typing). */}
       {rates.length > 0 && (
@@ -144,7 +144,7 @@ export default async function GoldCalculatorPage() {
         </section>
       )}
 
-      {/* FAQ — mirrors the top "9ct gold" search phrasings from Search Console. */}
+      {/* FAQ - mirrors the top "9ct gold" search phrasings from Search Console. */}
       <section className="py-8 lg:py-12">
         <div className="gc-container max-w-3xl">
           <span className="gc-eyebrow">Gold Prices - Frequently Asked</span>

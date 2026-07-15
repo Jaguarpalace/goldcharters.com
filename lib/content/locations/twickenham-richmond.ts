@@ -18,7 +18,7 @@ export const twickenhamRichmond: LocationContent = {
   travel: {
     distanceMiles: 15,
     drive:
-      'A316 west to the M3, then Junction 3 for Ascot. Around 30–40 minutes off-peak; allow longer for Twickenham rugby international weekends. Parking close by.',
+      'A316 west to the M3, then Junction 3 for Ascot. Around 30-40 minutes off-peak; allow longer for Twickenham rugby international weekends. Parking close by.',
     publicTransport:
       'Twickenham and Richmond sit on the same South Western Railway line as Ascot - a direct train of roughly 35 minutes, then a short walk from Ascot station.',
   },
@@ -60,7 +60,7 @@ export const twickenhamRichmond: LocationContent = {
     {
       icon: 'in-person',
       title: 'Private appointment at our Ascot office',
-      body: 'A 30–40 minute drive via the A316 and M3, or a direct train of roughly 35 minutes. Appointments are confidential, by name, with one specialist. Parking close by.',
+      body: 'A 30-40 minute drive via the A316 and M3, or a direct train of roughly 35 minutes. Appointments are confidential, by name, with one specialist. Parking close by.',
     },
     {
       icon: 'collect',

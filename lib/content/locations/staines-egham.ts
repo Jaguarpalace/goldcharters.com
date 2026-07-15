@@ -13,12 +13,12 @@ export const stainesEgham: LocationContent = {
   heroEyebrow: 'Selling Gold & Jewellery - Staines & Egham',
   heroTitle: 'Private Valuations for Staines & Egham',
   heroIntro:
-    'Staines and Egham sit a short drive from our Ascot office - around 15–20 minutes - and remain a core part of our catchment. We value gold, fine jewellery, designer handbags and luxury watches for clients across Staines, Englefield Green, Virginia Water, Thorpe, Chertsey and the wider TW18 / TW19 / TW20 / GU25 area. Private appointments only - no public showroom.',
+    'Staines and Egham sit a short drive from our Ascot office - around 15-20 minutes - and remain a core part of our catchment. We value gold, fine jewellery, designer handbags and luxury watches for clients across Staines, Englefield Green, Virginia Water, Thorpe, Chertsey and the wider TW18 / TW19 / TW20 / GU25 area. Private appointments only - no public showroom.',
 
   travel: {
     distanceMiles: 8,
     drive:
-      'Around 15–20 minutes from Staines and Egham to our Ascot office via the A30 and A329, with parking close by.',
+      'Around 15-20 minutes from Staines and Egham to our Ascot office via the A30 and A329, with parking close by.',
     publicTransport:
       'Egham and Virginia Water sit on the same South Western Railway line as Ascot - a direct train of roughly 15 minutes, then a short walk from Ascot station to the office.',
   },
@@ -58,7 +58,7 @@ export const stainesEgham: LocationContent = {
     {
       icon: 'in-person',
       title: 'Private appointment at our Ascot office',
-      body: 'For most local clients a short drive (15–20 minutes) or a direct train from Egham is the natural choice. Appointments are confidential, by name, with one specialist. Parking close by, refreshments while you wait.',
+      body: 'For most local clients a short drive (15-20 minutes) or a direct train from Egham is the natural choice. Appointments are confidential, by name, with one specialist. Parking close by, refreshments while you wait.',
     },
     {
       icon: 'collect',
@@ -86,7 +86,7 @@ export const stainesEgham: LocationContent = {
     {
       question: 'Where exactly are you?',
       answer:
-        "Our office is on St George's Lane in Ascot, just off the High Street - about 15–20 minutes by car from Staines and Egham, or a direct 15-minute train from Egham station. The full address and parking details arrive when you confirm an appointment.",
+        "Our office is on St George's Lane in Ascot, just off the High Street - about 15-20 minutes by car from Staines and Egham, or a direct 15-minute train from Egham station. The full address and parking details arrive when you confirm an appointment.",
     },
     {
       question: 'I have one broken gold chain - is it worth bringing in?',

@@ -13,12 +13,12 @@ export const heathrow: LocationContent = {
   heroEyebrow: 'Selling Gold & Jewellery - Heathrow',
   heroTitle: 'Private Valuations a Short Drive from the Airport',
   heroIntro:
-    'Our Ascot office is around 10 miles from Heathrow - typically 20–25 minutes from Terminal 5. We are well used to working with airport-area residents, expatriates moving overseas, returning long-stay travellers and international clients passing through. Same-day appointments where the diary allows.',
+    'Our Ascot office is around 10 miles from Heathrow - typically 20-25 minutes from Terminal 5. We are well used to working with airport-area residents, expatriates moving overseas, returning long-stay travellers and international clients passing through. Same-day appointments where the diary allows.',
 
   travel: {
     distanceMiles: 10,
     drive:
-      'By road, around 20–25 minutes from Heathrow Terminal 5 via the A30 and A329, longer from T2 / T3 in heavy traffic. Parking close by.',
+      'By road, around 20-25 minutes from Heathrow Terminal 5 via the A30 and A329, longer from T2 / T3 in heavy traffic. Parking close by.',
     publicTransport:
       'Bus services from Heathrow Central run toward Staines and Egham, from where Ascot is a direct train. Easier for most clients on tight timing: a short taxi/Uber directly to our office.',
   },
@@ -58,7 +58,7 @@ export const heathrow: LocationContent = {
     {
       icon: 'in-person',
       title: 'Same-day appointment at our Ascot office',
-      body: 'Where the diary allows, we offer same-day appointments for airport-area clients - especially those on tight travel schedules. Around 20–25 minutes from Terminal 5 by road.',
+      body: 'Where the diary allows, we offer same-day appointments for airport-area clients - especially those on tight travel schedules. Around 20-25 minutes from Terminal 5 by road.',
     },
     {
       icon: 'collect',

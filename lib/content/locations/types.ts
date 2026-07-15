@@ -4,7 +4,7 @@
  * Each location is a hardcoded TypeScript file in this directory. We
  * deliberately avoid an admin/DB-backed system here so the content stays
  * editorial (real route info, real neighbourhoods, real local context)
- * rather than template-spun — which Google's Helpful Content algorithm
+ * rather than template-spun - which Google's Helpful Content algorithm
  * actively demotes.
  */
 

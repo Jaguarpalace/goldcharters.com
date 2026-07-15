@@ -18,9 +18,9 @@ export const reading: LocationContent = {
   travel: {
     distanceMiles: 12,
     drive:
-      'Around 25–30 minutes via the A329 and A329(M) through Bracknell, or the M4 to Junction 10. Parking close by.',
+      'Around 25-30 minutes via the A329 and A329(M) through Bracknell, or the M4 to Junction 10. Parking close by.',
     publicTransport:
-      'Reading to Ascot is a direct South Western Railway service of roughly 20–25 minutes, no change required. Ascot station is a short walk from our office.',
+      'Reading to Ascot is a direct South Western Railway service of roughly 20-25 minutes, no change required. Ascot station is a short walk from our office.',
   },
 
   whyHere: [
@@ -64,7 +64,7 @@ export const reading: LocationContent = {
     {
       icon: 'in-person',
       title: 'Private appointment at our Ascot office',
-      body: 'A 25–30 minute drive via the A329, or a direct train from Reading. Appointments are confidential, by name, with one specialist. Parking close by.',
+      body: 'A 25-30 minute drive via the A329, or a direct train from Reading. Appointments are confidential, by name, with one specialist. Parking close by.',
     },
     {
       icon: 'collect',

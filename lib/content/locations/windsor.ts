@@ -20,7 +20,7 @@ export const windsor: LocationContent = {
     drive:
       'Around 15 minutes via the A332 through Windsor Great Park - straightforward outside school-run hours. Parking close by.',
     publicTransport:
-      'Most Windsor clients drive, as it is quicker than the train. By rail, Windsor & Eton Riverside connects to Ascot via Staines (one change), roughly 35–40 minutes.',
+      'Most Windsor clients drive, as it is quicker than the train. By rail, Windsor & Eton Riverside connects to Ascot via Staines (one change), roughly 35-40 minutes.',
   },
 
   whyHere: [

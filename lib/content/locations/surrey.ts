@@ -18,7 +18,7 @@ export const surrey: LocationContent = {
   travel: {
     distanceMiles: 0,
     drive:
-      'Our Ascot office sits on the Surrey/Berkshire border, minutes from Sunningdale and Virginia Water. Most of the county is within a 20–40 minute drive. Parking close by.',
+      'Our Ascot office sits on the Surrey/Berkshire border, minutes from Sunningdale and Virginia Water. Most of the county is within a 20-40 minute drive. Parking close by.',
     publicTransport:
       'South Western Railway connects much of Surrey to Ascot - direct trains from Guildford on the Ascot line, and connections via Staines from Weybridge, Woking and the north of the county.',
   },
@@ -63,7 +63,7 @@ export const surrey: LocationContent = {
     {
       icon: 'in-person',
       title: 'Private appointment at our Ascot office',
-      body: 'Most of the north Surrey belt is within 20–30 minutes of Ascot. Appointments are confidential, by name, with one specialist. Parking close by.',
+      body: 'Most of the north Surrey belt is within 20-30 minutes of Ascot. Appointments are confidential, by name, with one specialist. Parking close by.',
     },
     {
       icon: 'collect',

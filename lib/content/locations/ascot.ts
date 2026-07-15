@@ -20,7 +20,7 @@ export const ascot: LocationContent = {
     drive:
       "We are on St George's Lane, just off Ascot High Street, with parking close by. Easily reached from the A329, A330 and the M3 at Junction 3.",
     publicTransport:
-      "A 7–10 minute walk from Ascot station (South Western Railway, direct to London Waterloo in around 45 minutes) - up to the High Street, then a short way along St George's Lane.",
+      "A 7-10 minute walk from Ascot station (South Western Railway, direct to London Waterloo in around 45 minutes) - up to the High Street, then a short way along St George's Lane.",
   },
 
   whyHere: [
@@ -94,7 +94,7 @@ export const ascot: LocationContent = {
     {
       question: 'Where exactly are you in Ascot?',
       answer:
-        "We are on St George's Lane, just off Ascot High Street - a 7–10 minute walk from Ascot station and a few minutes from the racecourse. The full address and parking details arrive when you confirm an appointment. Race-week traffic around Ascot can be busy, so during Royal Ascot we suggest leaving a little extra time.",
+        "We are on St George's Lane, just off Ascot High Street - a 7-10 minute walk from Ascot station and a few minutes from the racecourse. The full address and parking details arrive when you confirm an appointment. Race-week traffic around Ascot can be busy, so during Royal Ascot we suggest leaving a little extra time.",
     },
     {
       question: 'What about pieces with provenance from Royal Ascot?',

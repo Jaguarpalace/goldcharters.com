@@ -18,7 +18,7 @@ export const london: LocationContent = {
   travel: {
     distanceMiles: 28,
     drive:
-      'Around 45–60 minutes from West London via the M4 or M3, longer through morning rush hour. Parking close by.',
+      'Around 45-60 minutes from West London via the M4 or M3, longer through morning rush hour. Parking close by.',
     publicTransport:
       'Direct South Western Railway services from London Waterloo to Ascot take roughly 50 minutes. Ascot station is a short walk from our office.',
   },
