@@ -84,7 +84,7 @@ export default async function PurchasePrintPage({
       <div className="print-sheet">
         <header className="print-header">
           <img
-            src={settings.logo_url ?? '/logo/charters_gold_true_transparent.png'}
+            src={settings.logo_url ?? '/logo/charters_gold_logo.png'}
             alt={settings.business_name}
             className="print-logo"
           />

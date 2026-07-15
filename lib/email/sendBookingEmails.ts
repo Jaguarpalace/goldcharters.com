@@ -38,7 +38,7 @@ export async function sendBookingEmails(
 
   const settings = await getSiteSettings();
   const businessName = settings.business_name;
-  const logoUrl = `${SITE_URL}/logo/charters_gold_true_transparent.png`;
+  const logoUrl = `${SITE_URL}/logo/charters_gold_logo.png`;
   const when = formatSlotLong(appointment.starts_at);
   const where = locationLine(event);
   const cancelUrl = `${SITE_URL}/appointments/cancel?token=${appointment.cancel_token}`;

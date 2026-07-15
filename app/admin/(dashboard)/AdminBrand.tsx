@@ -15,7 +15,7 @@ export function AdminBrand() {
       className="group flex flex-col items-center leading-none"
     >
       <Image
-        src="/logo/charters_gold_true_transparent.png"
+        src="/logo/charters_gold_logo.png"
         alt="Charters Gold"
         width={320}
         height={320}

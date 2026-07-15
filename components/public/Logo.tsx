@@ -50,7 +50,7 @@ export function Logo({ businessName, size = 'default', href = '/' }: LogoProps) 
       aria-label={`${businessName} - home`}
     >
       <Image
-        src="/logo/charters_gold_true_transparent.png"
+        src="/logo/charters_gold_logo.png"
         alt={businessName}
         width={520}
         height={520}
