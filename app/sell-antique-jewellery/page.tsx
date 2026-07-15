@@ -21,29 +21,29 @@ export async function generateMetadata(): Promise<Metadata> {
  * Targets the antique/vintage query cluster from Search Console ("sell
  * antique ring", "selling vintage jewellery", "sell antique jewellery
  * surrey"). Deliberately distinct from /sell-jewellery, which owns the
- * modern/designer angle — the two cross-link so search engines read them
+ * modern/designer angle - the two cross-link so search engines read them
  * as siblings, not rivals.
  */
 
 const ERAS = [
   {
-    era: 'Georgian (1714–1837)',
+    era: 'Georgian (1714-1837)',
     body: 'Closed-back settings, foiled stones, cannetille work. Genuinely scarce - almost always worth more than its metal, and frequently mispriced by weight-only buyers.',
   },
   {
-    era: 'Victorian (1837–1901)',
+    era: 'Victorian (1837-1901)',
     body: 'Mourning jewellery, lockets, snake motifs, garnet and turquoise pieces. Condition and completeness drive value; original cases help.',
   },
   {
-    era: 'Edwardian & Belle Époque (1901–1915)',
+    era: 'Edwardian & Belle Époque (1901-1915)',
     body: 'Platinum lacework, old-cut diamonds, bows and garlands. Old European and mine-cut stones are valued as period cuts - never priced as if awaiting a re-cut.',
   },
   {
-    era: 'Art Deco (1920s–1930s)',
+    era: 'Art Deco (1920s-1930s)',
     body: 'Geometric platinum and white gold, calibré-cut sapphires, emeralds and onyx. The most sought-after period in today’s market - signed pieces especially.',
   },
   {
-    era: 'Mid-century & Retro (1940s–1960s)',
+    era: 'Mid-century & Retro (1940s-1960s)',
     body: 'Bold rose and yellow gold, cocktail rings, tank bracelets. Rising fast at auction as collectors move beyond Deco.',
   },
   {
