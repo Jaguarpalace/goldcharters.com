@@ -483,6 +483,13 @@ export async function listValuationRequests(): Promise<ValuationRequestRow[]> {
     kycByCustomer.set(cid, hasId && hasPoa);
   }
 
+  // ----- Refresh photo links -----------------------------------------------
+  // The URL stored at upload time is a signed URL that expires after 7 days,
+  // so older requests showed broken images even though the files are safe
+  // in the private bucket. Re-sign every photo on read (1-hour links) in a
+  // single batched call. Fail-soft: if signing fails, the stored URL stays.
+  await refreshPhotoUrls(rows.flatMap((r) => r.valuation_request_images ?? []));
+
   // ----- Attach to rows ----------------------------------------------------
   return rows.map((row) => {
     const customer = customerByEmail.get(row.email.trim().toLowerCase()) ?? null;
@@ -1003,6 +1010,46 @@ export async function bulkDeleteValuationRequests(
   revalidatePath('/admin/valuation-requests');
   revalidatePath('/admin');
   return { ok: true, deleted: data?.length ?? ids.length };
+}
+
+const UPLOADS_BUCKET = 'valuation-uploads';
+
+/**
+ * Replace each image's stored (possibly expired) signed URL with a freshly
+ * signed one, in place. One batched storage call for all photos.
+ */
+async function refreshPhotoUrls(images: ValuationRequestImage[]): Promise<void> {
+  if (images.length === 0) return;
+  const admin = getAdminSupabase();
+  if (!admin) return;
+
+  const pathFor = new Map<ValuationRequestImage, string>();
+  for (const img of images) {
+    const path = extractStoragePath(img.image_url, UPLOADS_BUCKET) ?? (img.image_url.includes('://') ? null : img.image_url);
+    if (path) pathFor.set(img, path);
+  }
+  const uniquePaths = Array.from(new Set(pathFor.values()));
+  if (uniquePaths.length === 0) return;
+
+  try {
+    const { data, error } = await admin.storage
+      .from(UPLOADS_BUCKET)
+      .createSignedUrls(uniquePaths, 60 * 60);
+    if (error || !data) {
+      console.error('[valuation:photos] re-sign failed', error);
+      return;
+    }
+    const fresh = new Map<string, string>();
+    for (const item of data) {
+      if (item.path && item.signedUrl) fresh.set(item.path, item.signedUrl);
+    }
+    for (const [img, path] of pathFor) {
+      const url = fresh.get(path);
+      if (url) img.image_url = url;
+    }
+  } catch (err) {
+    console.error('[valuation:photos] re-sign threw', err);
+  }
 }
 
 /** Pull the storage object path out of either a Supabase public URL or a
