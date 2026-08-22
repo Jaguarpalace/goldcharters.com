@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getBrowserSupabase } from '@/lib/supabase/client';
 
-type Step = 'password' | 'mfa';
+type Step = 'password' | 'mfa' | 'forgot';
 type Supa = NonNullable<ReturnType<typeof getBrowserSupabase>>;
 
 /** Only ever send people back inside the admin - never to an external URL. */
@@ -28,16 +28,42 @@ export function LoginForm({ initialStep = 'password' }: { initialStep?: Step }) 
   const [factorId, setFactorId] = useState<string | null>(null);
   const [code, setCode] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   // Arriving directly at the code step (password already accepted on this
-  // session) - look up which authenticator to challenge.
+  // session) - look up which authenticator to challenge. `?forgot=1` opens
+  // the reset form straight away (linked from an expired reset page).
   useEffect(() => {
+    if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('forgot') === '1') {
+      setStep('forgot');
+      return;
+    }
     if (initialStep !== 'mfa') return;
     const supabase = getBrowserSupabase();
     if (!supabase) return;
     findVerifiedTotpFactor(supabase).then(setFactorId);
   }, [initialStep]);
+
+  const onForgot = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError(null);
+    setNotice(null);
+    const email = String(new FormData(e.currentTarget).get('email') ?? '').trim();
+    const supabase = getBrowserSupabase();
+    if (!supabase || !email) return;
+    setLoading(true);
+    const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/admin/reset-password`,
+    });
+    setLoading(false);
+    if (resetError) {
+      setError(resetError.message);
+      return;
+    }
+    // Same message whether or not the address exists - no account enumeration.
+    setNotice('If that address has an admin account, a reset link is on its way. It expires after a short time and works once.');
+  };
 
   const finish = () => {
     router.push(safeNext());
@@ -110,6 +136,49 @@ export function LoginForm({ initialStep = 'password' }: { initialStep?: Step }) 
     setStep('password');
     router.refresh();
   };
+
+  if (step === 'forgot') {
+    return (
+      <form onSubmit={onForgot} className="space-y-5">
+        <div>
+          <p className="text-sm text-white">Reset your password</p>
+          <p className="mt-1 text-xs text-warmgrey">
+            Enter your admin email and we&rsquo;ll send a link to choose a new password.
+          </p>
+        </div>
+        <div>
+          <label htmlFor="forgot-email" className="gc-label">
+            Email
+          </label>
+          <input id="forgot-email" name="email" type="email" required className="gc-input" autoComplete="email" autoFocus />
+        </div>
+        {notice && (
+          <p className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200">
+            {notice}
+          </p>
+        )}
+        {error && (
+          <p className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-300">
+            {error}
+          </p>
+        )}
+        <button type="submit" disabled={loading} className="gc-btn-primary w-full">
+          {loading ? 'Sending…' : 'Send reset link'}
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setStep('password');
+            setError(null);
+            setNotice(null);
+          }}
+          className="w-full text-center text-xs uppercase tracking-luxe text-warmgrey hover:text-gold-bright"
+        >
+          Back to sign in
+        </button>
+      </form>
+    );
+  }
 
   if (step === 'mfa') {
     return (
@@ -187,6 +256,16 @@ export function LoginForm({ initialStep = 'password' }: { initialStep?: Step }) 
       )}
       <button type="submit" disabled={loading} className="gc-btn-primary w-full">
         {loading ? 'Signing in…' : 'Sign In'}
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          setStep('forgot');
+          setError(null);
+        }}
+        className="w-full text-center text-xs uppercase tracking-luxe text-warmgrey hover:text-gold-bright"
+      >
+        Forgot password?
       </button>
     </form>
   );
