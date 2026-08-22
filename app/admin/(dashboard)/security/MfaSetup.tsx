@@ -239,16 +239,6 @@ export function MfaSetup() {
         </form>
       )}
 
-      {/* How it works */}
-      <div className="rounded-xl border border-gold-metallic/15 bg-ink-950/60 p-5 text-xs leading-relaxed text-warmgrey">
-        <p className="font-semibold text-white">How this works</p>
-        <ul className="mt-2 list-disc space-y-1 pl-5">
-          <li>Only your own account is affected. Other team members enable it separately on their own phones.</li>
-          <li>Enrolment is confirmed with a live code before it activates, so a mis-scanned QR changes nothing.</li>
-          <li>Every sign-in then needs your password plus the current code. Admin actions from a session that skipped the code are refused.</li>
-          <li>Changing phones: turn it off here while signed in, then turn it on again with the new device.</li>
-        </ul>
-      </div>
     </div>
   );
 }
