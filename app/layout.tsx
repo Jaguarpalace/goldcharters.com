@@ -117,14 +117,14 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     icons: {
       icon: [
-        { url: '/favicon/favicon.ico', sizes: 'any' },
-        { url: '/favicon/favicon-16x16.png', type: 'image/png', sizes: '16x16' },
-        { url: '/favicon/favicon-32x32.png', type: 'image/png', sizes: '32x32' },
-        { url: '/favicon/android-chrome-192x192.png', type: 'image/png', sizes: '192x192' },
-        { url: '/favicon/android-chrome-512x512.png', type: 'image/png', sizes: '512x512' },
+        { url: '/favicon/lion.ico', sizes: 'any' },
+        { url: '/favicon/lion-16x16.png', type: 'image/png', sizes: '16x16' },
+        { url: '/favicon/lion-32x32.png', type: 'image/png', sizes: '32x32' },
+        { url: '/favicon/lion-192x192.png', type: 'image/png', sizes: '192x192' },
+        { url: '/favicon/lion-512x512.png', type: 'image/png', sizes: '512x512' },
       ],
-      shortcut: '/favicon/favicon.ico',
-      apple: '/favicon/apple-touch-icon.png',
+      shortcut: '/favicon/lion.ico',
+      apple: '/favicon/lion-apple-touch-180x180.png',
     },
     category: 'business',
   };
