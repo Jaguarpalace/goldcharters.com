@@ -1,5 +1,6 @@
 import { getAdminSupabase, getServerSupabase } from '@/lib/supabase/server';
 import { isSupabaseAdminConfigured } from '@/lib/supabase/env';
+import { getMfaState, mfaSatisfied } from '@/lib/auth/mfa';
 
 /** Roles defined on admin_profiles.role. */
 export type AdminRole = 'admin' | 'editor';
@@ -34,6 +35,12 @@ export async function requireAdminContext(): Promise<AdminContext> {
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: 'Not authenticated.', code: 'UNAUTHENTICATED' };
+
+  // Two-factor: a password-only session on a 2FA-enabled account must not be
+  // able to run admin mutations by calling server actions directly.
+  if (!mfaSatisfied(await getMfaState(supabase))) {
+    return { error: 'Two-factor verification required. Please sign in again.', code: 'UNAUTHENTICATED' };
+  }
 
   const { data: profile } = await supabase
     .from('admin_profiles')

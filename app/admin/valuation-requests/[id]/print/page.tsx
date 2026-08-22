@@ -1,6 +1,7 @@
 import { notFound, redirect } from 'next/navigation';
 import { getServerSupabase } from '@/lib/supabase/server';
 import { isSupabaseConfigured } from '@/lib/supabase/env';
+import { getMfaState, mfaSatisfied } from '@/lib/auth/mfa';
 import {
   getSiteSettings,
 } from '@/lib/queries/homepage';
@@ -36,6 +37,9 @@ export default async function PurchasePrintPage({
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) {
     redirect(`/admin/login?next=/admin/valuation-requests/${params.id}/print`);
+  }
+  if (!mfaSatisfied(await getMfaState(supabase))) {
+    redirect(`/admin/login?mfa=1&next=/admin/valuation-requests/${params.id}/print`);
   }
 
   const [vrResult, settings] = await Promise.all([

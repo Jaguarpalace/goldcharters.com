@@ -3,6 +3,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { getServerSupabase } from '@/lib/supabase/server';
 import { isSupabaseConfigured } from '@/lib/supabase/env';
+import { getMfaState, mfaSatisfied } from '@/lib/auth/mfa';
 import { BUY_ENABLED } from '@/lib/features';
 import { countOutstandingRequests } from '@/lib/actions/valuationRequests';
 import { countUpcomingAppointments } from '@/lib/actions/appointments';
@@ -46,6 +47,7 @@ const NAV: NavItem[] = [
   { href: '/admin/notifications', label: 'Notifications' },
   { href: '/admin/users', label: 'Team' },
   { href: '/admin/audit-log', label: 'Audit Log' },
+  { href: '/admin/security', label: 'Security' },
   { href: '/admin/settings', label: 'Settings' },
 ];
 
@@ -57,6 +59,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
     if (supabase) {
       const { data } = await supabase.auth.getUser();
       if (!data.user) redirect('/admin/login');
+      // Accounts with two-factor enabled must have passed the code step on
+      // this session. Password-only sessions are sent back to finish it.
+      if (!mfaSatisfied(await getMfaState(supabase))) redirect('/admin/login?mfa=1');
       userEmail = data.user.email ?? null;
     }
   }
