@@ -7,6 +7,7 @@ import { Header } from '@/components/public/Header';
 import { Footer } from '@/components/public/Footer';
 import { CookieConsent } from '@/components/public/CookieConsent';
 import { WhatsAppButton } from '@/components/public/WhatsAppButton';
+import { RecoveryRedirect } from '@/components/public/RecoveryRedirect';
 import { JsonLd } from '@/lib/seo/JsonLd';
 import {
   localBusinessSchema,
@@ -159,6 +160,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <Footer settings={settings} />
         <WhatsAppButton whatsapp={settings.whatsapp} />
         <CookieConsent />
+        <RecoveryRedirect />
         <Analytics />
       </body>
     </html>
