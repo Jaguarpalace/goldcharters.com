@@ -446,7 +446,7 @@ function RequestRow({
           </div>
           {/* Random reference (first 8 chars of the row's UUID) - matches the
               printed document and the auto-filled payment reference. */}
-          <div className="mt-0.5 font-mono text-[10px] tracking-widest text-gold-tint/80">
+          <div className="mt-1 font-mono text-[13px] font-semibold tracking-widest text-gold-tint">
             {request.id.slice(0, 8).toUpperCase()}
           </div>
         </td>
@@ -597,7 +597,7 @@ function RequestCard({
                 minute: '2-digit',
               })}
             </span>
-            <span className="font-mono tracking-widest text-gold-tint/80">
+            <span className="font-mono text-[12px] font-semibold tracking-widest text-gold-tint">
               · {request.id.slice(0, 8).toUpperCase()}
             </span>
             {photoCount > 0 && (
