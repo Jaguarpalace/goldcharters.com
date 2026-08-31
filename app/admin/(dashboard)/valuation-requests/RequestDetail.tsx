@@ -377,7 +377,12 @@ function PaymentEditor({
     initial.amount !== null ? String(initial.amount) : '',
   );
   const [method, setMethod] = useState<PaymentMethod | ''>(initial.method ?? '');
-  const [reference, setReference] = useState(initial.reference ?? '');
+  // Auto-fill an empty reference with the request's random reference (first 8
+  // chars of its UUID) - the same code shown on the board and the printed
+  // document, so bank statements and paperwork all reconcile. Editable.
+  const [reference, setReference] = useState(
+    initial.reference ?? requestId.slice(0, 8).toUpperCase(),
+  );
   const [paidAt, setPaidAt] = useState(toLocalDate(initial.paidAt));
   const [pending, startTransition] = useTransition();
   const [feedback, setFeedback] = useState<{ ok: boolean; text: string } | null>(null);

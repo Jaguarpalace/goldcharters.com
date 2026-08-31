@@ -64,6 +64,7 @@ export function RequestsBoard({ initialRequests }: { initialRequests: Row[] }) {
       if (statusFilter !== 'all' && r.status !== statusFilter) return false;
       if (!q) return true;
       const haystack = [
+        r.id.slice(0, 8),
         r.first_name,
         r.last_name,
         r.email,
@@ -443,6 +444,11 @@ function RequestRow({
               minute: '2-digit',
             })}
           </div>
+          {/* Random reference (first 8 chars of the row's UUID) - matches the
+              printed document and the auto-filled payment reference. */}
+          <div className="mt-0.5 font-mono text-[10px] tracking-widest text-gold-tint/80">
+            {request.id.slice(0, 8).toUpperCase()}
+          </div>
         </td>
         <td className="px-2 py-2.5 align-top">
           <div className="font-medium text-white">
@@ -590,6 +596,9 @@ function RequestCard({
                 hour: '2-digit',
                 minute: '2-digit',
               })}
+            </span>
+            <span className="font-mono tracking-widest text-gold-tint/80">
+              · {request.id.slice(0, 8).toUpperCase()}
             </span>
             {photoCount > 0 && (
               <span className="text-gold-tint">
