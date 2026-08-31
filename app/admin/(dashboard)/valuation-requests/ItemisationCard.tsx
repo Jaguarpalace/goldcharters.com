@@ -44,10 +44,13 @@ function toInput(d: Draft): PurchaseItemInput {
 export function ItemisationCard({
   requestId,
   onTotalChange,
+  settled = false,
 }: {
   requestId: string;
   /** Lets the parent offer "use total as payment amount". */
   onTotalChange?: (total: number, count: number) => void;
+  /** True once the payment is saved - lines lock like the payment card. */
+  settled?: boolean;
 }) {
   const [items, setItems] = useState<PurchaseItem[] | null>(null);
   const [draft, setDraft] = useState<Draft>(EMPTY);
@@ -56,6 +59,24 @@ export function ItemisationCard({
   const [editDraft, setEditDraft] = useState<Draft>(EMPTY);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Settled purchases lock their lines; an explicit confirmed unlock is
+  // needed to amend, and re-settling (or reopening) re-locks.
+  const [unlockedAfterSettle, setUnlockedAfterSettle] = useState(false);
+  const locked = settled && !unlockedAfterSettle;
+
+  useEffect(() => {
+    if (settled) setUnlockedAfterSettle(false);
+  }, [settled]);
+
+  const unlockItems = () => {
+    if (
+      window.confirm(
+        'This purchase is recorded as settled. Are you sure you want to amend its items? The printed agreement will reflect the changes.',
+      )
+    ) {
+      setUnlockedAfterSettle(true);
+    }
+  };
 
   const publish = useCallback(
     (rows: PurchaseItem[]) => {
@@ -219,12 +240,23 @@ export function ItemisationCard({
         <h3 className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">
           Itemisation
         </h3>
-        {items && items.length > 0 && (
-          <span className="text-xs text-warmgrey">
-            {items.length} item{items.length === 1 ? '' : 's'} ·{' '}
-            <strong className="text-gold-bright">{gbp(total)}</strong>
-          </span>
-        )}
+        <span className="flex items-center gap-3">
+          {locked && (
+            <span className="inline-flex items-center gap-1 text-[9px] uppercase tracking-luxe text-warmgrey/60">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                <rect x="4" y="10" width="16" height="10" rx="2" />
+                <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+              </svg>
+              Settled · locked
+            </span>
+          )}
+          {items && items.length > 0 && (
+            <span className="text-xs text-warmgrey">
+              {items.length} item{items.length === 1 ? '' : 's'} ·{' '}
+              <strong className="text-gold-bright">{gbp(total)}</strong>
+            </span>
+          )}
+        </span>
       </div>
 
       {items === null ? (
@@ -290,22 +322,26 @@ export function ItemisationCard({
                       → Holdings
                     </button>
                   )}
-                  <button
-                    type="button"
-                    onClick={() => startEdit(item)}
-                    disabled={busy}
-                    className="text-[11px] text-warmgrey hover:text-gold-bright"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => remove(item)}
-                    disabled={busy}
-                    className="text-[11px] text-warmgrey hover:text-red-300"
-                  >
-                    Remove
-                  </button>
+                  {!locked && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => startEdit(item)}
+                        disabled={busy}
+                        className="text-[11px] text-warmgrey hover:text-gold-bright"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => remove(item)}
+                        disabled={busy}
+                        className="text-[11px] text-warmgrey hover:text-red-300"
+                      >
+                        Remove
+                      </button>
+                    </>
+                  )}
                 </div>
               </li>
             ),
@@ -319,7 +355,17 @@ export function ItemisationCard({
         </p>
       )}
 
-      {adding ? (
+      {locked ? (
+        <div className="mt-3 flex justify-end">
+          <button
+            type="button"
+            onClick={unlockItems}
+            className="rounded-md border border-gold-metallic/30 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-luxe text-warmgrey transition hover:border-gold-metallic hover:text-gold-bright"
+          >
+            Edit items
+          </button>
+        </div>
+      ) : adding ? (
         <form onSubmit={submitAdd} className="mt-3 space-y-3 rounded-lg border border-gold-metallic/30 bg-ink-900/60 p-3">
           {fields(draft, setDraft)}
           <div className="flex gap-2">

@@ -134,6 +134,7 @@ export function RequestDetail({
         {paymentRelevant && (
           <ItemisationCard
             requestId={request.id}
+            settled={request.payment_amount !== null}
             onTotalChange={(total, count) => setItemisedTotal(count > 0 ? total : null)}
           />
         )}
