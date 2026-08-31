@@ -62,21 +62,16 @@ export function ItemisationCard({
   // Settled purchases lock their lines; an explicit confirmed unlock is
   // needed to amend, and re-settling (or reopening) re-locks.
   const [unlockedAfterSettle, setUnlockedAfterSettle] = useState(false);
+  const [confirmingUnlock, setConfirmingUnlock] = useState(false);
+  const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null);
   const locked = settled && !unlockedAfterSettle;
 
   useEffect(() => {
-    if (settled) setUnlockedAfterSettle(false);
-  }, [settled]);
-
-  const unlockItems = () => {
-    if (
-      window.confirm(
-        'This purchase is recorded as settled. Are you sure you want to amend its items? The printed agreement will reflect the changes.',
-      )
-    ) {
-      setUnlockedAfterSettle(true);
+    if (settled) {
+      setUnlockedAfterSettle(false);
+      setConfirmingUnlock(false);
     }
-  };
+  }, [settled]);
 
   const publish = useCallback(
     (rows: PurchaseItem[]) => {
@@ -129,12 +124,12 @@ export function ItemisationCard({
   };
 
   const remove = async (item: PurchaseItem) => {
-    if (!window.confirm(`Remove "${item.description}" from this purchase?`)) return;
     setBusy(true);
     setError(null);
     const res = await deletePurchaseItem(item.id);
     if (!res.ok) setError(res.error);
     else publish((items ?? []).filter((i) => i.id !== item.id));
+    setConfirmRemoveId(null);
     setBusy(false);
   };
 
@@ -322,7 +317,27 @@ export function ItemisationCard({
                       → Holdings
                     </button>
                   )}
-                  {!locked && (
+                  {!locked && confirmRemoveId === item.id ? (
+                    <span className="flex items-center gap-2">
+                      <span className="text-[11px] text-amber-300">Remove?</span>
+                      <button
+                        type="button"
+                        onClick={() => remove(item)}
+                        disabled={busy}
+                        className="rounded border border-amber-500/50 bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-luxe text-amber-300 hover:bg-amber-500/20"
+                      >
+                        Yes
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setConfirmRemoveId(null)}
+                        disabled={busy}
+                        className="text-[11px] text-warmgrey hover:text-white"
+                      >
+                        No
+                      </button>
+                    </span>
+                  ) : !locked ? (
                     <>
                       <button
                         type="button"
@@ -334,14 +349,14 @@ export function ItemisationCard({
                       </button>
                       <button
                         type="button"
-                        onClick={() => remove(item)}
+                        onClick={() => setConfirmRemoveId(item.id)}
                         disabled={busy}
                         className="text-[11px] text-warmgrey hover:text-red-300"
                       >
                         Remove
                       </button>
                     </>
-                  )}
+                  ) : null}
                 </div>
               </li>
             ),
@@ -356,14 +371,39 @@ export function ItemisationCard({
       )}
 
       {locked ? (
-        <div className="mt-3 flex justify-end">
-          <button
-            type="button"
-            onClick={unlockItems}
-            className="rounded-md border border-gold-metallic/30 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-luxe text-warmgrey transition hover:border-gold-metallic hover:text-gold-bright"
-          >
-            Edit items
-          </button>
+        <div className="mt-3 flex items-center justify-end gap-2">
+          {confirmingUnlock ? (
+            <>
+              <span className="text-[11px] text-amber-300">
+                Amend the items of a settled purchase?
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  setConfirmingUnlock(false);
+                  setUnlockedAfterSettle(true);
+                }}
+                className="rounded-md border border-amber-500/50 bg-amber-500/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-luxe text-amber-300 transition hover:bg-amber-500/20"
+              >
+                Yes, edit
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirmingUnlock(false)}
+                className="rounded-md border border-gold-metallic/20 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-luxe text-warmgrey transition hover:text-white"
+              >
+                Cancel
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setConfirmingUnlock(true)}
+              className="rounded-md border border-gold-metallic/30 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-luxe text-warmgrey transition hover:border-gold-metallic hover:text-gold-bright"
+            >
+              Edit items
+            </button>
+          )}
         </div>
       ) : adding ? (
         <form onSubmit={submitAdd} className="mt-3 space-y-3 rounded-lg border border-gold-metallic/30 bg-ink-900/60 p-3">

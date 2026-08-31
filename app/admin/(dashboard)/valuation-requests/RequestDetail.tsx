@@ -391,17 +391,7 @@ function PaymentEditor({
   // a stray click or scroll can't amend the figure. Amending requires an
   // explicit "Edit payment" plus a confirmation, and saving re-locks.
   const [locked, setLocked] = useState(initial.amount !== null);
-
-  const unlock = () => {
-    if (
-      window.confirm(
-        'This payment is recorded as settled. Are you sure you want to amend it?',
-      )
-    ) {
-      setLocked(false);
-      setFeedback(null);
-    }
-  };
+  const [confirmingUnlock, setConfirmingUnlock] = useState(false);
 
   const cancelEdit = () => {
     setAmount(initial.amount !== null ? String(initial.amount) : '');
@@ -491,14 +481,40 @@ function PaymentEditor({
             </span>
           </div>
         </div>
-        <div className="mt-3 flex justify-end">
-          <button
-            type="button"
-            onClick={unlock}
-            className="rounded-md border border-gold-metallic/30 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-luxe text-warmgrey transition hover:border-gold-metallic hover:text-gold-bright"
-          >
-            Edit payment
-          </button>
+        <div className="mt-3 flex items-center justify-end gap-2">
+          {confirmingUnlock ? (
+            <>
+              <span className="text-[11px] text-amber-300">
+                Amend a settled payment?
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  setConfirmingUnlock(false);
+                  setLocked(false);
+                  setFeedback(null);
+                }}
+                className="rounded-md border border-amber-500/50 bg-amber-500/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-luxe text-amber-300 transition hover:bg-amber-500/20"
+              >
+                Yes, edit
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirmingUnlock(false)}
+                className="rounded-md border border-gold-metallic/20 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-luxe text-warmgrey transition hover:text-white"
+              >
+                Cancel
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setConfirmingUnlock(true)}
+              className="rounded-md border border-gold-metallic/30 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-luxe text-warmgrey transition hover:border-gold-metallic hover:text-gold-bright"
+            >
+              Edit payment
+            </button>
+          )}
         </div>
       </div>
     );
