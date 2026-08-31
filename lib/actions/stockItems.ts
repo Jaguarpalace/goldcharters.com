@@ -440,13 +440,14 @@ export async function createStockItemFromValuation(
   const ctx = await requireAdminContext();
   if ('error' in ctx) return { ok: false, error: ctx.error };
 
-  // Has this valuation already been imported?
+  // Has this valuation already been imported? (limit(1) rather than
+  // maybeSingle: itemised purchases can create several holdings per request.)
   const { data: existing } = await ctx.admin
     .from('stock_items')
     .select('id')
     .eq('valuation_request_id', valuationRequestId)
-    .maybeSingle();
-  if (existing) {
+    .limit(1);
+  if (existing && existing.length > 0) {
     return { ok: false, error: 'This valuation is already in the holdings ledger.' };
   }
 

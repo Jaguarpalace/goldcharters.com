@@ -141,6 +141,31 @@ const PRINT_CSS = `
 
   .print-disclaimer { white-space: pre-wrap; font-size: 11.5px; }
 
+  /* Itemised purchase lines */
+  .print-items { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .print-items th {
+    text-align: left;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-weight: 600;
+    padding: 4px 8px 4px 0;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.55);
+  }
+  .print-items td {
+    padding: 6px 8px 6px 0;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.3);
+    vertical-align: top;
+  }
+  .print-items .num { text-align: right; white-space: nowrap; }
+  .print-items tfoot td {
+    border-bottom: none;
+    border-top: 2px solid rgba(128, 128, 128, 0.55);
+    font-weight: 700;
+    padding-top: 8px;
+  }
+  .print-items .muted { font-size: 10.5px; opacity: 0.75; }
+
   .print-signatures {
     display: grid;
     grid-template-columns: 1fr 1fr;

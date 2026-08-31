@@ -8,6 +8,7 @@ import {
 import {
   PAYMENT_METHOD_LABELS,
   type PaymentMethod,
+  type PurchaseItem,
   type ValuationRequest,
 } from '@/types/database';
 import { PrintShell } from './PrintShell';
@@ -53,6 +54,24 @@ export default async function PurchasePrintPage({
 
   const request = vrResult.data;
   if (!request) notFound();
+
+  // Itemised purchase lines (migration 030). Fail-soft: any error simply
+  // renders the legacy single-item document, exactly as before this feature.
+  let items: PurchaseItem[] = [];
+  try {
+    const { data: itemRows } = await supabase
+      .from('purchase_items')
+      .select('*')
+      .eq('valuation_request_id', params.id)
+      .order('position', { ascending: true })
+      .order('created_at', { ascending: true });
+    items = (itemRows ?? []) as PurchaseItem[];
+  } catch {
+    items = [];
+  }
+  const itemsTotal = items.reduce((sum, i) => sum + Number(i.price_gbp), 0);
+  const money = (n: number) =>
+    `£${n.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
   // Try to find a matching customer for richer printed address details.
   let customerAddress: string | null = null;
@@ -130,7 +149,52 @@ export default async function PurchasePrintPage({
           </div>
         </section>
 
-        {/* ------------------------------ Item ---------------------------- */}
+        {/* ------------------------------ Items --------------------------- */}
+        {items.length > 0 ? (
+          <section className="print-section">
+            <h2>Items purchased</h2>
+            <table className="print-items">
+              <thead>
+                <tr>
+                  <th style={{ width: '4%' }}>#</th>
+                  <th>Description</th>
+                  <th style={{ width: '16%' }}>Metal / carat</th>
+                  <th style={{ width: '10%' }} className="num">Weight</th>
+                  <th style={{ width: '22%' }}>Hallmark / serial</th>
+                  <th style={{ width: '13%' }} className="num">Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {items.map((item, idx) => (
+                  <tr key={item.id}>
+                    <td>{idx + 1}</td>
+                    <td>{item.description}</td>
+                    <td>{[item.metal_type, item.carat].filter(Boolean).join(' ') || '—'}</td>
+                    <td className="num">
+                      {item.weight_grams != null ? `${item.weight_grams} g` : '—'}
+                    </td>
+                    <td className="muted">{item.hallmark || '—'}</td>
+                    <td className="num">{money(Number(item.price_gbp))}</td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colSpan={5}>
+                    Total ({items.length} item{items.length === 1 ? '' : 's'})
+                  </td>
+                  <td className="num">{money(itemsTotal)}</td>
+                </tr>
+              </tfoot>
+            </table>
+            {request.payment_amount != null &&
+              Number(request.payment_amount) !== itemsTotal && (
+                <p className="print-items muted" style={{ marginTop: 6 }}>
+                  Amount settled: {money(Number(request.payment_amount))}
+                </p>
+              )}
+          </section>
+        ) : (
         <section className="print-section">
           <h2>Item purchased</h2>
           <div className="print-grid">
@@ -157,6 +221,7 @@ export default async function PurchasePrintPage({
             </div>
           )}
         </section>
+        )}
 
         {/* ------------------------------ Payment ------------------------- */}
         <section className="print-section">

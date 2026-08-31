@@ -19,6 +19,27 @@ function purityFor(metal: string): readonly PurityOption[] {
   return GOLD_PURITY;
 }
 
+type ItemLine = {
+  description: string;
+  metal_type: string;
+  carat: string;
+  weight_grams: string;
+  hallmark: string;
+  price_gbp: string;
+};
+
+const EMPTY_LINE: ItemLine = {
+  description: '',
+  metal_type: '',
+  carat: '',
+  weight_grams: '',
+  hallmark: '',
+  price_gbp: '',
+};
+
+const lineTotal = (lines: ItemLine[]) =>
+  lines.reduce((sum, l) => sum + (Number(l.price_gbp) || 0), 0);
+
 export function WalkInForm() {
   const router = useRouter();
   const [form, setForm] = useState({
@@ -39,8 +60,20 @@ export function WalkInForm() {
     payment_method: 'cash' as PaymentMethod,
     payment_reference: '',
   });
+  const [lines, setLines] = useState<ItemLine[]>([]);
   const [pending, startTransition] = useTransition();
   const [feedback, setFeedback] = useState<string | null>(null);
+
+  const patchLine = (idx: number, patch: Partial<ItemLine>) =>
+    setLines((prev) => {
+      const next = prev.map((l, i) => (i === idx ? { ...l, ...patch } : l));
+      return next;
+    });
+
+  // Whenever lines exist, the amount paid is their sum - the agreement's
+  // itemised total and the payment can never disagree.
+  const itemised = lines.length > 0;
+  const total = lineTotal(lines);
 
   const update =
     <K extends keyof typeof form>(key: K) =>
@@ -65,9 +98,19 @@ export function WalkInForm() {
         weight_grams: form.weight_grams ? Number(form.weight_grams) : null,
         description: form.description || null,
         condition: form.condition || null,
-        payment_amount_gbp: Number(form.payment_amount_gbp || 0),
+        payment_amount_gbp: itemised ? total : Number(form.payment_amount_gbp || 0),
         payment_method: form.payment_method,
         payment_reference: form.payment_reference || null,
+        items: itemised
+          ? lines.map((l) => ({
+              description: l.description,
+              metal_type: l.metal_type || null,
+              carat: l.carat || null,
+              weight_grams: l.weight_grams ? Number(l.weight_grams) : null,
+              hallmark: l.hallmark || null,
+              price_gbp: Number(l.price_gbp || 0),
+            }))
+          : undefined,
       });
       if (result.ok) {
         // Send the admin straight to the printable document. They sign it,
@@ -149,9 +192,101 @@ export function WalkInForm() {
         </div>
       </Section>
 
+      {/* ---------------------------------------------- Itemisation */}
+      <Section title="Itemisation">
+        <p className="text-[11px] text-warmgrey">
+          Selling more than one piece? List each item so the printed purchase document shows them
+          line by line. Each line becomes its own entry in the holdings ledger.
+        </p>
+        {lines.map((line, idx) => (
+          <div
+            key={idx}
+            className="rounded-lg border border-gold-metallic/15 bg-ink-950/50 p-3"
+          >
+            <div className="grid gap-3 md:grid-cols-3">
+              <Field
+                label={`Item ${idx + 1} description`}
+                required
+                value={line.description}
+                onChange={(e) => patchLine(idx, { description: e.target.value })}
+                placeholder="e.g. 9ct gold curb chain"
+              />
+              <Field
+                label="Metal"
+                value={line.metal_type}
+                onChange={(e) => patchLine(idx, { metal_type: e.target.value })}
+                placeholder={form.metal_type}
+              />
+              <Field
+                label="Carat / purity"
+                value={line.carat}
+                onChange={(e) => patchLine(idx, { carat: e.target.value })}
+                placeholder="9ct"
+              />
+              <NumField
+                label="Weight (g)"
+                value={line.weight_grams}
+                onChange={(e) => patchLine(idx, { weight_grams: e.target.value })}
+                step="0.001"
+              />
+              <Field
+                label="Hallmark / serial no."
+                value={line.hallmark}
+                onChange={(e) => patchLine(idx, { hallmark: e.target.value })}
+                placeholder="e.g. 375 Birmingham"
+              />
+              <NumField
+                label="Price (£)"
+                required
+                value={line.price_gbp}
+                onChange={(e) => patchLine(idx, { price_gbp: e.target.value })}
+                step="0.01"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={() => setLines((prev) => prev.filter((_, i) => i !== idx))}
+              className="mt-2 text-[11px] text-warmgrey hover:text-red-300"
+            >
+              Remove item
+            </button>
+          </div>
+        ))}
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <button
+            type="button"
+            onClick={() => setLines((prev) => [...prev, { ...EMPTY_LINE }])}
+            className="rounded-md border border-gold-metallic/30 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-luxe text-gold-tint hover:border-gold-metallic hover:text-gold-bright"
+          >
+            + Add item line
+          </button>
+          {itemised && (
+            <span className="text-xs text-warmgrey">
+              {lines.length} item{lines.length === 1 ? '' : 's'} · total{' '}
+              <strong className="text-gold-bright">
+                £{total.toLocaleString('en-GB', { minimumFractionDigits: 2 })}
+              </strong>
+            </span>
+          )}
+        </div>
+      </Section>
+
       {/* ---------------------------------------------- Payment */}
       <Section title="Payment">
         <div className="grid gap-3 md:grid-cols-3">
+          {itemised ? (
+            <label className="block">
+              <span className="text-[10px] font-medium uppercase tracking-luxe text-warmgrey">
+                Amount paid (£)
+              </span>
+              <div className="mt-1 w-full rounded-md border border-gold-metallic/20 bg-ink-950/40 px-3 py-2 text-sm text-gold-bright">
+                £{total.toLocaleString('en-GB', { minimumFractionDigits: 2 })}
+              </div>
+              <span className="mt-1 block text-[10px] text-warmgrey/70">
+                Set automatically from the itemised lines above.
+              </span>
+            </label>
+          ) : (
           <NumField
             label="Amount paid (£)"
             required
@@ -159,6 +294,7 @@ export function WalkInForm() {
             onChange={update('payment_amount_gbp')}
             step="0.01"
           />
+          )}
           <SelectField
             label="Method"
             value={form.payment_method}

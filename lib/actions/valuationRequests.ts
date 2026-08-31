@@ -656,6 +656,21 @@ export type WalkInPurchaseInput = {
   description?: string | null;
   condition?: string | null;
 
+  /**
+   * Optional itemised lines (see migration 030). When present, each line is
+   * stored as a purchase_item and imported into holdings individually - the
+   * legacy single lump stock row is skipped. When absent, behaviour is
+   * exactly as before this field existed.
+   */
+  items?: Array<{
+    description: string;
+    metal_type?: string | null;
+    carat?: string | null;
+    weight_grams?: number | null;
+    hallmark?: string | null;
+    price_gbp: number;
+  }>;
+
   // Payment
   payment_amount_gbp: number;
   payment_method?: PaymentMethod | null;
@@ -691,6 +706,12 @@ export async function createWalkInPurchase(
   if (!input.metal_type) return { ok: false, error: 'Pick a metal type.' };
   if (!Number.isFinite(input.payment_amount_gbp) || input.payment_amount_gbp < 0)
     return { ok: false, error: 'Amount paid is required and must be ≥ 0.' };
+  const items = (input.items ?? []).filter(Boolean);
+  for (const it of items) {
+    if (!it.description?.trim()) return { ok: false, error: 'Each item needs a description.' };
+    if (!Number.isFinite(it.price_gbp) || it.price_gbp < 0)
+      return { ok: false, error: 'Each item needs a price of £0 or more.' };
+  }
 
   // --- Step 1: upsert customer ---------------------------------------
   const customerPatch = {
@@ -765,41 +786,96 @@ export async function createWalkInPurchase(
   }
   const valuationRequestId = (vr as { id: string }).id;
 
-  // --- Step 3: best-effort stock_items row ---------------------------
-  // We don't use createStockItemFromValuation here because that function
-  // re-derives values from the request row we just inserted — direct insert
-  // with the data already in hand is faster and avoids a re-fetch.
   const spots = await getMetalSpots();
-  const spot =
-    input.metal_type === 'Gold'
-      ? spots.gold?.per_gram_gbp
-      : input.metal_type === 'Silver'
-      ? spots.silver?.per_gram_gbp
-      : input.metal_type === 'Platinum'
-      ? spots.platinum?.per_gram_gbp
+  const spotFor = (metal: string | null | undefined) =>
+    metal === 'Gold'
+      ? spots.gold?.per_gram_gbp ?? null
+      : metal === 'Silver'
+      ? spots.silver?.per_gram_gbp ?? null
+      : metal === 'Platinum'
+      ? spots.platinum?.per_gram_gbp ?? null
       : null;
-  const purityPct = purityToPercent(input.carat ?? null);
-  const { data: stock, error: stockErr } = await ctx.admin
-    .from('stock_items')
-    .insert({
-      valuation_request_id: valuationRequestId,
-      customer_id: customerId,
-      item_type: 'gold',
-      description: input.description?.trim() || null,
-      metal_type: input.metal_type,
-      carat: input.carat?.trim() || null,
-      purity_percentage: purityPct,
-      weight_grams: input.weight_grams ?? null,
-      acquired_at: nowIso,
-      acquired_paid_gbp: input.payment_amount_gbp,
-      acquired_spot_gbp_per_g: spot ?? null,
-    })
-    .select('id')
-    .single();
-  if (stockErr) {
-    // The valuation request is in place; the admin can click "Add to
-    // holdings" on the board if this side failed. Don't block the response.
-    console.error('[walkin:stock]', stockErr);
+
+  let stock: { id: string } | null = null;
+
+  if (items.length > 0) {
+    // --- Step 3a: itemised path - one purchase_item + one holding per line.
+    for (const [idx, it] of items.entries()) {
+      const lineMetal = it.metal_type?.trim() || input.metal_type;
+      const { data: line, error: lineErr } = await ctx.admin
+        .from('purchase_items')
+        .insert({
+          valuation_request_id: valuationRequestId,
+          position: idx + 1,
+          description: it.description.trim().slice(0, 500),
+          metal_type: lineMetal || null,
+          carat: it.carat?.trim() || null,
+          weight_grams: it.weight_grams ?? null,
+          hallmark: it.hallmark?.trim() || null,
+          price_gbp: Number(it.price_gbp.toFixed(2)),
+        })
+        .select('id')
+        .single<{ id: string }>();
+      if (lineErr) {
+        console.error('[walkin:item]', lineErr);
+        continue;
+      }
+      // Best-effort holding per line; the admin can retry from the board.
+      const { data: lineStock, error: lineStockErr } = await ctx.admin
+        .from('stock_items')
+        .insert({
+          valuation_request_id: valuationRequestId,
+          customer_id: customerId,
+          item_type: 'gold',
+          description: [it.description.trim(), it.hallmark?.trim() ? `Hallmark/serial: ${it.hallmark.trim()}` : null]
+            .filter(Boolean)
+            .join(' · '),
+          metal_type: lineMetal || null,
+          carat: it.carat?.trim() || null,
+          purity_percentage: purityToPercent(it.carat ?? null),
+          weight_grams: it.weight_grams ?? null,
+          acquired_at: nowIso,
+          acquired_paid_gbp: Number(it.price_gbp.toFixed(2)),
+          acquired_spot_gbp_per_g: spotFor(lineMetal),
+        })
+        .select('id')
+        .single<{ id: string }>();
+      if (lineStockErr) {
+        console.error('[walkin:item-stock]', lineStockErr);
+      } else if (lineStock) {
+        if (!stock) stock = lineStock;
+        await ctx.admin
+          .from('purchase_items')
+          .update({ stock_item_id: lineStock.id })
+          .eq('id', line!.id);
+      }
+    }
+  } else {
+    // --- Step 3b: legacy single-item path - unchanged behaviour.
+    const { data: lumpStock, error: stockErr } = await ctx.admin
+      .from('stock_items')
+      .insert({
+        valuation_request_id: valuationRequestId,
+        customer_id: customerId,
+        item_type: 'gold',
+        description: input.description?.trim() || null,
+        metal_type: input.metal_type,
+        carat: input.carat?.trim() || null,
+        purity_percentage: purityToPercent(input.carat ?? null),
+        weight_grams: input.weight_grams ?? null,
+        acquired_at: nowIso,
+        acquired_paid_gbp: input.payment_amount_gbp,
+        acquired_spot_gbp_per_g: spotFor(input.metal_type),
+      })
+      .select('id')
+      .single<{ id: string }>();
+    if (stockErr) {
+      // The valuation request is in place; the admin can click "Add to
+      // holdings" on the board if this side failed. Don't block the response.
+      console.error('[walkin:stock]', stockErr);
+    } else {
+      stock = lumpStock;
+    }
   }
 
   revalidatePath('/admin/valuation-requests');

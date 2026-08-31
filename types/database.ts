@@ -258,6 +258,28 @@ export type ValuationRequestImage = {
   created_at: string;
 };
 
+/**
+ * One line of an itemised purchase - what was actually bought, listed
+ * line by line on the printed Purchase Confirmation. A request with no
+ * lines falls back to the legacy single-item document.
+ */
+export type PurchaseItem = {
+  id: string;
+  valuation_request_id: string;
+  position: number;
+  description: string;
+  metal_type: string | null;
+  carat: string | null;
+  weight_grams: number | null;
+  /** Hallmark details or serial number, printed on the agreement line. */
+  hallmark: string | null;
+  price_gbp: number;
+  /** Set once this line has been imported into the holdings ledger. */
+  stock_item_id: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
 export type ProductStatus =
   | 'draft'
   | 'active'

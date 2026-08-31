@@ -17,6 +17,7 @@ import {
 } from '@/lib/actions/valuationRequests';
 import { createStockItemFromValuation } from '@/lib/actions/stockItems';
 import { StatusPipeline } from './StatusPipeline';
+import { ItemisationCard } from './ItemisationCard';
 
 type Row = ValuationRequest & { valuation_request_images?: ValuationRequestImage[] };
 
@@ -36,6 +37,9 @@ export function RequestDetail({
   onDelete?: () => void;
 }) {
   const photos = request.valuation_request_images ?? [];
+  // Sum of the itemised purchase lines - lets the payment editor offer a
+  // one-click "use itemised total" so the two figures can't drift apart.
+  const [itemisedTotal, setItemisedTotal] = useState<number | null>(null);
   const paymentRelevant =
     request.status === 'bought' ||
     request.status === 'completed' ||
@@ -128,8 +132,15 @@ export function RequestDetail({
           onSaved={(notes) => onPatch({ notes: notes || null })}
         />
         {paymentRelevant && (
+          <ItemisationCard
+            requestId={request.id}
+            onTotalChange={(total, count) => setItemisedTotal(count > 0 ? total : null)}
+          />
+        )}
+        {paymentRelevant && (
           <PaymentEditor
             requestId={request.id}
+            suggestedAmount={itemisedTotal}
             initial={{
               amount: request.payment_amount,
               method: request.payment_method,
@@ -354,10 +365,13 @@ function PaymentEditor({
   requestId,
   initial,
   onSaved,
+  suggestedAmount,
 }: {
   requestId: string;
   initial: PaymentInput;
   onSaved: (payment: PaymentInput) => void;
+  /** Sum of the itemised purchase lines, when any exist. */
+  suggestedAmount?: number | null;
 }) {
   const [amount, setAmount] = useState(
     initial.amount !== null ? String(initial.amount) : '',
@@ -422,6 +436,16 @@ function PaymentEditor({
             onChange={(e) => setAmount(e.target.value)}
             className="mt-1 w-full rounded-md border border-gold-metallic/20 bg-ink-900/70 px-2.5 py-1.5 text-sm text-white focus:border-gold-metallic focus:outline-none"
           />
+          {suggestedAmount != null && Number(amount) !== suggestedAmount && (
+            <button
+              type="button"
+              onClick={() => setAmount(String(suggestedAmount))}
+              className="mt-1 text-[10px] text-gold-tint hover:text-gold-bright"
+            >
+              Use itemised total £
+              {suggestedAmount.toLocaleString('en-GB', { minimumFractionDigits: 2 })}
+            </button>
+          )}
         </label>
         <label className="block">
           <span className="text-[9px] uppercase tracking-luxe text-warmgrey/70">Method</span>
