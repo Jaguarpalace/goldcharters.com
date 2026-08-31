@@ -386,6 +386,30 @@ function PaymentEditor({
   const [paidAt, setPaidAt] = useState(toLocalDate(initial.paidAt));
   const [pending, startTransition] = useTransition();
   const [feedback, setFeedback] = useState<{ ok: boolean; text: string } | null>(null);
+  // A payment that has been saved is settled: the card locks to read-only so
+  // a stray click or scroll can't amend the figure. Amending requires an
+  // explicit "Edit payment" plus a confirmation, and saving re-locks.
+  const [locked, setLocked] = useState(initial.amount !== null);
+
+  const unlock = () => {
+    if (
+      window.confirm(
+        'This payment is recorded as settled. Are you sure you want to amend it?',
+      )
+    ) {
+      setLocked(false);
+      setFeedback(null);
+    }
+  };
+
+  const cancelEdit = () => {
+    setAmount(initial.amount !== null ? String(initial.amount) : '');
+    setMethod(initial.method ?? '');
+    setReference(initial.reference ?? requestId.slice(0, 8).toUpperCase());
+    setPaidAt(toLocalDate(initial.paidAt));
+    setFeedback(null);
+    setLocked(true);
+  };
 
   const dirty =
     amount !== (initial.amount !== null ? String(initial.amount) : '') ||
@@ -412,11 +436,72 @@ function PaymentEditor({
         onSaved(payload);
         setFeedback({ ok: true, text: 'Saved' });
         setTimeout(() => setFeedback(null), 1500);
+        if (parsedAmount !== null) setLocked(true);
       } else {
         setFeedback({ ok: false, text: result.error });
       }
     });
   };
+
+  if (locked) {
+    return (
+      <div className="rounded-lg border border-gold-metallic/25 bg-gradient-to-br from-gold-metallic/[0.06] to-transparent p-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">
+            Payment
+          </h3>
+          <span className="inline-flex items-center gap-1 text-[9px] uppercase tracking-luxe text-warmgrey/60">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+              <rect x="4" y="10" width="16" height="10" rx="2" />
+              <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+            </svg>
+            Settled · locked
+          </span>
+        </div>
+        <div className="mt-3 grid grid-cols-2 gap-3 text-sm">
+          <div>
+            <span className="block text-[9px] uppercase tracking-luxe text-warmgrey/70">Amount</span>
+            <span className="text-white">
+              {initial.amount !== null
+                ? `£${Number(initial.amount).toLocaleString('en-GB', { minimumFractionDigits: 2 })}`
+                : '—'}
+            </span>
+          </div>
+          <div>
+            <span className="block text-[9px] uppercase tracking-luxe text-warmgrey/70">Method</span>
+            <span className="text-white">
+              {initial.method ? PAYMENT_METHOD_LABELS[initial.method] : '—'}
+            </span>
+          </div>
+          <div>
+            <span className="block text-[9px] uppercase tracking-luxe text-warmgrey/70">Reference</span>
+            <span className="font-mono text-white">{initial.reference || '—'}</span>
+          </div>
+          <div>
+            <span className="block text-[9px] uppercase tracking-luxe text-warmgrey/70">Paid on</span>
+            <span className="text-white">
+              {initial.paidAt
+                ? new Date(initial.paidAt).toLocaleDateString('en-GB', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric',
+                  })
+                : '—'}
+            </span>
+          </div>
+        </div>
+        <div className="mt-3 flex justify-end">
+          <button
+            type="button"
+            onClick={unlock}
+            className="rounded-md border border-gold-metallic/30 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-luxe text-warmgrey transition hover:border-gold-metallic hover:text-gold-bright"
+          >
+            Edit payment
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-lg border border-gold-metallic/25 bg-gradient-to-br from-gold-metallic/[0.06] to-transparent p-4">
@@ -493,6 +578,16 @@ function PaymentEditor({
           <span className={'text-[11px] ' + (feedback.ok ? 'text-gold-tint' : 'text-amber-400')}>
             {feedback.text}
           </span>
+        )}
+        {initial.amount !== null && (
+          <button
+            type="button"
+            onClick={cancelEdit}
+            disabled={pending}
+            className="rounded-md border border-gold-metallic/20 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-luxe text-warmgrey transition hover:text-white"
+          >
+            Cancel
+          </button>
         )}
         <button
           type="button"
