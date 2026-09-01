@@ -612,8 +612,8 @@ function PaymentEditor({
                 type="text"
                 inputMode="numeric"
                 value={sortCode}
-                onChange={(e) => setSortCode(e.target.value)}
-                placeholder="12-34-56"
+                onChange={(e) => setSortCode(formatSortCode(e.target.value))}
+                placeholder="20-67-90"
                 maxLength={8}
                 className="mt-1 w-full rounded-md border border-gold-metallic/20 bg-ink-900/70 px-2.5 py-1.5 font-mono text-sm text-white placeholder:text-warmgrey/40 focus:border-gold-metallic focus:outline-none"
               />
@@ -672,6 +672,12 @@ function PaymentEditor({
       </div>
     </div>
   );
+}
+
+/** Format a UK sort code as the user types: digits only, hyphenated 20-67-90. */
+function formatSortCode(raw: string): string {
+  const digits = raw.replace(/\D/g, '').slice(0, 6);
+  return digits.replace(/(\d{2})(?=\d)/g, '$1-');
 }
 
 function toLocalDate(iso: string | null): string {

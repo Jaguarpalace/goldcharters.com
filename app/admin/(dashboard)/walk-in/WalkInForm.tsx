@@ -324,8 +324,16 @@ export function WalkInForm() {
             <Field
               label="Seller sort code"
               value={form.payment_sort_code}
-              onChange={update('payment_sort_code')}
-              placeholder="12-34-56"
+              onChange={(e) =>
+                setForm((prev) => ({
+                  ...prev,
+                  payment_sort_code: e.target.value
+                    .replace(/\D/g, '')
+                    .slice(0, 6)
+                    .replace(/(\d{2})(?=\d)/g, '$1-'),
+                }))
+              }
+              placeholder="20-67-90"
             />
             <Field
               label="Seller account number"
