@@ -212,3 +212,70 @@ export function purityToPercent(carat: string | null | undefined): number | null
   if (c.startsWith('850')) return 85.0;
   return null;
 }
+
+/**
+ * Normalise a free-text carat/purity entry into one of the exact values the
+ * stock_items carat CHECK constraint accepts, or null when it can't be
+ * mapped (null is always accepted). "24" -> "24ct", "925" on silver ->
+ * "925 silver", "sterling" -> "925 silver", "750" on gold -> "18ct".
+ * Keeps line-to-holdings imports from ever failing on carat wording.
+ */
+export function normaliseCaratForHoldings(
+  metalRaw: string | null | undefined,
+  caratRaw: string | null | undefined,
+): string | null {
+  if (!caratRaw) return null;
+  const c = caratRaw.toLowerCase().replace(/\s+/g, '');
+  const metal = (metalRaw ?? '').trim().toLowerCase();
+
+  // Named silver standards
+  if (c.includes('sterling')) return '925 silver';
+  if (c.includes('britannia')) return '958 silver';
+
+  const digits = c.match(/^(\d{1,3})(?:ct|kt|k|carat|karat)?(?:gold|silver|platinum|plat)?$/)?.[1];
+  if (!digits) {
+    // Already in canonical form? ("9ct", "925 silver", "950 platinum")
+    const canon = caratRaw.trim().toLowerCase();
+    const allowed = [
+      '9ct', '10ct', '14ct', '18ct', '20ct', '21ct', '22ct', '24ct',
+      '999 silver', '958 silver', '925 silver', '900 silver',
+      '950 platinum', '900 platinum', '850 platinum',
+    ];
+    return allowed.includes(canon) ? canon : null;
+  }
+  const n = Number(digits);
+
+  // Plain gold carats
+  if ([9, 10, 14, 18, 20, 21, 22, 24].includes(n)) return `${n}ct`;
+
+  // Three-digit fineness - disambiguate by metal where it matters
+  if (metal === 'silver' || c.includes('silver')) {
+    if ([999, 958, 925, 900].includes(n)) return `${n} silver`;
+    return null;
+  }
+  if (metal === 'platinum' || c.includes('plat')) {
+    if ([950, 900, 850].includes(n)) return `${n} platinum`;
+    return null;
+  }
+  // Gold fineness marks
+  const goldFineness: Record<number, string> = {
+    375: '9ct', 417: '10ct', 585: '14ct', 750: '18ct',
+    833: '20ct', 875: '21ct', 916: '22ct', 917: '22ct', 990: '24ct', 999: '24ct',
+  };
+  if (metal === 'gold' && goldFineness[n]) return goldFineness[n];
+  // No metal hint: unique fineness values are still safe to map
+  if (!metal && goldFineness[n] && ![999, 900].includes(n)) return goldFineness[n];
+  if (!metal && [958, 925].includes(n)) return `${n} silver`;
+  if (!metal && [950, 850].includes(n)) return `${n} platinum`;
+  return null;
+}
+
+/** Normalise a free-text metal entry to the stock_items vocabulary, or null. */
+export function normaliseMetalForHoldings(metalRaw: string | null | undefined): string | null {
+  const m = (metalRaw ?? '').trim().toLowerCase();
+  if (m.startsWith('gold')) return 'Gold';
+  if (m.startsWith('silver')) return 'Silver';
+  if (m.startsWith('plat')) return 'Platinum';
+  if (m.startsWith('pall')) return 'Palladium';
+  return null;
+}

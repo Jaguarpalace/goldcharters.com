@@ -147,6 +147,8 @@ export function RequestDetail({
               method: request.payment_method,
               reference: request.payment_reference,
               paidAt: request.paid_at,
+              sortCode: request.payment_sort_code,
+              accountNumber: request.payment_account_number,
             }}
             onSaved={(p) =>
               onPatch({
@@ -154,6 +156,8 @@ export function RequestDetail({
                 payment_method: p.method,
                 payment_reference: p.reference,
                 paid_at: p.paidAt,
+                payment_sort_code: p.sortCode ?? null,
+                payment_account_number: p.accountNumber ?? null,
               })
             }
           />
@@ -384,6 +388,8 @@ function PaymentEditor({
   const [reference, setReference] = useState(
     initial.reference ?? requestId.slice(0, 8).toUpperCase(),
   );
+  const [sortCode, setSortCode] = useState(initial.sortCode ?? '');
+  const [accountNumber, setAccountNumber] = useState(initial.accountNumber ?? '');
   const [paidAt, setPaidAt] = useState(toLocalDate(initial.paidAt));
   const [pending, startTransition] = useTransition();
   const [feedback, setFeedback] = useState<{ ok: boolean; text: string } | null>(null);
@@ -397,6 +403,8 @@ function PaymentEditor({
     setAmount(initial.amount !== null ? String(initial.amount) : '');
     setMethod(initial.method ?? '');
     setReference(initial.reference ?? requestId.slice(0, 8).toUpperCase());
+    setSortCode(initial.sortCode ?? '');
+    setAccountNumber(initial.accountNumber ?? '');
     setPaidAt(toLocalDate(initial.paidAt));
     setFeedback(null);
     setLocked(true);
@@ -406,6 +414,8 @@ function PaymentEditor({
     amount !== (initial.amount !== null ? String(initial.amount) : '') ||
     (method || '') !== (initial.method ?? '') ||
     reference !== (initial.reference ?? '') ||
+    sortCode !== (initial.sortCode ?? '') ||
+    accountNumber !== (initial.accountNumber ?? '') ||
     paidAt !== toLocalDate(initial.paidAt);
 
   const save = () => {
@@ -420,6 +430,9 @@ function PaymentEditor({
       method: method || null,
       reference: reference.trim() || null,
       paidAt: paidAt ? new Date(paidAt).toISOString() : null,
+      // Bank details travel with bank transfers only; other methods clear them.
+      sortCode: method === 'bank_transfer' ? sortCode.trim() || null : null,
+      accountNumber: method === 'bank_transfer' ? accountNumber.trim() || null : null,
     };
     startTransition(async () => {
       const result = await updateValuationPayment(requestId, payload);
@@ -468,6 +481,16 @@ function PaymentEditor({
             <span className="block text-[9px] uppercase tracking-luxe text-warmgrey/70">Reference</span>
             <span className="font-mono text-white">{initial.reference || '—'}</span>
           </div>
+          {initial.method === 'bank_transfer' && (initial.sortCode || initial.accountNumber) && (
+            <div>
+              <span className="block text-[9px] uppercase tracking-luxe text-warmgrey/70">
+                Paid to
+              </span>
+              <span className="font-mono text-white">
+                {[initial.sortCode, initial.accountNumber].filter(Boolean).join(' · ')}
+              </span>
+            </div>
+          )}
           <div>
             <span className="block text-[9px] uppercase tracking-luxe text-warmgrey/70">Paid on</span>
             <span className="text-white">
@@ -579,6 +602,38 @@ function PaymentEditor({
             className="mt-1 w-full rounded-md border border-gold-metallic/20 bg-ink-900/70 px-2.5 py-1.5 text-sm text-white placeholder:text-warmgrey/40 focus:border-gold-metallic focus:outline-none"
           />
         </label>
+        {method === 'bank_transfer' && (
+          <>
+            <label className="block">
+              <span className="text-[9px] uppercase tracking-luxe text-warmgrey/70">
+                Seller sort code
+              </span>
+              <input
+                type="text"
+                inputMode="numeric"
+                value={sortCode}
+                onChange={(e) => setSortCode(e.target.value)}
+                placeholder="12-34-56"
+                maxLength={8}
+                className="mt-1 w-full rounded-md border border-gold-metallic/20 bg-ink-900/70 px-2.5 py-1.5 font-mono text-sm text-white placeholder:text-warmgrey/40 focus:border-gold-metallic focus:outline-none"
+              />
+            </label>
+            <label className="block">
+              <span className="text-[9px] uppercase tracking-luxe text-warmgrey/70">
+                Seller account number
+              </span>
+              <input
+                type="text"
+                inputMode="numeric"
+                value={accountNumber}
+                onChange={(e) => setAccountNumber(e.target.value)}
+                placeholder="12345678"
+                maxLength={10}
+                className="mt-1 w-full rounded-md border border-gold-metallic/20 bg-ink-900/70 px-2.5 py-1.5 font-mono text-sm text-white placeholder:text-warmgrey/40 focus:border-gold-metallic focus:outline-none"
+              />
+            </label>
+          </>
+        )}
         <label className="block">
           <span className="text-[9px] uppercase tracking-luxe text-warmgrey/70">Paid on</span>
           <input

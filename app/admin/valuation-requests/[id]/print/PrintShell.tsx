@@ -73,8 +73,8 @@ const PRINT_CSS = `
 
   .print-page {
     font-family: 'Manrope', system-ui, sans-serif;
-    font-size: 12px;
-    line-height: 1.5;
+    font-size: 11px;
+    line-height: 1.4;
     min-height: 100vh;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
@@ -86,7 +86,7 @@ const PRINT_CSS = `
     /* These act as the visible margin between paper edge and content. Bigger
        than typical screen padding so the printed document doesn't feel
        cramped against the paper edge. */
-    padding: 22mm 18mm 28mm;
+    padding: 12mm 14mm 12mm;
   }
 
   /* ---------- Layout primitives (theme-neutral) ---------- */
@@ -97,9 +97,9 @@ const PRINT_CSS = `
     gap: 20px;
     border-bottom-width: 2px;
     border-bottom-style: solid;
-    padding-bottom: 16px;
+    padding-bottom: 10px;
   }
-  .print-logo { width: 96px; height: 96px; object-fit: contain; }
+  .print-logo { width: 60px; height: 60px; object-fit: contain; }
   .print-brand { text-align: right; }
   .print-brand h1 {
     font-size: 18px;
@@ -110,10 +110,10 @@ const PRINT_CSS = `
   }
   .print-brand p { margin: 4px 0 0; font-size: 11px; }
 
-  .print-doc-title { font-size: 22px; font-weight: 700; margin: 28px 0 4px; }
-  .print-doc-sub { font-size: 12px; margin: 0 0 24px; }
+  .print-doc-title { font-size: 18px; font-weight: 700; margin: 12px 0 2px; }
+  .print-doc-sub { font-size: 10.5px; margin: 0 0 12px; }
 
-  .print-section { margin-top: 22px; }
+  .print-section { margin-top: 12px; }
   .print-section h2 {
     font-size: 11px;
     font-weight: 700;
@@ -121,15 +121,15 @@ const PRINT_CSS = `
     text-transform: uppercase;
     border-bottom-width: 1px;
     border-bottom-style: solid;
-    padding-bottom: 4px;
-    margin: 0 0 10px;
+    padding-bottom: 3px;
+    margin: 0 0 7px;
   }
 
   .print-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    column-gap: 24px;
-    row-gap: 8px;
+    column-gap: 20px;
+    row-gap: 4px;
   }
   .print-field { display: flex; flex-direction: column; }
   .print-field span {
@@ -137,12 +137,12 @@ const PRINT_CSS = `
     text-transform: uppercase;
     letter-spacing: 0.16em;
   }
-  .print-field strong { font-size: 13px; font-weight: 600; }
+  .print-field strong { font-size: 11.5px; font-weight: 600; }
 
-  .print-disclaimer { white-space: pre-wrap; font-size: 11.5px; }
+  .print-disclaimer { white-space: pre-wrap; font-size: 8.5px; line-height: 1.35; }
 
   /* Itemised purchase lines */
-  .print-items { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .print-items { width: 100%; border-collapse: collapse; font-size: 10.5px; }
   .print-items th {
     text-align: left;
     font-size: 9px;
@@ -153,7 +153,7 @@ const PRINT_CSS = `
     border-bottom: 1px solid rgba(128, 128, 128, 0.55);
   }
   .print-items td {
-    padding: 6px 8px 6px 0;
+    padding: 4px 8px 4px 0;
     border-bottom: 1px solid rgba(128, 128, 128, 0.3);
     vertical-align: top;
   }
@@ -169,8 +169,8 @@ const PRINT_CSS = `
   .print-signatures {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 36px;
-    margin-top: 36px;
+    gap: 28px;
+    margin-top: 18px;
   }
   .print-sig-block {
     border-top-width: 1px;
@@ -183,14 +183,14 @@ const PRINT_CSS = `
     letter-spacing: 0.16em;
   }
   .print-sig-block .name { font-size: 12px; font-weight: 600; margin-top: 4px; }
-  .print-sig-line { display: inline-block; width: 100%; min-height: 28px; }
+  .print-sig-line { display: inline-block; width: 100%; min-height: 20px; }
 
   .print-foot {
-    margin-top: 36px;
-    padding-top: 12px;
+    margin-top: 14px;
+    padding-top: 8px;
     border-top-width: 1px;
     border-top-style: solid;
-    font-size: 10px;
+    font-size: 8px;
     text-align: center;
   }
 

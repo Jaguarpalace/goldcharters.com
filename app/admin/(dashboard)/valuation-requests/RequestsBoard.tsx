@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useMemo, useState, useTransition } from 'react';
+import { Fragment, useMemo, useState, useTransition } from 'react';
 import {
   VALUATION_PIPELINE,
   VALUATION_STATUS_LABELS,
@@ -85,6 +85,35 @@ export function RequestsBoard({ initialRequests }: { initialRequests: Row[] }) {
       return haystack.includes(q);
     });
   }, [rows, search, statusFilter]);
+
+  // ----- Group repeat requests from the same customer --------------------
+  // Identity is the EXACT email address (trimmed, case-insensitive) - never
+  // name or phone, so two different customers can never be merged. Rows stay
+  // separate records; grouping is display-only. The newest request leads,
+  // earlier ones collapse behind a "show more" toggle.
+  const grouped = useMemo(() => {
+    const byKey = new Map<string, Row[]>();
+    const order: string[] = [];
+    for (const r of filtered) {
+      const email = (r.email ?? '').trim().toLowerCase();
+      // Rows without a usable email never group with anything.
+      const key = email || `__solo_${r.id}`;
+      if (!byKey.has(key)) {
+        byKey.set(key, []);
+        order.push(key);
+      }
+      byKey.get(key)!.push(r);
+    }
+    return order.map((key) => ({ key, rows: byKey.get(key)! }));
+  }, [filtered]);
+  const [openGroups, setOpenGroups] = useState<Set<string>>(new Set());
+  const toggleGroup = (key: string) =>
+    setOpenGroups((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
 
   const allVisibleSelected =
     filtered.length > 0 && filtered.every((r) => selected.has(r.id));
@@ -339,18 +368,44 @@ export function RequestsBoard({ initialRequests }: { initialRequests: Row[] }) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gold-metallic/10">
-                {filtered.map((r) => (
-                  <RequestRow
-                    key={r.id}
-                    request={r}
-                    selected={selected.has(r.id)}
-                    expanded={expandedId === r.id}
-                    onSelect={() => toggleSelect(r.id)}
-                    onToggleExpand={() => setExpandedId(expandedId === r.id ? null : r.id)}
-                    onPatch={(patch) => patchRow(r.id, patch)}
-                    onDelete={() => deleteSingleRequest(r.id)}
-                  />
-                ))}
+                {grouped.map(({ key, rows: groupRows }) => {
+                  const [primary, ...earlier] = groupRows;
+                  const open = openGroups.has(key);
+                  const renderRow = (r: Row) => (
+                    <RequestRow
+                      key={r.id}
+                      request={r}
+                      selected={selected.has(r.id)}
+                      expanded={expandedId === r.id}
+                      onSelect={() => toggleSelect(r.id)}
+                      onToggleExpand={() => setExpandedId(expandedId === r.id ? null : r.id)}
+                      onPatch={(patch) => patchRow(r.id, patch)}
+                      onDelete={() => deleteSingleRequest(r.id)}
+                    />
+                  );
+                  return (
+                    <Fragment key={key}>
+                      {renderRow(primary)}
+                      {earlier.length > 0 && (
+                        <tr>
+                          <td colSpan={6} className="px-2 py-1">
+                            <button
+                              type="button"
+                              onClick={() => toggleGroup(key)}
+                              className="flex w-full items-center gap-2 rounded-md border border-gold-metallic/15 bg-ink-900/40 px-3 py-1.5 text-[11px] text-warmgrey transition hover:border-gold-metallic/40 hover:text-gold-tint"
+                            >
+                              <span aria-hidden>{open ? '▾' : '▸'}</span>
+                              {open ? 'Hide' : 'Show'} {earlier.length} earlier request
+                              {earlier.length === 1 ? '' : 's'} from {primary.first_name}{' '}
+                              {primary.last_name}
+                            </button>
+                          </td>
+                        </tr>
+                      )}
+                      {open && earlier.map(renderRow)}
+                    </Fragment>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -371,18 +426,42 @@ export function RequestsBoard({ initialRequests }: { initialRequests: Row[] }) {
               </label>
               <span>{filtered.length} shown</span>
             </li>
-            {filtered.map((r) => (
-              <RequestCard
-                key={r.id}
-                request={r}
-                selected={selected.has(r.id)}
-                expanded={expandedId === r.id}
-                onSelect={() => toggleSelect(r.id)}
-                onToggleExpand={() => setExpandedId(expandedId === r.id ? null : r.id)}
-                onPatch={(patch) => patchRow(r.id, patch)}
-                onDelete={() => deleteSingleRequest(r.id)}
-              />
-            ))}
+            {grouped.map(({ key, rows: groupRows }) => {
+              const [primary, ...earlier] = groupRows;
+              const open = openGroups.has(key);
+              const renderCard = (r: Row) => (
+                <RequestCard
+                  key={r.id}
+                  request={r}
+                  selected={selected.has(r.id)}
+                  expanded={expandedId === r.id}
+                  onSelect={() => toggleSelect(r.id)}
+                  onToggleExpand={() => setExpandedId(expandedId === r.id ? null : r.id)}
+                  onPatch={(patch) => patchRow(r.id, patch)}
+                  onDelete={() => deleteSingleRequest(r.id)}
+                />
+              );
+              return (
+                <Fragment key={key}>
+                  {renderCard(primary)}
+                  {earlier.length > 0 && (
+                    <li>
+                      <button
+                        type="button"
+                        onClick={() => toggleGroup(key)}
+                        className="flex w-full items-center gap-2 rounded-md border border-gold-metallic/15 bg-ink-900/40 px-3 py-1.5 text-[11px] text-warmgrey transition hover:border-gold-metallic/40 hover:text-gold-tint"
+                      >
+                        <span aria-hidden>{open ? '▾' : '▸'}</span>
+                        {open ? 'Hide' : 'Show'} {earlier.length} earlier request
+                        {earlier.length === 1 ? '' : 's'} from {primary.first_name}{' '}
+                        {primary.last_name}
+                      </button>
+                    </li>
+                  )}
+                  {open && earlier.map(renderCard)}
+                </Fragment>
+              );
+            })}
           </ul>
         </>
       )}

@@ -5,6 +5,11 @@ import type { PurchaseItem } from '@/types/database';
 import { requireAdminContext, type SaveResult } from './_helpers';
 import { logAdminAction } from './auditLog';
 import { createStockItem } from './stockItems';
+import {
+  normaliseCaratForHoldings,
+  normaliseMetalForHoldings,
+  purityToPercent,
+} from '@/lib/schemas/valuationFormOptions';
 
 /**
  * Itemised purchase lines (see migration 030). Each line is one physical
@@ -202,16 +207,25 @@ export async function addPurchaseItemToHoldings(
     customerId = customer?.id ?? null;
   }
 
+  // The holdings ledger only accepts a fixed carat vocabulary ("24ct",
+  // "925 silver", ...) - normalise the line's free-text entry so imports
+  // never bounce off the stock_items carat CHECK constraint.
+  const stockCarat = normaliseCaratForHoldings(item.metal_type, item.carat);
   const created = await createStockItem({
     valuation_request_id: item.valuation_request_id,
     customer_id: customerId,
     item_type: vr?.item_type ?? null,
-    description: [item.description, item.hallmark ? `Hallmark/serial: ${item.hallmark}` : null]
+    description: [
+      item.description,
+      item.hallmark ? `Hallmark/serial: ${item.hallmark}` : null,
+      // Keep the original wording when normalisation had to drop it.
+      !stockCarat && item.carat ? `Purity as noted: ${item.carat}` : null,
+    ]
       .filter(Boolean)
       .join(' · '),
-    metal_type: item.metal_type,
-    carat: item.carat,
-    purity_percentage: null,
+    metal_type: normaliseMetalForHoldings(item.metal_type),
+    carat: stockCarat,
+    purity_percentage: purityToPercent(stockCarat),
     weight_grams: item.weight_grams,
     acquired_paid_gbp: item.price_gbp,
     acquired_at: vr?.paid_at ?? new Date().toISOString(),

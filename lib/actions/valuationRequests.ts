@@ -8,7 +8,11 @@ import { sendNewRequestNotification } from '@/lib/email/sendNewRequestNotificati
 import { sendCustomerConfirmation } from '@/lib/email/sendCustomerConfirmation';
 import { sendStatusEmail } from '@/lib/email/sendStatusEmail';
 import { getMetalSpots } from '@/lib/services/metalPrice';
-import { purityToPercent } from '@/lib/schemas/valuationFormOptions';
+import {
+  normaliseCaratForHoldings,
+  normaliseMetalForHoldings,
+  purityToPercent,
+} from '@/lib/schemas/valuationFormOptions';
 import { logAdminAction } from './auditLog';
 import type {
   FormVariant,
@@ -675,6 +679,9 @@ export type WalkInPurchaseInput = {
   payment_amount_gbp: number;
   payment_method?: PaymentMethod | null;
   payment_reference?: string | null;
+  /** Seller's bank details - captured for bank-transfer payments. */
+  payment_sort_code?: string | null;
+  payment_account_number?: string | null;
 };
 
 /**
@@ -776,6 +783,13 @@ export async function createWalkInPurchase(
       payment_amount: input.payment_amount_gbp,
       payment_method: input.payment_method ?? 'cash',
       payment_reference: input.payment_reference?.trim() || null,
+      // Spread-only so inserts keep working before migration 031 is applied.
+      ...(input.payment_sort_code?.trim()
+        ? { payment_sort_code: input.payment_sort_code.trim().slice(0, 20) }
+        : {}),
+      ...(input.payment_account_number?.trim()
+        ? { payment_account_number: input.payment_account_number.trim().slice(0, 20) }
+        : {}),
       paid_at: nowIso,
     })
     .select('id')
@@ -785,6 +799,16 @@ export async function createWalkInPurchase(
     return { ok: false, error: vrErr?.message ?? 'Could not save the purchase.' };
   }
   const valuationRequestId = (vr as { id: string }).id;
+
+  // Auto-fill the payment reference with the purchase's random reference
+  // (UUID first-8, as shown on the board and printed document) when the
+  // admin left the field blank - the id only exists after the insert.
+  if (!input.payment_reference?.trim()) {
+    await ctx.admin
+      .from('valuation_requests')
+      .update({ payment_reference: valuationRequestId.slice(0, 8).toUpperCase() })
+      .eq('id', valuationRequestId);
+  }
 
   const spots = await getMetalSpots();
   const spotFor = (metal: string | null | undefined) =>
@@ -802,6 +826,8 @@ export async function createWalkInPurchase(
     // --- Step 3a: itemised path - one purchase_item + one holding per line.
     for (const [idx, it] of items.entries()) {
       const lineMetal = it.metal_type?.trim() || input.metal_type;
+      const lineStockMetal = normaliseMetalForHoldings(lineMetal);
+      const lineStockCarat = normaliseCaratForHoldings(lineMetal, it.carat);
       const { data: line, error: lineErr } = await ctx.admin
         .from('purchase_items')
         .insert({
@@ -827,16 +853,20 @@ export async function createWalkInPurchase(
           valuation_request_id: valuationRequestId,
           customer_id: customerId,
           item_type: 'gold',
-          description: [it.description.trim(), it.hallmark?.trim() ? `Hallmark/serial: ${it.hallmark.trim()}` : null]
+          description: [
+            it.description.trim(),
+            it.hallmark?.trim() ? `Hallmark/serial: ${it.hallmark.trim()}` : null,
+            !lineStockCarat && it.carat?.trim() ? `Purity as noted: ${it.carat.trim()}` : null,
+          ]
             .filter(Boolean)
             .join(' · '),
-          metal_type: lineMetal || null,
-          carat: it.carat?.trim() || null,
-          purity_percentage: purityToPercent(it.carat ?? null),
+          metal_type: lineStockMetal,
+          carat: lineStockCarat,
+          purity_percentage: purityToPercent(lineStockCarat),
           weight_grams: it.weight_grams ?? null,
           acquired_at: nowIso,
           acquired_paid_gbp: Number(it.price_gbp.toFixed(2)),
-          acquired_spot_gbp_per_g: spotFor(lineMetal),
+          acquired_spot_gbp_per_g: spotFor(lineStockMetal),
         })
         .select('id')
         .single<{ id: string }>();
@@ -859,9 +889,9 @@ export async function createWalkInPurchase(
         customer_id: customerId,
         item_type: 'gold',
         description: input.description?.trim() || null,
-        metal_type: input.metal_type,
-        carat: input.carat?.trim() || null,
-        purity_percentage: purityToPercent(input.carat ?? null),
+        metal_type: normaliseMetalForHoldings(input.metal_type),
+        carat: normaliseCaratForHoldings(input.metal_type, input.carat),
+        purity_percentage: purityToPercent(normaliseCaratForHoldings(input.metal_type, input.carat)),
         weight_grams: input.weight_grams ?? null,
         acquired_at: nowIso,
         acquired_paid_gbp: input.payment_amount_gbp,
@@ -919,6 +949,10 @@ export type PaymentInput = {
   method: PaymentMethod | null;
   reference: string | null;
   paidAt: string | null; // ISO date string or null
+  /** Seller's bank details - only sent for bank transfers. `undefined`
+   *  leaves the stored values untouched (pre-migration safety included). */
+  sortCode?: string | null;
+  accountNumber?: string | null;
 };
 
 /** Save payment details against a request. Used once a piece is bought. */
@@ -936,15 +970,22 @@ export async function updateValuationPayment(
     return { ok: false, error: 'Unknown payment method.' };
   }
 
+  const patch: Record<string, unknown> = {
+    payment_amount: input.amount,
+    payment_method: input.method,
+    payment_reference: input.reference?.slice(0, 200) ?? null,
+    paid_at: input.paidAt,
+    updated_at: new Date().toISOString(),
+  };
+  // Only touch the bank-detail columns when the client sent them, so saves
+  // keep working even if migration 031 hasn't been applied yet.
+  if (input.sortCode !== undefined) patch.payment_sort_code = input.sortCode?.slice(0, 20) ?? null;
+  if (input.accountNumber !== undefined)
+    patch.payment_account_number = input.accountNumber?.slice(0, 20) ?? null;
+
   const { error } = await ctx.admin
     .from('valuation_requests')
-    .update({
-      payment_amount: input.amount,
-      payment_method: input.method,
-      payment_reference: input.reference?.slice(0, 200) ?? null,
-      paid_at: input.paidAt,
-      updated_at: new Date().toISOString(),
-    })
+    .update(patch)
     .eq('id', id);
 
   if (error) {

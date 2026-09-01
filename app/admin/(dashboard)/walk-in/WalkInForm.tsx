@@ -59,6 +59,8 @@ export function WalkInForm() {
     payment_amount_gbp: '',
     payment_method: 'cash' as PaymentMethod,
     payment_reference: '',
+    payment_sort_code: '',
+    payment_account_number: '',
   });
   const [lines, setLines] = useState<ItemLine[]>([]);
   const [pending, startTransition] = useTransition();
@@ -101,6 +103,10 @@ export function WalkInForm() {
         payment_amount_gbp: itemised ? total : Number(form.payment_amount_gbp || 0),
         payment_method: form.payment_method,
         payment_reference: form.payment_reference || null,
+        payment_sort_code:
+          form.payment_method === 'bank_transfer' ? form.payment_sort_code || null : null,
+        payment_account_number:
+          form.payment_method === 'bank_transfer' ? form.payment_account_number || null : null,
         items: itemised
           ? lines.map((l) => ({
               description: l.description,
@@ -310,9 +316,25 @@ export function WalkInForm() {
             label="Reference (optional)"
             value={form.payment_reference}
             onChange={update('payment_reference')}
-            placeholder="Bank transfer ref, cheque no., etc."
+            placeholder="Leave blank to use the purchase reference"
           />
         </div>
+        {form.payment_method === 'bank_transfer' && (
+          <div className="mt-3 grid gap-3 md:grid-cols-2">
+            <Field
+              label="Seller sort code"
+              value={form.payment_sort_code}
+              onChange={update('payment_sort_code')}
+              placeholder="12-34-56"
+            />
+            <Field
+              label="Seller account number"
+              value={form.payment_account_number}
+              onChange={update('payment_account_number')}
+              placeholder="12345678"
+            />
+          </div>
+        )}
       </Section>
 
       {/* ---------------------------------------------- Submit */}

@@ -232,6 +232,9 @@ export type ValuationRequest = {
   payment_amount: number | null;
   payment_method: PaymentMethod | null;
   payment_reference: string | null;
+  /** Seller's bank details, captured for bank-transfer payments only. */
+  payment_sort_code: string | null;
+  payment_account_number: string | null;
   paid_at: string | null;
   created_at: string;
   updated_at: string;

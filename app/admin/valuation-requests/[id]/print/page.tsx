@@ -249,6 +249,22 @@ export default async function PurchasePrintPage({
                 <strong>{request.payment_reference}</strong>
               </div>
             )}
+            {request.payment_method === 'bank_transfer' &&
+              (request.payment_sort_code || request.payment_account_number) && (
+                <div className="print-field">
+                  <span>Paid to</span>
+                  <strong>
+                    {[
+                      request.payment_sort_code,
+                      request.payment_account_number
+                        ? `····${request.payment_account_number.slice(-4)}`
+                        : null,
+                    ]
+                      .filter(Boolean)
+                      .join(' · ')}
+                  </strong>
+                </div>
+              )}
             {request.paid_at && (
               <div className="print-field">
                 <span>Paid on</span>
