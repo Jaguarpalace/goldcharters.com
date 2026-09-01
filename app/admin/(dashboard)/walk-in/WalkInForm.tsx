@@ -85,6 +85,15 @@ export function WalkInForm() {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     setFeedback(null);
+    // When itemised, the request's headline item fields are derived from the
+    // lines (the single-item section is hidden): metal from the first line
+    // when it matches a known metal, total weight, and a joined description.
+    const firstLineMetal = itemised
+      ? METAL_OPTIONS.find((m) => m.toLowerCase() === (lines[0]?.metal_type ?? '').trim().toLowerCase())
+      : undefined;
+    const totalWeight = itemised
+      ? lines.reduce((sum, l) => sum + (Number(l.weight_grams) || 0), 0)
+      : 0;
     startTransition(async () => {
       const result = await createWalkInPurchase({
         first_name: form.first_name,
@@ -95,10 +104,18 @@ export function WalkInForm() {
         address_line2: form.address_line2 || null,
         city: form.city || null,
         postcode: form.postcode || null,
-        metal_type: form.metal_type,
-        carat: form.carat || null,
-        weight_grams: form.weight_grams ? Number(form.weight_grams) : null,
-        description: form.description || null,
+        metal_type: itemised ? firstLineMetal ?? form.metal_type : form.metal_type,
+        carat: itemised ? lines[0]?.carat || null : form.carat || null,
+        weight_grams: itemised
+          ? totalWeight > 0
+            ? totalWeight
+            : null
+          : form.weight_grams
+          ? Number(form.weight_grams)
+          : null,
+        description: itemised
+          ? lines.map((l) => l.description.trim()).filter(Boolean).join(', ').slice(0, 2000) || null
+          : form.description || null,
         condition: form.condition || null,
         payment_amount_gbp: itemised ? total : Number(form.payment_amount_gbp || 0),
         payment_method: form.payment_method,
@@ -150,7 +167,19 @@ export function WalkInForm() {
         </div>
       </Section>
 
-      {/* ---------------------------------------------- Item */}
+      {/* ---------------------------------------------- Item
+          Hidden while itemising: with lines present, the record's item
+          summary (metal, weight, description) is built from the lines, so
+          filling this section too would be double entry. */}
+      {itemised ? (
+        <Section title="Item">
+          <p className="text-[11px] text-warmgrey">
+            Built automatically from the item lines below - metal and weight from the lines, and
+            each line printed on the purchase document. Remove all lines to enter a single item
+            here instead.
+          </p>
+        </Section>
+      ) : (
       <Section title="Item">
         <div className="grid gap-3 md:grid-cols-4">
           <SelectField label="Metal" required value={form.metal_type} onChange={update('metal_type')}>
@@ -197,6 +226,7 @@ export function WalkInForm() {
           </label>
         </div>
       </Section>
+      )}
 
       {/* ---------------------------------------------- Itemisation */}
       <Section title="Itemisation">

@@ -46,8 +46,17 @@ export function PrintShell({ children }: { children: ReactNode }) {
             Black Gold
           </button>
         </div>
-        <button type="button" className="print-btn print-btn-ghost" onClick={() => window.close()}>
-          Close
+        <button
+          type="button"
+          className="print-btn print-btn-ghost"
+          onClick={() => {
+            // window.close() only works for script-opened tabs; navigating
+            // here normally leaves it powerless. Go back to the admin instead.
+            if (window.history.length > 1) window.history.back();
+            else window.location.href = '/admin/valuation-requests';
+          }}
+        >
+          Back to admin
         </button>
         <button type="button" className="print-btn print-btn-primary" onClick={() => window.print()}>
           Print
