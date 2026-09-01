@@ -6,6 +6,7 @@ import { formatGBP } from '@/lib/format';
 import {
   computePortfolioSnapshot,
   listHeldStockItems,
+  listSoldStockItems,
   type MetalKey,
 } from '@/lib/queries/stockItems';
 import { listAuditLog, type AuditLogEntry } from '@/lib/queries/auditLog';
@@ -33,14 +34,30 @@ export default async function AdminOverview() {
   // Pull everything the dashboard needs in parallel — three independently
   // cached upstreams (Supabase, metalprice API, Supabase again) — so the
   // page renders fast even when the holdings ledger has hundreds of rows.
-  const [spots, requestsRaw, heldStock, auditEntries] = await Promise.all([
+  const [spots, requestsRaw, heldStock, soldStock, auditEntries] = await Promise.all([
     getMetalSpots(),
     isSupabaseConfigured()
       ? (listValuationRequests() as Promise<ValuationRequest[]>)
       : Promise.resolve([] as ValuationRequest[]),
     isSupabaseConfigured() ? listHeldStockItems() : Promise.resolve([]),
+    isSupabaseConfigured() ? listSoldStockItems() : Promise.resolve([]),
     isSupabaseConfigured() ? listAuditLog(5) : Promise.resolve([] as AuditLogEntry[]),
   ]);
+
+  // Realised profit: what sold items actually made over what we paid for
+  // them. Off-website sales recorded via the Holdings "Record sale" panel.
+  const realised = soldStock.reduce(
+    (acc, s) => {
+      const paid = Number(s.acquired_paid_gbp) || 0;
+      const sold = Number(s.sold_amount_gbp) || 0;
+      acc.paid += paid;
+      acc.sold += sold;
+      return acc;
+    },
+    { paid: 0, sold: 0 },
+  );
+  const realisedProfit = realised.sold - realised.paid;
+  const realisedPct = realised.paid > 0 ? (realisedProfit / realised.paid) * 100 : 0;
   const requests = requestsRaw;
   const spotMap: Record<MetalKey, number | null> = {
     gold: spots.gold?.per_gram_gbp ?? null,
@@ -135,6 +152,21 @@ export default async function AdminOverview() {
               label="Unrealised P&L"
               value={`${formatGBPSigned(portfolio.combined.pl_gbp)} · ${formatPct(portfolio.combined.pl_pct)}`}
               tone={portfolio.combined.pl_gbp >= 0 ? 'positive' : 'negative'}
+            />
+            <HoldingStat
+              label="Items sold"
+              value={soldStock.length.toString()}
+              sub={soldStock.length > 0 ? `${formatGBP(realised.sold)} in sales` : undefined}
+            />
+            <HoldingStat
+              label="Realised profit"
+              value={
+                soldStock.length > 0
+                  ? `${formatGBPSigned(realisedProfit)} · ${formatPct(realisedPct)}`
+                  : '—'
+              }
+              sub={soldStock.length > 0 ? `on ${formatGBP(realised.paid)} paid out` : 'No sales recorded yet'}
+              tone={soldStock.length === 0 ? undefined : realisedProfit >= 0 ? 'positive' : 'negative'}
             />
           </div>
         </Panel>
