@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { getCalculatorRates } from '@/lib/queries/calculator';
 import { buildPageMetadata } from '@/lib/queries/pageSeo';
 import { GoldCalculator } from '@/components/public/GoldCalculator';
-import { CalculatorSpotBadge } from '@/components/public/CalculatorSpotBadge';
 import { ValuationForm } from '@/components/public/ValuationForm';
 import { JsonLd } from '@/lib/seo/JsonLd';
 import { locationFaqSchema } from '@/lib/seo/structuredData';
@@ -65,11 +64,9 @@ export default async function GoldCalculatorPage() {
     <>
       <JsonLd data={[locationFaqSchema(faqs)]} />
 
-      <section className="relative py-6 lg:py-10">
-        <div className="gc-container">
-          <CalculatorSpotBadge />
-        </div>
-      </section>
+      {/* Live spot badge deliberately removed - customers see our paying
+          rates in the calculator and table below, not the wholesale spot.
+          Spot data still powers /admin/price-dashboard. */}
 
       {/* GoldCalculator acts as the page hero - its title renders as <h1>. */}
       <GoldCalculator rates={rates} asH1 />
