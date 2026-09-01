@@ -21,7 +21,10 @@ export function PrintShell({ children }: { children: ReactNode }) {
 
   return (
     <div className={`print-page theme-${theme}`}>
-      <style>{PRINT_CSS}</style>
+      {/* Injected as markup, not a text node: the CSS contains quotes and
+          apostrophes that the server HTML-escapes inside <style>, which made
+          React's hydration diff flag a false mismatch in dev. */}
+      <style dangerouslySetInnerHTML={{ __html: PRINT_CSS }} />
 
       {/* On-screen only - hidden by print rules below */}
       <div className="print-actions">
