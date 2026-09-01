@@ -17,6 +17,11 @@ import { beaconsfieldGerrardsCross } from './beaconsfield-gerrards-cross';
 import { hounslow } from './hounslow';
 import { hillingdonUxbridge } from './hillingdon-uxbridge';
 import { ealing } from './ealing';
+import { camberley } from './camberley';
+import { marlowHenley } from './marlow-henley';
+import { farnham } from './farnham';
+import { epsom } from './epsom';
+import { haslemere } from './haslemere';
 
 /**
  * Locations are deliberately ordered by relevance / commercial priority,
@@ -27,13 +32,18 @@ export const LOCATIONS: LocationContent[] = [
   ascot,
   virginiaWaterWentworth,
   windsor,
+  camberley,
   surrey,
   stainesEgham,
   london,
   weybridgeEsherCobham,
   maidenheadBray,
+  marlowHenley,
   woking,
   guildford,
+  farnham,
+  haslemere,
+  epsom,
   kingstonUponThames,
   beaconsfieldGerrardsCross,
   twickenhamRichmond,
@@ -64,24 +74,29 @@ export function getAllLocationSlugs(): string[] {
  * never a broken one.
  */
 const NEARBY: Record<string, string[]> = {
-  'ascot': ['virginia-water-wentworth', 'windsor', 'staines-egham', 'maidenhead-bray', 'woking'],
+  'ascot': ['virginia-water-wentworth', 'windsor', 'camberley', 'staines-egham', 'maidenhead-bray', 'woking'],
   'virginia-water-wentworth': ['ascot', 'staines-egham', 'windsor', 'weybridge-esher-cobham', 'woking'],
   'windsor': ['maidenhead-bray', 'ascot', 'staines-egham', 'virginia-water-wentworth', 'heathrow'],
-  'surrey': ['guildford', 'woking', 'weybridge-esher-cobham', 'virginia-water-wentworth', 'staines-egham'],
+  'camberley': ['ascot', 'woking', 'farnham', 'guildford', 'virginia-water-wentworth'],
+  'surrey': ['guildford', 'woking', 'weybridge-esher-cobham', 'epsom', 'virginia-water-wentworth', 'staines-egham'],
   'staines-egham': ['virginia-water-wentworth', 'ascot', 'windsor', 'heathrow', 'twickenham-richmond'],
   'london': ['kingston-upon-thames', 'twickenham-richmond', 'ealing', 'hounslow', 'hillingdon-uxbridge'],
-  'weybridge-esher-cobham': ['woking', 'kingston-upon-thames', 'virginia-water-wentworth', 'guildford', 'staines-egham'],
-  'maidenhead-bray': ['windsor', 'ascot', 'beaconsfield-gerrards-cross', 'reading', 'heathrow'],
-  'woking': ['guildford', 'weybridge-esher-cobham', 'virginia-water-wentworth', 'ascot', 'surrey'],
-  'guildford': ['woking', 'weybridge-esher-cobham', 'surrey', 'ascot'],
-  'kingston-upon-thames': ['twickenham-richmond', 'weybridge-esher-cobham', 'hounslow', 'london'],
-  'beaconsfield-gerrards-cross': ['hillingdon-uxbridge', 'maidenhead-bray', 'windsor', 'heathrow'],
+  'weybridge-esher-cobham': ['woking', 'kingston-upon-thames', 'epsom', 'virginia-water-wentworth', 'guildford', 'staines-egham'],
+  'maidenhead-bray': ['windsor', 'ascot', 'marlow-henley', 'beaconsfield-gerrards-cross', 'reading', 'heathrow'],
+  'marlow-henley': ['maidenhead-bray', 'windsor', 'reading', 'beaconsfield-gerrards-cross', 'ascot'],
+  'woking': ['guildford', 'camberley', 'weybridge-esher-cobham', 'virginia-water-wentworth', 'ascot', 'surrey'],
+  'guildford': ['woking', 'farnham', 'haslemere', 'weybridge-esher-cobham', 'surrey', 'ascot'],
+  'farnham': ['guildford', 'haslemere', 'camberley', 'woking'],
+  'haslemere': ['guildford', 'farnham', 'woking', 'surrey'],
+  'epsom': ['kingston-upon-thames', 'weybridge-esher-cobham', 'guildford', 'surrey'],
+  'kingston-upon-thames': ['twickenham-richmond', 'weybridge-esher-cobham', 'epsom', 'hounslow', 'london'],
+  'beaconsfield-gerrards-cross': ['hillingdon-uxbridge', 'maidenhead-bray', 'marlow-henley', 'windsor', 'heathrow'],
   'twickenham-richmond': ['kingston-upon-thames', 'hounslow', 'staines-egham', 'ealing', 'london'],
   'hounslow': ['twickenham-richmond', 'ealing', 'heathrow', 'hillingdon-uxbridge', 'staines-egham'],
   'hillingdon-uxbridge': ['ealing', 'hounslow', 'heathrow', 'beaconsfield-gerrards-cross'],
   'ealing': ['hounslow', 'hillingdon-uxbridge', 'twickenham-richmond', 'london'],
   'heathrow': ['hounslow', 'staines-egham', 'windsor', 'hillingdon-uxbridge'],
-  'reading': ['maidenhead-bray', 'windsor', 'ascot'],
+  'reading': ['maidenhead-bray', 'marlow-henley', 'windsor', 'ascot'],
 };
 
 /** Neighbouring location pages for the given slug (empty if none defined). */
@@ -105,15 +120,15 @@ const COUNTY_GROUPS: Array<{ title: string; slugs: string[] }> = [
   },
   {
     title: 'Surrey',
-    slugs: ['virginia-water-wentworth', 'weybridge-esher-cobham', 'woking', 'guildford', 'staines-egham', 'surrey'],
+    slugs: ['virginia-water-wentworth', 'camberley', 'weybridge-esher-cobham', 'woking', 'guildford', 'farnham', 'haslemere', 'epsom', 'staines-egham', 'surrey'],
   },
   {
     title: 'London',
     slugs: ['london', 'kingston-upon-thames', 'twickenham-richmond', 'hounslow', 'hillingdon-uxbridge', 'ealing', 'heathrow'],
   },
   {
-    title: 'Buckinghamshire',
-    slugs: ['beaconsfield-gerrards-cross'],
+    title: 'Buckinghamshire & Oxfordshire',
+    slugs: ['beaconsfield-gerrards-cross', 'marlow-henley'],
   },
 ];
 
