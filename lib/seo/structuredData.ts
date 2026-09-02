@@ -58,10 +58,12 @@ export function localBusinessSchema(settings: SiteSettings) {
     priceRange: '£££',
     address: postalAddress(settings),
     geo: geoCoordinates(settings),
+    // Weekdays only, by appointment (schema has no appointment flag; the
+    // hours below are the bookable window and the copy carries the rest).
     openingHoursSpecification: [
       {
         '@type': 'OpeningHoursSpecification',
-        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
         opens: '10:00',
         closes: '18:00',
       },
