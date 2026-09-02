@@ -12,6 +12,7 @@ import { ThemeToggle, type AdminTheme } from './ThemeToggle';
 import { AdminBrand } from './AdminBrand';
 import { AdminShell } from './AdminShell';
 import { IdleLogout } from './IdleLogout';
+import { SignOutButton } from './SignOutButton';
 import { NavLink } from './NavLink';
 import { SearchPalette } from './SearchPalette';
 
@@ -165,6 +166,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           <span className="mt-1 block text-[10px] uppercase tracking-luxe text-gold-metallic">
             {ROLE_LABELS[role]}
           </span>
+          <SignOutButton />
         </div>
       )}
 
