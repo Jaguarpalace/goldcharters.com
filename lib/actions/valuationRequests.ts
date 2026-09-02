@@ -643,6 +643,14 @@ export async function updateValuationStatus(
 /* --------------------------------------------------------- Walk-in flow */
 
 export type WalkInPurchaseInput = {
+  /**
+   * Optional client-generated UUID for the new request. Lets the walk-in
+   * form show the agreement reference (first 8 chars) BEFORE saving, with
+   * screen, document and payment reference guaranteed to match. Validated
+   * as a UUID server-side; ignored when absent or malformed.
+   */
+  id?: string;
+
   // Seller
   first_name: string;
   last_name: string;
@@ -762,10 +770,32 @@ export async function createWalkInPurchase(
   }
 
   // --- Step 2: insert valuation_request already at status='bought' ---
+  // A well-formed client-generated id is honoured so the reference shown on
+  // screen before saving matches the saved record exactly.
+  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  const providedId = input.id && UUID_RE.test(input.id) ? input.id.toLowerCase() : null;
+
+  // Idempotency: if this exact id was already saved (double-click, network
+  // retry), return the existing purchase instead of failing or duplicating.
+  if (providedId) {
+    const { data: already } = await ctx.admin
+      .from('valuation_requests')
+      .select('id')
+      .eq('id', providedId)
+      .maybeSingle();
+    if (already) {
+      return {
+        ok: true,
+        data: { valuation_request_id: providedId, stock_item_id: null },
+      };
+    }
+  }
+
   const nowIso = new Date().toISOString();
   const { data: vr, error: vrErr } = await ctx.admin
     .from('valuation_requests')
     .insert({
+      ...(providedId ? { id: providedId } : {}),
       first_name: first,
       last_name: last,
       email,

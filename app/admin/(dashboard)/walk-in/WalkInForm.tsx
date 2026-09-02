@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { createWalkInPurchase } from '@/lib/actions/valuationRequests';
 import {
@@ -65,6 +65,16 @@ export function WalkInForm() {
   const [lines, setLines] = useState<ItemLine[]>([]);
   const [pending, startTransition] = useTransition();
   const [feedback, setFeedback] = useState<string | null>(null);
+  // The purchase's id (and therefore its reference) is generated the moment
+  // the form opens, so the reference can be shown - and read out to the
+  // customer - BEFORE saving. The same id becomes the database row on save,
+  // so screen, printed document and payment reference always agree.
+  // Generated in an effect (not at render) to keep server/client HTML equal.
+  const [purchaseId, setPurchaseId] = useState<string | null>(null);
+  useEffect(() => {
+    setPurchaseId(crypto.randomUUID());
+  }, []);
+  const reference = purchaseId ? purchaseId.slice(0, 8).toUpperCase() : null;
 
   const patchLine = (idx: number, patch: Partial<ItemLine>) =>
     setLines((prev) => {
@@ -96,6 +106,7 @@ export function WalkInForm() {
       : 0;
     startTransition(async () => {
       const result = await createWalkInPurchase({
+        id: purchaseId ?? undefined,
         first_name: form.first_name,
         last_name: form.last_name,
         email: form.email,
@@ -309,6 +320,19 @@ export function WalkInForm() {
 
       {/* ---------------------------------------------- Payment */}
       <Section title="Payment">
+        {reference && (
+          <p className="flex flex-wrap items-baseline gap-2">
+            <span className="text-[10px] font-medium uppercase tracking-luxe text-warmgrey">
+              Agreement reference
+            </span>
+            <span className="font-mono text-[16px] font-bold tracking-widest text-gold-bright">
+              {reference}
+            </span>
+            <span className="text-[10px] text-warmgrey/60">
+              shown on the printed document and used as the payment reference
+            </span>
+          </p>
+        )}
         <div className="grid gap-3 md:grid-cols-3">
           {itemised ? (
             <label className="block">
