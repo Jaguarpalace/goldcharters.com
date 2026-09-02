@@ -17,6 +17,12 @@ export type MfaState = {
   enrolled: boolean;
   /** This session has completed the 2FA step (always true when not enrolled). */
   verified: boolean;
+  /**
+   * True when the check itself failed (transient auth API error). Callers
+   * must NOT force 2FA setup on an indeterminate state - fail open instead
+   * of stranding a legitimate admin.
+   */
+  indeterminate?: boolean;
 };
 
 type AuthOnly = { auth: SupabaseClient['auth'] };
@@ -28,14 +34,14 @@ export async function getMfaState(supabase: AuthOnly): Promise<MfaState> {
       // Fail open rather than strand a legitimate admin on a transient auth
       // API error. Password auth has already been checked by the caller.
       console.error('[mfa] assurance-level check failed', error);
-      return { enrolled: false, verified: true };
+      return { enrolled: false, verified: true, indeterminate: true };
     }
     const enrolled = data.nextLevel === 'aal2';
     const verified = data.currentLevel === 'aal2';
     return { enrolled, verified: enrolled ? verified : true };
   } catch (err) {
     console.error('[mfa] assurance-level check threw', err);
-    return { enrolled: false, verified: true };
+    return { enrolled: false, verified: true, indeterminate: true };
   }
 }
 

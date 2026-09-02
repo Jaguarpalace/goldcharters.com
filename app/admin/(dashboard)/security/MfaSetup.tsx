@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getBrowserSupabase } from '@/lib/supabase/client';
 
@@ -9,8 +9,9 @@ type Enrolment = { id: string; qr: string; secret: string };
 
 const FRIENDLY_NAME = 'Charters Gold admin';
 
-export function MfaSetup() {
+export function MfaSetup({ mode = 'settings' }: { mode?: 'settings' | 'onboarding' }) {
   const router = useRouter();
+  const onboarding = mode === 'onboarding';
   const [loading, setLoading] = useState(true);
   const [active, setActive] = useState<Factor | null>(null);
   const [enrolment, setEnrolment] = useState<Enrolment | null>(null);
@@ -36,6 +37,17 @@ export function MfaSetup() {
   useEffect(() => {
     void load();
   }, [load]);
+
+  // Onboarding: jump straight into enrolment - the QR appears without an
+  // extra click, since setting up is the only thing this page is for.
+  const autoStarted = useRef(false);
+  useEffect(() => {
+    if (onboarding && !loading && !active && !enrolment && !autoStarted.current) {
+      autoStarted.current = true;
+      void startEnrolment();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onboarding, loading, active, enrolment]);
 
   /** Start enrolment: creates a pending authenticator and shows its QR code. */
   const startEnrolment = async () => {
@@ -90,6 +102,11 @@ export function MfaSetup() {
     }
     setEnrolment(null);
     setCode('');
+    if (onboarding) {
+      // The verify call upgraded this session - go straight to work.
+      window.location.href = '/admin';
+      return;
+    }
     setNotice('Two-factor authentication is now ON for your account. From your next sign-in you will be asked for a code from your authenticator app.');
     await load();
     setBusy(false);
@@ -108,15 +125,12 @@ export function MfaSetup() {
     setBusy(false);
   };
 
+  const [confirmingDisable, setConfirmingDisable] = useState(false);
+
   const disable = async () => {
     const supabase = getBrowserSupabase();
     if (!supabase || !active) return;
-    if (
-      !window.confirm(
-        'Turn off two-factor authentication for your account? Your password alone will sign you in again.',
-      )
-    )
-      return;
+    setConfirmingDisable(false);
     setBusy(true);
     setError(null);
     const { error: unenrolError } = await supabase.auth.mfa.unenroll({ factorId: active.id });
@@ -166,8 +180,27 @@ export function MfaSetup() {
               )}
             </p>
           </div>
-          {active ? (
-            <button type="button" onClick={disable} disabled={busy} className="gc-btn-secondary text-xs">
+          {active && confirmingDisable ? (
+            <span className="flex items-center gap-2">
+              <span className="text-[11px] text-amber-300">Turn off two-factor?</span>
+              <button
+                type="button"
+                onClick={disable}
+                disabled={busy}
+                className="rounded-md border border-amber-500/50 bg-amber-500/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-luxe text-amber-300 hover:bg-amber-500/20"
+              >
+                Yes, turn off
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirmingDisable(false)}
+                className="rounded-md border border-gold-metallic/20 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-luxe text-warmgrey hover:text-white"
+              >
+                Cancel
+              </button>
+            </span>
+          ) : active ? (
+            <button type="button" onClick={() => setConfirmingDisable(true)} disabled={busy} className="gc-btn-secondary text-xs">
               Turn off
             </button>
           ) : (

@@ -36,9 +36,14 @@ export async function requireAdminContext(): Promise<AdminContext> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: 'Not authenticated.', code: 'UNAUTHENTICATED' };
 
-  // Two-factor: a password-only session on a 2FA-enabled account must not be
-  // able to run admin mutations by calling server actions directly.
-  if (!mfaSatisfied(await getMfaState(supabase))) {
+  // Two-factor is mandatory: no enrolled authenticator means no admin
+  // mutations, and a password-only session on an enrolled account must
+  // finish the code step - server actions can't be a side door either way.
+  const mfa = await getMfaState(supabase);
+  if (!mfa.indeterminate && !mfa.enrolled) {
+    return { error: 'Two-factor setup required before using the admin.', code: 'UNAUTHENTICATED' };
+  }
+  if (!mfaSatisfied(mfa)) {
     return { error: 'Two-factor verification required. Please sign in again.', code: 'UNAUTHENTICATED' };
   }
 

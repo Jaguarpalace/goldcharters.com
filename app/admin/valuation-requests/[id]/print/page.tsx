@@ -39,7 +39,9 @@ export default async function PurchasePrintPage({
   if (!auth.user) {
     redirect(`/admin/login?next=/admin/valuation-requests/${params.id}/print`);
   }
-  if (!mfaSatisfied(await getMfaState(supabase))) {
+  const mfa = await getMfaState(supabase);
+  if (!mfa.indeterminate && !mfa.enrolled) redirect('/admin/setup-2fa');
+  if (!mfaSatisfied(mfa)) {
     redirect(`/admin/login?mfa=1&next=/admin/valuation-requests/${params.id}/print`);
   }
 

@@ -66,9 +66,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
     if (supabase) {
       const { data } = await supabase.auth.getUser();
       if (!data.user) redirect('/admin/login');
-      // Accounts with two-factor enabled must have passed the code step on
-      // this session. Password-only sessions are sent back to finish it.
-      if (!mfaSatisfied(await getMfaState(supabase))) redirect('/admin/login?mfa=1');
+      // Two-factor is mandatory: accounts with no authenticator are sent to
+      // set one up before they can use the admin at all; enrolled accounts
+      // must have passed the code step on this session.
+      const mfa = await getMfaState(supabase);
+      if (!mfa.indeterminate && !mfa.enrolled) redirect('/admin/setup-2fa');
+      if (!mfaSatisfied(mfa)) redirect('/admin/login?mfa=1');
       userEmail = data.user.email ?? null;
       role = (await getAdminRole()) ?? 'editor';
     }
