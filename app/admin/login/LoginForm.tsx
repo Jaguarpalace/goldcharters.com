@@ -35,9 +35,15 @@ export function LoginForm({ initialStep = 'password' }: { initialStep?: Step }) 
   // session) - look up which authenticator to challenge. `?forgot=1` opens
   // the reset form straight away (linked from an expired reset page).
   useEffect(() => {
-    if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('forgot') === '1') {
-      setStep('forgot');
-      return;
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('forgot') === '1') {
+        setStep('forgot');
+        return;
+      }
+      if (params.get('timeout') === '1') {
+        setNotice('You were signed out after 5 minutes of inactivity. Sign in to continue.');
+      }
     }
     if (initialStep !== 'mfa') return;
     const supabase = getBrowserSupabase();
@@ -229,6 +235,11 @@ export function LoginForm({ initialStep = 'password' }: { initialStep?: Step }) 
 
   return (
     <form onSubmit={onPassword} className="space-y-5">
+      {notice && (
+        <p className="rounded-lg border border-gold-metallic/30 bg-gold-metallic/10 px-4 py-3 text-sm text-gold-tint">
+          {notice}
+        </p>
+      )}
       <div>
         <label htmlFor="email" className="gc-label">
           Email
