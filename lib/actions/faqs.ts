@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { requireAdminContext, type SaveResult } from './_helpers';
+import { requireAdminRole, type SaveResult } from './_helpers';
 import type { Faq, FaqCategory } from '@/types/database';
 
 const VALID_CATEGORIES = new Set<FaqCategory>([
@@ -31,7 +31,7 @@ function refresh() {
 }
 
 export async function upsertFaq(input: UpsertFaq): Promise<SaveResult<Faq>> {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminRole();
   if ('error' in ctx) return { ok: false, error: ctx.error };
 
   if (!VALID_CATEGORIES.has(input.category)) {
@@ -63,7 +63,7 @@ export async function upsertFaq(input: UpsertFaq): Promise<SaveResult<Faq>> {
 }
 
 export async function deleteFaq(id: string): Promise<SaveResult> {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminRole();
   if ('error' in ctx) return { ok: false, error: ctx.error };
 
   const { error } = await ctx.admin.from('faqs').delete().eq('id', id);

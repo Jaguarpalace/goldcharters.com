@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { requireAdminContext, type SaveResult } from './_helpers';
+import { requireAdminRole, type SaveResult } from './_helpers';
 import type { ItemWeBuy } from '@/types/database';
 
 type UpsertItem = {
@@ -21,7 +21,7 @@ function refresh() {
 }
 
 export async function upsertItem(input: UpsertItem): Promise<SaveResult<ItemWeBuy>> {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminRole();
   if ('error' in ctx) return { ok: false, error: ctx.error };
 
   if (!input.name.trim()) {
@@ -55,7 +55,7 @@ export async function upsertItem(input: UpsertItem): Promise<SaveResult<ItemWeBu
 }
 
 export async function deleteItem(id: string): Promise<SaveResult> {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminRole();
   if ('error' in ctx) return { ok: false, error: ctx.error };
 
   const { error } = await ctx.admin.from('items_we_buy').delete().eq('id', id);

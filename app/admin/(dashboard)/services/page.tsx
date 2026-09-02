@@ -1,9 +1,11 @@
 import { getServices } from '@/lib/queries/services';
 import { ServicesEditor } from './ServicesEditor';
+import { requireFullAdminPage } from '@/lib/auth/adminRole';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminServicesPage() {
+  await requireFullAdminPage();
   // Admin sees hidden services too so they can re-enable them.
   const services = await getServices({ includeHidden: true });
   return (

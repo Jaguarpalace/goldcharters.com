@@ -14,7 +14,9 @@ async function requireAdmin() {
     .select('role')
     .eq('id', user.id)
     .maybeSingle();
-  if (!profile) return null;
+  // Rates and margins are Full Admin territory - they are the business's
+  // pricing lever, not day-to-day trading.
+  if (!profile || (profile as { role?: string }).role !== 'admin') return null;
   return user;
 }
 

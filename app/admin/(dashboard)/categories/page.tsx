@@ -1,10 +1,12 @@
 import { getProductCategories } from '@/lib/queries/products';
 import { ShopDisabledBanner } from '@/components/admin/ShopDisabledBanner';
 import { BUY_ENABLED } from '@/lib/features';
+import { requireFullAdminPage } from '@/lib/auth/adminRole';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminCategoriesPage() {
+  await requireFullAdminPage();
   const categories = await getProductCategories();
   return (
     <div className="space-y-8">

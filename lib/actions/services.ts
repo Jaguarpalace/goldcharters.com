@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { requireAdminContext, type SaveResult } from './_helpers';
+import { requireAdminRole, type SaveResult } from './_helpers';
 import type { Service } from '@/types/database';
 
 const ALLOWED_PATHWAYS = new Set(['sell', 'buy', 'general']);
@@ -31,7 +31,7 @@ function refresh() {
 }
 
 export async function upsertService(input: UpsertService): Promise<SaveResult<Service>> {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminRole();
   if ('error' in ctx) return { ok: false, error: ctx.error };
 
   if (!input.title.trim()) return { ok: false, error: 'Title is required.' };
@@ -75,7 +75,7 @@ export async function upsertService(input: UpsertService): Promise<SaveResult<Se
 }
 
 export async function deleteService(id: string): Promise<SaveResult> {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminRole();
   if ('error' in ctx) return { ok: false, error: ctx.error };
 
   const { error } = await ctx.admin.from('services').delete().eq('id', id);

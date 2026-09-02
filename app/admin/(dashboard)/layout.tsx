@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { getServerSupabase } from '@/lib/supabase/server';
 import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { getMfaState, mfaSatisfied } from '@/lib/auth/mfa';
+import { getAdminRole, ROLE_LABELS } from '@/lib/auth/adminRole';
 import { BUY_ENABLED } from '@/lib/features';
 import { countOutstandingRequests } from '@/lib/actions/valuationRequests';
 import { countUpcomingAppointments } from '@/lib/actions/appointments';
@@ -19,10 +20,12 @@ type NavItem = {
   label: string;
   /** When true, the item is greyed out and labelled "Inactive" if BUY_ENABLED is false. */
   shopOnly?: boolean;
+  /** Visible to Manager-tier users. Everything else is Full Admin only. */
+  manager?: boolean;
 };
 
 const NAV: NavItem[] = [
-  { href: '/admin', label: 'Overview' },
+  { href: '/admin', label: 'Overview', manager: true },
   { href: '/admin/homepage', label: 'Homepage' },
   { href: '/admin/services', label: 'Services' },
   { href: '/admin/items-we-buy', label: 'Items We Buy' },
@@ -32,12 +35,12 @@ const NAV: NavItem[] = [
   { href: '/admin/categories', label: 'Categories', shopOnly: true },
   { href: '/admin/stock', label: 'Stock Movements', shopOnly: true },
   { href: '/admin/orders', label: 'Orders', shopOnly: true },
-  { href: '/admin/walk-in', label: 'New Walk-in Purchase' },
-  { href: '/admin/valuation-requests', label: 'Valuation Requests' },
-  { href: '/admin/appointments', label: 'Appointments' },
+  { href: '/admin/walk-in', label: 'New Walk-in Purchase', manager: true },
+  { href: '/admin/valuation-requests', label: 'Valuation Requests', manager: true },
+  { href: '/admin/appointments', label: 'Appointments', manager: true },
   { href: '/admin/events', label: 'Pop-Up Locations' },
-  { href: '/admin/customers', label: 'Customers' },
-  { href: '/admin/holdings', label: 'Holdings' },
+  { href: '/admin/customers', label: 'Customers', manager: true },
+  { href: '/admin/holdings', label: 'Holdings', manager: true },
   { href: '/admin/faqs', label: 'FAQs' },
   { href: '/admin/contact', label: 'Contact Details' },
   { href: '/admin/media', label: 'Media Library' },
@@ -49,12 +52,13 @@ const NAV: NavItem[] = [
   { href: '/admin/users', label: 'Team' },
   { href: '/admin/audit-log', label: 'Audit Log' },
   { href: '/admin/trash', label: 'Trash' },
-  { href: '/admin/security', label: 'Security' },
+  { href: '/admin/security', label: 'Security', manager: true },
   { href: '/admin/settings', label: 'Settings' },
 ];
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   let userEmail: string | null = null;
+  let role: 'admin' | 'editor' = 'admin';
 
   if (isSupabaseConfigured()) {
     const supabase = getServerSupabase();
@@ -65,8 +69,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
       // this session. Password-only sessions are sent back to finish it.
       if (!mfaSatisfied(await getMfaState(supabase))) redirect('/admin/login?mfa=1');
       userEmail = data.user.email ?? null;
+      role = (await getAdminRole()) ?? 'editor';
     }
   }
+  // Managers get a sidebar of just their tools - no error walls.
+  const visibleNav = role === 'admin' ? NAV : NAV.filter((item) => item.manager);
 
   const [outstandingCount, appointmentCount] = isSupabaseConfigured()
     ? await Promise.all([countOutstandingRequests(), countUpcomingAppointments()])
@@ -93,7 +100,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
       <nav className="mt-6" aria-label="Admin navigation">
         <ul className="space-y-1 text-sm">
-          {NAV.map((item) => {
+          {visibleNav.map((item) => {
             const inactive = item.shopOnly && !BUY_ENABLED;
             const showOutstandingBadge =
               item.href === '/admin/valuation-requests' && outstandingCount > 0;
@@ -155,6 +162,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
       {userEmail && (
         <div className="mt-6 rounded-lg border border-gold-metallic/15 bg-ink-950 p-3 text-xs text-warmgrey">
           Signed in as <span className="text-gold-tint">{userEmail}</span>
+          <span className="mt-1 block text-[10px] uppercase tracking-luxe text-gold-metallic">
+            {ROLE_LABELS[role]}
+          </span>
         </div>
       )}
 

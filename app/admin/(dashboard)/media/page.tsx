@@ -1,10 +1,12 @@
 import { listMediaFiles } from '@/lib/actions/media';
 import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { MediaBoard } from './MediaBoard';
+import { requireFullAdminPage } from '@/lib/auth/adminRole';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminMediaPage() {
+  await requireFullAdminPage();
   const files = isSupabaseConfigured() ? await listMediaFiles() : [];
 
   return (

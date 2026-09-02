@@ -3,10 +3,12 @@ import { listDeletedCustomers } from '@/lib/queries/customers';
 import { listDeletedStockItems } from '@/lib/queries/stockItems';
 import { listDeletedValuationRequests } from '@/lib/actions/valuationRequests';
 import { TrashBoard } from './TrashBoard';
+import { requireFullAdminPage } from '@/lib/auth/adminRole';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminTrashPage() {
+  await requireFullAdminPage();
   const [customers, stockItems, valuationRequests] = isSupabaseConfigured()
     ? await Promise.all([
         listDeletedCustomers(),

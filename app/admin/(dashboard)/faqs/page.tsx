@@ -1,9 +1,11 @@
 import { getFaqs } from '@/lib/queries/faqs';
 import { FaqsEditor } from './FaqsEditor';
+import { requireFullAdminPage } from '@/lib/auth/adminRole';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminFaqsPage() {
+  await requireFullAdminPage();
   // Admin sees hidden FAQs too so they can re-enable them.
   const faqs = await getFaqs({ includeHidden: true });
   return (

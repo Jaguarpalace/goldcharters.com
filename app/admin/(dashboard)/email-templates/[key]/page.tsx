@@ -3,10 +3,12 @@ import { notFound } from 'next/navigation';
 import { getEmailTemplateByKey } from '@/lib/queries/emailTemplates';
 import { sampleVariablesFor } from '@/lib/email/renderTemplate';
 import { TemplateEditor } from './TemplateEditor';
+import { requireFullAdminPage } from '@/lib/auth/adminRole';
 
 export const dynamic = 'force-dynamic';
 
 export default async function EditTemplatePage({ params }: { params: { key: string } }) {
+  await requireFullAdminPage();
   const template = await getEmailTemplateByKey(params.key);
   if (!template) notFound();
 

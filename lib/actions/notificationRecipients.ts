@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { requireAdminContext, type SaveResult } from './_helpers';
+import { requireAdminRole, type SaveResult } from './_helpers';
 import type { NotificationRecipient } from '@/types/database';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -10,7 +10,7 @@ export async function addNotificationRecipient(input: {
   email: string;
   label?: string | null;
 }): Promise<SaveResult<NotificationRecipient>> {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminRole();
   if ('error' in ctx) return { ok: false, error: ctx.error };
 
   const email = input.email.trim().toLowerCase();
@@ -48,7 +48,7 @@ export async function updateNotificationRecipient(
   id: string,
   patch: { email?: string; label?: string | null; enabled?: boolean },
 ): Promise<SaveResult> {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminRole();
   if ('error' in ctx) return { ok: false, error: ctx.error };
 
   const update: Record<string, unknown> = {};
@@ -82,7 +82,7 @@ export async function updateNotificationRecipient(
 }
 
 export async function removeNotificationRecipient(id: string): Promise<SaveResult> {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminRole();
   if ('error' in ctx) return { ok: false, error: ctx.error };
 
   const { error } = await ctx.admin

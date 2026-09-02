@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { requireAdminContext, type SaveResult } from './_helpers';
+import { requireAdminRole, type SaveResult } from './_helpers';
 import { getServerSupabase } from '@/lib/supabase/server';
 import type { UploadedImage } from '@/types/database';
 
@@ -39,7 +39,7 @@ export async function listMediaFiles(): Promise<UploadedImage[]> {
 export async function uploadPublicImage(
   formData: FormData,
 ): Promise<SaveResult<{ uploaded: UploadedImage[]; errors: string[] }>> {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminRole();
   if ('error' in ctx) return { ok: false, error: ctx.error };
 
   const incoming: File[] = [];
@@ -125,7 +125,7 @@ export async function updateMediaAltText(
   id: string,
   altText: string,
 ): Promise<SaveResult> {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminRole();
   if ('error' in ctx) return { ok: false, error: ctx.error };
 
   const trimmed = altText.trim().slice(0, 200);
@@ -146,7 +146,7 @@ export async function updateMediaAltText(
 
 /** Remove an image from storage and the catalogue. */
 export async function deleteMediaFile(id: string): Promise<SaveResult> {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminRole();
   if ('error' in ctx) return { ok: false, error: ctx.error };
 
   // Look up the row first so we know the storage path to remove.

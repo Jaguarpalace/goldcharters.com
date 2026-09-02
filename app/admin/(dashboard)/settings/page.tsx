@@ -1,9 +1,11 @@
 import { getSiteSettings } from '@/lib/queries/homepage';
 import { SettingsEditor } from './SettingsEditor';
+import { requireFullAdminPage } from '@/lib/auth/adminRole';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminSettingsPage() {
+  await requireFullAdminPage();
   const settings = await getSiteSettings();
   return (
     <div className="space-y-8">

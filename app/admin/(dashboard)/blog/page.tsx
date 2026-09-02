@@ -1,9 +1,11 @@
 import Link from 'next/link';
 import { getBlogPosts } from '@/lib/queries/blog';
+import { requireFullAdminPage } from '@/lib/auth/adminRole';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminBlogPage() {
+  await requireFullAdminPage();
   const posts = await getBlogPosts({ includeUnpublished: true });
 
   return (

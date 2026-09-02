@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { errResult, requireAdminContext, type SaveResult } from './_helpers';
+import { errResult, requireAdminRole, type SaveResult } from './_helpers';
 import {
   FORM_OPTION_SET_KEYS,
   type FormOption,
@@ -31,7 +31,7 @@ function refresh() {
 export async function upsertFormOption(
   input: UpsertFormOptionInput,
 ): Promise<SaveResult<FormOption>> {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminRole();
   if ('error' in ctx) return ctx as SaveResult<FormOption>;
 
   if (!isValidSetKey(input.set_key)) {
@@ -75,7 +75,7 @@ export async function upsertFormOption(
 }
 
 export async function deleteFormOption(id: string): Promise<SaveResult> {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminRole();
   if ('error' in ctx) return ctx as SaveResult;
 
   const { error } = await ctx.admin.from('form_options').delete().eq('id', id);
@@ -91,7 +91,7 @@ export async function setFormOptionVisible(
   id: string,
   visible: boolean,
 ): Promise<SaveResult> {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminRole();
   if ('error' in ctx) return ctx as SaveResult;
 
   const { error } = await ctx.admin

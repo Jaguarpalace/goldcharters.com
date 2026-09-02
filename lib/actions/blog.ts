@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { requireAdminContext, type SaveResult } from './_helpers';
+import { requireAdminRole, type SaveResult } from './_helpers';
 import type { BlogPost } from '@/types/database';
 
 type UpsertBlog = {
@@ -33,7 +33,7 @@ function slugify(s: string) {
 }
 
 export async function upsertBlogPost(input: UpsertBlog): Promise<SaveResult<BlogPost>> {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminRole();
   if ('error' in ctx) return { ok: false, error: ctx.error };
 
   if (!input.title.trim()) return { ok: false, error: 'Title is required.' };
@@ -72,7 +72,7 @@ export async function upsertBlogPost(input: UpsertBlog): Promise<SaveResult<Blog
 }
 
 export async function deleteBlogPost(id: string): Promise<SaveResult> {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminRole();
   if ('error' in ctx) return { ok: false, error: ctx.error };
 
   const { data, error } = await ctx.admin

@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { getAdminSupabase, getServerSupabase } from '@/lib/supabase/server';
 import { isSupabaseAdminConfigured } from '@/lib/supabase/env';
-import { requireAdminContext } from './_helpers';
+import { requireAdminContext, requireAdminRole } from './_helpers';
 import { mockAppointmentEvents } from '@/lib/mock-data';
 import {
   APPOINTMENT_SERVICES,
@@ -485,7 +485,7 @@ function revalidateEvents() {
 }
 
 export async function createEvent(input: EventInput): Promise<EventSaveResult> {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminRole();
   if ('error' in ctx) return { ok: false, error: ctx.error };
   const invalid = validateEventInput(input);
   if (invalid) return { ok: false, error: invalid };
@@ -504,7 +504,7 @@ export async function createEvent(input: EventInput): Promise<EventSaveResult> {
 }
 
 export async function updateEvent(id: string, input: EventInput): Promise<EventSaveResult> {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminRole();
   if ('error' in ctx) return { ok: false, error: ctx.error };
   const invalid = validateEventInput(input);
   if (invalid) return { ok: false, error: invalid };
@@ -527,7 +527,7 @@ export async function toggleEventPublished(
   id: string,
   isPublished: boolean,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminRole();
   if ('error' in ctx) return { ok: false, error: ctx.error };
   const { error } = await ctx.admin
     .from('appointment_events')
@@ -539,7 +539,7 @@ export async function toggleEventPublished(
 }
 
 export async function deleteEvent(id: string): Promise<{ ok: true } | { ok: false; error: string }> {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminRole();
   if ('error' in ctx) return { ok: false, error: ctx.error };
   const { error } = await ctx.admin.from('appointment_events').delete().eq('id', id);
   if (error) {

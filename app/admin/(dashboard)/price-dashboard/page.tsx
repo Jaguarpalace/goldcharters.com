@@ -1,5 +1,6 @@
 import { getMetalSpots, spotForPurity } from '@/lib/services/metalPrice';
 import { formatGBP } from '@/lib/format';
+import { requireFullAdminPage } from '@/lib/auth/adminRole';
 
 export const dynamic = 'force-dynamic';
 
@@ -60,6 +61,7 @@ async function fetchRawApi() {
 }
 
 export default async function PriceDashboardPage() {
+  await requireFullAdminPage();
   const [spots, raw] = await Promise.all([getMetalSpots(), fetchRawApi()]);
 
   const apiHealthy = raw.httpStatus === 200 && raw.body?.success === true;

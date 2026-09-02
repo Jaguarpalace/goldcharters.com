@@ -2,10 +2,12 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getBlogPostById } from '@/lib/queries/blog';
 import { BlogEditor } from '../BlogEditor';
+import { requireFullAdminPage } from '@/lib/auth/adminRole';
 
 export const dynamic = 'force-dynamic';
 
 export default async function EditBlogPostPage({ params }: { params: { id: string } }) {
+  await requireFullAdminPage();
   const post = await getBlogPostById(params.id);
   if (!post) notFound();
 

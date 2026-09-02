@@ -1,6 +1,7 @@
 import { getServerSupabase } from '@/lib/supabase/server';
 import { ShopDisabledBanner } from '@/components/admin/ShopDisabledBanner';
 import { BUY_ENABLED } from '@/lib/features';
+import { requireFullAdminPage } from '@/lib/auth/adminRole';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,6 +17,7 @@ type Movement = {
 };
 
 export default async function StockMovementsPage() {
+  await requireFullAdminPage();
   const supabase = getServerSupabase();
   let movements: Movement[] = [];
   if (supabase) {

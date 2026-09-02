@@ -1,6 +1,8 @@
 import { BlogEditor } from '../BlogEditor';
+import { requireFullAdminPage } from '@/lib/auth/adminRole';
 
-export default function NewBlogPostPage() {
+export default async function NewBlogPostPage() {
+  await requireFullAdminPage();
   return (
     <div className="space-y-6">
       <header>

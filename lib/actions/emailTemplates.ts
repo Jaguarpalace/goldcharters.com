@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { requireAdminContext, type SaveResult } from './_helpers';
+import { requireAdminRole, type SaveResult } from './_helpers';
 import { getEmailTemplateByKey } from '@/lib/queries/emailTemplates';
 import { renderTemplate, sampleVariablesFor } from '@/lib/email/renderTemplate';
 import { getResend, getFromAddress, isEmailConfigured } from '@/lib/email/client';
@@ -14,7 +14,7 @@ type UpdateInput = {
 };
 
 export async function updateEmailTemplate(input: UpdateInput): Promise<SaveResult> {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminRole();
   if ('error' in ctx) return { ok: false, error: ctx.error };
 
   if (!input.subject.trim()) return { ok: false, error: 'Subject is required.' };
@@ -48,7 +48,7 @@ export async function sendTestEmail(
   key: string,
   recipient: string,
 ): Promise<SaveResult> {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminRole();
   if ('error' in ctx) return { ok: false, error: ctx.error };
 
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipient)) {

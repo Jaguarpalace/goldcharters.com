@@ -1,10 +1,12 @@
 import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { listLegalPages } from '@/lib/queries/legalPages';
 import { LegalBoard } from './LegalBoard';
+import { requireFullAdminPage } from '@/lib/auth/adminRole';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminLegalPage() {
+  await requireFullAdminPage();
   const rows = isSupabaseConfigured() ? await listLegalPages() : [];
 
   return (

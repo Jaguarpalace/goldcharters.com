@@ -1,10 +1,12 @@
 import Link from 'next/link';
 import { getEmailTemplates } from '@/lib/queries/emailTemplates';
 import { isEmailConfigured } from '@/lib/email/client';
+import { requireFullAdminPage } from '@/lib/auth/adminRole';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminEmailTemplatesPage() {
+  await requireFullAdminPage();
   const templates = await getEmailTemplates();
 
   return (

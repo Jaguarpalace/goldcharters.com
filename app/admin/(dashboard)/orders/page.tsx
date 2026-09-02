@@ -3,10 +3,12 @@ import type { Order } from '@/types/database';
 import { formatGBP } from '@/lib/format';
 import { ShopDisabledBanner } from '@/components/admin/ShopDisabledBanner';
 import { BUY_ENABLED } from '@/lib/features';
+import { requireFullAdminPage } from '@/lib/auth/adminRole';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminOrdersPage() {
+  await requireFullAdminPage();
   const supabase = getServerSupabase();
   let orders: Order[] = [];
   if (supabase) {

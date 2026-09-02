@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { errResult, requireAdminContext, type SaveResult } from './_helpers';
+import { errResult, requireAdminRole, type SaveResult } from './_helpers';
 import { logAdminAction } from './auditLog';
 import type { LegalPage } from '@/types/database';
 
@@ -29,7 +29,7 @@ export async function updateLegalPage(
   slug: string,
   patch: LegalPagePatch,
 ): Promise<SaveResult<LegalPage>> {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminRole();
   if ('error' in ctx) return ctx as SaveResult<LegalPage>;
 
   if (!VALID_SLUGS.has(slug)) {
@@ -71,7 +71,7 @@ export async function updateLegalPage(
  * but no copy changes are needed.
  */
 export async function markLegalReviewed(slug: string): Promise<SaveResult<LegalPage>> {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminRole();
   if ('error' in ctx) return ctx as SaveResult<LegalPage>;
 
   if (!VALID_SLUGS.has(slug)) {

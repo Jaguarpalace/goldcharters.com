@@ -10,13 +10,14 @@ import {
 } from '@/lib/actions/adminUsers';
 
 const ROLE_LABEL: Record<TeamRole, string> = {
-  admin: 'Admin',
-  editor: 'Staff',
+  admin: 'Full Admin',
+  editor: 'Manager',
 };
 
 const ROLE_DESCRIPTION: Record<TeamRole, string> = {
-  admin: 'Full access - content, settings, team, payments.',
-  editor: 'Content + valuation requests. Cannot manage the team.',
+  admin: 'Everything - settings, team, rates and margins, site content, trash, audit log.',
+  editor:
+    'The trade: valuation requests, walk-ins, payments, holdings, customers, appointments. No settings, rates, site content or team.',
 };
 
 export function TeamBoard({
@@ -143,8 +144,8 @@ function TeammateRow({
           onChange={(e) => changeRole(e.target.value as TeamRole)}
           className="rounded-md border border-gold-metallic/20 bg-ink-900/70 px-2 py-1 text-[12px] text-white focus:border-gold-metallic focus:outline-none disabled:cursor-wait"
         >
-          <option value="admin">Admin</option>
-          <option value="editor">Staff</option>
+          <option value="admin">Full Admin</option>
+          <option value="editor">Manager</option>
         </select>
       </td>
       <td className="whitespace-nowrap px-2 py-2.5 text-[11px] text-warmgrey">

@@ -1,5 +1,6 @@
 import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { listAuditLog } from '@/lib/queries/auditLog';
+import { requireFullAdminPage } from '@/lib/auth/adminRole';
 
 export const dynamic = 'force-dynamic';
 
@@ -30,6 +31,7 @@ const ACTION_TONES: Record<string, string> = {
 };
 
 export default async function AdminAuditLogPage() {
+  await requireFullAdminPage();
   const entries = isSupabaseConfigured() ? await listAuditLog(200) : [];
 
   return (

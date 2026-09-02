@@ -2,10 +2,12 @@ import { getServerSupabase } from '@/lib/supabase/server';
 import { isSupabaseConfigured } from '@/lib/supabase/env';
 import type { AdminProfile } from '@/types/database';
 import { TeamBoard } from './TeamBoard';
+import { requireFullAdminPage } from '@/lib/auth/adminRole';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminUsersPage() {
+  await requireFullAdminPage();
   let teammates: AdminProfile[] = [];
   let currentUserId: string | null = null;
 

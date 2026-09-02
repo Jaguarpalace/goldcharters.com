@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { asBool, asNumber, optionalText, requireAdminContext, sanitiseText, type SaveResult } from './_helpers';
+import { asBool, asNumber, optionalText, requireAdminRole, sanitiseText, type SaveResult } from './_helpers';
 
 export type HomepageSectionPatch = {
   title?: string | null;
@@ -40,7 +40,7 @@ export async function updateHomepageSection(
   id: string,
   patch: HomepageSectionPatch,
 ): Promise<SaveResult> {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminRole();
   if ('error' in ctx) return { ok: false, error: ctx.error };
 
   const cleanedPatch =

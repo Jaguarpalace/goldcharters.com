@@ -1,9 +1,11 @@
 import { getCalculatorRates } from '@/lib/queries/calculator';
 import { CalculatorRatesEditor } from './CalculatorRatesEditor';
+import { requireFullAdminPage } from '@/lib/auth/adminRole';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminCalculatorRatesPage() {
+  await requireFullAdminPage();
   // Admin sees hidden rows too so they can re-enable them.
   const rates = await getCalculatorRates({ includeHidden: true });
   return (

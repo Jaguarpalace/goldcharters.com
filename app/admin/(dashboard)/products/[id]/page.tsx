@@ -3,6 +3,7 @@ import { getServerSupabase } from '@/lib/supabase/server';
 import { mockProducts } from '@/lib/mock-data';
 import { ProductEditor } from './ProductEditor';
 import type { Product } from '@/types/database';
+import { requireFullAdminPage } from '@/lib/auth/adminRole';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,6 +17,7 @@ async function loadProduct(id: string): Promise<Product | null> {
 }
 
 export default async function AdminProductDetailPage({ params }: { params: { id: string } }) {
+  await requireFullAdminPage();
   const product = await loadProduct(params.id);
   if (!product) notFound();
 

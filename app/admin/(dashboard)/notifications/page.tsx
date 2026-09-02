@@ -2,10 +2,12 @@ import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { listNotificationRecipients } from '@/lib/queries/notificationRecipients';
 import { isEmailConfigured } from '@/lib/email/client';
 import { NotificationsBoard } from './NotificationsBoard';
+import { requireFullAdminPage } from '@/lib/auth/adminRole';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminNotificationsPage() {
+  await requireFullAdminPage();
   const recipients = isSupabaseConfigured() ? await listNotificationRecipients() : [];
 
   return (

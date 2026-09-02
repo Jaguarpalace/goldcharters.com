@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { requireAdminContext, type SaveResult } from './_helpers';
+import { requireAdminRole, type SaveResult } from './_helpers';
 
 export type TeamRole = 'admin' | 'editor';
 
@@ -17,7 +17,7 @@ export async function inviteAdminUser(input: {
   full_name: string;
   role: TeamRole;
 }): Promise<SaveResult> {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminRole();
   if ('error' in ctx) return { ok: false, error: ctx.error };
 
   const email = input.email.trim().toLowerCase();
@@ -81,7 +81,7 @@ export async function updateAdminUserRole(
   id: string,
   role: TeamRole,
 ): Promise<SaveResult> {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminRole();
   if ('error' in ctx) return { ok: false, error: ctx.error };
 
   if (!VALID_ROLES.has(role)) return { ok: false, error: 'Unknown role.' };
@@ -125,7 +125,7 @@ export async function updateAdminUserRole(
 
 /** Remove a teammate from the team and revoke their auth access. */
 export async function removeAdminUser(id: string): Promise<SaveResult> {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminRole();
   if ('error' in ctx) return { ok: false, error: ctx.error };
 
   if (id === ctx.userId) {

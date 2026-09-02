@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { requireAdminContext, errResult, type SaveResult } from './_helpers';
+import { requireAdminRole, errResult, type SaveResult } from './_helpers';
 import { logAdminAction } from './auditLog';
 import type { PageSeo } from '@/types/database';
 
@@ -34,7 +34,7 @@ export async function updatePageSeo(
   slug: string,
   patch: PageSeoPatch,
 ): Promise<SaveResult<PageSeo>> {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminRole();
   if ('error' in ctx) return ctx as SaveResult<PageSeo>;
 
   const title = patch.title?.trim() ?? '';

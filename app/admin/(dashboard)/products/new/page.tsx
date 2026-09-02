@@ -1,6 +1,8 @@
 import { ProductEditor } from '../[id]/ProductEditor';
+import { requireFullAdminPage } from '@/lib/auth/adminRole';
 
-export default function NewProductPage() {
+export default async function NewProductPage() {
+  await requireFullAdminPage();
   return (
     <div className="space-y-8">
       <header>

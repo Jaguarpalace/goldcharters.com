@@ -2,10 +2,12 @@ import { getAllEvents } from '@/lib/queries/appointments';
 import { listAppointments } from '@/lib/actions/appointments';
 import { EventsEditor } from './EventsEditor';
 import { BookingCalendar } from './BookingCalendar';
+import { requireFullAdminPage } from '@/lib/auth/adminRole';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminEventsPage() {
+  await requireFullAdminPage();
   const [events, appointments] = await Promise.all([getAllEvents(), listAppointments()]);
   return (
     <div className="space-y-8">

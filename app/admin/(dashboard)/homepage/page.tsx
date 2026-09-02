@@ -1,9 +1,11 @@
 import { getHomepageSections } from '@/lib/queries/homepage';
 import { HomepageEditor } from './HomepageEditor';
+import { requireFullAdminPage } from '@/lib/auth/adminRole';
 
 export const dynamic = 'force-dynamic';
 
 export default async function HomepageCMSPage() {
+  await requireFullAdminPage();
   // Admin needs to see hidden sections too, otherwise unticking "visible"
   // makes a section vanish from its own editor.
   const sections = await getHomepageSections({ includeHidden: true });

@@ -3,10 +3,12 @@ import { getProducts } from '@/lib/queries/products';
 import { ProductStatusBadge } from '@/components/shop/StatusBadge';
 import { ShopDisabledBanner } from '@/components/admin/ShopDisabledBanner';
 import { BUY_ENABLED } from '@/lib/features';
+import { requireFullAdminPage } from '@/lib/auth/adminRole';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminProductsPage() {
+  await requireFullAdminPage();
   const products = await getProducts();
 
   return (

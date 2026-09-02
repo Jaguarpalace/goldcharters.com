@@ -1,10 +1,12 @@
 import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { listPageSeo } from '@/lib/queries/pageSeo';
 import { SeoBoard } from './SeoBoard';
+import { requireFullAdminPage } from '@/lib/auth/adminRole';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminSeoPage() {
+  await requireFullAdminPage();
   const rows = isSupabaseConfigured() ? await listPageSeo() : [];
 
   return (
