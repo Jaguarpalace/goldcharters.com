@@ -247,39 +247,47 @@ export function FinanceBoard({ data }: { data: FinanceData }) {
         ))}
       </div>
 
-      {/* KPI strip */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Kpi label="Bought" value={gbp0(bought)} sub={`${purchases.length} purchase${purchases.length === 1 ? '' : 's'}`} />
-        <Kpi label="Sold" value={gbp0(soldTotal)} sub={`${sold.length} item${sold.length === 1 ? '' : 's'}`} />
-        <Kpi
-          label="Realised profit"
-          value={sold.length > 0 ? `${gbp0(profit)}` : '—'}
-          sub={sold.length > 0 ? pct(profitPct) : 'No sales in period'}
-          tone={sold.length === 0 ? undefined : profit >= 0 ? 'positive' : 'negative'}
-        />
-        <Kpi
-          label="Avg margin / item"
-          value={sold.length > 0 ? gbp0(avgMargin) : '—'}
-          sub={sold.length > 0 ? 'across sold items' : undefined}
-        />
-      </div>
-
-      {/* Trend */}
-      <Panel
-        title="12-month trend"
-        action={
-          <button type="button" onClick={exportMonthly} className="text-[10px] uppercase tracking-luxe text-gold-tint hover:text-gold-bright">
-            ↓ CSV
-          </button>
-        }
-      >
-        <TrendChart months={trend} />
-        <div className="mt-2 flex flex-wrap gap-4 text-[10px] uppercase tracking-luxe text-warmgrey">
-          <LegendSwatch className="bg-warmgrey/50" label="Bought (out)" />
-          <LegendSwatch className="bg-gold-metallic" label="Sold (in)" />
-          <LegendSwatch className="bg-emerald-400" label="Realised profit" />
+      {/* Summary: compact 2x2 KPI grid on the left, trend chart on the
+          right, one section at matched height so everything below sits
+          higher up the page. */}
+      <div className="grid items-stretch gap-4 lg:grid-cols-[1fr,1.35fr]">
+        <div className="grid grid-cols-2 grid-rows-2 gap-3">
+          <Kpi label="Bought" value={gbp0(bought)} sub={`${purchases.length} purchase${purchases.length === 1 ? '' : 's'}`} />
+          <Kpi label="Sold" value={gbp0(soldTotal)} sub={`${sold.length} item${sold.length === 1 ? '' : 's'}`} />
+          <Kpi
+            label="Realised profit"
+            value={sold.length > 0 ? `${gbp0(profit)}` : '—'}
+            sub={sold.length > 0 ? pct(profitPct) : 'No sales in period'}
+            tone={sold.length === 0 ? undefined : profit >= 0 ? 'positive' : 'negative'}
+          />
+          <Kpi
+            label="Avg margin / item"
+            value={sold.length > 0 ? gbp0(avgMargin) : '—'}
+            sub={sold.length > 0 ? 'across sold items' : undefined}
+          />
         </div>
-      </Panel>
+
+        <section className="flex flex-col rounded-xl border border-gold-metallic/20 bg-ink-950 p-4">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">
+              12-month trend
+            </h2>
+            <div className="flex items-center gap-3">
+              <span className="hidden items-center gap-3 text-[9px] uppercase tracking-luxe text-warmgrey sm:flex">
+                <LegendSwatch className="bg-warmgrey/50" label="Out" />
+                <LegendSwatch className="bg-gold-metallic" label="In" />
+                <LegendSwatch className="bg-emerald-400" label="Profit" />
+              </span>
+              <button type="button" onClick={exportMonthly} className="text-[10px] uppercase tracking-luxe text-gold-tint hover:text-gold-bright">
+                ↓ CSV
+              </button>
+            </div>
+          </div>
+          <div className="mt-2 flex-1">
+            <TrendChart months={trend} />
+          </div>
+        </section>
+      </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
         {/* Profit by metal */}
@@ -495,8 +503,8 @@ function TrendChart({
 }: {
   months: Array<{ label: string; out: number; in: number; profit: number }>;
 }) {
-  const W = 720;
-  const H = 190;
+  const W = 560;
+  const H = 150;
   const PAD = { top: 10, bottom: 22, left: 6, right: 6 };
   const innerW = W - PAD.left - PAD.right;
   const innerH = H - PAD.top - PAD.bottom;
@@ -511,7 +519,7 @@ function TrendChart({
 
   return (
     <div className="overflow-x-auto">
-      <svg viewBox={`0 0 ${W} ${H}`} className="min-w-[560px] w-full" role="img" aria-label="12-month purchases, sales and profit trend">
+      <svg viewBox={`0 0 ${W} ${H}`} className="h-full min-w-[420px] w-full" role="img" aria-label="12-month purchases, sales and profit trend">
         {/* baseline */}
         <line x1={PAD.left} y1={PAD.top + innerH} x2={W - PAD.right} y2={PAD.top + innerH} stroke="rgba(212,175,55,0.25)" strokeWidth="1" />
         {months.map((m, i) => {
@@ -539,12 +547,12 @@ function TrendChart({
 
 function Kpi({ label, value, sub, tone }: { label: string; value: string; sub?: string; tone?: 'positive' | 'negative' }) {
   return (
-    <div className="rounded-xl border border-gold-metallic/20 bg-ink-950 p-4">
-      <p className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">{label}</p>
-      <p className={'mt-1.5 font-display text-2xl font-semibold ' + (tone === 'positive' ? 'text-emerald-300' : tone === 'negative' ? 'text-red-300' : 'text-white')}>
+    <div className="flex flex-col justify-center rounded-xl border border-gold-metallic/20 bg-ink-950 px-3.5 py-3">
+      <p className="text-[9px] font-semibold uppercase tracking-luxe text-gold-tint">{label}</p>
+      <p className={'mt-1 font-display text-lg font-semibold leading-tight ' + (tone === 'positive' ? 'text-emerald-300' : tone === 'negative' ? 'text-red-300' : 'text-white')}>
         {value}
       </p>
-      {sub && <p className="mt-0.5 text-[11px] text-warmgrey">{sub}</p>}
+      {sub && <p className="mt-0.5 text-[10px] text-warmgrey">{sub}</p>}
     </div>
   );
 }
