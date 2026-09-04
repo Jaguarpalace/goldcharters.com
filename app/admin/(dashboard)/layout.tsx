@@ -13,7 +13,7 @@ import { AdminBrand } from './AdminBrand';
 import { AdminShell } from './AdminShell';
 import { IdleLogout } from './IdleLogout';
 import { SignOutButton } from './SignOutButton';
-import { NavLink } from './NavLink';
+import { NavSections } from './NavSections';
 import { SearchPalette } from './SearchPalette';
 
 type NavItem = {
@@ -25,37 +25,69 @@ type NavItem = {
   manager?: boolean;
 };
 
-const NAV: NavItem[] = [
-  { href: '/admin', label: 'Overview', manager: true },
-  { href: '/admin/homepage', label: 'Homepage' },
-  { href: '/admin/services', label: 'Services' },
-  { href: '/admin/items-we-buy', label: 'Items We Buy' },
-  { href: '/admin/calculator-rates', label: 'Calculator Rates' },
-  { href: '/admin/price-dashboard', label: 'Live Spot Prices' },
-  { href: '/admin/products', label: 'Products', shopOnly: true },
-  { href: '/admin/categories', label: 'Categories', shopOnly: true },
-  { href: '/admin/stock', label: 'Stock Movements', shopOnly: true },
-  { href: '/admin/orders', label: 'Orders', shopOnly: true },
-  { href: '/admin/walk-in', label: 'New Walk-in Purchase', manager: true },
-  { href: '/admin/valuation-requests', label: 'Valuation Requests', manager: true },
-  { href: '/admin/appointments', label: 'Appointments', manager: true },
-  { href: '/admin/events', label: 'Pop-Up Locations' },
-  { href: '/admin/customers', label: 'Customers', manager: true },
-  { href: '/admin/holdings', label: 'Holdings', manager: true },
-  { href: '/admin/finance', label: 'Finance' },
-  { href: '/admin/faqs', label: 'FAQs' },
-  { href: '/admin/contact', label: 'Contact Details' },
-  { href: '/admin/media', label: 'Media Library' },
-  { href: '/admin/blog', label: 'Blog' },
-  { href: '/admin/seo', label: 'Page SEO' },
-  { href: '/admin/legal', label: 'Legal Pages' },
-  { href: '/admin/email-templates', label: 'Email Templates' },
-  { href: '/admin/notifications', label: 'Notifications' },
-  { href: '/admin/users', label: 'Team' },
-  { href: '/admin/audit-log', label: 'Audit Log' },
-  { href: '/admin/trash', label: 'Trash' },
-  { href: '/admin/security', label: 'Security', manager: true },
-  { href: '/admin/settings', label: 'Settings' },
+const OVERVIEW: NavItem = { href: '/admin', label: 'Overview', manager: true };
+
+/** Collapsible sidebar groups, ordered by how often each is needed. */
+const NAV_SECTIONS: Array<{ key: string; title: string; items: NavItem[] }> = [
+  {
+    key: 'trading',
+    title: 'Trading',
+    items: [
+      { href: '/admin/walk-in', label: 'New Walk-in Purchase', manager: true },
+      { href: '/admin/valuation-requests', label: 'Valuation Requests', manager: true },
+      { href: '/admin/appointments', label: 'Appointments', manager: true },
+      { href: '/admin/events', label: 'Pop-Up Locations' },
+      { href: '/admin/customers', label: 'Customers', manager: true },
+      { href: '/admin/holdings', label: 'Holdings', manager: true },
+      { href: '/admin/finance', label: 'Finance' },
+    ],
+  },
+  {
+    key: 'pricing',
+    title: 'Pricing',
+    items: [
+      { href: '/admin/calculator-rates', label: 'Calculator Rates' },
+      { href: '/admin/price-dashboard', label: 'Live Spot Prices' },
+    ],
+  },
+  {
+    key: 'website',
+    title: 'Website',
+    items: [
+      { href: '/admin/homepage', label: 'Homepage' },
+      { href: '/admin/services', label: 'Services' },
+      { href: '/admin/items-we-buy', label: 'Items We Buy' },
+      { href: '/admin/faqs', label: 'FAQs' },
+      { href: '/admin/blog', label: 'Blog' },
+      { href: '/admin/media', label: 'Media Library' },
+      { href: '/admin/seo', label: 'Page SEO' },
+      { href: '/admin/legal', label: 'Legal Pages' },
+      { href: '/admin/contact', label: 'Contact Details' },
+    ],
+  },
+  {
+    key: 'shop',
+    title: 'Shop',
+    items: [
+      { href: '/admin/products', label: 'Products', shopOnly: true },
+      { href: '/admin/categories', label: 'Categories', shopOnly: true },
+      { href: '/admin/stock', label: 'Stock Movements', shopOnly: true },
+      { href: '/admin/orders', label: 'Orders', shopOnly: true },
+    ],
+  },
+  {
+    key: 'system',
+    title: 'System',
+    items: [
+      { href: '/admin/email-templates', label: 'Email Templates' },
+      { href: '/admin/notifications', label: 'Notifications' },
+      { href: '/admin/users', label: 'Team' },
+      { href: '/admin/audit-log', label: 'Audit Log' },
+      { href: '/admin/trash', label: 'Trash' },
+      { href: '/admin/security', label: 'Security', manager: true },
+      { href: '/admin/settings', label: 'Settings' },
+    ],
+  },
 ];
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -77,12 +109,34 @@ export default async function DashboardLayout({ children }: { children: React.Re
       role = (await getAdminRole()) ?? 'editor';
     }
   }
-  // Managers get a sidebar of just their tools - no error walls.
-  const visibleNav = role === 'admin' ? NAV : NAV.filter((item) => item.manager);
-
   const [outstandingCount, appointmentCount] = isSupabaseConfigured()
     ? await Promise.all([countOutstandingRequests(), countUpcomingAppointments()])
     : [0, 0];
+
+  // Managers get a sidebar of just their tools - no error walls.
+  const forRole = (items: NavItem[]) =>
+    role === 'admin' ? items : items.filter((item) => item.manager);
+  const navSections = NAV_SECTIONS.map((section) => ({
+    key: section.key,
+    title: section.title,
+    items: forRole(section.items).map((item) => ({
+      href: item.href,
+      label: item.label,
+      inactive: Boolean(item.shopOnly && !BUY_ENABLED),
+      badgeCount:
+        item.href === '/admin/valuation-requests'
+          ? outstandingCount
+          : item.href === '/admin/appointments'
+            ? appointmentCount
+            : 0,
+      badgeTitle:
+        item.href === '/admin/valuation-requests'
+          ? `${outstandingCount} outstanding request${outstandingCount === 1 ? '' : 's'}`
+          : item.href === '/admin/appointments'
+            ? `${appointmentCount} upcoming appointment${appointmentCount === 1 ? '' : 's'}`
+            : undefined,
+    })),
+  })).filter((section) => section.items.length > 0);
 
   const cookieStore = cookies();
   const themeCookie = cookieStore.get('admin-theme')?.value;
@@ -104,48 +158,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
       </div>
 
       <nav className="mt-6" aria-label="Admin navigation">
-        <ul className="space-y-1 text-sm">
-          {visibleNav.map((item) => {
-            const inactive = item.shopOnly && !BUY_ENABLED;
-            const showOutstandingBadge =
-              item.href === '/admin/valuation-requests' && outstandingCount > 0;
-            const showAppointmentBadge =
-              item.href === '/admin/appointments' && appointmentCount > 0;
-            const badgeCount = showOutstandingBadge
-              ? outstandingCount
-              : showAppointmentBadge
-                ? appointmentCount
-                : 0;
-            return (
-              <li key={item.href}>
-                <NavLink
-                  href={item.href}
-                  label={item.label}
-                  inactive={inactive}
-                  inactiveTitle="Shop is disabled - click to view paused tools"
-                  badge={
-                    badgeCount > 0 ? (
-                      <span
-                        className="inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full px-1.5 text-[10px] font-semibold text-ink-950"
-                        style={{
-                          background: 'linear-gradient(135deg, #FFD700, #B8860B)',
-                          boxShadow: '0 0 8px rgba(212,175,55,0.55)',
-                        }}
-                        title={
-                          showAppointmentBadge
-                            ? `${appointmentCount} upcoming appointment${appointmentCount === 1 ? '' : 's'}`
-                            : `${outstandingCount} outstanding request${outstandingCount === 1 ? '' : 's'}`
-                        }
-                      >
-                        {badgeCount}
-                      </span>
-                    ) : null
-                  }
-                />
-              </li>
-            );
-          })}
-        </ul>
+        <NavSections
+          overview={{ href: OVERVIEW.href, label: OVERVIEW.label }}
+          sections={navSections}
+          flat={role !== 'admin'}
+        />
       </nav>
 
       {!BUY_ENABLED && (
