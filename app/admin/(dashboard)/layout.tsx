@@ -42,6 +42,7 @@ const NAV: NavItem[] = [
   { href: '/admin/events', label: 'Pop-Up Locations' },
   { href: '/admin/customers', label: 'Customers', manager: true },
   { href: '/admin/holdings', label: 'Holdings', manager: true },
+  { href: '/admin/finance', label: 'Finance' },
   { href: '/admin/faqs', label: 'FAQs' },
   { href: '/admin/contact', label: 'Contact Details' },
   { href: '/admin/media', label: 'Media Library' },
