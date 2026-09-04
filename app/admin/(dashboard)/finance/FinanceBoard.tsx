@@ -95,6 +95,8 @@ export function FinanceBoard({ data }: { data: FinanceData }) {
   const profit = soldTotal - soldCost;
   const profitPct = soldCost > 0 ? (profit / soldCost) * 100 : 0;
   const avgMargin = sold.length > 0 ? profit / sold.length : 0;
+  const heldCount = data.heldItems.length;
+  const heldCost = data.heldItems.reduce((s, i) => s + (Number(i.acquired_paid_gbp) || 0), 0);
 
   /* ---- 12-month trend (independent of the period picker) ---- */
   const trend = useMemo(() => {
@@ -252,7 +254,7 @@ export function FinanceBoard({ data }: { data: FinanceData }) {
           right, one section at matched height so everything below sits
           higher up the page. */}
       <div className="grid items-stretch gap-4 lg:grid-cols-[1fr,1.35fr]">
-        <div className="grid grid-cols-2 grid-rows-2 gap-3">
+        <div className="grid grid-cols-2 gap-3">
           <Kpi label="Bought" value={gbp0(bought)} sub={`${purchases.length} purchase${purchases.length === 1 ? '' : 's'}`} />
           <Kpi label="Sold" value={gbp0(soldTotal)} sub={`${sold.length} item${sold.length === 1 ? '' : 's'}`} />
           <Kpi
@@ -266,6 +268,8 @@ export function FinanceBoard({ data }: { data: FinanceData }) {
             value={sold.length > 0 ? gbp0(avgMargin) : '—'}
             sub={sold.length > 0 ? 'across sold items' : undefined}
           />
+          <Kpi label="In stock now" value={`${heldCount} item${heldCount === 1 ? '' : 's'}`} sub="currently held" />
+          <Kpi label="Stock cost basis" value={gbp0(heldCost)} sub="tied up in stock" />
         </div>
 
         <section className="flex flex-col rounded-xl border border-gold-metallic/20 bg-ink-950 p-4">
@@ -504,6 +508,7 @@ function TrendChart({
 }: {
   months: Array<{ label: string; out: number; in: number; profit: number }>;
 }) {
+  const [hover, setHover] = useState<number | null>(null);
   const W = 560;
   const H = 150;
   const PAD = { top: 10, bottom: 22, left: 6, right: 6 };
@@ -517,16 +522,26 @@ function TrendChart({
   const profitPoints = months
     .map((m, i) => `${PAD.left + slot * i + slot / 2},${y(m.profit)}`)
     .join(' ');
+  const fmt = (n: number) => `£${Math.round(n).toLocaleString('en-GB')}`;
 
   return (
-    <div className="overflow-x-auto">
-      <svg viewBox={`0 0 ${W} ${H}`} className="h-full min-w-[420px] w-full" role="img" aria-label="12-month purchases, sales and profit trend">
+    <div className="relative overflow-x-auto">
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        className="h-full min-w-[420px] w-full"
+        role="img"
+        aria-label="12-month purchases, sales and profit trend"
+        onMouseLeave={() => setHover(null)}
+      >
         {/* baseline */}
         <line x1={PAD.left} y1={PAD.top + innerH} x2={W - PAD.right} y2={PAD.top + innerH} stroke="rgba(212,175,55,0.25)" strokeWidth="1" />
         {months.map((m, i) => {
           const cx = PAD.left + slot * i + slot / 2;
           return (
             <g key={m.label + i}>
+              {hover === i && (
+                <rect x={PAD.left + slot * i} y={PAD.top - 4} width={slot} height={innerH + 8} rx="3" fill="rgba(212,175,55,0.08)" />
+              )}
               <rect x={cx - barW - 1.5} y={y(m.out)} width={barW} height={PAD.top + innerH - y(m.out)} rx="1.5" fill="rgba(96,165,250,0.65)" />
               <rect x={cx + 1.5} y={y(m.in)} width={barW} height={PAD.top + innerH - y(m.in)} rx="1.5" fill="#d4af37" />
               <text x={cx} y={H - 6} textAnchor="middle" fontSize="9" fill="rgba(200,195,180,0.7)">
@@ -537,9 +552,35 @@ function TrendChart({
         })}
         <polyline points={profitPoints} fill="none" stroke="#34d399" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
         {months.map((m, i) => (
-          <circle key={i} cx={PAD.left + slot * i + slot / 2} cy={y(m.profit)} r="2.5" fill="#34d399" />
+          <circle key={i} cx={PAD.left + slot * i + slot / 2} cy={y(m.profit)} r={hover === i ? 3.5 : 2.5} fill="#34d399" />
+        ))}
+        {/* invisible hover targets, one per month */}
+        {months.map((_, i) => (
+          <rect
+            key={`hit-${i}`}
+            x={PAD.left + slot * i}
+            y={0}
+            width={slot}
+            height={H}
+            fill="transparent"
+            onMouseEnter={() => setHover(i)}
+          />
         ))}
       </svg>
+
+      {hover !== null && (
+        <div
+          className="pointer-events-none absolute top-1 z-10 -translate-x-1/2 rounded-lg border border-gold-metallic/40 bg-ink-950/95 px-3 py-2 text-[11px] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.6)]"
+          style={{ left: `${((hover + 0.5) / months.length) * 100}%` }}
+        >
+          <p className="font-semibold uppercase tracking-luxe text-gold-tint">{months[hover].label}</p>
+          <p className="mt-1 whitespace-nowrap text-blue-300">Out {fmt(months[hover].out)}</p>
+          <p className="whitespace-nowrap text-gold-bright">In {fmt(months[hover].in)}</p>
+          <p className={months[hover].profit >= 0 ? 'whitespace-nowrap text-emerald-300' : 'whitespace-nowrap text-red-300'}>
+            Profit {fmt(months[hover].profit)}
+          </p>
+        </div>
+      )}
     </div>
   );
 }
