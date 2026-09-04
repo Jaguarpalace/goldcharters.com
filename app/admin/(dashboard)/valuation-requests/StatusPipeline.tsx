@@ -94,14 +94,27 @@ export function StatusPipeline({
           </span>
         </span>
         {!isRejected ? (
-          <button
-            type="button"
-            disabled={pending}
-            onClick={() => setTo('rejected')}
-            className="text-[10px] uppercase tracking-luxe text-warmgrey hover:text-red-300"
-          >
-            Mark rejected
-          </button>
+          <span className="flex items-center gap-3">
+            {currentStatus !== 'completed' && (
+              <button
+                type="button"
+                disabled={pending}
+                onClick={() => setTo('completed')}
+                title="Close this thread as handled - e.g. the booking converted into a purchase recorded elsewhere"
+                className="text-[10px] uppercase tracking-luxe text-warmgrey hover:text-emerald-300"
+              >
+                Mark completed
+              </button>
+            )}
+            <button
+              type="button"
+              disabled={pending}
+              onClick={() => setTo('rejected')}
+              className="text-[10px] uppercase tracking-luxe text-warmgrey hover:text-red-300"
+            >
+              Mark rejected
+            </button>
+          </span>
         ) : (
           <button
             type="button"

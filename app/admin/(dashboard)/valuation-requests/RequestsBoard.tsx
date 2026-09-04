@@ -41,6 +41,7 @@ const ALL_STATUSES: ValuationRequestStatus[] = [
   'offer_sent',
   'booked',
   'bought',
+  'completed',
   'rejected',
 ];
 
