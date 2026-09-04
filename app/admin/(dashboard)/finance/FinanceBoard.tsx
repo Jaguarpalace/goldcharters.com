@@ -586,10 +586,12 @@ function TrendChart({
           className="pointer-events-none absolute top-1 z-10 -translate-x-1/2 rounded-lg border border-gold-metallic/40 bg-ink-950/95 px-3 py-2 text-[11px] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.6)]"
           style={{ left: `${((hover + 0.5) / months.length) * 100}%` }}
         >
-          <p className="font-semibold uppercase tracking-luxe text-gold-tint">{months[hover].label}</p>
-          <p className="mt-1 whitespace-nowrap text-blue-300">Out {fmt(months[hover].out)}</p>
-          <p className="whitespace-nowrap text-gold-bright">In {fmt(months[hover].in)}</p>
-          <p className={months[hover].profit >= 0 ? 'whitespace-nowrap text-emerald-300' : 'whitespace-nowrap text-red-300'}>
+          <p className="text-[12px] font-bold uppercase tracking-luxe" style={{ color: '#ffd700' }}>
+            {months[hover].label}
+          </p>
+          <p className="mt-1 whitespace-nowrap font-semibold text-blue-300">Out {fmt(months[hover].out)}</p>
+          <p className="whitespace-nowrap font-bold" style={{ color: '#ffd700' }}>In {fmt(months[hover].in)}</p>
+          <p className={months[hover].profit >= 0 ? 'whitespace-nowrap font-semibold text-emerald-300' : 'whitespace-nowrap font-semibold text-red-300'}>
             Profit {fmt(months[hover].profit)}
           </p>
         </div>
