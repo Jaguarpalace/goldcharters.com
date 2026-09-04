@@ -270,6 +270,34 @@ export function normaliseCaratForHoldings(
   return null;
 }
 
+/**
+ * Resolve a line's carat for the holdings ledger. Falls back to the
+ * description when the carat field was left blank but the description is
+ * itself just a carat ("24ct", "925 silver", "750 gold") - a common way
+ * lines get typed at the counter. normaliseCaratForHoldings is anchored,
+ * so wordy descriptions ("3 x 9ct rings") never mis-match.
+ */
+export function caratForHoldingsFromLine(
+  metalRaw: string | null | undefined,
+  caratRaw: string | null | undefined,
+  descriptionRaw: string | null | undefined,
+): string | null {
+  return (
+    normaliseCaratForHoldings(metalRaw, caratRaw) ??
+    normaliseCaratForHoldings(metalRaw, descriptionRaw)
+  );
+}
+
+/**
+ * Every carat value the stock_items CHECK constraint accepts, for edit /
+ * add dropdowns. Order: gold carats, then silver, then platinum fineness.
+ */
+export const HOLDINGS_CARAT_OPTIONS = [
+  '9ct', '10ct', '14ct', '18ct', '20ct', '21ct', '22ct', '24ct',
+  '999 silver', '958 silver', '925 silver', '900 silver',
+  '950 platinum', '900 platinum', '850 platinum',
+] as const;
+
 /** Normalise a free-text metal entry to the stock_items vocabulary, or null. */
 export function normaliseMetalForHoldings(metalRaw: string | null | undefined): string | null {
   const m = (metalRaw ?? '').trim().toLowerCase();

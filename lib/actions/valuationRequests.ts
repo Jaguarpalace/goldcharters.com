@@ -9,6 +9,7 @@ import { sendCustomerConfirmation } from '@/lib/email/sendCustomerConfirmation';
 import { sendStatusEmail } from '@/lib/email/sendStatusEmail';
 import { getMetalSpots } from '@/lib/services/metalPrice';
 import {
+  caratForHoldingsFromLine,
   normaliseCaratForHoldings,
   normaliseMetalForHoldings,
   purityToPercent,
@@ -857,7 +858,9 @@ export async function createWalkInPurchase(
     for (const [idx, it] of items.entries()) {
       const lineMetal = it.metal_type?.trim() || input.metal_type;
       const lineStockMetal = normaliseMetalForHoldings(lineMetal);
-      const lineStockCarat = normaliseCaratForHoldings(lineMetal, it.carat);
+      // Fall back to the description when the carat field was left blank
+      // but the description itself is just a carat ("24ct").
+      const lineStockCarat = caratForHoldingsFromLine(lineMetal, it.carat, it.description);
       const { data: line, error: lineErr } = await ctx.admin
         .from('purchase_items')
         .insert({

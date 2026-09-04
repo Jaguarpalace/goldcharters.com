@@ -6,7 +6,7 @@ import { requireAdminContext, type SaveResult } from './_helpers';
 import { logAdminAction } from './auditLog';
 import { createStockItem } from './stockItems';
 import {
-  normaliseCaratForHoldings,
+  caratForHoldingsFromLine,
   normaliseMetalForHoldings,
   purityToPercent,
 } from '@/lib/schemas/valuationFormOptions';
@@ -209,8 +209,9 @@ export async function addPurchaseItemToHoldings(
 
   // The holdings ledger only accepts a fixed carat vocabulary ("24ct",
   // "925 silver", ...) - normalise the line's free-text entry so imports
-  // never bounce off the stock_items carat CHECK constraint.
-  const stockCarat = normaliseCaratForHoldings(item.metal_type, item.carat);
+  // never bounce off the stock_items carat CHECK constraint. When the carat
+  // field is blank the description itself may be the carat ("24ct").
+  const stockCarat = caratForHoldingsFromLine(item.metal_type, item.carat, item.description);
   const created = await createStockItem({
     valuation_request_id: item.valuation_request_id,
     customer_id: customerId,

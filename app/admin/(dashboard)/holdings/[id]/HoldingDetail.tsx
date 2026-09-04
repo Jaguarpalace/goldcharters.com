@@ -11,9 +11,9 @@ import {
   updateStockItem,
 } from '@/lib/actions/stockItems';
 import type { MetalKey } from '@/lib/queries/stockItems';
+import { HOLDINGS_CARAT_OPTIONS, purityToPercent } from '@/lib/schemas/valuationFormOptions';
 
 const METAL_OPTIONS = ['', 'Gold', 'Silver', 'Platinum', 'Palladium'] as const;
-const CARAT_OPTIONS = ['', '9ct', '14ct', '18ct', '22ct', '24ct'] as const;
 
 export function HoldingDetail({
   item,
@@ -143,6 +143,19 @@ function DetailsForm({ item, disabled }: { item: StockItem; disabled: boolean })
     (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
       setForm((prev) => ({ ...prev, [key]: e.target.value as (typeof form)[K] }));
 
+  // Picking a carat fills the matching purity % automatically - the pair
+  // must agree for live spot pricing to work. Purity stays hand-editable
+  // for odd pieces afterwards.
+  const updateCarat = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const carat = e.target.value;
+    const purity = purityToPercent(carat);
+    setForm((prev) => ({
+      ...prev,
+      carat,
+      purity_percentage: purity != null ? purity.toString() : carat ? prev.purity_percentage : '',
+    }));
+  };
+
   const save = (e: React.FormEvent) => {
     e.preventDefault();
     setFeedback(null);
@@ -191,12 +204,29 @@ function DetailsForm({ item, disabled }: { item: StockItem; disabled: boolean })
             </option>
           ))}
         </Select>
-        <Select label="Carat" value={form.carat} onChange={update('carat')} disabled={disabled}>
-          {CARAT_OPTIONS.map((c) => (
-            <option key={c} value={c}>
-              {c || '(n/a)'}
-            </option>
-          ))}
+        <Select label="Carat / purity" value={form.carat} onChange={updateCarat} disabled={disabled}>
+          <option value="">(n/a)</option>
+          <optgroup label="Gold">
+            {HOLDINGS_CARAT_OPTIONS.filter((c) => c.endsWith('ct')).map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </optgroup>
+          <optgroup label="Silver">
+            {HOLDINGS_CARAT_OPTIONS.filter((c) => c.endsWith('silver')).map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </optgroup>
+          <optgroup label="Platinum">
+            {HOLDINGS_CARAT_OPTIONS.filter((c) => c.endsWith('platinum')).map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </optgroup>
         </Select>
         <NumberField
           label="Purity %"

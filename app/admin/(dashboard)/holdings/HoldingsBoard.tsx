@@ -19,6 +19,7 @@ import {
   buildHoldingsSalesCsv,
   downloadCsv,
 } from './csv';
+import { HOLDINGS_CARAT_OPTIONS, purityToPercent } from '@/lib/schemas/valuationFormOptions';
 
 const METAL_ORDER: MetalKey[] = ['gold', 'silver', 'platinum', 'palladium'];
 const METAL_LABELS: Record<MetalKey, string> = {
@@ -28,14 +29,6 @@ const METAL_LABELS: Record<MetalKey, string> = {
   palladium: 'Palladium',
 };
 const METAL_OPTIONS = ['Gold', 'Silver', 'Platinum', 'Palladium'] as const;
-const CARAT_OPTIONS = ['9ct', '14ct', '18ct', '22ct', '24ct'] as const;
-const CARAT_TO_PURITY: Record<(typeof CARAT_OPTIONS)[number], number> = {
-  '9ct': 37.5,
-  '14ct': 58.5,
-  '18ct': 75.0,
-  '22ct': 91.6,
-  '24ct': 99.9,
-};
 
 export function HoldingsBoard({
   initialItems,
@@ -455,6 +448,12 @@ function HoldingRow({
         <div className="text-[10px] text-warmgrey">
           {new Date(item.acquired_at).toLocaleDateString('en-GB')}
         </div>
+        <Link
+          href={`/admin/holdings/${item.id}`}
+          className="text-[9px] uppercase tracking-luxe text-gold-metallic/70 hover:text-gold-bright"
+        >
+          Edit
+        </Link>
       </td>
       <td className="px-2 py-2.5">
         <div className="text-[12px] text-white">
@@ -472,7 +471,16 @@ function HoldingRow({
         {formatGBP(cost)}
       </td>
       <td className="whitespace-nowrap px-2 py-2.5 text-right text-[12px] text-white">
-        {live != null ? formatGBP(live) : <span className="text-warmgrey/70">—</span>}
+        {live != null ? (
+          formatGBP(live)
+        ) : (
+          <span
+            className="cursor-help text-warmgrey/70"
+            title="Live pricing needs metal, weight and carat/purity - click Edit to fill in what's missing."
+          >
+            —
+          </span>
+        )}
       </td>
       <td className="whitespace-nowrap px-2 py-2.5 text-right text-[12px]">
         {pl == null ? (
@@ -516,7 +524,7 @@ function liveValueFor(
 function AddItemForm({ onCreated }: { onCreated: (item: StockItem) => void }) {
   const [form, setForm] = useState({
     metal_type: 'Gold' as (typeof METAL_OPTIONS)[number] | '',
-    carat: '22ct' as (typeof CARAT_OPTIONS)[number] | '',
+    carat: '22ct' as string,
     weight_grams: '',
     acquired_paid_gbp: '',
     item_type: '',
@@ -536,7 +544,7 @@ function AddItemForm({ onCreated }: { onCreated: (item: StockItem) => void }) {
     setFeedback(null);
 
     const carat = form.carat || null;
-    const purity = carat && carat in CARAT_TO_PURITY ? CARAT_TO_PURITY[carat] : null;
+    const purity = purityToPercent(carat);
 
     startTransition(async () => {
       const result = await createStockItem({
@@ -580,13 +588,29 @@ function AddItemForm({ onCreated }: { onCreated: (item: StockItem) => void }) {
             </option>
           ))}
         </SelectField>
-        <SelectField label="Carat" value={form.carat} onChange={update('carat')}>
+        <SelectField label="Carat / purity" value={form.carat} onChange={update('carat')}>
           <option value="">(n/a)</option>
-          {CARAT_OPTIONS.map((c) => (
-            <option key={c} value={c}>
-              {c}
-            </option>
-          ))}
+          <optgroup label="Gold">
+            {HOLDINGS_CARAT_OPTIONS.filter((c) => c.endsWith('ct')).map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </optgroup>
+          <optgroup label="Silver">
+            {HOLDINGS_CARAT_OPTIONS.filter((c) => c.endsWith('silver')).map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </optgroup>
+          <optgroup label="Platinum">
+            {HOLDINGS_CARAT_OPTIONS.filter((c) => c.endsWith('platinum')).map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </optgroup>
         </SelectField>
         <NumField
           label="Weight (g)"
