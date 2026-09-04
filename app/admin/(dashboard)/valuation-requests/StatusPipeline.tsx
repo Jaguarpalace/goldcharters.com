@@ -100,10 +100,10 @@ export function StatusPipeline({
                 type="button"
                 disabled={pending}
                 onClick={() => setTo('completed')}
-                title="Close this thread as handled - e.g. the booking converted into a purchase recorded elsewhere"
+                title="File this thread as handled without a purchase on this record - e.g. the booking converted into a purchase recorded elsewhere"
                 className="text-[10px] uppercase tracking-luxe text-warmgrey hover:text-emerald-300"
               >
-                Mark completed
+                Mark closed
               </button>
             )}
             <button

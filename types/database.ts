@@ -175,7 +175,9 @@ export const VALUATION_STATUS_LABELS: Record<ValuationRequestStatus, string> = {
   offer_sent: 'Valuation Sent',
   booked: 'Booked',
   bought: 'Bought',
-  completed: 'Completed',
+  // Display label deliberately "Closed": the status means "thread handled,
+  // no purchase on this record" - calling it Completed collided with Bought.
+  completed: 'Closed',
   rejected: 'Rejected',
 };
 
