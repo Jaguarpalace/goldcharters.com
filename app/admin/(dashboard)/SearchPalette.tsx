@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState, useTransition } from 'react';
+import { createPortal } from 'react-dom';
 import { globalSearch, type SearchHit } from '@/lib/actions/globalSearch';
 
 /**
@@ -138,10 +139,12 @@ export function SearchPalette() {
         </kbd>
       </button>
 
-      {open && (
+      {open &&
+        typeof document !== 'undefined' &&
+        createPortal(
         <div
           aria-hidden={!open}
-          className="fixed inset-0 z-50 flex items-start justify-center px-4 pt-[10vh]"
+          className="fixed inset-0 z-[200] flex items-start justify-center px-4 pt-[10vh]"
         >
           <button
             type="button"
@@ -263,7 +266,7 @@ export function SearchPalette() {
             </div>
           </div>
         </div>
-      )}
+      , document.body)}
     </>
   );
 }
