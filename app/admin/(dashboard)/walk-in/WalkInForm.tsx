@@ -4,22 +4,16 @@ import { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { createWalkInPurchase } from '@/lib/actions/valuationRequests';
 import {
-  GOLD_PURITY,
   METAL_OPTIONS,
-  PLATINUM_PURITY,
-  SILVER_PURITY,
-  CONDITION_OPTIONS,
   caratForHoldingsFromLine,
   normaliseMetalForHoldings,
-  type PurityOption,
 } from '@/lib/schemas/valuationFormOptions';
 import { PAYMENT_METHODS, PAYMENT_METHOD_LABELS, type PaymentMethod } from '@/types/database';
 
-function purityFor(metal: string): readonly PurityOption[] {
-  if (metal === 'Silver') return SILVER_PURITY;
-  if (metal === 'Platinum') return PLATINUM_PURITY;
-  return GOLD_PURITY;
-}
+/** Per-line metal choices. "Other" covers watches, handbags and anything
+ * else that can't be priced at spot - those lines are exempt from the
+ * mandatory carat/purity rule. */
+const LINE_METAL_OPTIONS = ['Gold', 'Silver', 'Platinum', 'Palladium', 'Other'] as const;
 
 type ItemLine = {
   description: string;
@@ -32,7 +26,7 @@ type ItemLine = {
 
 const EMPTY_LINE: ItemLine = {
   description: '',
-  metal_type: '',
+  metal_type: 'Gold',
   carat: '',
   weight_grams: '',
   hallmark: '',
@@ -53,18 +47,16 @@ export function WalkInForm() {
     address_line2: '',
     city: '',
     postcode: '',
-    metal_type: 'Gold',
-    carat: '',
-    weight_grams: '',
-    description: '',
-    condition: '',
-    payment_amount_gbp: '',
     payment_method: 'cash' as PaymentMethod,
     payment_reference: '',
     payment_sort_code: '',
     payment_account_number: '',
   });
-  const [lines, setLines] = useState<ItemLine[]>([]);
+  // Every purchase is itemised - one line per piece, starting with one
+  // open line. The request's headline fields (metal, weight, description)
+  // are derived from the lines on save, so there is no separate single-item
+  // section to fill in twice.
+  const [lines, setLines] = useState<ItemLine[]>([{ ...EMPTY_LINE }]);
   const [pending, startTransition] = useTransition();
   const [feedback, setFeedback] = useState<string | null>(null);
   // The purchase's id (and therefore its reference) is generated the moment
@@ -79,14 +71,8 @@ export function WalkInForm() {
   const reference = purchaseId ? purchaseId.slice(0, 8).toUpperCase() : null;
 
   const patchLine = (idx: number, patch: Partial<ItemLine>) =>
-    setLines((prev) => {
-      const next = prev.map((l, i) => (i === idx ? { ...l, ...patch } : l));
-      return next;
-    });
+    setLines((prev) => prev.map((l, i) => (i === idx ? { ...l, ...patch } : l)));
 
-  // Whenever lines exist, the amount paid is their sum - the agreement's
-  // itemised total and the payment can never disagree.
-  const itemised = lines.length > 0;
   const total = lineTotal(lines);
 
   const update =
@@ -100,10 +86,9 @@ export function WalkInForm() {
     // Purity is mandatory for metal pieces - a holding without it can never
     // be priced at spot. A carat typed in the description ("24ct") counts.
     for (const [i, l] of lines.entries()) {
-      const metalName = l.metal_type.trim() || form.metal_type;
       if (
-        normaliseMetalForHoldings(metalName) &&
-        !caratForHoldingsFromLine(metalName, l.carat, l.description)
+        normaliseMetalForHoldings(l.metal_type) &&
+        !caratForHoldingsFromLine(l.metal_type, l.carat, l.description)
       ) {
         setFeedback(
           `Item ${i + 1} needs a carat/purity the ledger can price (e.g. 9ct, 22ct, 925 silver).`,
@@ -111,15 +96,13 @@ export function WalkInForm() {
         return;
       }
     }
-    // When itemised, the request's headline item fields are derived from the
-    // lines (the single-item section is hidden): metal from the first line
-    // when it matches a known metal, total weight, and a joined description.
-    const firstLineMetal = itemised
-      ? METAL_OPTIONS.find((m) => m.toLowerCase() === (lines[0]?.metal_type ?? '').trim().toLowerCase())
-      : undefined;
-    const totalWeight = itemised
-      ? lines.reduce((sum, l) => sum + (Number(l.weight_grams) || 0), 0)
-      : 0;
+    // The record's headline fields are built from the lines: metal from the
+    // first line when it's one the request schema knows, total weight, and a
+    // joined description.
+    const firstLineMetal = METAL_OPTIONS.find(
+      (m) => m.toLowerCase() === (lines[0]?.metal_type ?? '').trim().toLowerCase(),
+    );
+    const totalWeight = lines.reduce((sum, l) => sum + (Number(l.weight_grams) || 0), 0);
     startTransition(async () => {
       const result = await createWalkInPurchase({
         id: purchaseId ?? undefined,
@@ -131,36 +114,28 @@ export function WalkInForm() {
         address_line2: form.address_line2 || null,
         city: form.city || null,
         postcode: form.postcode || null,
-        metal_type: itemised ? firstLineMetal ?? form.metal_type : form.metal_type,
-        carat: itemised ? lines[0]?.carat || null : form.carat || null,
-        weight_grams: itemised
-          ? totalWeight > 0
-            ? totalWeight
-            : null
-          : form.weight_grams
-          ? Number(form.weight_grams)
-          : null,
-        description: itemised
-          ? lines.map((l) => l.description.trim()).filter(Boolean).join(', ').slice(0, 2000) || null
-          : form.description || null,
-        condition: form.condition || null,
-        payment_amount_gbp: itemised ? total : Number(form.payment_amount_gbp || 0),
+        metal_type: firstLineMetal ?? 'Gold',
+        carat: lines[0]?.carat || null,
+        weight_grams: totalWeight > 0 ? totalWeight : null,
+        description:
+          lines.map((l) => l.description.trim()).filter(Boolean).join(', ').slice(0, 2000) ||
+          null,
+        condition: null,
+        payment_amount_gbp: total,
         payment_method: form.payment_method,
         payment_reference: form.payment_reference || null,
         payment_sort_code:
           form.payment_method === 'bank_transfer' ? form.payment_sort_code || null : null,
         payment_account_number:
           form.payment_method === 'bank_transfer' ? form.payment_account_number || null : null,
-        items: itemised
-          ? lines.map((l) => ({
-              description: l.description,
-              metal_type: l.metal_type || null,
-              carat: l.carat || null,
-              weight_grams: l.weight_grams ? Number(l.weight_grams) : null,
-              hallmark: l.hallmark || null,
-              price_gbp: Number(l.price_gbp || 0),
-            }))
-          : undefined,
+        items: lines.map((l) => ({
+          description: l.description,
+          metal_type: l.metal_type || null,
+          carat: l.carat || null,
+          weight_grams: l.weight_grams ? Number(l.weight_grams) : null,
+          hallmark: l.hallmark || null,
+          price_gbp: Number(l.price_gbp || 0),
+        })),
       });
       if (result.ok) {
         // Send the admin straight to the printable document. They sign it,
@@ -173,8 +148,6 @@ export function WalkInForm() {
       }
     });
   };
-
-  const purityOptions = purityFor(form.metal_type);
 
   return (
     <form onSubmit={submit} className="space-y-6">
@@ -194,75 +167,12 @@ export function WalkInForm() {
         </div>
       </Section>
 
-      {/* ---------------------------------------------- Item
-          Hidden while itemising: with lines present, the record's item
-          summary (metal, weight, description) is built from the lines, so
-          filling this section too would be double entry. */}
-      {itemised ? (
-        <Section title="Item">
-          <p className="text-[11px] text-warmgrey">
-            Built automatically from the item lines below - metal and weight from the lines, and
-            each line printed on the purchase document. Remove all lines to enter a single item
-            here instead.
-          </p>
-        </Section>
-      ) : (
-      <Section title="Item">
-        <div className="grid gap-3 md:grid-cols-4">
-          <SelectField label="Metal" required value={form.metal_type} onChange={update('metal_type')}>
-            {METAL_OPTIONS.map((m) => (
-              <option key={m} value={m}>
-                {m}
-              </option>
-            ))}
-          </SelectField>
-          <SelectField label="Purity" required value={form.carat} onChange={update('carat')}>
-            <option value="">Pick the purity…</option>
-            {purityOptions
-              .filter((p) => p.value)
-              .map((p) => (
-                <option key={p.value} value={p.value}>
-                  {p.label}
-                </option>
-              ))}
-          </SelectField>
-          <NumField
-            label="Weight (g)"
-            value={form.weight_grams}
-            onChange={update('weight_grams')}
-            step="0.001"
-          />
-          <SelectField label="Condition" value={form.condition} onChange={update('condition')}>
-            <option value="">(not noted)</option>
-            {CONDITION_OPTIONS.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </SelectField>
-        </div>
-        <div className="mt-3">
-          <label className="block">
-            <span className="text-[10px] font-medium uppercase tracking-luxe text-warmgrey">
-              Description
-            </span>
-            <textarea
-              value={form.description}
-              onChange={update('description')}
-              rows={3}
-              placeholder="Brief description of the piece (hallmarks, distinguishing features, condition notes, etc.)"
-              className="mt-1 w-full rounded-md border border-gold-metallic/20 bg-ink-950/60 px-3 py-2 text-sm text-white placeholder:text-warmgrey/50 focus:border-gold-metallic focus:outline-none"
-            />
-          </label>
-        </div>
-      </Section>
-      )}
-
-      {/* ---------------------------------------------- Itemisation */}
-      <Section title="Itemisation">
+      {/* ---------------------------------------------- Items */}
+      <Section title="Items">
         <p className="text-[11px] text-warmgrey">
-          Selling more than one piece? List each item so the printed purchase document shows them
-          line by line. Each line becomes its own entry in the holdings ledger.
+          One line per piece. Each line prints on the purchase document and becomes its own
+          entry in the holdings ledger. Pick metal &quot;Other&quot; for watches, handbags and
+          anything else without a purity.
         </p>
         {lines.map((line, idx) => (
           <div
@@ -277,17 +187,21 @@ export function WalkInForm() {
                 onChange={(e) => patchLine(idx, { description: e.target.value })}
                 placeholder="e.g. 9ct gold curb chain"
               />
-              <Field
+              <SelectField
                 label="Metal"
+                required
                 value={line.metal_type}
                 onChange={(e) => patchLine(idx, { metal_type: e.target.value })}
-                placeholder={form.metal_type}
-              />
+              >
+                {LINE_METAL_OPTIONS.map((m) => (
+                  <option key={m} value={m}>
+                    {m === 'Other' ? 'Other / not metal' : m}
+                  </option>
+                ))}
+              </SelectField>
               <Field
                 label="Carat / purity"
-                required={Boolean(
-                  normaliseMetalForHoldings(line.metal_type.trim() || form.metal_type),
-                )}
+                required={Boolean(normaliseMetalForHoldings(line.metal_type))}
                 value={line.carat}
                 onChange={(e) => patchLine(idx, { carat: e.target.value })}
                 placeholder="9ct"
@@ -312,13 +226,15 @@ export function WalkInForm() {
                 step="0.01"
               />
             </div>
-            <button
-              type="button"
-              onClick={() => setLines((prev) => prev.filter((_, i) => i !== idx))}
-              className="mt-2 text-[11px] text-warmgrey hover:text-red-300"
-            >
-              Remove item
-            </button>
+            {lines.length > 1 && (
+              <button
+                type="button"
+                onClick={() => setLines((prev) => prev.filter((_, i) => i !== idx))}
+                className="mt-2 text-[11px] text-warmgrey hover:text-red-300"
+              >
+                Remove item
+              </button>
+            )}
           </div>
         ))}
         <div className="flex flex-wrap items-center justify-between gap-2">
@@ -329,14 +245,12 @@ export function WalkInForm() {
           >
             + Add item line
           </button>
-          {itemised && (
-            <span className="text-xs text-warmgrey">
-              {lines.length} item{lines.length === 1 ? '' : 's'} · total{' '}
-              <strong className="text-gold-bright">
-                £{total.toLocaleString('en-GB', { minimumFractionDigits: 2 })}
-              </strong>
-            </span>
-          )}
+          <span className="text-xs text-warmgrey">
+            {lines.length} item{lines.length === 1 ? '' : 's'} · total{' '}
+            <strong className="text-gold-bright">
+              £{total.toLocaleString('en-GB', { minimumFractionDigits: 2 })}
+            </strong>
+          </span>
         </div>
       </Section>
 
@@ -356,29 +270,20 @@ export function WalkInForm() {
           </p>
         )}
         <div className="grid gap-3 md:grid-cols-3">
-          {itemised ? (
-            <label className="block">
-              <span className="text-[10px] font-medium uppercase tracking-luxe text-warmgrey">
-                Amount paid (£)
-              </span>
-              <div className="mt-1 w-full rounded-md border border-gold-metallic/20 bg-ink-950/40 px-3 py-2 text-sm text-gold-bright">
-                £{total.toLocaleString('en-GB', { minimumFractionDigits: 2 })}
-              </div>
-              <span className="mt-1 block text-[10px] text-warmgrey/70">
-                Set automatically from the itemised lines above.
-              </span>
-            </label>
-          ) : (
-          <NumField
-            label="Amount paid (£)"
-            required
-            value={form.payment_amount_gbp}
-            onChange={update('payment_amount_gbp')}
-            step="0.01"
-          />
-          )}
+          <label className="block">
+            <span className="text-[10px] font-medium uppercase tracking-luxe text-warmgrey">
+              Amount paid (£)
+            </span>
+            <div className="mt-1 w-full rounded-md border border-gold-metallic/20 bg-ink-950/40 px-3 py-2 text-sm text-gold-bright">
+              £{total.toLocaleString('en-GB', { minimumFractionDigits: 2 })}
+            </div>
+            <span className="mt-1 block text-[10px] text-warmgrey/70">
+              Set automatically from the item lines above.
+            </span>
+          </label>
           <SelectField
             label="Method"
+            required
             value={form.payment_method}
             onChange={update('payment_method')}
           >
@@ -427,8 +332,8 @@ export function WalkInForm() {
           <p className="text-[11px] text-amber-400">{feedback}</p>
         ) : (
           <p className="text-[11px] text-warmgrey">
-            On save: creates the customer record, marks the purchase Bought and adds it to the
-            holdings ledger, then opens the printable purchase document.
+            On save: creates the customer record, marks the purchase Bought and adds each line
+            to the holdings ledger, then opens the printable purchase document.
           </p>
         )}
         <button
