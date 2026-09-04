@@ -149,8 +149,9 @@ export default async function AdminOverview() {
               }
             />
             <HoldingStat
-              label="Unrealised P&L"
+              label="Variance to spot"
               value={`${formatGBPSigned(portfolio.combined.pl_gbp)} · ${formatPct(portfolio.combined.pl_pct)}`}
+              sub="current spot value vs what we paid"
               tone={portfolio.combined.pl_gbp >= 0 ? 'positive' : 'negative'}
             />
             <HoldingStat

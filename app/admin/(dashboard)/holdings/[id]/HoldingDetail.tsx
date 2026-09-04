@@ -71,7 +71,7 @@ export function HoldingDetail({
               <>
                 <Row label="Current value" value={formatGBP(liveValue)} emphasis />
                 <Row
-                  label="Unrealised P&L"
+                  label="Variance to spot"
                   value={`${formatGBP(liveValue - cost, true)} (${formatPct(((liveValue - cost) / cost) * 100)})`}
                   tone={liveValue >= cost ? 'positive' : 'negative'}
                 />

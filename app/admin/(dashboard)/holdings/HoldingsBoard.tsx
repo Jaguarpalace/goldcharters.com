@@ -85,8 +85,9 @@ export function HoldingsBoard({
             }
           />
           <StatCard
-            label="Unrealised P&L"
+            label="Variance to spot"
             value={`${formatGBP(snapshot.combined.pl_gbp, true)} · ${formatPct(snapshot.combined.pl_pct)}`}
+            sub="current spot value vs what we paid"
             tone={snapshot.combined.pl_gbp >= 0 ? 'positive' : 'negative'}
           />
         </div>
