@@ -159,6 +159,14 @@ function DetailsForm({ item, disabled }: { item: StockItem; disabled: boolean })
   const save = (e: React.FormEvent) => {
     e.preventDefault();
     setFeedback(null);
+    // A metal item must carry a purity or it can never be priced at spot.
+    if (form.metal_type && !(Number(form.purity_percentage) > 0)) {
+      setFeedback({
+        ok: false,
+        text: 'A metal item needs a purity % - pick a carat above to fill it automatically.',
+      });
+      return;
+    }
     startTransition(async () => {
       const result = await updateStockItem(item.id, {
         metal_type: form.metal_type || null,

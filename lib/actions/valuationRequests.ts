@@ -723,10 +723,35 @@ export async function createWalkInPurchase(
   if (!Number.isFinite(input.payment_amount_gbp) || input.payment_amount_gbp < 0)
     return { ok: false, error: 'Amount paid is required and must be ≥ 0.' };
   const items = (input.items ?? []).filter(Boolean);
-  for (const it of items) {
+  for (const [i, it] of items.entries()) {
     if (!it.description?.trim()) return { ok: false, error: 'Each item needs a description.' };
     if (!Number.isFinite(it.price_gbp) || it.price_gbp < 0)
       return { ok: false, error: 'Each item needs a price of £0 or more.' };
+    // Purity is mandatory for metal lines - without it the holding can never
+    // be priced at spot. Accepts the carat typed in the description too.
+    const lineMetalName = it.metal_type?.trim() || input.metal_type;
+    if (
+      normaliseMetalForHoldings(lineMetalName) &&
+      !caratForHoldingsFromLine(lineMetalName, it.carat, it.description)
+    ) {
+      return {
+        ok: false,
+        error: `Item ${i + 1} needs a carat/purity the ledger can price (e.g. 9ct, 22ct, 925 silver).`,
+      };
+    }
+  }
+  // Same rule for a single-item purchase: the walk-in metals are all
+  // precious, and the piece has been tested at the counter, so the purity
+  // is known - "not sure" is for the public form only.
+  if (
+    items.length === 0 &&
+    normaliseMetalForHoldings(input.metal_type) &&
+    !normaliseCaratForHoldings(input.metal_type, input.carat)
+  ) {
+    return {
+      ok: false,
+      error: 'Pick the purity - it is needed to price the item in the holdings ledger.',
+    };
   }
 
   // --- Step 1: upsert customer ---------------------------------------

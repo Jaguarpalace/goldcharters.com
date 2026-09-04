@@ -9,6 +9,8 @@ import {
   PLATINUM_PURITY,
   SILVER_PURITY,
   CONDITION_OPTIONS,
+  caratForHoldingsFromLine,
+  normaliseMetalForHoldings,
   type PurityOption,
 } from '@/lib/schemas/valuationFormOptions';
 import { PAYMENT_METHODS, PAYMENT_METHOD_LABELS, type PaymentMethod } from '@/types/database';
@@ -95,6 +97,20 @@ export function WalkInForm() {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     setFeedback(null);
+    // Purity is mandatory for metal pieces - a holding without it can never
+    // be priced at spot. A carat typed in the description ("24ct") counts.
+    for (const [i, l] of lines.entries()) {
+      const metalName = l.metal_type.trim() || form.metal_type;
+      if (
+        normaliseMetalForHoldings(metalName) &&
+        !caratForHoldingsFromLine(metalName, l.carat, l.description)
+      ) {
+        setFeedback(
+          `Item ${i + 1} needs a carat/purity the ledger can price (e.g. 9ct, 22ct, 925 silver).`,
+        );
+        return;
+      }
+    }
     // When itemised, the request's headline item fields are derived from the
     // lines (the single-item section is hidden): metal from the first line
     // when it matches a known metal, total weight, and a joined description.
@@ -200,12 +216,15 @@ export function WalkInForm() {
               </option>
             ))}
           </SelectField>
-          <SelectField label="Purity" value={form.carat} onChange={update('carat')}>
-            {purityOptions.map((p) => (
-              <option key={p.value} value={p.value}>
-                {p.label}
-              </option>
-            ))}
+          <SelectField label="Purity" required value={form.carat} onChange={update('carat')}>
+            <option value="">Pick the purity…</option>
+            {purityOptions
+              .filter((p) => p.value)
+              .map((p) => (
+                <option key={p.value} value={p.value}>
+                  {p.label}
+                </option>
+              ))}
           </SelectField>
           <NumField
             label="Weight (g)"
@@ -266,6 +285,9 @@ export function WalkInForm() {
               />
               <Field
                 label="Carat / purity"
+                required={Boolean(
+                  normaliseMetalForHoldings(line.metal_type.trim() || form.metal_type),
+                )}
                 value={line.carat}
                 onChange={(e) => patchLine(idx, { carat: e.target.value })}
                 placeholder="9ct"

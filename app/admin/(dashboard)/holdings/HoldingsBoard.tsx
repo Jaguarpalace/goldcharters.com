@@ -546,6 +546,16 @@ function AddItemForm({ onCreated }: { onCreated: (item: StockItem) => void }) {
     const carat = form.carat || null;
     const purity = purityToPercent(carat);
 
+    // A metal item without a carat can never be priced at spot - catch it
+    // here rather than leaving a dead dash in the Current column.
+    if (form.metal_type && !carat) {
+      setFeedback({
+        ok: false,
+        text: 'Pick a carat/purity - a metal item needs one to be priced. Use metal "(none)" for watches and handbags.',
+      });
+      return;
+    }
+
     startTransition(async () => {
       const result = await createStockItem({
         metal_type: form.metal_type || null,
