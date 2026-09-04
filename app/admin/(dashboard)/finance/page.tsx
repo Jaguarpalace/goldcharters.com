@@ -37,11 +37,6 @@ export default async function AdminFinancePage() {
       <header>
         <span className="text-xs uppercase tracking-luxe text-gold-metallic">Reports</span>
         <h1 className="mt-1 font-display text-2xl text-white">Finance</h1>
-        <p className="mt-1 max-w-2xl text-xs text-warmgrey">
-          Purchases, sales and realised profit, month by month - with the purchase-document
-          register and CSV exports for the accountant. Figures come straight from recorded
-          payments and sales; nothing here edits the books.
-        </p>
       </header>
       <FinanceBoard
         data={data}
