@@ -37,6 +37,9 @@ export function StatusPipeline({
   const displayStatus = mapLegacy(status);
   const currentIndex = VALUATION_PIPELINE.indexOf(displayStatus);
   const isRejected = status === 'rejected';
+  // Closed threads render like other terminal states: no stage lit, so the
+  // pipeline never suggests a purchase happened on this record.
+  const isClosed = status === 'completed';
 
   const setTo = (next: ValuationRequestStatus) => {
     setError(null);
@@ -57,8 +60,8 @@ export function StatusPipeline({
     <div className="mt-4">
       <ol className="grid grid-cols-5 gap-1">
         {VALUATION_PIPELINE.map((stage, i) => {
-          const reached = !isRejected && i <= currentIndex;
-          const active = !isRejected && i === currentIndex;
+          const reached = !isRejected && !isClosed && i <= currentIndex;
+          const active = !isRejected && !isClosed && i === currentIndex;
           return (
             <li key={stage}>
               <button
@@ -89,13 +92,13 @@ export function StatusPipeline({
       <div className="mt-3 flex items-center justify-between gap-3">
         <span className="text-xs text-warmgrey">
           Current:{' '}
-          <span className={isRejected ? 'text-red-300' : 'text-gold-tint'}>
+          <span className={isRejected ? 'text-red-300' : isClosed ? 'text-emerald-300' : 'text-gold-tint'}>
             {VALUATION_STATUS_LABELS[status]}
           </span>
         </span>
         {!isRejected ? (
           <span className="flex items-center gap-3">
-            {currentStatus !== 'completed' && (
+            {!isClosed && (
               <button
                 type="button"
                 disabled={pending}
