@@ -75,7 +75,14 @@ const soldMargin = (s: StockItem) =>
 
 /* ---------------------------------------------------------------- board -- */
 
-export function FinanceBoard({ data }: { data: FinanceData }) {
+export function FinanceBoard({
+  data,
+  stockValue,
+}: {
+  data: FinanceData;
+  /** Live valuation of held stock - metals at spot, non-metal at cost. */
+  stockValue: { current: number; plGbp: number; spotAvailable: boolean };
+}) {
   const [period, setPeriod] = useState<PeriodKey>('this_month');
   const { from, to } = periodRange(period);
   const periodLabel = PERIODS.find((p) => p.key === period)?.label ?? '';
@@ -94,7 +101,6 @@ export function FinanceBoard({ data }: { data: FinanceData }) {
   const soldCost = sold.reduce((s, i) => s + (Number(i.acquired_paid_gbp) || 0), 0);
   const profit = soldTotal - soldCost;
   const profitPct = soldCost > 0 ? (profit / soldCost) * 100 : 0;
-  const avgMargin = sold.length > 0 ? profit / sold.length : 0;
   const heldCount = data.heldItems.length;
   const heldCost = data.heldItems.reduce((s, i) => s + (Number(i.acquired_paid_gbp) || 0), 0);
 
@@ -264,9 +270,16 @@ export function FinanceBoard({ data }: { data: FinanceData }) {
             tone={sold.length === 0 ? undefined : profit >= 0 ? 'positive' : 'negative'}
           />
           <Kpi
-            label="Avg margin / item"
-            value={sold.length > 0 ? gbp0(avgMargin) : '—'}
-            sub={sold.length > 0 ? 'across sold items' : undefined}
+            label="Stock value now"
+            value={heldCount > 0 ? gbp0(stockValue.current) : '—'}
+            sub={
+              heldCount === 0
+                ? 'nothing held'
+                : stockValue.spotAvailable
+                ? `${stockValue.plGbp >= 0 ? '+' : '-'}£${Math.abs(Math.round(stockValue.plGbp)).toLocaleString('en-GB')} vs cost · metals at live spot`
+                : 'metals at cost - live spot unavailable'
+            }
+            tone={heldCount === 0 || !stockValue.spotAvailable ? undefined : stockValue.plGbp >= 0 ? 'positive' : 'negative'}
           />
           <Kpi label="In stock now" value={`${heldCount} item${heldCount === 1 ? '' : 's'}`} sub="currently held" />
           <Kpi label="Stock cost basis" value={gbp0(heldCost)} sub="tied up in stock" />
