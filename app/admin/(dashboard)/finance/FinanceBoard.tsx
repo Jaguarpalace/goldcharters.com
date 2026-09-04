@@ -275,7 +275,7 @@ export function FinanceBoard({ data }: { data: FinanceData }) {
             </h2>
             <div className="flex items-center gap-3">
               <span className="hidden items-center gap-3 text-[9px] uppercase tracking-luxe text-warmgrey sm:flex">
-                <LegendSwatch className="bg-warmgrey/50" label="Out" />
+                <LegendSwatch className="bg-blue-400/70" label="Out" />
                 <LegendSwatch className="bg-gold-metallic" label="In" />
                 <LegendSwatch className="bg-emerald-400" label="Profit" />
               </span>
@@ -527,7 +527,7 @@ function TrendChart({
           const cx = PAD.left + slot * i + slot / 2;
           return (
             <g key={m.label + i}>
-              <rect x={cx - barW - 1.5} y={y(m.out)} width={barW} height={PAD.top + innerH - y(m.out)} rx="1.5" fill="rgba(200,195,180,0.42)" />
+              <rect x={cx - barW - 1.5} y={y(m.out)} width={barW} height={PAD.top + innerH - y(m.out)} rx="1.5" fill="rgba(96,165,250,0.65)" />
               <rect x={cx + 1.5} y={y(m.in)} width={barW} height={PAD.top + innerH - y(m.in)} rx="1.5" fill="#d4af37" />
               <text x={cx} y={H - 6} textAnchor="middle" fontSize="9" fill="rgba(200,195,180,0.7)">
                 {m.label}
