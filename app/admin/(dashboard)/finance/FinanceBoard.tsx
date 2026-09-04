@@ -78,6 +78,7 @@ const soldMargin = (s: StockItem) =>
 export function FinanceBoard({ data }: { data: FinanceData }) {
   const [period, setPeriod] = useState<PeriodKey>('this_month');
   const { from, to } = periodRange(period);
+  const periodLabel = PERIODS.find((p) => p.key === period)?.label ?? '';
 
   const purchases = useMemo(
     () => data.purchases.filter((p) => inRange(p.paid_at, from, to)),
@@ -291,7 +292,7 @@ export function FinanceBoard({ data }: { data: FinanceData }) {
 
       <div className="grid gap-4 lg:grid-cols-2">
         {/* Profit by metal */}
-        <Panel title="Realised profit by metal">
+        <Panel title={`Realised profit by metal · ${periodLabel}`}>
           {byMetal.length === 0 ? (
             <Empty text="No sales in this period." />
           ) : (
@@ -320,7 +321,7 @@ export function FinanceBoard({ data }: { data: FinanceData }) {
         </Panel>
 
         {/* Payment split */}
-        <Panel title="Payments out, by method">
+        <Panel title={`Payments out, by method · ${periodLabel}`}>
           {byMethod.length === 0 ? (
             <Empty text="No purchases in this period." />
           ) : (
@@ -340,7 +341,7 @@ export function FinanceBoard({ data }: { data: FinanceData }) {
 
       {/* Sold items margins */}
       <Panel
-        title="Sold items - margins"
+        title={`Sold items - margins · ${periodLabel}`}
         action={
           sold.length > 0 ? (
             <button type="button" onClick={exportSold} className="text-[10px] uppercase tracking-luxe text-gold-tint hover:text-gold-bright">
@@ -437,7 +438,7 @@ export function FinanceBoard({ data }: { data: FinanceData }) {
 
       {/* Documents register */}
       <Panel
-        title="Purchase documents"
+        title={`Purchase documents · ${periodLabel}`}
         action={
           purchases.length > 0 ? (
             <button type="button" onClick={exportPurchases} className="text-[10px] uppercase tracking-luxe text-gold-tint hover:text-gold-bright">
