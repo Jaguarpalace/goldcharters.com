@@ -172,9 +172,9 @@ export default async function AdminOverview() {
         <QuickAction href="/admin/customers" label="Customers" />
       </section>
 
-      {/* TOP GRID - metrics + needs-attention on the left, bookings diary
-          in the top-right corner */}
-      <div className="grid items-start gap-4 xl:grid-cols-[1.55fr,1fr]">
+      {/* TOP GRID - the day's working panels on the left, compact bookings
+          diary pinned in the top-right corner */}
+      <div className="grid items-start gap-4 xl:grid-cols-[1fr,330px]">
         <div className="space-y-4">
           {/* HERO METRICS - three self-contained stat cards */}
           <section className="grid gap-4 sm:grid-cols-3">
@@ -196,13 +196,9 @@ export default async function AdminOverview() {
               </p>
             )}
           </Panel>
-        </div>
 
-        <BookingsCalendar bookings={calendarBookings} />
-      </div>
-
-      {/* HOLDINGS + PIPELINE - two panels side by side on wide screens */}
-      <div className="grid gap-4 lg:grid-cols-2">
+          {/* HOLDINGS + PIPELINE - two panels side by side on wide screens */}
+          <div className="grid gap-4 lg:grid-cols-2">
         <Panel title="Holdings" action={<ViewAll href="/admin/holdings" />}>
           <div className="grid grid-cols-2 gap-x-6 gap-y-4">
             <HoldingStat label="Items held" value={portfolio.combined.count.toString()} />
@@ -269,6 +265,10 @@ export default async function AdminOverview() {
             ))}
           </ol>
         </Panel>
+          </div>
+        </div>
+
+        <BookingsCalendar bookings={calendarBookings} />
       </div>
 
       {/* RECENT ACTIVITY + LIVE SPOT - paired panels */}

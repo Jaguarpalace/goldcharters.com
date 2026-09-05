@@ -105,7 +105,7 @@ export function BookingsCalendar({ bookings }: { bookings: CalendarBooking[] }) 
   }, [bookings, dayBookings.length, selected]);
 
   return (
-    <section className="gc-card flex h-full flex-col p-5">
+    <section className="gc-card p-4">
       <div className="flex items-baseline justify-between gap-4">
         <h2 className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">
           Bookings
@@ -116,7 +116,7 @@ export function BookingsCalendar({ bookings }: { bookings: CalendarBooking[] }) 
       </div>
 
       {/* Month navigation */}
-      <div className="mt-4 flex items-center justify-between">
+      <div className="mt-3 flex items-center justify-between">
         <button
           type="button"
           onClick={() => shiftMonth(-1)}
@@ -146,11 +146,11 @@ export function BookingsCalendar({ bookings }: { bookings: CalendarBooking[] }) 
       </div>
 
       {/* Day grid */}
-      <div className="mt-3 grid grid-cols-7 gap-1 text-center">
+      <div className="mt-2 grid grid-cols-7 gap-0.5 text-center">
         {WEEKDAYS.map((w) => (
           <span
             key={w}
-            className="py-1 text-[9px] font-semibold uppercase tracking-luxe text-warmgrey/70"
+            className="py-0.5 text-[8px] font-semibold uppercase tracking-luxe text-warmgrey/70"
           >
             {w}
           </span>
@@ -168,7 +168,7 @@ export function BookingsCalendar({ bookings }: { bookings: CalendarBooking[] }) 
               type="button"
               onClick={() => setSelected(key)}
               className={
-                'relative flex aspect-square flex-col items-center justify-center rounded-md text-[12px] transition ' +
+                'relative flex h-8 flex-col items-center justify-center rounded text-[11px] transition ' +
                 (isSelected
                   ? 'bg-gold-gradient font-semibold text-ink-950 shadow-[0_0_10px_rgba(212,175,55,0.4)]'
                   : inMonth
@@ -215,7 +215,7 @@ export function BookingsCalendar({ bookings }: { bookings: CalendarBooking[] }) 
       </div>
 
       {/* Selected day */}
-      <div className="mt-4 flex-1 border-t border-gold-metallic/15 pt-4">
+      <div className="mt-3 border-t border-gold-metallic/15 pt-3">
         <p className="text-[10px] font-semibold uppercase tracking-luxe text-warmgrey">
           {selectedLabel}
         </p>
