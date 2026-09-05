@@ -569,9 +569,23 @@ const VALID_STATUSES = new Set<string>([
 export async function updateValuationStatus(
   id: string,
   status: string,
+  opts?: {
+    /**
+     * ISO timestamp of when the customer is coming in. Stored alongside a
+     * move to status='booked' (the calendar modal always supplies it); also
+     * accepted on its own to reschedule an already-booked request.
+     */
+    bookedFor?: string;
+  },
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   if (!VALID_STATUSES.has(status)) {
     return { ok: false, error: 'Invalid status.' };
+  }
+  let bookedForIso: string | null = null;
+  if (opts?.bookedFor !== undefined) {
+    const t = new Date(opts.bookedFor).getTime();
+    if (Number.isNaN(t)) return { ok: false, error: 'Pick a valid booking date and time.' };
+    bookedForIso = new Date(t).toISOString();
   }
   if (!isSupabaseAdminConfigured()) {
     return { ok: false, error: 'Supabase not configured.' };
@@ -605,7 +619,11 @@ export async function updateValuationStatus(
 
   const { error } = await admin
     .from('valuation_requests')
-    .update({ status, updated_at: new Date().toISOString() })
+    .update({
+      status,
+      ...(bookedForIso ? { booked_for: bookedForIso } : {}),
+      updated_at: new Date().toISOString(),
+    })
     .eq('id', id);
 
   if (error) {
@@ -632,8 +650,16 @@ export async function updateValuationStatus(
         entity_id: id,
         action: 'change_status',
         before: prior ? { status: prior.status } : null,
-        after: { status },
-        note: `Status → ${status}`,
+        after: { status, ...(bookedForIso ? { booked_for: bookedForIso } : {}) },
+        note: bookedForIso
+          ? `Status → ${status} · booked for ${new Date(bookedForIso).toLocaleString('en-GB', {
+              weekday: 'short',
+              day: 'numeric',
+              month: 'short',
+              hour: '2-digit',
+              minute: '2-digit',
+            })}`
+          : `Status → ${status}`,
       });
     }
   }

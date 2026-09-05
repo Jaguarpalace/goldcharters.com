@@ -10,7 +10,12 @@ import {
   type MetalKey,
 } from '@/lib/queries/stockItems';
 import { listAuditLog, type AuditLogEntry } from '@/lib/queries/auditLog';
+import {
+  listCalendarAppointments,
+  type CalendarAppointment,
+} from '@/lib/queries/appointments';
 import { SpotStaleBanner } from './_components/SpotStaleBanner';
+import { BookingsCalendar, type CalendarBooking } from './_components/BookingsCalendar';
 import {
   VALUATION_STATUS_LABELS,
   type ValuationRequest,
@@ -34,15 +39,19 @@ export default async function AdminOverview() {
   // Pull everything the dashboard needs in parallel — three independently
   // cached upstreams (Supabase, metalprice API, Supabase again) — so the
   // page renders fast even when the holdings ledger has hundreds of rows.
-  const [spots, requestsRaw, heldStock, soldStock, auditEntries] = await Promise.all([
-    getMetalSpots(),
-    isSupabaseConfigured()
-      ? (listValuationRequests() as Promise<ValuationRequest[]>)
-      : Promise.resolve([] as ValuationRequest[]),
-    isSupabaseConfigured() ? listHeldStockItems() : Promise.resolve([]),
-    isSupabaseConfigured() ? listSoldStockItems() : Promise.resolve([]),
-    isSupabaseConfigured() ? listAuditLog(5) : Promise.resolve([] as AuditLogEntry[]),
-  ]);
+  const [spots, requestsRaw, heldStock, soldStock, auditEntries, popupAppointments] =
+    await Promise.all([
+      getMetalSpots(),
+      isSupabaseConfigured()
+        ? (listValuationRequests() as Promise<ValuationRequest[]>)
+        : Promise.resolve([] as ValuationRequest[]),
+      isSupabaseConfigured() ? listHeldStockItems() : Promise.resolve([]),
+      isSupabaseConfigured() ? listSoldStockItems() : Promise.resolve([]),
+      isSupabaseConfigured() ? listAuditLog(5) : Promise.resolve([] as AuditLogEntry[]),
+      isSupabaseConfigured()
+        ? listCalendarAppointments()
+        : Promise.resolve([] as CalendarAppointment[]),
+    ]);
 
   // Realised profit: what sold items actually made over what we paid for
   // them. Off-website sales recorded via the Holdings "Record sale" panel.
@@ -98,6 +107,46 @@ export default async function AdminOverview() {
 
   const goldGram = spots.gold?.per_gram_gbp ?? null;
 
+  // Diary entries for the bookings calendar: valuation requests that have a
+  // booked slot (kept after the visit for history, dropped when rejected)
+  // plus every non-cancelled pop-up appointment.
+  const calendarBookings: CalendarBooking[] = [
+    ...requests
+      .filter((r) => r.booked_for && r.status !== 'rejected')
+      .map((r): CalendarBooking => ({
+        id: r.id,
+        when: r.booked_for as string,
+        kind: 'valuation',
+        name: `${r.first_name} ${r.last_name}`.trim(),
+        detail:
+          [
+            r.metal_type,
+            r.carat,
+            r.weight_grams ? `${Number(r.weight_grams)}g` : null,
+            r.brand,
+            r.model,
+          ]
+            .filter(Boolean)
+            .join(' · ') || null,
+        description: r.description,
+        location: null,
+        href: '/admin/valuation-requests',
+      })),
+    ...popupAppointments.map((a): CalendarBooking => ({
+      id: a.id,
+      when: a.starts_at,
+      kind: 'popup',
+      name: `${a.first_name} ${a.last_name}`.trim(),
+      detail: a.service_type,
+      description: null,
+      location:
+        [a.appointment_events?.city, a.appointment_events?.venue_name]
+          .filter(Boolean)
+          .join(' · ') || null,
+      href: '/admin/appointments',
+    })),
+  ];
+
   return (
     <div className="space-y-6">
       {/* HEADER */}
@@ -123,12 +172,34 @@ export default async function AdminOverview() {
         <QuickAction href="/admin/customers" label="Customers" />
       </section>
 
-      {/* HERO METRICS - three self-contained stat cards */}
-      <section className="grid gap-4 sm:grid-cols-3">
-        <Metric label="Today" enquiries={today.length} paid={paidIn(today)} />
-        <Metric label="This week" enquiries={week.length} paid={paidIn(week)} />
-        <Metric label="This month" enquiries={month.length} paid={paidIn(month)} />
-      </section>
+      {/* TOP GRID - metrics + needs-attention on the left, bookings diary
+          in the top-right corner */}
+      <div className="grid items-start gap-4 xl:grid-cols-[1.55fr,1fr]">
+        <div className="space-y-4">
+          {/* HERO METRICS - three self-contained stat cards */}
+          <section className="grid gap-4 sm:grid-cols-3">
+            <Metric label="Today" enquiries={today.length} paid={paidIn(today)} />
+            <Metric label="This week" enquiries={week.length} paid={paidIn(week)} />
+            <Metric label="This month" enquiries={month.length} paid={paidIn(month)} />
+          </section>
+
+          <Panel title="Needs your attention">
+            {needsAction.length > 0 ? (
+              <ul className="divide-y divide-gold-metallic/10">
+                {needsAction.map((r) => (
+                  <AttentionRow key={r.id} request={r} now={now} />
+                ))}
+              </ul>
+            ) : (
+              <p className="text-[12px] leading-relaxed text-warmgrey">
+                Nothing waiting - every new enquiry has been picked up within the last 18 hours.
+              </p>
+            )}
+          </Panel>
+        </div>
+
+        <BookingsCalendar bookings={calendarBookings} />
+      </div>
 
       {/* HOLDINGS + PIPELINE - two panels side by side on wide screens */}
       <div className="grid gap-4 lg:grid-cols-2">
@@ -200,22 +271,8 @@ export default async function AdminOverview() {
         </Panel>
       </div>
 
-      {/* NEEDS ATTENTION + RECENT ACTIVITY - paired panels */}
+      {/* RECENT ACTIVITY + LIVE SPOT - paired panels */}
       <div className="grid gap-4 lg:grid-cols-2">
-        <Panel title="Needs your attention">
-          {needsAction.length > 0 ? (
-            <ul className="divide-y divide-gold-metallic/10">
-              {needsAction.map((r) => (
-                <AttentionRow key={r.id} request={r} now={now} />
-              ))}
-            </ul>
-          ) : (
-            <p className="text-[12px] leading-relaxed text-warmgrey">
-              Nothing waiting - every new enquiry has been picked up within the last 18 hours.
-            </p>
-          )}
-        </Panel>
-
         <Panel title="Recent admin activity">
           {auditEntries.length > 0 ? (
             <ul className="divide-y divide-gold-metallic/10">
@@ -237,10 +294,9 @@ export default async function AdminOverview() {
             </p>
           )}
         </Panel>
-      </div>
 
-      {/* LIVE SPOT - gold carats on top row, other metals on bottom */}
-      <Panel title="Live spot">
+        {/* LIVE SPOT - gold carats on top row, other metals on bottom */}
+        <Panel title="Live spot">
         <div className="space-y-3">
           <div className="flex flex-wrap items-baseline gap-x-8 gap-y-3">
             <span className="w-20 text-[10px] font-semibold uppercase tracking-luxe text-gold-metallic">
@@ -267,7 +323,8 @@ export default async function AdminOverview() {
             <SpotRow label="Palladium" value={spotMap.palladium} />
           </div>
         </div>
-      </Panel>
+        </Panel>
+      </div>
     </div>
   );
 }

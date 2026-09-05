@@ -103,3 +103,32 @@ export async function getEventSummaries(): Promise<EventSummary[]> {
   const computed = await getComputedEvents();
   return computed.map(toSummary);
 }
+
+/* --------------------------------------------- Overview bookings calendar */
+
+export type CalendarAppointment = {
+  id: string;
+  starts_at: string;
+  first_name: string;
+  last_name: string;
+  service_type: string | null;
+  status: string;
+  appointment_events: { title: string; city: string; venue_name: string | null } | null;
+};
+
+/**
+ * Slim appointment rows for the overview bookings calendar - no photo
+ * signing, no notes. Cancelled bookings are excluded; attended/no-show stay
+ * so past days keep their history.
+ */
+export async function listCalendarAppointments(): Promise<CalendarAppointment[]> {
+  const supabase = getServerSupabase();
+  if (!supabase) return [];
+  const { data, error } = await supabase
+    .from('appointments')
+    .select('id, starts_at, first_name, last_name, service_type, status, appointment_events(title, city, venue_name)')
+    .neq('status', 'cancelled')
+    .order('starts_at', { ascending: true });
+  if (error || !data) return [];
+  return data as unknown as CalendarAppointment[];
+}

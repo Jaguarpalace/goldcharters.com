@@ -51,7 +51,9 @@ export function RequestDetail({
         <StatusPipeline
           requestId={request.id}
           currentStatus={request.status as ValuationRequestStatus}
-          onChange={(status) => onPatch({ status })}
+          customerName={`${request.first_name} ${request.last_name}`.trim()}
+          bookedFor={request.booked_for}
+          onChange={(status, patch) => onPatch({ status, ...patch })}
         />
 
         {/* Submission details - dense grid, no card padding */}

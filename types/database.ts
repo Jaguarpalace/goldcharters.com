@@ -238,6 +238,11 @@ export type ValuationRequest = {
   payment_sort_code: string | null;
   payment_account_number: string | null;
   paid_at: string | null;
+  /**
+   * When the customer is coming in - set alongside status='booked' via the
+   * calendar modal (migration 032). Kept for history after the visit.
+   */
+  booked_for: string | null;
   created_at: string;
   updated_at: string;
   /** ISO timestamp when soft-deleted, or null while active. */
