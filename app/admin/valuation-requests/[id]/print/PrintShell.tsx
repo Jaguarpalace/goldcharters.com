@@ -198,7 +198,7 @@ const PRINT_CSS = `
   .print-sig-line { display: inline-block; width: 100%; min-height: 20px; }
 
   .print-foot {
-    margin-top: 14px;
+    margin-top: 36px;
     padding-top: 8px;
     border-top-width: 1px;
     border-top-style: solid;

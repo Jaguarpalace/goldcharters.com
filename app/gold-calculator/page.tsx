@@ -104,7 +104,7 @@ export default async function GoldCalculatorPage() {
                       </td>
                       <td className="py-3 pr-4">{r.purity_percentage}%</td>
                       <td className="py-3 text-right font-semibold text-gold-bright">
-                        {gbp(r.price_per_gram)}
+                        Up to {gbp(r.price_per_gram)}
                       </td>
                     </tr>
                   ))}

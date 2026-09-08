@@ -44,7 +44,12 @@ const EMPTY_LINE: ItemLine = {
 const lineTotal = (lines: ItemLine[]) =>
   lines.reduce((sum, l) => sum + (Number(l.price_gbp) || 0), 0);
 
-export function WalkInForm() {
+/** A UUID whose first 8 hex chars are the given paper reference; the rest is random. */
+function uuidWithPrefix(ref: string): string {
+  return ref.toLowerCase() + crypto.randomUUID().slice(8);
+}
+
+export function WalkInForm({ initialPaperRef }: { initialPaperRef?: string }) {
   const router = useRouter();
   const [form, setForm] = useState({
     first_name: '',
@@ -113,9 +118,15 @@ export function WalkInForm() {
   // so screen, printed document and payment reference always agree.
   // Generated in an effect (not at render) to keep server/client HTML equal.
   const [purchaseId, setPurchaseId] = useState<string | null>(null);
+  // A purchase written up on a blank paper document already carries a
+  // reference. Typing it here rebuilds the id from it, so the saved record
+  // gets the same reference as the paper copy.
+  const [paperRef, setPaperRef] = useState(initialPaperRef ?? '');
   useEffect(() => {
-    setPurchaseId(crypto.randomUUID());
-  }, []);
+    const ref = paperRef.trim();
+    if (/^[0-9a-f]{8}$/i.test(ref)) setPurchaseId(uuidWithPrefix(ref));
+    else if (!ref) setPurchaseId(crypto.randomUUID());
+  }, [paperRef]);
   const reference = purchaseId ? purchaseId.slice(0, 8).toUpperCase() : null;
 
   const patchLine = (idx: number, patch: Partial<ItemLine>) =>
@@ -363,6 +374,22 @@ export function WalkInForm() {
             </span>
           </p>
         )}
+        <label className="block max-w-sm">
+          <span className="text-[10px] font-medium uppercase tracking-luxe text-warmgrey">
+            Paper reference <span className="ml-1 text-warmgrey/50">(optional)</span>
+          </span>
+          <input
+            type="text"
+            value={paperRef}
+            onChange={(e) => setPaperRef(e.target.value.toUpperCase().replace(/[^0-9A-F]/g, '').slice(0, 8))}
+            placeholder="e.g. 1B345D09"
+            className="mt-1 w-full rounded-md border border-gold-metallic/20 bg-ink-950/60 px-3 py-2 font-mono text-sm tracking-widest text-white placeholder:font-sans placeholder:tracking-normal placeholder:text-warmgrey/50 focus:border-gold-metallic focus:outline-none"
+          />
+          <span className="mt-1 block text-[10px] text-warmgrey/70">
+            Entering a purchase written up on a blank paper document? Type the reference printed
+            on it and the saved record will carry the same one.
+          </span>
+        </label>
         <div className="grid gap-3 md:grid-cols-3">
           <label className="block">
             <span className="text-[10px] font-medium uppercase tracking-luxe text-warmgrey">
