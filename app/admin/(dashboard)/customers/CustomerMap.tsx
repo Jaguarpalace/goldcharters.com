@@ -101,10 +101,12 @@ export function CustomerMap({
       });
       mapRef.current = map;
 
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      // OpenStreetMap tiles need no key. They are drawn light, so the dark
+      // look comes from a CSS filter on the tile layer (see MAP_CSS).
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        subdomains: 'abcd',
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        className: 'gc-dark-tiles',
         maxZoom: 19,
       }).addTo(map);
 
@@ -296,6 +298,11 @@ const MAP_CSS = `
     background: #f3cc0f; border: 2px solid #0a0a0a; box-shadow: 0 0 0 1.5px #f3cc0f;
   }
   .leaflet-container { background: #0b0a07; font-family: inherit; }
+  /* Light OSM tiles inverted into a charcoal basemap: roads and labels stay
+     legible, colours are muted so the gold pins carry the eye. */
+  .gc-dark-tiles {
+    filter: invert(1) hue-rotate(180deg) brightness(0.62) contrast(1.15) saturate(0.25);
+  }
   .gc-tip {
     background: #14120c; color: #f5efdc; border: 1px solid rgba(212,175,55,0.5);
     border-radius: 6px; padding: 6px 9px; font-size: 12px; line-height: 1.4;
