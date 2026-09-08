@@ -32,31 +32,8 @@ const INFO_LINKS = [
   { label: 'Contact', href: '/contact' },
 ];
 
-/** Standalone "Book a visit" CTA — a glowing gold-edged pill with a calendar
- *  glyph. Distinct from the solid-gold primary so it draws the eye without
- *  competing with "Get a Valuation". */
-function BookVisitButton({ className = '', onClick }: { className?: string; onClick?: () => void }) {
-  return (
-    <Link
-      href="/book"
-      onClick={onClick}
-      className={
-        'group relative inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border border-gold-metallic/60 ' +
-        'bg-gradient-to-r from-ink-900/80 via-ink-800/70 to-ink-900/80 px-5 py-2.5 text-[12px] font-semibold ' +
-        'uppercase tracking-luxe text-gold-bright shadow-[0_0_18px_-5px_rgba(243,204,15,0.55)] transition ' +
-        'hover:border-gold-bright hover:text-white hover:shadow-[0_0_26px_-3px_rgba(243,204,15,0.85)] ' +
-        className
-      }
-    >
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden>
-        <rect x="3" y="4.5" width="18" height="16" rx="2" />
-        <path d="M3 9h18M8 2.5v4M16 2.5v4" strokeLinecap="round" />
-        <path d="M9.5 14l1.8 1.8 3.7-3.8" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-      Book a visit
-    </Link>
-  );
-}
+// "Book a visit" was pulled from the header for now (Sep 2026); the /book
+// page itself is still live and linked from the location pages.
 
 export function Header({ settings }: { settings: SiteSettings }) {
   const pathname = usePathname();
@@ -77,19 +54,13 @@ export function Header({ settings }: { settings: SiteSettings }) {
             thing the eye lands on without having to track all the way
             across the header. The right-side instance below is hidden on
             lg so we don't end up with two of them. */}
-        <div className="flex items-center gap-3 lg:gap-6">
+        <div className="flex items-center gap-3">
           <Logo businessName={settings.business_name} size="compact" />
-          <div className="hidden items-center gap-3 lg:flex">
-            <GetValuationLink className="gc-btn-primary whitespace-nowrap !px-7 !py-3.5 text-[15px]">
-              Get a Valuation
-            </GetValuationLink>
-            {/* Calculator - secondary CTA beside the primary one. Compact
-                pill so the gold gradient still leads the eye. */}
-            <CalculatorLink />
-          </div>
         </div>
 
-        {/* Centre nav, desktop only */}
+        {/* Centre nav, desktop only. The two gold CTAs sit at the end of the
+            link row, right after Contact, so they read as the destination of
+            the navigation rather than as decoration by the logo. */}
         <nav aria-label="Primary" className="hidden items-center gap-5 lg:flex">
           <NavGroup label="What We Buy" links={SELL_LINKS} />
           {BUY_ENABLED && <NavGroup label="Shop" links={BUY_LINKS} />}
@@ -102,7 +73,12 @@ export function Header({ settings }: { settings: SiteSettings }) {
               {l.label}
             </Link>
           ))}
-          <BookVisitButton />
+          <div className="ml-2 flex items-center gap-3">
+            <GetValuationLink className="gc-btn-primary whitespace-nowrap">
+              Get a Valuation
+            </GetValuationLink>
+            <CalculatorLink />
+          </div>
         </nav>
 
         {/* Right cluster: phone · calculator · valuation CTA · basket · mobile menu */}
@@ -188,13 +164,11 @@ export function Header({ settings }: { settings: SiteSettings }) {
             )}
             <MobileSection label="More" links={INFO_LINKS} onClick={() => setMobileOpen(false)} />
 
-            <BookVisitButton className="mt-2 w-full !py-3" onClick={() => setMobileOpen(false)} />
-
             <div className="mt-2 grid grid-cols-2 gap-2">
               <Link
                 href="/gold-calculator"
                 onClick={() => setMobileOpen(false)}
-                className="inline-flex items-center justify-center gap-1.5 rounded-full border border-gold-metallic/50 px-4 py-2.5 text-[12px] font-semibold uppercase tracking-luxe text-gold-tint hover:border-gold-metallic hover:text-gold-bright"
+                className="gc-btn-primary w-full"
               >
                 Calculator
               </Link>
@@ -212,13 +186,10 @@ export function Header({ settings }: { settings: SiteSettings }) {
   );
 }
 
-/** Secondary "Calculator" pill, shown beside Get a Valuation on desktop. */
+/** "Calculator" CTA - same solid gold as Get a Valuation, shown beside it on desktop. */
 function CalculatorLink() {
   return (
-    <Link
-      href="/gold-calculator"
-      className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-gold-metallic/40 px-4 py-2.5 text-[12px] font-semibold uppercase tracking-luxe text-gold-tint transition hover:border-gold-metallic hover:bg-ink-900/70 hover:text-gold-bright"
-    >
+    <Link href="/gold-calculator" className="gc-btn-primary inline-flex items-center gap-1.5 whitespace-nowrap">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
         <rect x="4" y="3" width="16" height="18" rx="2" />
         <path d="M7 7h10M7 11h2M11 11h2M15 11h2M7 15h2M11 15h2M15 15h2M7 19h2M11 19h2M15 19h2" />
