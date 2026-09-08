@@ -2,6 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 import { requireAdminContext, requireAdminRole, type SaveResult } from './_helpers';
+import { geocodePostcodesBulk, normalisePostcode } from '@/lib/services/geocode';
+import { geocodeCustomerBestEffort } from '@/lib/services/customerGeocode';
 import {
   CUSTOMER_DOCUMENT_TYPES,
   type Customer,
@@ -88,8 +90,65 @@ export async function upsertCustomer(input: UpsertCustomer): Promise<SaveResult<
   }
 
   const customer = data as Customer;
+  // Coordinates for the map - best effort, never blocks the save.
+  await geocodeCustomerBestEffort(ctx.admin, customer.id, customer.postcode);
   refresh(customer.id);
   return { ok: true, data: customer };
+}
+
+/**
+ * Backfill for the Customers map: geocode every active customer whose
+ * postcode has no coordinates yet (or whose postcode changed since). One
+ * bulk call per 100 postcodes.
+ */
+export async function geocodeCustomers(): Promise<
+  SaveResult<{ checked: number; geocoded: number; unresolved: number }>
+> {
+  const ctx = await requireAdminContext();
+  if ('error' in ctx) return { ok: false, error: ctx.error };
+
+  const { data, error } = await ctx.admin
+    .from('customers')
+    .select('id, postcode, geocode_postcode, latitude')
+    .is('deleted_at', null)
+    .not('postcode', 'is', null);
+  if (error) return { ok: false, error: error.message };
+
+  const rows = (data ?? []) as Array<{
+    id: string;
+    postcode: string | null;
+    geocode_postcode: string | null;
+    latitude: number | null;
+  }>;
+  const pending = rows
+    .map((r) => ({ id: r.id, key: normalisePostcode(r.postcode), stale: r.geocode_postcode, lat: r.latitude }))
+    .filter((r) => r.key && (r.stale !== r.key || r.lat == null));
+
+  if (pending.length === 0) {
+    return { ok: true, data: { checked: rows.length, geocoded: 0, unresolved: 0 } };
+  }
+
+  const points = await geocodePostcodesBulk(pending.map((r) => r.key as string));
+  const now = new Date().toISOString();
+  let geocoded = 0;
+  let unresolved = 0;
+  for (const r of pending) {
+    const point = points.get(r.key as string) ?? null;
+    if (point) geocoded += 1;
+    else unresolved += 1;
+    await ctx.admin
+      .from('customers')
+      .update({
+        latitude: point?.lat ?? null,
+        longitude: point?.lng ?? null,
+        geocoded_at: now,
+        geocode_postcode: r.key,
+      })
+      .eq('id', r.id);
+  }
+
+  refresh();
+  return { ok: true, data: { checked: rows.length, geocoded, unresolved } };
 }
 
 /**

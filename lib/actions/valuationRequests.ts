@@ -8,6 +8,7 @@ import { sendNewRequestNotification } from '@/lib/email/sendNewRequestNotificati
 import { sendCustomerConfirmation } from '@/lib/email/sendCustomerConfirmation';
 import { sendStatusEmail } from '@/lib/email/sendStatusEmail';
 import { getMetalSpots } from '@/lib/services/metalPrice';
+import { geocodeCustomerBestEffort } from '@/lib/services/customerGeocode';
 import {
   caratForHoldingsFromLine,
   normaliseCaratForHoldings,
@@ -859,6 +860,9 @@ export async function createWalkInPurchase(
       customerId = (newCustomer as { id: string }).id;
     }
   }
+
+  // Coordinates for the Customers map - best effort, never blocks the sale.
+  if (customerId) await geocodeCustomerBestEffort(ctx.admin, customerId, customerPatch.postcode);
 
   // --- Step 2: insert valuation_request already at status='bought' ---
   // A well-formed client-generated id is honoured so the reference shown on

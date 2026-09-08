@@ -1,6 +1,76 @@
 import { getServerSupabase } from '@/lib/supabase/server';
 import type { Customer, CustomerDocument, ValuationRequest } from '@/types/database';
 
+/* --------------------------------------------------------------- Map data */
+
+export type CustomerMapPoint = {
+  id: string;
+  name: string;
+  email: string;
+  postcode: string | null;
+  city: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  /** Purchase agreements with a recorded payment, matched by email. */
+  purchases: number;
+  /** Total we have paid this customer, in GBP. */
+  total_paid_gbp: number;
+};
+
+/**
+ * Every active customer with the figures the map needs: coordinates (when
+ * geocoded) and what we have bought from them. Spend comes from paid
+ * valuation requests matched on email - the same join the History tab uses -
+ * so it counts each purchase agreement once regardless of how the stock was
+ * later split.
+ */
+export async function listCustomerMapPoints(): Promise<CustomerMapPoint[]> {
+  const supabase = getServerSupabase();
+  if (!supabase) return [];
+  const [customersRes, paidRes] = await Promise.all([
+    supabase
+      .from('customers')
+      .select('id, first_name, last_name, email, postcode, city, latitude, longitude')
+      .is('deleted_at', null),
+    supabase
+      .from('valuation_requests')
+      .select('email, payment_amount')
+      .not('payment_amount', 'is', null)
+      .is('deleted_at', null),
+  ]);
+  const spend = new Map<string, { count: number; total: number }>();
+  for (const r of (paidRes.data ?? []) as Array<{ email: string; payment_amount: number }>) {
+    const key = r.email.toLowerCase();
+    const cur = spend.get(key) ?? { count: 0, total: 0 };
+    cur.count += 1;
+    cur.total += Number(r.payment_amount) || 0;
+    spend.set(key, cur);
+  }
+  return ((customersRes.data ?? []) as Array<{
+    id: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    postcode: string | null;
+    city: string | null;
+    latitude: number | null;
+    longitude: number | null;
+  }>).map((c) => {
+    const s = spend.get(c.email.toLowerCase()) ?? { count: 0, total: 0 };
+    return {
+      id: c.id,
+      name: `${c.first_name} ${c.last_name}`.trim(),
+      email: c.email,
+      postcode: c.postcode,
+      city: c.city,
+      latitude: c.latitude,
+      longitude: c.longitude,
+      purchases: s.count,
+      total_paid_gbp: Math.round(s.total * 100) / 100,
+    };
+  });
+}
+
 /** All active (non-trashed) customers, newest first. */
 export async function listCustomers(): Promise<Customer[]> {
   const supabase = getServerSupabase();

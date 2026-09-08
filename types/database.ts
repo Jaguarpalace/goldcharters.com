@@ -451,6 +451,15 @@ export type Customer = {
   postcode: string | null;
   country: string | null;
   notes: string | null;
+  /**
+   * Cached postcode-centroid coordinates from postcodes.io (migration 034),
+   * for the Customers map. geocode_postcode is the postcode they belong to,
+   * so an edited postcode is re-geocoded rather than plotted in the old spot.
+   */
+  latitude: number | null;
+  longitude: number | null;
+  geocoded_at: string | null;
+  geocode_postcode: string | null;
   created_at: string;
   updated_at: string;
   /** ISO timestamp when soft-deleted, or null while active. */

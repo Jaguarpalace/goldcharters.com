@@ -1,11 +1,23 @@
 import { isSupabaseConfigured } from '@/lib/supabase/env';
-import { listCustomers } from '@/lib/queries/customers';
-import { CustomersBoard } from './CustomersBoard';
+import { listCustomerMapPoints, listCustomers } from '@/lib/queries/customers';
+import { getSiteSettings } from '@/lib/queries/homepage';
+import { getNap } from '@/lib/seo/nap';
+import { CustomersTabs } from './CustomersTabs';
 
 export const dynamic = 'force-dynamic';
 
-export default async function AdminCustomersPage() {
-  const customers = isSupabaseConfigured() ? await listCustomers() : [];
+export default async function AdminCustomersPage({
+  searchParams,
+}: {
+  searchParams?: { tab?: string };
+}) {
+  const [customers, mapPoints, settings] = await Promise.all([
+    isSupabaseConfigured() ? listCustomers() : Promise.resolve([]),
+    isSupabaseConfigured() ? listCustomerMapPoints() : Promise.resolve([]),
+    getSiteSettings(),
+  ]);
+  const nap = getNap(settings);
+  const shop = { lat: nap.latitude, lng: nap.longitude, label: nap.locality || settings.business_name };
 
   return (
     <div className="space-y-5">
@@ -15,7 +27,7 @@ export default async function AdminCustomersPage() {
         <p className="mt-1 max-w-2xl text-xs text-warmgrey">
           Directory of people we've valued or bought from. Each customer can hold ID, driving
           licence and proof-of-address documents, and shows their full enquiry history matched by
-          email.
+          email. The Map tab plots every customer with a postcode.
         </p>
       </header>
 
@@ -25,7 +37,12 @@ export default async function AdminCustomersPage() {
         </div>
       )}
 
-      <CustomersBoard initialCustomers={customers} />
+      <CustomersTabs
+        customers={customers}
+        mapPoints={mapPoints}
+        shop={shop}
+        initialTab={searchParams?.tab === 'map' ? 'map' : 'list'}
+      />
     </div>
   );
 }
