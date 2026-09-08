@@ -48,14 +48,23 @@ export function Header({ settings }: { settings: SiteSettings }) {
 
   return (
     <header className="sticky top-0 z-20 border-b border-gold-metallic/15 bg-ink-950/85 backdrop-blur-md">
-      <div className="gc-container flex h-24 items-center justify-between gap-4 sm:h-32">
-        {/* Left cluster: logo + (desktop only) Get a Valuation CTA. Pulling
-            the primary CTA next to the brand on lg+ makes it the first
-            thing the eye lands on without having to track all the way
-            across the header. The right-side instance below is hidden on
-            lg so we don't end up with two of them. */}
-        <div className="flex items-center gap-3">
+      <div className="gc-container flex h-24 items-center justify-between gap-2 sm:gap-4 sm:h-32">
+        {/* Left cluster: logo, plus - below desktop - the two gold CTAs
+            right beside it so they are visible without opening the menu.
+            On lg+ the same two buttons live at the end of the nav row. */}
+        <div className="flex min-w-0 items-center gap-2 sm:gap-3">
           <Logo businessName={settings.business_name} size="compact" />
+          <div className="flex items-center gap-1.5 sm:gap-2 lg:hidden">
+            <GetValuationLink className="gc-btn-primary whitespace-nowrap !px-3 !py-2 text-[11px] sm:!px-4 sm:!py-2.5 sm:text-[12px]">
+              Get a Valuation
+            </GetValuationLink>
+            <Link
+              href="/gold-calculator"
+              className="gc-btn-primary whitespace-nowrap !px-3 !py-2 text-[11px] sm:!px-4 sm:!py-2.5 sm:text-[12px]"
+            >
+              Calculator
+            </Link>
+          </div>
         </div>
 
         {/* Centre nav, desktop only. The two gold CTAs sit at the end of the
@@ -82,7 +91,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
         </nav>
 
         {/* Right cluster: phone · calculator · valuation CTA · basket · mobile menu */}
-        <div className="flex items-center gap-3 lg:gap-4">
+        <div className="flex flex-none items-center gap-2 sm:gap-3 lg:gap-4">
           {/* Phone - compact, tablet+ only. Live ticker removed from the
               public header; live spot data still drives the calculator and
               lives in the admin price-dashboard. */}
@@ -109,12 +118,6 @@ export function Header({ settings }: { settings: SiteSettings }) {
               WhatsApp
             </a>
           )}
-
-          {/* Tablet-only instance - desktop shows the bigger CTA next to the
-              logo in the left cluster, so we hide this one from lg up. */}
-          <GetValuationLink className="gc-btn-primary hidden whitespace-nowrap sm:inline-flex lg:hidden">
-            Get a Valuation
-          </GetValuationLink>
 
           {/* WhatsApp - mobile only. On md+ the floating WhatsApp pill takes
               over (see WhatsAppButton.tsx). Sized to match the hamburger. */}
