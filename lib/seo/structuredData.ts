@@ -9,12 +9,14 @@ import { geoCoordinates, postalAddress } from '@/lib/seo/nap';
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://chartersgold.co.uk';
 
 /**
- * Site-wide default social share card (public/og-card.png, 1200x630). Every
+ * Site-wide default social share card (public/og-card-v2.png, 1200x630, crest
+ * centred inside the middle 630px square so a square crop - Google result
+ * thumbnails - still shows the whole crest). Every
  * page that declares its own `openGraph` references this as the fallback image
  * so link previews render at the correct aspect ratio. A CMS `og_image_url`
  * (page_seo) or a blog post's featured image overrides it per page.
  */
-const DEFAULT_OG_IMAGE = `${SITE_URL}/og-card.png`;
+const DEFAULT_OG_IMAGE = `${SITE_URL}/og-card-v2.png`;
 
 export function organizationSchema(settings: SiteSettings) {
   return {

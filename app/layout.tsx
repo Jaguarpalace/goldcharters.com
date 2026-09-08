@@ -92,7 +92,7 @@ export async function generateMetadata(): Promise<Metadata> {
       locale: 'en_GB',
       images: [
         {
-          url: '/og-card.png',
+          url: '/og-card-v2.png',
           width: 1200,
           height: 630,
           alt: settings.business_name,
@@ -103,7 +103,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: 'summary_large_image',
       title: settings.seo_title,
       description: settings.seo_description,
-      images: ['/og-card.png'],
+      images: ['/og-card-v2.png'],
     },
     robots: {
       index: true,
