@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { formatUkPhone } from '@/lib/format';
 import { getSiteSettings } from '@/lib/queries/homepage';
 import { LegalPageLayout } from '@/components/public/LegalPageLayout';
 import { formatLegalDate, getLegalPage } from '@/lib/queries/legalPages';
@@ -22,7 +23,8 @@ export default async function TermsPage() {
   const [settings, legal] = await Promise.all([getSiteSettings(), getLegalPage('terms')]);
   const businessName = settings.business_name;
   const email = settings.email;
-  const phone = settings.phone;
+  const phone = formatUkPhone(settings.phone);
+  const phoneDigits = settings.phone.replace(/D+/g, "");
   const address = settings.address ?? '';
 
   const lastUpdated = legal
@@ -381,7 +383,7 @@ export default async function TermsPage() {
         <br />
         Email: <a href={`mailto:${email}`}>{email}</a>
         <br />
-        Telephone: <a href={`tel:${phone}`}>{phone}</a>
+        Telephone: <a href={`tel:${phoneDigits}`}>{phone}</a>
       </p>
     </LegalPageLayout>
   );

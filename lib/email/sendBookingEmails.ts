@@ -1,4 +1,5 @@
 import 'server-only';
+import { formatUkPhone } from '@/lib/format';
 import type { Appointment, AppointmentEvent } from '@/types/database';
 import { getAdminRecipients, getFromAddress, getResend, isEmailConfigured } from './client';
 import { getSiteSettings } from '@/lib/queries/homepage';
@@ -55,7 +56,7 @@ export async function sendBookingEmails(
       where,
       service: appointment.service_type,
       cancelUrl,
-      phone: settings.phone,
+      phone: formatUkPhone(settings.phone),
       email: settings.email,
       address: settings.address ?? '',
     }),

@@ -1,4 +1,5 @@
 import 'server-only';
+import { formatUkPhone } from '@/lib/format';
 import type { ValuationRequest } from '@/types/database';
 import { getFromAddress, getResend, isEmailConfigured } from './client';
 import { renderTemplate, type Variables } from './renderTemplate';
@@ -62,7 +63,7 @@ export async function sendStatusEmail(
     site_url: siteUrl,
     logo_url: `${siteUrl}/logo/charters_gold_logo.png`,
     business_name: settings.business_name,
-    business_phone: settings.phone,
+    business_phone: formatUkPhone(settings.phone),
     business_phone_digits: settings.phone.replace(/\D+/g, ''),
     business_email: settings.email,
     address: settings.address ?? '',

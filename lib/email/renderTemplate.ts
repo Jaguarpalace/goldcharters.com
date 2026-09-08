@@ -1,4 +1,5 @@
 import type { EmailTemplate } from '@/types/database';
+import { formatUkPhone } from '@/lib/format';
 import { getSiteSettings } from '@/lib/queries/homepage';
 
 export type Variables = Record<string, string>;
@@ -53,7 +54,7 @@ export async function sampleVariablesFor(key: string): Promise<Variables> {
     logo_url: `${siteUrl}/logo/charters_gold_logo.png`,
     business_name: settings.business_name,
     address: settings.address ?? '',
-    business_phone: settings.phone,
+    business_phone: formatUkPhone(settings.phone),
     business_phone_digits: settings.phone.replace(/\D+/g, ''),
     business_email: settings.email,
     admin_url: `${siteUrl}/admin/valuation-requests`,
@@ -68,8 +69,8 @@ export async function sampleVariablesFor(key: string): Promise<Variables> {
         first_name: 'Sarah',
         last_name: 'Smith',
         email: 'sarah@example.com',
-        phone: '07700 900123',
-        phone_digits: '07700900123',
+        phone: '07951 999 999',
+        phone_digits: '07951999999',
         branch_label: 'Luxury Watch',
         details_table: sampleDetailsTable(),
         description_block: sampleDescriptionBlock(),
