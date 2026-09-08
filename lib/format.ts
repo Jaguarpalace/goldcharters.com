@@ -45,3 +45,17 @@ export function groupFaqsByCategory(faqs: Faq[]): Record<FaqCategory, Faq[]> {
   for (const faq of faqs) groups[faq.category].push(faq);
   return groups;
 }
+
+/**
+ * UK phone number for display: an 11-digit number becomes "07951 999 999".
+ * Anything else (international, short codes, already spaced) is returned as
+ * typed. Use the raw digits, not this, in tel: links.
+ */
+export function formatUkPhone(phone: string | null | undefined): string {
+  if (!phone) return '';
+  const digits = phone.replace(/\D+/g, '');
+  if (digits.length === 11 && digits.startsWith('0')) {
+    return `${digits.slice(0, 5)} ${digits.slice(5, 8)} ${digits.slice(8)}`;
+  }
+  return phone.trim();
+}

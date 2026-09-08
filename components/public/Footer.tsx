@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { formatUkPhone } from '@/lib/format';
 import { usePathname } from 'next/navigation';
 import type { SiteSettings } from '@/types/database';
 import { Logo } from './Logo';
@@ -94,7 +95,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
                   href={`tel:${settings.phone}`}
                   className="block text-warmgrey hover:text-gold-bright"
                 >
-                  {settings.phone}
+                  {formatUkPhone(settings.phone)}
                 </a>
                 <a
                   href={`mailto:${settings.email}`}

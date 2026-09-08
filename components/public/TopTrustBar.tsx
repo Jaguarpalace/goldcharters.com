@@ -1,4 +1,5 @@
 import type { SiteSettings } from '@/types/database';
+import { formatUkPhone } from '@/lib/format';
 import { LiveGoldTicker } from './LiveGoldTicker';
 
 export function TopTrustBar({ settings }: { settings: SiteSettings }) {
@@ -27,7 +28,7 @@ export function TopTrustBar({ settings }: { settings: SiteSettings }) {
           href={`tel:${settings.phone.replace(/\s+/g, '')}`}
           className="font-medium text-gold-tint hover:text-gold-bright"
         >
-          Call now: {settings.phone}
+          Call now: {formatUkPhone(settings.phone)}
         </a>
       </div>
     </div>
