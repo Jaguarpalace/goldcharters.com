@@ -2,7 +2,15 @@
 // IMPORTANT: do NOT import anything from `lib/supabase/server` here, or this file
 // stops being client-safe.
 
-import type { Faq, FaqCategory, Product } from '@/types/database';
+import type { Buyer, Faq, FaqCategory, Product } from '@/types/database';
+
+/** One-line postal address for invoices and buyer cards. */
+export function formatBuyerAddress(b: Partial<Buyer> | null | undefined): string {
+  if (!b) return '';
+  return [b.address_line1, b.address_line2, b.city, b.postcode, b.country]
+    .filter((s): s is string => typeof s === 'string' && s.trim().length > 0)
+    .join(', ');
+}
 
 export function formatGBP(amount: number) {
   return new Intl.NumberFormat('en-GB', {

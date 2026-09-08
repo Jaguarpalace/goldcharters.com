@@ -1,16 +1,122 @@
 import { getServerSupabase } from '@/lib/supabase/server';
-import type { StockItem, StockItemStatus } from '@/types/database';
+import { allocatedWeight, remainingWeight } from '@/lib/holdings/split';
+import type {
+  Buyer,
+  Customer,
+  Sale,
+  StockItem,
+  StockItemStatus,
+  ValuationRequest,
+} from '@/types/database';
 
-/** All currently held items, newest acquisition first. Hot path for the dashboard. */
+/**
+ * Everything currently in our custody: held pieces plus bulk rows that have
+ * been split (their unallocated remainder is still physically here). Newest
+ * acquisition first. Hot path for the dashboard, finance and overview.
+ *
+ * Split parents come back alongside their children so the portfolio maths
+ * can count each gram exactly once - see computePortfolioSnapshot.
+ */
 export async function listHeldStockItems(): Promise<StockItem[]> {
   const supabase = getServerSupabase();
   if (!supabase) return [];
   const { data, error } = await supabase
     .from('stock_items')
     .select('*')
-    .eq('status', 'held')
+    .in('status', ['held', 'split'])
     .is('deleted_at', null)
     .order('acquired_at', { ascending: false });
+  if (error || !data) return [];
+  return data as StockItem[];
+}
+
+/**
+ * Children of every split parent in the list, any status (a sold child
+ * still counts towards the parent's allocated weight). Keyed by parent id.
+ */
+export async function getSplitChildren(
+  parents: StockItem[],
+): Promise<Record<string, StockItem[]>> {
+  const ids = parents.filter((p) => p.status === 'split').map((p) => p.id);
+  if (ids.length === 0) return {};
+  const supabase = getServerSupabase();
+  if (!supabase) return {};
+  const { data, error } = await supabase
+    .from('stock_items')
+    .select('*')
+    .in('parent_stock_item_id', ids)
+    .is('deleted_at', null)
+    .order('created_at', { ascending: true });
+  if (error || !data) return {};
+  const map: Record<string, StockItem[]> = {};
+  for (const row of data as StockItem[]) {
+    const key = row.parent_stock_item_id as string;
+    (map[key] ??= []).push(row);
+  }
+  return map;
+}
+
+export { allocatedWeight, remainingWeight };
+
+/**
+ * Everything the detail page needs to trace one CG number back to its
+ * origin and forward to its sale: the bulk parent (or the split children),
+ * the purchase agreement with its payment, the seller, and the invoice.
+ */
+export type HoldingTrace = {
+  parent: StockItem | null;
+  children: StockItem[];
+  request: ValuationRequest | null;
+  customer: Customer | null;
+  sale: (Sale & { buyer: Buyer | null }) | null;
+};
+
+export async function getHoldingTrace(item: StockItem): Promise<HoldingTrace> {
+  const supabase = getServerSupabase();
+  const empty: HoldingTrace = { parent: null, children: [], request: null, customer: null, sale: null };
+  if (!supabase) return empty;
+
+  const [parentRes, childrenRes, requestRes, customerRes, saleRes] = await Promise.all([
+    item.parent_stock_item_id
+      ? supabase.from('stock_items').select('*').eq('id', item.parent_stock_item_id).maybeSingle()
+      : Promise.resolve({ data: null }),
+    supabase
+      .from('stock_items')
+      .select('*')
+      .eq('parent_stock_item_id', item.id)
+      .is('deleted_at', null)
+      .order('created_at', { ascending: true }),
+    item.valuation_request_id
+      ? supabase.from('valuation_requests').select('*').eq('id', item.valuation_request_id).maybeSingle()
+      : Promise.resolve({ data: null }),
+    item.customer_id
+      ? supabase.from('customers').select('*').eq('id', item.customer_id).maybeSingle()
+      : Promise.resolve({ data: null }),
+    item.sale_id
+      ? supabase.from('sales').select('*, buyer:buyers(*)').eq('id', item.sale_id).maybeSingle()
+      : Promise.resolve({ data: null }),
+  ]);
+
+  const saleRow = saleRes.data as (Sale & { buyer: Buyer | null }) | null;
+  return {
+    parent: (parentRes.data as StockItem | null) ?? null,
+    children: ((childrenRes.data ?? []) as StockItem[]),
+    request: (requestRes.data as ValuationRequest | null) ?? null,
+    customer: (customerRes.data as Customer | null) ?? null,
+    sale: saleRow ?? null,
+  };
+}
+
+/** Stock rows created from a purchase agreement - the CG codes it produced. */
+export async function getStockItemsForRequest(requestId: string): Promise<StockItem[]> {
+  const supabase = getServerSupabase();
+  if (!supabase) return [];
+  const { data, error } = await supabase
+    .from('stock_items')
+    .select('*')
+    .eq('valuation_request_id', requestId)
+    .is('deleted_at', null)
+    .order('created_at', { ascending: true });
   if (error || !data) return [];
   return data as StockItem[];
 }
@@ -155,11 +261,18 @@ function metalKeyFromName(name: string | null | undefined): MetalKey | null {
  *
  * Pure function — no I/O, no caching concerns. The caller fetches the items
  * and spots and passes them in.
+ *
+ * Split parents are counted for their unallocated remainder only (at the
+ * same £/g we paid), so a 100g bulk row with 85g split out contributes 15g
+ * here and its three children contribute their own 85g. Nothing is counted
+ * twice. Pass `children` (from getSplitChildren) whenever the list can
+ * contain split rows; without it a split parent contributes nothing.
  */
 export function computePortfolioSnapshot(
   items: StockItem[],
   spots: Record<MetalKey, number | null>,
   spotFetchedAt: string | null,
+  children: Record<string, StockItem[]> = {},
 ): PortfolioSnapshot {
   const by_metal: Record<MetalKey, PortfolioSlice> = {
     gold: { ...EMPTY_SLICE },
@@ -173,10 +286,17 @@ export function computePortfolioSnapshot(
   let spot_available = false;
 
   for (const item of items) {
-    const cost = Number(item.acquired_paid_gbp) || 0;
-    const weight = Number(item.weight_grams) || 0;
+    let cost = Number(item.acquired_paid_gbp) || 0;
+    let weight = Number(item.weight_grams) || 0;
     const purity = Number(item.purity_percentage) || 0;
     const metal = metalKeyFromName(item.metal_type);
+
+    if (item.status === 'split') {
+      const remaining = remainingWeight(item, children[item.id] ?? []);
+      if (remaining <= 0 || weight <= 0) continue;
+      cost = cost * (remaining / weight);
+      weight = remaining;
+    }
 
     let current_value = cost; // sensible fallback when we can't value it live
     if (metal) {
@@ -231,5 +351,7 @@ export function describeStockStatus(s: StockItemStatus): string {
       return 'Sold';
     case 'written_off':
       return 'Written off';
+    case 'split':
+      return 'Split into items';
   }
 }

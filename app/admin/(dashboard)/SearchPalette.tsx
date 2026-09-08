@@ -19,6 +19,8 @@ const ENTITY_BADGE: Record<SearchHit['entity'], string> = {
   customer: 'Customer',
   valuation_request: 'Enquiry',
   stock_item: 'Holdings',
+  buyer: 'Buyer',
+  sale: 'Invoice',
   blog_post: 'Blog',
   product: 'Product',
 };
@@ -27,6 +29,8 @@ const ENTITY_TONE: Record<SearchHit['entity'], string> = {
   customer: 'bg-sky-500/15 text-sky-300 ring-sky-500/40',
   valuation_request: 'bg-violet-500/15 text-violet-300 ring-violet-500/40',
   stock_item: 'bg-gold-metallic/15 text-gold-bright ring-gold-metallic/40',
+  buyer: 'bg-teal-500/15 text-teal-300 ring-teal-500/40',
+  sale: 'bg-rose-500/15 text-rose-300 ring-rose-500/40',
   blog_post: 'bg-emerald-500/15 text-emerald-300 ring-emerald-500/40',
   product: 'bg-amber-500/15 text-amber-300 ring-amber-500/40',
 };

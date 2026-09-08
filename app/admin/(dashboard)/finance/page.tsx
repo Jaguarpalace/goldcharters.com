@@ -1,6 +1,6 @@
 import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { requireFullAdminPage } from '@/lib/auth/adminRole';
-import { getFinanceData } from '@/lib/queries/finance';
+import { EMPTY_FINANCE_DATA, getFinanceData } from '@/lib/queries/finance';
 import { getMetalSpots } from '@/lib/services/metalPrice';
 import { computePortfolioSnapshot, type MetalKey } from '@/lib/queries/stockItems';
 import { FinanceBoard } from './FinanceBoard';
@@ -16,9 +16,7 @@ export default async function AdminFinancePage() {
   await requireFullAdminPage();
 
   const [data, spots] = await Promise.all([
-    isSupabaseConfigured()
-      ? getFinanceData()
-      : Promise.resolve({ purchases: [], soldItems: [], heldItems: [] }),
+    isSupabaseConfigured() ? getFinanceData() : Promise.resolve(EMPTY_FINANCE_DATA),
     getMetalSpots(),
   ]);
 
@@ -30,7 +28,14 @@ export default async function AdminFinancePage() {
     platinum: spots.platinum?.per_gram_gbp ?? null,
     palladium: spots.palladium?.per_gram_gbp ?? null,
   };
-  const snapshot = computePortfolioSnapshot(data.heldItems, spotMap, spots.fetched_at);
+  // Split bulk rows count for their unallocated remainder only - the
+  // pieces already in heldItems carry the rest.
+  const snapshot = computePortfolioSnapshot(
+    [...data.heldItems, ...data.splitParents],
+    spotMap,
+    spots.fetched_at,
+    data.splitChildren,
+  );
 
   return (
     <div className="space-y-5">

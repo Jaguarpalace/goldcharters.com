@@ -8,7 +8,7 @@ import { requireAdminContext } from './_helpers';
  * regardless of where the hit came from.
  */
 export type SearchHit = {
-  entity: 'customer' | 'valuation_request' | 'stock_item' | 'blog_post' | 'product';
+  entity: 'customer' | 'valuation_request' | 'stock_item' | 'buyer' | 'sale' | 'blog_post' | 'product';
   id: string;
   href: string;
   title: string;
@@ -27,9 +27,18 @@ export async function globalSearch(rawQuery: string): Promise<SearchHit[]> {
 
   const ctx = await requireAdminContext();
   if ('error' in ctx) return [];
-  const pat = `%${query.replace(/[%_]/g, (m) => `\\${m}`)}%`;
+  const esc = (s: string) => s.replace(/[%_]/g, (m) => `\\${m}`);
+  const pat = `%${esc(query)}%`;
+  // Stock numbers are stored as CG-000123 but get typed as "CG000123" or
+  // "123" - match all three forms.
+  const codeMatch = query.match(/^(?:cg-?)?(\d{1,6})$/i);
+  const stockPat = codeMatch
+    ? `%CG-%${codeMatch[1]}%`
+    : pat;
+  const invoiceMatch = query.match(/^(?:inv-?)?(\d{1,5})$/i);
+  const invoicePat = invoiceMatch ? `%INV-%${invoiceMatch[1]}%` : pat;
 
-  const [customersRes, requestsRes, holdingsRes, blogRes, productsRes] = await Promise.all([
+  const [customersRes, requestsRes, holdingsRes, buyersRes, salesRes, blogRes, productsRes] = await Promise.all([
     // Customers — name or email (active rows only)
     ctx.admin
       .from('customers')
@@ -51,10 +60,35 @@ export async function globalSearch(rawQuery: string): Promise<SearchHit[]> {
     ctx.admin
       .from('stock_items')
       .select('id, stock_number, metal_type, carat, description, status')
-      .or(`stock_number.ilike.${pat},description.ilike.${pat}`)
+      .or(`stock_number.ilike.${stockPat},description.ilike.${pat}`)
       .is('deleted_at', null)
       .order('acquired_at', { ascending: false })
       .limit(8),
+    // Buyers — name, contact or email
+    ctx.admin
+      .from('buyers')
+      .select('id, name, contact_name, email, kind')
+      .or(`name.ilike.${pat},contact_name.ilike.${pat},email.ilike.${pat}`)
+      .is('deleted_at', null)
+      .limit(8),
+    // Sales — invoice number, or the buyer's name (two steps: PostgREST
+    // can't OR across the parent row and an embedded table in one filter)
+    (async () => {
+      const { data: byBuyer } = await ctx.admin
+        .from('buyers')
+        .select('id')
+        .ilike('name', pat)
+        .limit(20);
+      const buyerIds = ((byBuyer ?? []) as { id: string }[]).map((b) => b.id);
+      const orParts = [`invoice_number.ilike.${invoicePat}`];
+      if (buyerIds.length > 0) orParts.push(`buyer_id.in.(${buyerIds.join(',')})`);
+      return ctx.admin
+        .from('sales')
+        .select('id, invoice_number, sold_at, total_gbp, voided_at, buyer:buyers(name)')
+        .or(orParts.join(','))
+        .order('sold_at', { ascending: false })
+        .limit(8);
+    })(),
     // Blog posts — title or slug
     ctx.admin
       .from('blog_posts')
@@ -124,6 +158,42 @@ export async function globalSearch(rawQuery: string): Promise<SearchHit[]> {
       subtitle:
         [s.metal_type, s.carat, s.description].filter(Boolean).join(' · ') || undefined,
       meta: `Holding · ${s.status}`,
+    });
+  }
+
+  for (const b of (buyersRes.data ?? []) as Array<{
+    id: string;
+    name: string;
+    contact_name: string | null;
+    email: string | null;
+    kind: string;
+  }>) {
+    hits.push({
+      entity: 'buyer',
+      id: b.id,
+      href: `/admin/buyers/${b.id}`,
+      title: b.name,
+      subtitle: [b.contact_name, b.email].filter(Boolean).join(' · ') || undefined,
+      meta: `Buyer · ${b.kind}`,
+    });
+  }
+
+  for (const s of (salesRes.data ?? []) as Array<{
+    id: string;
+    invoice_number: string;
+    sold_at: string;
+    total_gbp: number;
+    voided_at: string | null;
+    buyer: { name: string } | { name: string }[] | null;
+  }>) {
+    const buyerName = Array.isArray(s.buyer) ? s.buyer[0]?.name : s.buyer?.name;
+    hits.push({
+      entity: 'sale',
+      id: s.id,
+      href: `/admin/sales/${s.id}`,
+      title: s.invoice_number,
+      subtitle: `${buyerName ?? 'Unknown buyer'} · £${Number(s.total_gbp).toLocaleString('en-GB', { minimumFractionDigits: 2 })}`,
+      meta: s.voided_at ? 'Invoice · voided' : `Invoice · ${new Date(s.sold_at).toLocaleDateString('en-GB')}`,
     });
   }
 

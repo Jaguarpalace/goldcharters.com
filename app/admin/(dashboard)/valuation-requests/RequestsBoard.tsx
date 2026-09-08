@@ -45,14 +45,21 @@ const ALL_STATUSES: ValuationRequestStatus[] = [
   'rejected',
 ];
 
-export function RequestsBoard({ initialRequests }: { initialRequests: Row[] }) {
+export function RequestsBoard({
+  initialRequests,
+  initialOpenId = null,
+}: {
+  initialRequests: Row[];
+  /** Deep link (?open=<id>) from a holding's provenance panel - opens that row. */
+  initialOpenId?: string | null;
+}) {
   // Local mirror of the server data so we can do optimistic updates after a
   // notes save, payment save or bulk status change without forcing a refetch.
   const [rows, setRows] = useState<Row[]>(initialRequests);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | ValuationRequestStatus>('all');
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(initialOpenId);
   const [bulkPending, startBulk] = useTransition();
   const [bulkFeedback, setBulkFeedback] = useState<string | null>(null);
   /** Tracks whether the bulk-delete "Confirm" button is showing.

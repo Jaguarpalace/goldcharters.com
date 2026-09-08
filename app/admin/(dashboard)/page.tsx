@@ -5,6 +5,7 @@ import { getMetalSpots, spotForPurity } from '@/lib/services/metalPrice';
 import { formatGBP } from '@/lib/format';
 import {
   computePortfolioSnapshot,
+  getSplitChildren,
   listHeldStockItems,
   listSoldStockItems,
   type MetalKey,
@@ -74,7 +75,8 @@ export default async function AdminOverview() {
     platinum: spots.platinum?.per_gram_gbp ?? null,
     palladium: spots.palladium?.per_gram_gbp ?? null,
   };
-  const portfolio = computePortfolioSnapshot(heldStock, spotMap, spots.fetched_at);
+  const splitChildren = await getSplitChildren(heldStock);
+  const portfolio = computePortfolioSnapshot(heldStock, spotMap, spots.fetched_at, splitChildren);
 
   const now = Date.now();
   const startOfDay = new Date();

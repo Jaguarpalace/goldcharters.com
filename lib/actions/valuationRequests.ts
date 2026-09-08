@@ -678,6 +678,13 @@ export type WalkInPurchaseInput = {
    */
   id?: string;
 
+  /**
+   * Returning customer picked from the autocomplete. When set, the purchase
+   * links to that profile (and refreshes its contact details from the form)
+   * instead of matching by email - one Debora Smith, many purchases.
+   */
+  customer_id?: string | null;
+
   // Seller
   first_name: string;
   last_name: string;
@@ -791,12 +798,44 @@ export async function createWalkInPurchase(
     city: input.city?.trim() || null,
     postcode: input.postcode?.trim() || null,
   };
-  const { data: existingCustomer } = await ctx.admin
-    .from('customers')
-    .select('id')
-    .ilike('email', email)
-    .maybeSingle();
-  let customerId: string | null = (existingCustomer as { id: string } | null)?.id ?? null;
+  let customerId: string | null = null;
+
+  // A returning customer chosen from the autocomplete: reuse the profile
+  // and bring its contact details up to date with whatever was typed.
+  if (input.customer_id) {
+    const { data: picked } = await ctx.admin
+      .from('customers')
+      .select('id')
+      .eq('id', input.customer_id)
+      .is('deleted_at', null)
+      .maybeSingle<{ id: string }>();
+    if (picked) {
+      const { error: refreshErr } = await ctx.admin
+        .from('customers')
+        .update(customerPatch)
+        .eq('id', picked.id);
+      if (refreshErr) {
+        if (refreshErr.code === '23505') {
+          return {
+            ok: false,
+            error: `The email ${email} already belongs to a different customer. Pick that customer, or use their existing email.`,
+          };
+        }
+        console.error('[walkin:customer-refresh]', refreshErr);
+        return { ok: false, error: refreshErr.message };
+      }
+      customerId = picked.id;
+    }
+  }
+
+  if (!customerId) {
+    const { data: existingCustomer } = await ctx.admin
+      .from('customers')
+      .select('id')
+      .ilike('email', email)
+      .maybeSingle();
+    customerId = (existingCustomer as { id: string } | null)?.id ?? null;
+  }
   if (!customerId) {
     const { data: newCustomer, error: cErr } = await ctx.admin
       .from('customers')

@@ -4,8 +4,15 @@ import { RequestsBoard } from './RequestsBoard';
 
 export const dynamic = 'force-dynamic';
 
-export default async function AdminValuationRequestsPage() {
+export default async function AdminValuationRequestsPage({
+  searchParams,
+}: {
+  searchParams?: { open?: string };
+}) {
   const requests = await listValuationRequests();
+  const openId = searchParams?.open && requests.some((r) => r.id === searchParams.open)
+    ? searchParams.open
+    : null;
 
   return (
     <div className="space-y-5">
@@ -25,7 +32,7 @@ export default async function AdminValuationRequestsPage() {
         </div>
       )}
 
-      <RequestsBoard initialRequests={requests} />
+      <RequestsBoard initialRequests={requests} initialOpenId={openId} />
     </div>
   );
 }

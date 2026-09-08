@@ -469,12 +469,15 @@ export type CustomerDocument = {
   uploaded_at: string;
 };
 
-export type StockItemStatus = 'held' | 'sold' | 'written_off';
+export type StockItemStatus = 'held' | 'sold' | 'written_off' | 'split';
 
 export const STOCK_ITEM_STATUS_LABELS: Record<StockItemStatus, string> = {
   held: 'Held',
   sold: 'Sold',
   written_off: 'Written off',
+  // A bulk holding that has been broken into individual pieces. The row is
+  // kept for the purchase record; its children carry the weight now.
+  split: 'Split into items',
 };
 
 /**
@@ -510,12 +513,93 @@ export type StockItem = {
   sold_to_email: string | null;
   sold_amount_gbp: number | null;
   sold_spot_gbp_per_g: number | null;
+  /** The invoice this piece was sold on (migration 033). Null for legacy sales. */
+  sale_id: string | null;
+
+  /**
+   * Set on pieces created by splitting a bulk holding: points at the bulk
+   * row, which keeps the original purchase weight and payment (migration 033).
+   */
+  parent_stock_item_id: string | null;
 
   notes: string | null;
   created_at: string;
   updated_at: string;
   /** ISO timestamp when soft-deleted, or null while active. */
   deleted_at: string | null;
+};
+
+/* ---------------------------------------------------------------------------
+ * Buyers, sales and invoices (migration 033)
+ * ------------------------------------------------------------------------- */
+
+export type BuyerKind = 'business' | 'individual';
+
+export const BUYER_KIND_LABELS: Record<BuyerKind, string> = {
+  business: 'Business',
+  individual: 'Individual',
+};
+
+/** Someone we sell stock to. Saved once, reused on every later sale. */
+export type Buyer = {
+  id: string;
+  kind: BuyerKind;
+  /** Person's name, or the trading name for a business. */
+  name: string;
+  contact_name: string | null;
+  company_number: string | null;
+  vat_number: string | null;
+  email: string | null;
+  phone: string | null;
+  address_line1: string | null;
+  address_line2: string | null;
+  city: string | null;
+  postcode: string | null;
+  country: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+  /** ISO timestamp when soft-deleted, or null while active. */
+  deleted_at: string | null;
+};
+
+/** One sale = one invoice to one buyer, covering one or more stock items. */
+export type Sale = {
+  id: string;
+  /** INV-00001, allocated by the database on insert. Never reused. */
+  invoice_number: string;
+  buyer_id: string;
+  sold_at: string;
+  subtotal_gbp: number;
+  /** Always 0 for these invoices, stored so the document can say so. */
+  vat_rate: number;
+  vat_gbp: number;
+  total_gbp: number;
+  /** Buyer details as they were when the invoice was issued. */
+  buyer_snapshot: Partial<Buyer> | null;
+  notes: string | null;
+  created_by: string | null;
+  /** Set when the sale was voided; the stock went back to held. */
+  voided_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+/** A stock item as it appeared on an invoice. */
+export type SaleItem = {
+  id: string;
+  sale_id: string;
+  stock_item_id: string;
+  position: number;
+  stock_number: string;
+  description: string;
+  metal_type: string | null;
+  carat: string | null;
+  weight_grams: number | null;
+  quantity: number;
+  unit_price_gbp: number;
+  line_total_gbp: number;
+  created_at: string;
 };
 
 export type NotificationRecipient = {

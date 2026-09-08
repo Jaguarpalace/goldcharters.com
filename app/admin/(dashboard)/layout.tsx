@@ -39,6 +39,8 @@ const NAV_SECTIONS: Array<{ key: string; title: string; items: NavItem[] }> = [
       { href: '/admin/events', label: 'Pop-Up Locations' },
       { href: '/admin/customers', label: 'Customers', manager: true },
       { href: '/admin/holdings', label: 'Holdings', manager: true },
+      { href: '/admin/sales', label: 'Sales & Invoices', manager: true },
+      { href: '/admin/buyers', label: 'Buyers', manager: true },
       { href: '/admin/finance', label: 'Finance' },
     ],
   },

@@ -1,4 +1,5 @@
 import { getServerSupabase } from '@/lib/supabase/server';
+import { getSplitChildren } from '@/lib/queries/stockItems';
 import type { PaymentMethod, StockItem, ValuationRequest } from '@/types/database';
 
 /**
@@ -23,14 +24,26 @@ export type FinancePurchase = {
 export type FinanceData = {
   purchases: FinancePurchase[];
   soldItems: StockItem[];
+  /** Individually held pieces (status 'held') - ageing and stock lists. */
   heldItems: StockItem[];
+  /** Bulk rows that have been split; only their unallocated remainder is still stock. */
+  splitParents: StockItem[];
+  splitChildren: Record<string, StockItem[]>;
+};
+
+export const EMPTY_FINANCE_DATA: FinanceData = {
+  purchases: [],
+  soldItems: [],
+  heldItems: [],
+  splitParents: [],
+  splitChildren: {},
 };
 
 export async function getFinanceData(): Promise<FinanceData> {
   const supabase = getServerSupabase();
-  if (!supabase) return { purchases: [], soldItems: [], heldItems: [] };
+  if (!supabase) return EMPTY_FINANCE_DATA;
 
-  const [requestsRes, soldRes, heldRes, lineCountsRes] = await Promise.all([
+  const [requestsRes, soldRes, heldRes, splitRes, lineCountsRes] = await Promise.all([
     supabase
       .from('valuation_requests')
       .select('*')
@@ -49,8 +62,16 @@ export async function getFinanceData(): Promise<FinanceData> {
       .eq('status', 'held')
       .is('deleted_at', null)
       .order('acquired_at', { ascending: true }),
+    supabase
+      .from('stock_items')
+      .select('*')
+      .eq('status', 'split')
+      .is('deleted_at', null),
     supabase.from('purchase_items').select('valuation_request_id'),
   ]);
+
+  const splitParents = (splitRes.data ?? []) as StockItem[];
+  const splitChildren = await getSplitChildren(splitParents);
 
   const lineCounts = new Map<string, number>();
   for (const row of (lineCountsRes.data ?? []) as Array<{ valuation_request_id: string }>) {
@@ -77,5 +98,7 @@ export async function getFinanceData(): Promise<FinanceData> {
     purchases,
     soldItems: (soldRes.data ?? []) as StockItem[],
     heldItems: (heldRes.data ?? []) as StockItem[],
+    splitParents,
+    splitChildren,
   };
 }

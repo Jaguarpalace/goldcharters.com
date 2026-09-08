@@ -1,14 +1,22 @@
 'use client';
 
-import { useEffect, useState, useTransition } from 'react';
+import { useCallback, useEffect, useState, useTransition } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createWalkInPurchase } from '@/lib/actions/valuationRequests';
+import { searchCustomers } from '@/lib/actions/customers';
 import {
   METAL_OPTIONS,
   caratForHoldingsFromLine,
   normaliseMetalForHoldings,
 } from '@/lib/schemas/valuationFormOptions';
-import { PAYMENT_METHODS, PAYMENT_METHOD_LABELS, type PaymentMethod } from '@/types/database';
+import {
+  PAYMENT_METHODS,
+  PAYMENT_METHOD_LABELS,
+  type Customer,
+  type PaymentMethod,
+} from '@/types/database';
+import { Typeahead } from '../_components/Typeahead';
 
 /** Per-line metal choices. "Other" covers watches, handbags and anything
  * else that can't be priced at spot - those lines are exempt from the
@@ -59,6 +67,46 @@ export function WalkInForm() {
   const [lines, setLines] = useState<ItemLine[]>([{ ...EMPTY_LINE }]);
   const [pending, startTransition] = useTransition();
   const [feedback, setFeedback] = useState<string | null>(null);
+  // Returning customer picked from the name autocomplete. Their profile is
+  // reused on save - no second "Debora Smith" - and the fields below are
+  // pre-filled from it so only the new purchase needs typing.
+  const [linked, setLinked] = useState<Customer | null>(null);
+
+  const applyCustomer = (c: Customer) => {
+    setLinked(c);
+    setForm((prev) => ({
+      ...prev,
+      first_name: c.first_name,
+      last_name: c.last_name,
+      email: c.email,
+      phone: c.phone ?? '',
+      address_line1: c.address_line1 ?? '',
+      address_line2: c.address_line2 ?? '',
+      city: c.city ?? '',
+      postcode: c.postcode ?? '',
+    }));
+  };
+
+  // Both name fields search the same directory; whichever one is being
+  // typed in leads, the other narrows the match.
+  const searchByFirst = useCallback(
+    (q: string) => searchCustomers(`${q} ${form.last_name}`.trim()),
+    [form.last_name],
+  );
+  const searchByLast = useCallback(
+    (q: string) => searchCustomers(`${form.first_name} ${q}`.trim()),
+    [form.first_name],
+  );
+  const renderCustomer = (c: Customer) => (
+    <div>
+      <div className="text-white">
+        {c.first_name} {c.last_name}
+      </div>
+      <div className="text-[11px] text-warmgrey">
+        {[c.email, c.phone, c.postcode].filter(Boolean).join(' · ')}
+      </div>
+    </div>
+  );
   // The purchase's id (and therefore its reference) is generated the moment
   // the form opens, so the reference can be shown - and read out to the
   // customer - BEFORE saving. The same id becomes the database row on save,
@@ -106,6 +154,7 @@ export function WalkInForm() {
     startTransition(async () => {
       const result = await createWalkInPurchase({
         id: purchaseId ?? undefined,
+        customer_id: linked?.id ?? null,
         first_name: form.first_name,
         last_name: form.last_name,
         email: form.email,
@@ -153,9 +202,54 @@ export function WalkInForm() {
     <form onSubmit={submit} className="space-y-6">
       {/* ---------------------------------------------- Seller */}
       <Section title="Seller">
+        {linked ? (
+          <div className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-gold-metallic/30 bg-gold-metallic/10 px-3 py-2 text-[12px]">
+            <span className="text-warmgrey">
+              Returning customer:{' '}
+              <Link href={`/admin/customers/${linked.id}`} className="font-semibold text-white hover:text-gold-bright">
+                {linked.first_name} {linked.last_name}
+              </Link>
+              <span className="ml-2 text-[10px] text-warmgrey/70">
+                this purchase is added to their existing profile
+              </span>
+            </span>
+            <button
+              type="button"
+              onClick={() => setLinked(null)}
+              className="text-[10px] uppercase tracking-luxe text-warmgrey hover:text-gold-bright"
+            >
+              Not them - unlink
+            </button>
+          </div>
+        ) : (
+          <p className="text-[11px] text-warmgrey">
+            Start typing the name - returning customers appear as you type. Pick one and
+            their details fill in below.
+          </p>
+        )}
         <div className="grid gap-3 md:grid-cols-2">
-          <Field label="First name" required value={form.first_name} onChange={update('first_name')} />
-          <Field label="Last name" required value={form.last_name} onChange={update('last_name')} />
+          <Typeahead<Customer>
+            label="First name"
+            required
+            value={form.first_name}
+            onChange={(v) => setForm((prev) => ({ ...prev, first_name: v }))}
+            onSelect={applyCustomer}
+            search={searchByFirst}
+            renderItem={renderCustomer}
+            getKey={(c) => c.id}
+            emptyHint="No existing customer matches - a new profile will be created on save."
+          />
+          <Typeahead<Customer>
+            label="Last name"
+            required
+            value={form.last_name}
+            onChange={(v) => setForm((prev) => ({ ...prev, last_name: v }))}
+            onSelect={applyCustomer}
+            search={searchByLast}
+            renderItem={renderCustomer}
+            getKey={(c) => c.id}
+            emptyHint="No existing customer matches - a new profile will be created on save."
+          />
           <Field label="Email" required type="email" value={form.email} onChange={update('email')} />
           <Field label="Phone" required value={form.phone} onChange={update('phone')} />
         </div>

@@ -8,11 +8,8 @@ import {
   fetchAcquisitionsInRange,
   fetchSalesInRange,
 } from '@/lib/actions/stockItems';
-import type {
-  MetalKey,
-  PortfolioSlice,
-  PortfolioSnapshot,
-} from '@/lib/queries/stockItems';
+import type { MetalKey, PortfolioSlice, PortfolioSnapshot } from '@/lib/queries/stockItems';
+import { allocatedWeight, remainingWeight } from '@/lib/holdings/split';
 import {
   buildHoldingsAcquisitionsCsv,
   buildHoldingsHeldCsv,
@@ -20,6 +17,7 @@ import {
   downloadCsv,
 } from './csv';
 import { HOLDINGS_CARAT_OPTIONS, purityToPercent } from '@/lib/schemas/valuationFormOptions';
+import { SaleModal } from '../_components/SaleModal';
 
 const METAL_ORDER: MetalKey[] = ['gold', 'silver', 'platinum', 'palladium'];
 const METAL_LABELS: Record<MetalKey, string> = {
@@ -30,37 +28,73 @@ const METAL_LABELS: Record<MetalKey, string> = {
 };
 const METAL_OPTIONS = ['Gold', 'Silver', 'Platinum', 'Palladium'] as const;
 
+/** Can this row be broken into pieces? Bulk rows only, with a weight, not already a piece. */
+export function canSplit(item: StockItem): boolean {
+  return (
+    !item.parent_stock_item_id &&
+    (item.status === 'held' || item.status === 'split') &&
+    (Number(item.weight_grams) || 0) > 0
+  );
+}
+
 export function HoldingsBoard({
   initialItems,
+  childrenByParent,
   snapshot,
   spotMap,
 }: {
+  /** Held rows plus split parents (their pieces come via childrenByParent). */
   initialItems: StockItem[];
+  childrenByParent: Record<string, StockItem[]>;
   snapshot: PortfolioSnapshot;
   spotMap: Record<MetalKey, number | null>;
 }) {
   const [items, setItems] = useState<StockItem[]>(initialItems);
   const [search, setSearch] = useState('');
   const [adding, setAdding] = useState(false);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [selling, setSelling] = useState(false);
+  const [openParents, setOpenParents] = useState<Set<string>>(
+    () => new Set(Object.keys(childrenByParent)),
+  );
+
+  const haystack = (i: StockItem) =>
+    [i.stock_number, i.item_type, i.metal_type, i.carat, i.description, i.notes]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase();
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     if (!q) return items;
-    return items.filter((i) => {
-      const hay = [
-        i.stock_number,
-        i.item_type,
-        i.metal_type,
-        i.carat,
-        i.description,
-        i.notes,
-      ]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase();
-      return hay.includes(q);
+    // A parent stays visible when any of its pieces match, so the code you
+    // searched for is never hidden inside a collapsed group.
+    return items.filter(
+      (i) =>
+        haystack(i).includes(q) ||
+        (childrenByParent[i.id] ?? []).some((c) => haystack(c).includes(q)),
+    );
+  }, [items, search, childrenByParent]);
+
+  // Everything sellable, flattened: held rows and held pieces of split rows.
+  const sellable = useMemo(() => {
+    const map = new Map<string, StockItem>();
+    for (const i of items) {
+      if (i.status === 'held') map.set(i.id, i);
+      for (const c of childrenByParent[i.id] ?? []) if (c.status === 'held') map.set(c.id, c);
+    }
+    return map;
+  }, [items, childrenByParent]);
+
+  const toggle = (id: string) =>
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
     });
-  }, [items, search]);
+
+  const selectedItems = [...selected].map((id) => sellable.get(id)).filter((i): i is StockItem => !!i);
 
   return (
     <div className="space-y-6">
@@ -71,10 +105,7 @@ export function HoldingsBoard({
         </h2>
         <div className="mt-2 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard label="Items held" value={snapshot.combined.count.toString()} />
-          <StatCard
-            label="Cost basis"
-            value={formatGBP(snapshot.combined.total_cost_gbp)}
-          />
+          <StatCard label="Cost basis" value={formatGBP(snapshot.combined.total_cost_gbp)} />
           <StatCard
             label="Current value"
             value={formatGBP(snapshot.combined.total_current_value_gbp)}
@@ -100,12 +131,7 @@ export function HoldingsBoard({
         </h2>
         <div className="mt-2 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {METAL_ORDER.map((metal) => (
-            <MetalCard
-              key={metal}
-              metal={metal}
-              slice={snapshot.by_metal[metal]}
-              spot={spotMap[metal]}
-            />
+            <MetalCard key={metal} metal={metal} slice={snapshot.by_metal[metal]} spot={spotMap[metal]} />
           ))}
         </div>
         {snapshot.non_metal.count > 0 && (
@@ -133,6 +159,15 @@ export function HoldingsBoard({
         <span className="text-[10px] uppercase tracking-luxe text-gold-tint">
           {filtered.length} of {items.length}
         </span>
+        {selectedItems.length > 0 && (
+          <button
+            type="button"
+            onClick={() => setSelling(true)}
+            className="rounded-md border border-emerald-500/50 bg-emerald-500/15 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-luxe text-emerald-200 transition hover:bg-emerald-500/25"
+          >
+            Mark {selectedItems.length} as sold
+          </button>
+        )}
         <button
           type="button"
           onClick={() => setAdding((v) => !v)}
@@ -151,37 +186,175 @@ export function HoldingsBoard({
         />
       )}
 
+      {selling && selectedItems.length > 0 && (
+        <SaleModal items={selectedItems} onClose={() => setSelling(false)} />
+      )}
+
       {/* ----------------------------- Holdings table ----------------------- */}
       <div className="overflow-x-auto rounded-lg border border-gold-metallic/15">
-        <table className="w-full min-w-[640px] text-sm">
+        <table className="w-full min-w-[720px] text-sm">
           <thead className="bg-ink-900/80 text-[10px] uppercase tracking-luxe text-warmgrey">
             <tr>
-              <th className="px-3 py-2 text-left">Stock #</th>
+              <th className="w-8 px-3 py-2 text-left">
+                <span className="sr-only">Select</span>
+              </th>
+              <th className="px-2 py-2 text-left">Stock #</th>
               <th className="px-2 py-2 text-left">Item</th>
               <th className="px-2 py-2 text-right">Weight</th>
               <th className="px-2 py-2 text-right">Cost</th>
               <th className="px-2 py-2 text-right">Current</th>
               <th className="px-2 py-2 text-right">P&amp;L</th>
+              <th className="px-2 py-2 text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gold-metallic/10">
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-3 py-10 text-center text-sm text-warmgrey">
+                <td colSpan={8} className="px-3 py-10 text-center text-sm text-warmgrey">
                   {items.length === 0
                     ? 'No holdings yet - add one above, or import from a paid valuation request.'
                     : 'No items match that search.'}
                 </td>
               </tr>
             ) : (
-              filtered.map((item) => (
-                <HoldingRow key={item.id} item={item} spotMap={spotMap} />
-              ))
+              filtered.map((item) => {
+                const kids = childrenByParent[item.id] ?? [];
+                if (item.status === 'split') {
+                  const open = openParents.has(item.id);
+                  return (
+                    <SplitParentRows
+                      key={item.id}
+                      parent={item}
+                      pieces={kids}
+                      open={open}
+                      onToggle={() =>
+                        setOpenParents((prev) => {
+                          const next = new Set(prev);
+                          if (next.has(item.id)) next.delete(item.id);
+                          else next.add(item.id);
+                          return next;
+                        })
+                      }
+                      selected={selected}
+                      onSelect={toggle}
+                      spotMap={spotMap}
+                    />
+                  );
+                }
+                return (
+                  <HoldingRow
+                    key={item.id}
+                    item={item}
+                    spotMap={spotMap}
+                    checked={selected.has(item.id)}
+                    onCheck={() => toggle(item.id)}
+                  />
+                );
+              })
             )}
           </tbody>
         </table>
       </div>
+      <p className="text-[11px] text-warmgrey/70">
+        Tick items to sell them together on one invoice. Bulk purchases can be broken into
+        individual pieces with Split - each piece gets its own CG code and stays linked to the
+        original purchase.
+      </p>
     </div>
+  );
+}
+
+/* --------------------------------------------------------- Split parent */
+
+function SplitParentRows({
+  parent,
+  pieces,
+  open,
+  onToggle,
+  selected,
+  onSelect,
+  spotMap,
+}: {
+  parent: StockItem;
+  pieces: StockItem[];
+  open: boolean;
+  onToggle: () => void;
+  selected: Set<string>;
+  onSelect: (id: string) => void;
+  spotMap: Record<MetalKey, number | null>;
+}) {
+  const original = Number(parent.weight_grams) || 0;
+  const allocated = allocatedWeight(pieces);
+  const remaining = remainingWeight(parent, pieces);
+  const complete = Math.abs(remaining) <= 0.0005;
+  const held = pieces.filter((p) => p.status === 'held').length;
+  const sold = pieces.filter((p) => p.status === 'sold').length;
+
+  return (
+    <>
+      <tr className="bg-ink-900/30 align-top">
+        <td className="px-3 py-2.5">
+          <button
+            type="button"
+            onClick={onToggle}
+            aria-expanded={open}
+            title={open ? 'Collapse pieces' : 'Show pieces'}
+            className="text-warmgrey hover:text-gold-bright"
+          >
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.6" className={'transition-transform ' + (open ? 'rotate-90' : '')} aria-hidden>
+              <path d="M3 1.5 7 5 3 8.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        </td>
+        <td className="whitespace-nowrap px-2 py-2.5">
+          <Link href={`/admin/holdings/${parent.id}`} className="font-mono text-[12px] font-medium text-white hover:text-gold-bright">
+            {parent.stock_number}
+          </Link>
+          <div className="text-[10px] text-warmgrey">{new Date(parent.acquired_at).toLocaleDateString('en-GB')}</div>
+          <span className="mt-0.5 inline-block rounded-full bg-violet-500/15 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-luxe text-violet-300">
+            Bulk · split
+          </span>
+        </td>
+        <td className="px-2 py-2.5">
+          <div className="text-[12px] text-white">
+            {[parent.metal_type, parent.carat, parent.item_type].filter(Boolean).join(' · ') || 'Bulk holding'}
+          </div>
+          {parent.description && <div className="line-clamp-1 text-[11px] text-warmgrey">{parent.description}</div>}
+          <div className={'mt-0.5 text-[11px] ' + (complete ? 'text-emerald-300' : 'text-amber-300')}>
+            {fmtG(allocated)} allocated / {fmtG(original)} purchased
+            {!complete && <> · {fmtG(remaining)} remaining</>}
+            <span className="ml-2 text-warmgrey">
+              {pieces.length} piece{pieces.length === 1 ? '' : 's'}
+              {sold > 0 && <> · {sold} sold</>}
+              {held > 0 && <> · {held} held</>}
+            </span>
+          </div>
+        </td>
+        <td className="whitespace-nowrap px-2 py-2.5 text-right text-[12px] text-white">{fmtG(original)}</td>
+        <td className="whitespace-nowrap px-2 py-2.5 text-right text-[12px] text-white">
+          {formatGBP(Number(parent.acquired_paid_gbp) || 0)}
+        </td>
+        <td className="whitespace-nowrap px-2 py-2.5 text-right text-[12px] text-warmgrey" colSpan={2}>
+          {complete ? 'valued via pieces' : `${fmtG(remaining)} unallocated`}
+        </td>
+        <td className="whitespace-nowrap px-2 py-2.5 text-right text-[10px] uppercase tracking-luxe">
+          <Link href={`/admin/holdings/${parent.id}?mode=split`} className="text-gold-metallic/70 hover:text-gold-bright">
+            Split
+          </Link>
+        </td>
+      </tr>
+      {open &&
+        pieces.map((p) => (
+          <HoldingRow
+            key={p.id}
+            item={p}
+            spotMap={spotMap}
+            checked={selected.has(p.id)}
+            onCheck={() => onSelect(p.id)}
+            nested
+          />
+        ))}
+    </>
   );
 }
 
@@ -236,8 +409,7 @@ function ReportsBar({ items }: { items: StockItem[] }) {
 
   const exportHeld = () => {
     setFeedback(null);
-    const csv = buildHoldingsHeldCsv(items);
-    downloadCsv(csv, `holdings-held-${stamp()}.csv`);
+    downloadCsv(buildHoldingsHeldCsv(items), `holdings-held-${stamp()}.csv`);
   };
 
   const exportAcquisitions = () => {
@@ -254,10 +426,7 @@ function ReportsBar({ items }: { items: StockItem[] }) {
         setFeedback(`No acquisitions in ${RANGE_LABEL[range]}.`);
         return;
       }
-      downloadCsv(
-        buildHoldingsAcquisitionsCsv(data),
-        `holdings-acquisitions-${range}-${stamp()}.csv`,
-      );
+      downloadCsv(buildHoldingsAcquisitionsCsv(data), `holdings-acquisitions-${range}-${stamp()}.csv`);
     });
   };
 
@@ -304,27 +473,13 @@ function ReportsBar({ items }: { items: StockItem[] }) {
               <option value="30d">Last 30 days</option>
             </select>
           </label>
-          <button
-            type="button"
-            onClick={exportAcquisitions}
-            disabled={pending}
-            className="rounded-md border border-gold-metallic/40 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-luxe text-gold-tint hover:bg-gold-metallic/15 disabled:opacity-50"
-          >
+          <button type="button" onClick={exportAcquisitions} disabled={pending} className="rounded-md border border-gold-metallic/40 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-luxe text-gold-tint hover:bg-gold-metallic/15 disabled:opacity-50">
             {pending ? '…' : 'Acquisitions'}
           </button>
-          <button
-            type="button"
-            onClick={exportSales}
-            disabled={pending}
-            className="rounded-md border border-gold-metallic/40 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-luxe text-gold-tint hover:bg-gold-metallic/15 disabled:opacity-50"
-          >
+          <button type="button" onClick={exportSales} disabled={pending} className="rounded-md border border-gold-metallic/40 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-luxe text-gold-tint hover:bg-gold-metallic/15 disabled:opacity-50">
             {pending ? '…' : 'Sales'}
           </button>
-          <button
-            type="button"
-            onClick={exportHeld}
-            className="rounded-md border border-gold-metallic/40 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-luxe text-gold-tint hover:bg-gold-metallic/15"
-          >
+          <button type="button" onClick={exportHeld} className="rounded-md border border-gold-metallic/40 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-luxe text-gold-tint hover:bg-gold-metallic/15">
             Held snapshot
           </button>
         </div>
@@ -355,19 +510,8 @@ function StatCard({
 }) {
   return (
     <div className="rounded-lg border border-gold-metallic/15 bg-ink-900/40 p-4">
-      <div className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">
-        {label}
-      </div>
-      <div
-        className={
-          'mt-2 font-display text-xl ' +
-          (tone === 'negative'
-            ? 'text-red-300'
-            : tone === 'positive'
-            ? 'text-emerald-300'
-            : 'text-white')
-        }
-      >
+      <div className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">{label}</div>
+      <div className={'mt-2 font-display text-xl ' + (tone === 'negative' ? 'text-red-300' : tone === 'positive' ? 'text-emerald-300' : 'text-white')}>
         {value}
       </div>
       {sub && <div className="mt-1 text-[11px] text-warmgrey">{sub}</div>}
@@ -375,45 +519,24 @@ function StatCard({
   );
 }
 
-function MetalCard({
-  metal,
-  slice,
-  spot,
-}: {
-  metal: MetalKey;
-  slice: PortfolioSlice;
-  spot: number | null;
-}) {
+function MetalCard({ metal, slice, spot }: { metal: MetalKey; slice: PortfolioSlice; spot: number | null }) {
   const empty = slice.count === 0;
   return (
     <div className="rounded-lg border border-gold-metallic/15 bg-ink-900/40 p-4">
       <div className="flex items-center justify-between gap-2">
-        <span className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">
-          {METAL_LABELS[metal]}
-        </span>
-        <span className="text-[10px] text-warmgrey">
-          {spot ? `Spot ${formatGBP(spot)}/g` : 'No spot'}
-        </span>
+        <span className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">{METAL_LABELS[metal]}</span>
+        <span className="text-[10px] text-warmgrey">{spot ? `Spot ${formatGBP(spot)}/g` : 'No spot'}</span>
       </div>
       {empty ? (
         <p className="mt-2 text-[12px] text-warmgrey">No holdings.</p>
       ) : (
         <>
-          <div className="mt-2 font-display text-lg text-white">
-            {formatGBP(slice.total_current_value_gbp)}
-          </div>
+          <div className="mt-2 font-display text-lg text-white">{formatGBP(slice.total_current_value_gbp)}</div>
           <div className="mt-1 grid grid-cols-2 gap-x-3 text-[11px] text-warmgrey">
-            <span>
-              {slice.count} item{slice.count === 1 ? '' : 's'}
-            </span>
+            <span>{slice.count} item{slice.count === 1 ? '' : 's'}</span>
             <span className="text-right">{slice.total_weight_grams.toFixed(1)}g</span>
             <span>Cost {formatGBP(slice.total_cost_gbp)}</span>
-            <span
-              className={
-                'text-right ' +
-                (slice.pl_gbp >= 0 ? 'text-emerald-300' : 'text-red-300')
-              }
-            >
+            <span className={'text-right ' + (slice.pl_gbp >= 0 ? 'text-emerald-300' : 'text-red-300')}>
               {formatGBP(slice.pl_gbp, true)} · {formatPct(slice.pl_pct)}
             </span>
           </div>
@@ -428,83 +551,103 @@ function MetalCard({
 function HoldingRow({
   item,
   spotMap,
+  checked,
+  onCheck,
+  nested = false,
 }: {
   item: StockItem;
   spotMap: Record<MetalKey, number | null>;
+  checked: boolean;
+  onCheck: () => void;
+  /** A piece listed under its bulk parent. */
+  nested?: boolean;
 }) {
   const live = liveValueFor(item, spotMap);
   const cost = Number(item.acquired_paid_gbp) || 0;
   const pl = live != null ? live - cost : null;
   const plPct = live != null && cost > 0 ? (pl! / cost) * 100 : null;
+  const sellable = item.status === 'held';
 
   return (
-    <tr className="align-top hover:bg-ink-900/40">
-      <td className="whitespace-nowrap px-3 py-2.5">
-        <Link
-          href={`/admin/holdings/${item.id}`}
-          className="font-mono text-[12px] font-medium text-white hover:text-gold-bright"
-        >
+    <tr className={'align-top hover:bg-ink-900/40 ' + (nested ? 'bg-ink-950/40' : '')}>
+      <td className={'px-3 py-2.5 ' + (nested ? 'pl-6' : '')}>
+        {sellable ? (
+          <input
+            type="checkbox"
+            checked={checked}
+            onChange={onCheck}
+            aria-label={`Select ${item.stock_number}`}
+            className="h-3.5 w-3.5 accent-gold-metallic"
+          />
+        ) : (
+          <span className="block h-3.5 w-3.5" />
+        )}
+      </td>
+      <td className="whitespace-nowrap px-2 py-2.5">
+        <Link href={`/admin/holdings/${item.id}`} className="font-mono text-[12px] font-medium text-white hover:text-gold-bright">
+          {nested && <span className="mr-1 text-warmgrey/60">└</span>}
           {item.stock_number}
         </Link>
-        <div className="text-[10px] text-warmgrey">
-          {new Date(item.acquired_at).toLocaleDateString('en-GB')}
-        </div>
-        <Link
-          href={`/admin/holdings/${item.id}`}
-          className="text-[9px] uppercase tracking-luxe text-gold-metallic/70 hover:text-gold-bright"
-        >
-          Edit
-        </Link>
+        <div className="text-[10px] text-warmgrey">{new Date(item.acquired_at).toLocaleDateString('en-GB')}</div>
+        {item.status === 'sold' && (
+          <span className="mt-0.5 inline-block rounded-full bg-emerald-500/15 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-luxe text-emerald-300">
+            Sold
+          </span>
+        )}
       </td>
       <td className="px-2 py-2.5">
         <div className="text-[12px] text-white">
-          {[item.metal_type, item.carat, item.item_type].filter(Boolean).join(' · ') ||
-            'Item'}
+          {[item.metal_type, item.carat, item.item_type].filter(Boolean).join(' · ') || 'Item'}
         </div>
-        {item.description && (
-          <div className="line-clamp-1 text-[11px] text-warmgrey">{item.description}</div>
-        )}
+        {item.description && <div className="line-clamp-1 text-[11px] text-warmgrey">{item.description}</div>}
       </td>
       <td className="whitespace-nowrap px-2 py-2.5 text-right text-[12px] text-white">
-        {item.weight_grams ? `${Number(item.weight_grams).toFixed(2)}g` : '—'}
+        {item.weight_grams ? fmtG(Number(item.weight_grams)) : '—'}
       </td>
+      <td className="whitespace-nowrap px-2 py-2.5 text-right text-[12px] text-white">{formatGBP(cost)}</td>
       <td className="whitespace-nowrap px-2 py-2.5 text-right text-[12px] text-white">
-        {formatGBP(cost)}
-      </td>
-      <td className="whitespace-nowrap px-2 py-2.5 text-right text-[12px] text-white">
-        {live != null ? (
+        {item.status === 'sold' ? (
+          <span className="text-warmgrey">{formatGBP(Number(item.sold_amount_gbp) || 0)} sold</span>
+        ) : live != null ? (
           formatGBP(live)
         ) : (
-          <span
-            className="cursor-help text-warmgrey/70"
-            title="Live pricing needs metal, weight and carat/purity - click Edit to fill in what's missing."
-          >
+          <span className="cursor-help text-warmgrey/70" title="Live pricing needs metal, weight and carat/purity - click Edit to fill in what's missing.">
             —
           </span>
         )}
       </td>
       <td className="whitespace-nowrap px-2 py-2.5 text-right text-[12px]">
-        {pl == null ? (
+        {item.status === 'sold' ? (
+          (() => {
+            const realised = (Number(item.sold_amount_gbp) || 0) - cost;
+            return <span className={realised >= 0 ? 'text-emerald-300' : 'text-red-300'}>{formatGBP(realised, true)}</span>;
+          })()
+        ) : pl == null ? (
           <span className="text-warmgrey/70">—</span>
         ) : (
           <span className={pl >= 0 ? 'text-emerald-300' : 'text-red-300'}>
             {formatGBP(pl, true)}
-            {plPct != null && (
-              <span className="ml-1 text-[10px] text-warmgrey">
-                ({formatPct(plPct)})
-              </span>
-            )}
+            {plPct != null && <span className="ml-1 text-[10px] text-warmgrey">({formatPct(plPct)})</span>}
           </span>
         )}
+      </td>
+      <td className="whitespace-nowrap px-2 py-2.5 text-right text-[10px] uppercase tracking-luxe">
+        <span className="inline-flex gap-2">
+          <Link href={`/admin/holdings/${item.id}`} className="text-gold-metallic/70 hover:text-gold-bright">
+            Open
+          </Link>
+          {canSplit(item) && (
+            <Link href={`/admin/holdings/${item.id}?mode=split`} className="text-gold-metallic/70 hover:text-gold-bright">
+              Split
+            </Link>
+          )}
+        </span>
       </td>
     </tr>
   );
 }
 
-function liveValueFor(
-  item: StockItem,
-  spotMap: Record<MetalKey, number | null>,
-): number | null {
+function liveValueFor(item: StockItem, spotMap: Record<MetalKey, number | null>): number | null {
   const metal = item.metal_type?.toLowerCase() ?? '';
   let key: MetalKey | null = null;
   if (metal.includes('gold')) key = 'gold';
@@ -543,12 +686,8 @@ function AddItemForm({ onCreated }: { onCreated: (item: StockItem) => void }) {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     setFeedback(null);
-
     const carat = form.carat || null;
     const purity = purityToPercent(carat);
-
-    // A metal item without a carat can never be priced at spot - catch it
-    // here rather than leaving a dead dash in the Current column.
     if (form.metal_type && !carat) {
       setFeedback({
         ok: false,
@@ -556,7 +695,6 @@ function AddItemForm({ onCreated }: { onCreated: (item: StockItem) => void }) {
       });
       return;
     }
-
     startTransition(async () => {
       const result = await createStockItem({
         metal_type: form.metal_type || null,
@@ -578,85 +716,49 @@ function AddItemForm({ onCreated }: { onCreated: (item: StockItem) => void }) {
   };
 
   return (
-    <form
-      onSubmit={submit}
-      className="space-y-4 rounded-lg border border-gold-metallic/25 bg-ink-900/70 p-5"
-    >
-      <h2 className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">
-        Add holding manually
-      </h2>
+    <form onSubmit={submit} className="space-y-4 rounded-lg border border-gold-metallic/25 bg-ink-900/70 p-5">
+      <h2 className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">Add holding manually</h2>
       <p className="text-[11px] text-warmgrey">
-        Use this for walk-ins. Existing valuation requests with a payment can be imported with
-        one click from the Valuation Requests page.
+        Use this for walk-ins. Existing valuation requests with a payment can be imported with one
+        click from the Valuation Requests page.
       </p>
 
       <div className="grid gap-3 md:grid-cols-4">
         <SelectField label="Metal" value={form.metal_type} onChange={update('metal_type')}>
           <option value="">(none)</option>
           {METAL_OPTIONS.map((m) => (
-            <option key={m} value={m}>
-              {m}
-            </option>
+            <option key={m} value={m}>{m}</option>
           ))}
         </SelectField>
         <SelectField label="Carat / purity" value={form.carat} onChange={update('carat')}>
           <option value="">(n/a)</option>
           <optgroup label="Gold">
             {HOLDINGS_CARAT_OPTIONS.filter((c) => c.endsWith('ct')).map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
+              <option key={c} value={c}>{c}</option>
             ))}
           </optgroup>
           <optgroup label="Silver">
             {HOLDINGS_CARAT_OPTIONS.filter((c) => c.endsWith('silver')).map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
+              <option key={c} value={c}>{c}</option>
             ))}
           </optgroup>
           <optgroup label="Platinum">
             {HOLDINGS_CARAT_OPTIONS.filter((c) => c.endsWith('platinum')).map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
+              <option key={c} value={c}>{c}</option>
             ))}
           </optgroup>
         </SelectField>
-        <NumField
-          label="Weight (g)"
-          value={form.weight_grams}
-          onChange={update('weight_grams')}
-          step="0.001"
-        />
-        <NumField
-          label="Paid (£)"
-          value={form.acquired_paid_gbp}
-          onChange={update('acquired_paid_gbp')}
-          step="0.01"
-          required
-        />
+        <NumField label="Weight (g)" value={form.weight_grams} onChange={update('weight_grams')} step="0.001" />
+        <NumField label="Paid (£)" value={form.acquired_paid_gbp} onChange={update('acquired_paid_gbp')} step="0.01" required />
       </div>
 
       <div className="grid gap-3 md:grid-cols-2">
-        <TextField
-          label="Item type"
-          value={form.item_type}
-          onChange={update('item_type')}
-          placeholder="ring, chain, watch…"
-        />
-        <TextField
-          label="Description"
-          value={form.description}
-          onChange={update('description')}
-          placeholder="brand, model, distinguishing details"
-        />
+        <TextField label="Item type" value={form.item_type} onChange={update('item_type')} placeholder="ring, chain, watch…" />
+        <TextField label="Description" value={form.description} onChange={update('description')} placeholder="brand, model, distinguishing details" />
       </div>
 
       <label className="block">
-        <span className="text-[10px] font-medium uppercase tracking-luxe text-warmgrey">
-          Notes (optional)
-        </span>
+        <span className="text-[10px] font-medium uppercase tracking-luxe text-warmgrey">Notes (optional)</span>
         <textarea
           value={form.notes}
           onChange={update('notes')}
@@ -667,13 +769,9 @@ function AddItemForm({ onCreated }: { onCreated: (item: StockItem) => void }) {
 
       <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
         {feedback ? (
-          <p className={'text-[11px] ' + (feedback.ok ? 'text-gold-tint' : 'text-amber-400')}>
-            {feedback.text}
-          </p>
+          <p className={'text-[11px] ' + (feedback.ok ? 'text-gold-tint' : 'text-amber-400')}>{feedback.text}</p>
         ) : (
-          <p className="text-[11px] text-warmgrey/70">
-            Live spot will be stamped automatically based on the metal.
-          </p>
+          <p className="text-[11px] text-warmgrey/70">Live spot will be stamped automatically based on the metal.</p>
         )}
         <button
           type="submit"
@@ -687,22 +785,10 @@ function AddItemForm({ onCreated }: { onCreated: (item: StockItem) => void }) {
   );
 }
 
-function TextField({
-  label,
-  value,
-  onChange,
-  placeholder,
-}: {
-  label: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  placeholder?: string;
-}) {
+function TextField({ label, value, onChange, placeholder }: { label: string; value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; placeholder?: string }) {
   return (
     <label className="block">
-      <span className="text-[10px] font-medium uppercase tracking-luxe text-warmgrey">
-        {label}
-      </span>
+      <span className="text-[10px] font-medium uppercase tracking-luxe text-warmgrey">{label}</span>
       <input
         type="text"
         value={value}
@@ -714,24 +800,10 @@ function TextField({
   );
 }
 
-function NumField({
-  label,
-  value,
-  onChange,
-  step,
-  required,
-}: {
-  label: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  step?: string;
-  required?: boolean;
-}) {
+function NumField({ label, value, onChange, step, required }: { label: string; value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; step?: string; required?: boolean }) {
   return (
     <label className="block">
-      <span className="text-[10px] font-medium uppercase tracking-luxe text-warmgrey">
-        {label}
-      </span>
+      <span className="text-[10px] font-medium uppercase tracking-luxe text-warmgrey">{label}</span>
       <input
         type="number"
         min="0"
@@ -745,22 +817,10 @@ function NumField({
   );
 }
 
-function SelectField({
-  label,
-  value,
-  onChange,
-  children,
-}: {
-  label: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  children: React.ReactNode;
-}) {
+function SelectField({ label, value, onChange, children }: { label: string; value: string; onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="text-[10px] font-medium uppercase tracking-luxe text-warmgrey">
-        {label}
-      </span>
+      <span className="text-[10px] font-medium uppercase tracking-luxe text-warmgrey">{label}</span>
       <select
         value={value}
         onChange={onChange}
@@ -773,6 +833,10 @@ function SelectField({
 }
 
 /* --------------------------------------------------------------- Format */
+
+function fmtG(n: number): string {
+  return `${n.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 3 })}g`;
+}
 
 function formatGBP(n: number, withSign = false): string {
   const sign = withSign && n > 0 ? '+' : '';

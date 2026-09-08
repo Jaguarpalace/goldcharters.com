@@ -2,6 +2,7 @@ import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { getMetalSpots } from '@/lib/services/metalPrice';
 import {
   computePortfolioSnapshot,
+  getSplitChildren,
   listHeldStockItems,
   type MetalKey,
 } from '@/lib/queries/stockItems';
@@ -17,6 +18,9 @@ export default async function AdminHoldingsPage() {
     isSupabaseConfigured() ? listHeldStockItems() : Promise.resolve([]),
     getMetalSpots(),
   ]);
+  // Pieces of any split bulk rows - listed under their parent, and needed
+  // so the portfolio maths counts the unallocated remainder only once.
+  const childrenByParent = await getSplitChildren(items);
 
   const spotMap: Record<MetalKey, number | null> = {
     gold: spots.gold?.per_gram_gbp ?? null,
@@ -25,7 +29,7 @@ export default async function AdminHoldingsPage() {
     palladium: spots.palladium?.per_gram_gbp ?? null,
   };
 
-  const snapshot = computePortfolioSnapshot(items, spotMap, spots.fetched_at);
+  const snapshot = computePortfolioSnapshot(items, spotMap, spots.fetched_at, childrenByParent);
 
   return (
     <div className="space-y-5">
@@ -48,6 +52,7 @@ export default async function AdminHoldingsPage() {
 
       <HoldingsBoard
         initialItems={items}
+        childrenByParent={childrenByParent}
         snapshot={snapshot}
         spotMap={spotMap}
       />

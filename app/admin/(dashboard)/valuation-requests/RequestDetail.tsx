@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import Link from 'next/link';
 import {
   PAYMENT_METHODS,
   PAYMENT_METHOD_LABELS,
   type PaymentMethod,
+  type StockItem,
   type ValuationRequest,
   type ValuationRequestImage,
   type ValuationRequestStatus,
@@ -15,7 +16,7 @@ import {
   updateValuationPayment,
   type PaymentInput,
 } from '@/lib/actions/valuationRequests';
-import { createStockItemFromValuation } from '@/lib/actions/stockItems';
+import { createStockItemFromValuation, listStockForRequest } from '@/lib/actions/stockItems';
 import { StatusPipeline } from './StatusPipeline';
 import { ItemisationCard } from './ItemisationCard';
 
@@ -167,6 +168,9 @@ export function RequestDetail({
         {request.status === 'bought' && request.payment_amount !== null && (
           <AddToHoldingsBlock requestId={request.id} />
         )}
+        {(request.status === 'bought' || request.status === 'completed') && (
+          <StockCodesBlock requestId={request.id} />
+        )}
         {onDelete && <DeleteRequestBlock onDelete={onDelete} />}
       </div>
     </div>
@@ -238,6 +242,61 @@ function AddToHoldingsBlock({ requestId }: { requestId: string }) {
           {pending ? 'Adding…' : feedback?.ok === true ? 'Added' : 'Add to holdings'}
         </button>
       </div>
+    </div>
+  );
+}
+
+/* ----------------------------- Stock codes ------------------------------ */
+
+/**
+ * Every CG stock code that came out of this purchase - the holdings side
+ * of the traceability chain. Loads itself so the board's row data stays
+ * untouched.
+ */
+function StockCodesBlock({ requestId }: { requestId: string }) {
+  const [rows, setRows] = useState<StockItem[] | null>(null);
+  useEffect(() => {
+    let alive = true;
+    listStockForRequest(requestId).then((r) => {
+      if (alive) setRows(r.ok ? (r.data ?? []) : []);
+    });
+    return () => {
+      alive = false;
+    };
+  }, [requestId]);
+
+  if (!rows || rows.length === 0) return null;
+  const fmtG = (n: number) => `${n.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 3 })}g`;
+
+  return (
+    <div className="rounded-lg border border-gold-metallic/15 bg-ink-900/40 p-4">
+      <h3 className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">
+        Stock codes from this purchase
+      </h3>
+      <ul className="mt-2 divide-y divide-gold-metallic/10">
+        {rows.map((s) => (
+          <li key={s.id} className="flex items-center justify-between gap-3 py-1.5 text-[12px]">
+            <span className="flex items-center gap-2">
+              {s.parent_stock_item_id && <span className="text-warmgrey/60">└</span>}
+              <Link href={`/admin/holdings/${s.id}`} className="font-mono text-white hover:text-gold-bright">
+                {s.stock_number}
+              </Link>
+              <span className="truncate text-warmgrey">{s.description}</span>
+            </span>
+            <span className="flex items-center gap-3 whitespace-nowrap">
+              <span className="text-white">{s.weight_grams ? fmtG(Number(s.weight_grams)) : '—'}</span>
+              <span
+                className={
+                  'text-[9px] uppercase tracking-luxe ' +
+                  (s.status === 'sold' ? 'text-emerald-300' : s.status === 'split' ? 'text-violet-300' : 'text-warmgrey')
+                }
+              >
+                {s.status === 'split' ? 'bulk · split' : s.status}
+              </span>
+            </span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

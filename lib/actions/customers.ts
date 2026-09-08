@@ -93,6 +93,27 @@ export async function upsertCustomer(input: UpsertCustomer): Promise<SaveResult<
 }
 
 /**
+ * Typeahead behind the walk-in form. Every word typed must match the start
+ * of the first name, last name, email or phone, so "deb" finds Debora Smith
+ * and "deb sm" narrows to her. At most 8 rows.
+ */
+export async function searchCustomers(rawQuery: string): Promise<Customer[]> {
+  const query = (rawQuery ?? '').trim();
+  if (query.length < 2) return [];
+  const ctx = await requireAdminContext();
+  if ('error' in ctx) return [];
+
+  const words = query.split(/\s+/).filter(Boolean).slice(0, 4);
+  let q = ctx.admin.from('customers').select('*').is('deleted_at', null);
+  for (const word of words) {
+    const pat = `%${word.replace(/[%_]/g, (m) => `\\${m}`)}%`;
+    q = q.or(`first_name.ilike.${pat},last_name.ilike.${pat},email.ilike.${pat},phone.ilike.${pat}`);
+  }
+  const { data } = await q.order('last_name', { ascending: true }).limit(8);
+  return (data ?? []) as Customer[];
+}
+
+/**
  * Soft-delete a customer. The row stays in the table with deleted_at
  * stamped, so the admin can restore from /admin/trash. KYC documents
  * are preserved — they're only purged on a hard delete.
