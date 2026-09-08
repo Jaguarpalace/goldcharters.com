@@ -24,7 +24,7 @@ export default async function PrivacyPage() {
   const businessName = settings.business_name;
   const email = settings.email;
   const phone = formatUkPhone(settings.phone);
-  const phoneDigits = settings.phone.replace(/D+/g, "");
+  const phoneDigits = settings.phone.replace(/\D+/g, '');
   const address = settings.address ?? '';
 
   const lastUpdated = legal

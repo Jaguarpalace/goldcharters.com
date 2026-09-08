@@ -28,7 +28,11 @@ export default async function ContactPage() {
       <section className="py-6 lg:py-10">
         <div className="gc-container grid gap-10 lg:grid-cols-[1fr,1.4fr]">
           <div className="space-y-6">
-            <ContactCard label="Telephone" value={formatUkPhone(settings.phone)} href={`tel:${settings.phone.replace(/s+/g, "")}`} />
+            <ContactCard
+              label="Telephone"
+              value={formatUkPhone(settings.phone)}
+              href={`tel:${settings.phone.replace(/\D+/g, '')}`}
+            />
             <ContactCard label="Email" value={settings.email} href={`mailto:${settings.email}`} />
             {settings.whatsapp && (
               <ContactCard
