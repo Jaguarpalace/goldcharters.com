@@ -26,8 +26,18 @@ export async function listHeldStockItems(): Promise<StockItem[]> {
     .in('status', ['held', 'split'])
     .is('deleted_at', null)
     .order('acquired_at', { ascending: false });
-  if (error || !data) return [];
-  return data as StockItem[];
+  if (!error && data) return data as StockItem[];
+
+  // Before migration 033 the enum has no 'split' value and Postgres rejects
+  // the whole filter. Fall back to held rows only so the dashboards never
+  // go blank between deploying the code and running the migration.
+  const { data: heldOnly } = await supabase
+    .from('stock_items')
+    .select('*')
+    .eq('status', 'held')
+    .is('deleted_at', null)
+    .order('acquired_at', { ascending: false });
+  return (heldOnly ?? []) as StockItem[];
 }
 
 /**
