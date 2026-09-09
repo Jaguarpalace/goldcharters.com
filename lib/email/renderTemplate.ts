@@ -42,6 +42,7 @@ export async function sampleVariablesFor(key: string): Promise<Variables> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://chartersgold.co.uk';
 
   const submittedAt = new Date().toLocaleString('en-GB', {
+    timeZone: 'Europe/London',
     dateStyle: 'long',
     timeStyle: 'short',
   });

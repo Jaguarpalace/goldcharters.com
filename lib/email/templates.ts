@@ -70,6 +70,7 @@ export function newRequestHtml(req: ValuationRequest, photoCount = 0): string {
     : '';
 
   const submittedAt = new Date(req.created_at).toLocaleString('en-GB', {
+    timeZone: 'Europe/London',
     dateStyle: 'long',
     timeStyle: 'short',
   });

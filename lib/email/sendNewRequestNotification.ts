@@ -83,6 +83,7 @@ async function buildVariables(req: ValuationRequest, photoCount: number): Promis
     phone_digits: req.phone.replace(/\s+/g, ''),
     branch_label: req.form_variant ? BRANCH_LABELS[req.form_variant] ?? '—' : '—',
     submitted_at: new Date(req.created_at).toLocaleString('en-GB', {
+      timeZone: 'Europe/London',
       dateStyle: 'long',
       timeStyle: 'short',
     }),

@@ -91,10 +91,11 @@ export default async function BlankPurchasePrintPage({
               <tr>
                 <th style={{ width: '4%' }}>#</th>
                 <th>Description</th>
-                <th style={{ width: '16%' }}>Metal / carat</th>
-                <th style={{ width: '11%' }} className="num">Weight (g)</th>
-                <th style={{ width: '21%' }}>Hallmark / serial</th>
-                <th style={{ width: '13%' }} className="num">Price</th>
+                <th style={{ width: '13%' }}>Metal / carat</th>
+                <th style={{ width: '10%' }} className="num">Weight (g)</th>
+                <th style={{ width: '10%' }} className="num">£ / gram</th>
+                <th style={{ width: '18%' }}>Hallmark / serial</th>
+                <th style={{ width: '12%' }} className="num">Line total</th>
               </tr>
             </thead>
             <tbody>
@@ -104,6 +105,7 @@ export default async function BlankPurchasePrintPage({
                   <td />
                   <td />
                   <td />
+                  <td className="num">£</td>
                   <td />
                   <td className="num">£</td>
                 </tr>
@@ -111,7 +113,7 @@ export default async function BlankPurchasePrintPage({
             </tbody>
             <tfoot>
               <tr>
-                <td colSpan={5}>Total</td>
+                <td colSpan={6}>Subtotal</td>
                 <td className="num">£</td>
               </tr>
             </tfoot>

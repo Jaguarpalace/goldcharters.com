@@ -4,7 +4,7 @@ import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { getMfaState, mfaSatisfied } from '@/lib/auth/mfa';
 import { getSiteSettings } from '@/lib/queries/homepage';
 import { getSale } from '@/lib/queries/sales';
-import { formatBuyerAddress } from '@/lib/queries/buyers';
+import { formatBuyerAddress, formatDateGB } from '@/lib/format';
 import { PrintShell } from '@/app/admin/valuation-requests/[id]/print/PrintShell';
 
 export const dynamic = 'force-dynamic';
@@ -32,11 +32,7 @@ export default async function SalesInvoicePage({ params }: { params: { id: strin
   if (!sale) notFound();
 
   const buyer = sale.buyer_snapshot ?? sale.buyer ?? null;
-  const issued = new Date(sale.sold_at).toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric',
-  });
+  const issued = formatDateGB(sale.sold_at, 'long');
 
   return (
     <PrintShell>
@@ -65,7 +61,7 @@ export default async function SalesInvoicePage({ params }: { params: { id: strin
           {sale.voided_at && (
             <>
               {' '}
-              · Voided {new Date(sale.voided_at).toLocaleDateString('en-GB')}
+              · Voided {formatDateGB(sale.voided_at)}
             </>
           )}
         </p>

@@ -12,6 +12,7 @@ import {
   type ValuationRequest,
 } from '@/types/database';
 import { PrintShell } from './PrintShell';
+import { formatDateGB, formatPaidAtGB } from '@/lib/format';
 
 export const dynamic = 'force-dynamic';
 
@@ -98,11 +99,7 @@ export default async function PurchasePrintPage({
 
   const fullName = `${request.first_name} ${request.last_name}`.trim();
   const issuedAt = request.paid_at ?? request.updated_at ?? new Date().toISOString();
-  const issuedDate = new Date(issuedAt).toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric',
-  });
+  const issuedDate = formatDateGB(issuedAt, 'long');
 
   return (
     <PrintShell>
@@ -160,10 +157,11 @@ export default async function PurchasePrintPage({
                 <tr>
                   <th style={{ width: '4%' }}>#</th>
                   <th>Description</th>
-                  <th style={{ width: '16%' }}>Metal / carat</th>
-                  <th style={{ width: '10%' }} className="num">Weight</th>
-                  <th style={{ width: '22%' }}>Hallmark / serial</th>
-                  <th style={{ width: '13%' }} className="num">Price</th>
+                  <th style={{ width: '13%' }}>Metal / carat</th>
+                  <th style={{ width: '9%' }} className="num">Weight</th>
+                  <th style={{ width: '10%' }} className="num">£ / gram</th>
+                  <th style={{ width: '18%' }}>Hallmark / serial</th>
+                  <th style={{ width: '12%' }} className="num">Line total</th>
                 </tr>
               </thead>
               <tbody>
@@ -175,6 +173,9 @@ export default async function PurchasePrintPage({
                     <td className="num">
                       {item.weight_grams != null ? `${item.weight_grams} g` : '—'}
                     </td>
+                    <td className="num">
+                      {item.rate_gbp_per_g != null ? money(Number(item.rate_gbp_per_g)) : '—'}
+                    </td>
                     <td className="muted">{item.hallmark || '—'}</td>
                     <td className="num">{money(Number(item.price_gbp))}</td>
                   </tr>
@@ -182,8 +183,8 @@ export default async function PurchasePrintPage({
               </tbody>
               <tfoot>
                 <tr>
-                  <td colSpan={5}>
-                    Total ({items.length} item{items.length === 1 ? '' : 's'})
+                  <td colSpan={6}>
+                    Subtotal ({items.length} item{items.length === 1 ? '' : 's'})
                   </td>
                   <td className="num">{money(itemsTotal)}</td>
                 </tr>
@@ -270,9 +271,7 @@ export default async function PurchasePrintPage({
             {request.paid_at && (
               <div className="print-field">
                 <span>Paid on</span>
-                <strong>
-                  {new Date(request.paid_at).toLocaleString('en-GB')}
-                </strong>
+                <strong>{formatPaidAtGB(request.paid_at)}</strong>
               </div>
             )}
           </div>

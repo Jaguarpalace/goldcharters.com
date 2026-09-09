@@ -86,6 +86,7 @@ async function buildVariables(req: ValuationRequest, photoCount: number): Promis
     full_name: fullName,
     branch_label: branchLabel,
     submitted_at: new Date(req.created_at).toLocaleString('en-GB', {
+      timeZone: 'Europe/London',
       dateStyle: 'long',
       timeStyle: 'short',
     }),

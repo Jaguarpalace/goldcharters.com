@@ -19,11 +19,31 @@ type Draft = {
   metal_type: string;
   carat: string;
   weight_grams: string;
+  rate_gbp_per_g: string;
   hallmark: string;
   price_gbp: string;
 };
 
-const EMPTY: Draft = { description: '', metal_type: '', carat: '', weight_grams: '', hallmark: '', price_gbp: '' };
+const EMPTY: Draft = {
+  description: '',
+  metal_type: '',
+  carat: '',
+  weight_grams: '',
+  rate_gbp_per_g: '',
+  hallmark: '',
+  price_gbp: '',
+};
+
+/** Weight x rate fills the price whenever both are known; the price stays
+ *  editable for lump-priced pieces (watches, stones). */
+function withComputedPrice(d: Draft): Draft {
+  const w = Number(d.weight_grams);
+  const r = Number(d.rate_gbp_per_g);
+  if (d.weight_grams.trim() && d.rate_gbp_per_g.trim() && w >= 0 && r >= 0) {
+    return { ...d, price_gbp: (Math.round(w * r * 100) / 100).toString() };
+  }
+  return d;
+}
 
 function toInput(d: Draft): PurchaseItemInput {
   return {
@@ -31,6 +51,7 @@ function toInput(d: Draft): PurchaseItemInput {
     metal_type: d.metal_type || null,
     carat: d.carat || null,
     weight_grams: d.weight_grams.trim() ? Number(d.weight_grams) : null,
+    rate_gbp_per_g: d.rate_gbp_per_g.trim() ? Number(d.rate_gbp_per_g) : null,
     hallmark: d.hallmark || null,
     price_gbp: Number(d.price_gbp),
   };
@@ -155,6 +176,7 @@ export function ItemisationCard({
       metal_type: item.metal_type ?? '',
       carat: item.carat ?? '',
       weight_grams: item.weight_grams != null ? String(item.weight_grams) : '',
+      rate_gbp_per_g: item.rate_gbp_per_g != null ? String(item.rate_gbp_per_g) : '',
       hallmark: item.hallmark ?? '',
       price_gbp: String(item.price_gbp),
     });
@@ -201,7 +223,19 @@ export function ItemisationCard({
           min="0"
           step="0.01"
           value={d.weight_grams}
-          onChange={(e) => set({ ...d, weight_grams: e.target.value })}
+          onChange={(e) => set(withComputedPrice({ ...d, weight_grams: e.target.value }))}
+        />
+      </label>
+      <label className="text-[11px] text-warmgrey">
+        Rate paid (£ per gram)
+        <input
+          className="gc-input mt-1"
+          type="number"
+          min="0"
+          step="0.01"
+          value={d.rate_gbp_per_g}
+          onChange={(e) => set(withComputedPrice({ ...d, rate_gbp_per_g: e.target.value }))}
+          placeholder="e.g. 32.50"
         />
       </label>
       <label className="text-[11px] text-warmgrey">
@@ -215,7 +249,7 @@ export function ItemisationCard({
         />
       </label>
       <label className="text-[11px] text-warmgrey">
-        Price (£) *
+        Line total (£) *
         <input
           className="gc-input mt-1"
           type="number"
@@ -225,6 +259,9 @@ export function ItemisationCard({
           value={d.price_gbp}
           onChange={(e) => set({ ...d, price_gbp: e.target.value })}
         />
+        <span className="mt-1 block text-[10px] text-warmgrey/60">
+          Filled in from weight x rate; type over it for a lump price.
+        </span>
       </label>
     </div>
   );
@@ -294,6 +331,7 @@ export function ItemisationCard({
                     {[
                       [item.metal_type, item.carat].filter(Boolean).join(' '),
                       item.weight_grams != null ? `${item.weight_grams}g` : null,
+                      item.rate_gbp_per_g != null ? `${gbp(Number(item.rate_gbp_per_g))}/g` : null,
                       item.hallmark ? `HM/SN: ${item.hallmark}` : null,
                     ]
                       .filter(Boolean)

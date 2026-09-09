@@ -653,7 +653,7 @@ export async function updateValuationStatus(
         before: prior ? { status: prior.status } : null,
         after: { status, ...(bookedForIso ? { booked_for: bookedForIso } : {}) },
         note: bookedForIso
-          ? `Status → ${status} · booked for ${new Date(bookedForIso).toLocaleString('en-GB', {
+          ? `Status → ${status} · booked for ${new Date(bookedForIso).toLocaleString('en-GB', { timeZone: 'Europe/London',
               weekday: 'short',
               day: 'numeric',
               month: 'short',
@@ -714,6 +714,8 @@ export type WalkInPurchaseInput = {
     metal_type?: string | null;
     carat?: string | null;
     weight_grams?: number | null;
+    /** £ per gram paid; line price = weight x rate for metal lines. */
+    rate_gbp_per_g?: number | null;
     hallmark?: string | null;
     price_gbp: number;
   }>;
@@ -964,6 +966,10 @@ export async function createWalkInPurchase(
           metal_type: lineMetal || null,
           carat: it.carat?.trim() || null,
           weight_grams: it.weight_grams ?? null,
+          // Spread-only so inserts keep working before migration 035 is applied.
+          ...(it.rate_gbp_per_g != null && Number.isFinite(it.rate_gbp_per_g)
+            ? { rate_gbp_per_g: Number(it.rate_gbp_per_g.toFixed(4)) }
+            : {}),
           hallmark: it.hallmark?.trim() || null,
           price_gbp: Number(it.price_gbp.toFixed(2)),
         })

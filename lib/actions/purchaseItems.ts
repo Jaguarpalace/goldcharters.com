@@ -35,6 +35,8 @@ export type PurchaseItemInput = {
   carat?: string | null;
   weight_grams?: number | null;
   hallmark?: string | null;
+  /** £ per gram paid on this line; the line price follows from weight x rate. */
+  rate_gbp_per_g?: number | null;
   price_gbp: number;
 };
 
@@ -44,8 +46,16 @@ function validate(input: PurchaseItemInput): string | null {
     return 'Each item needs a price of £0 or more.';
   if (input.weight_grams != null && (!Number.isFinite(input.weight_grams) || input.weight_grams < 0))
     return 'Weight must be a number of grams.';
+  if (
+    input.rate_gbp_per_g != null &&
+    (!Number.isFinite(input.rate_gbp_per_g) || input.rate_gbp_per_g < 0)
+  )
+    return 'Rate per gram must be £0 or more.';
   return null;
 }
+
+const rateOrNull = (v: number | null | undefined) =>
+  v != null && Number.isFinite(v) ? Number(v.toFixed(4)) : null;
 
 function toRow(requestId: string, input: PurchaseItemInput, position: number) {
   return {
@@ -56,6 +66,10 @@ function toRow(requestId: string, input: PurchaseItemInput, position: number) {
     carat: clean(input.carat, 20),
     weight_grams: input.weight_grams ?? null,
     hallmark: clean(input.hallmark, 200),
+    // Spread-only so inserts keep working before migration 035 is applied.
+    ...(rateOrNull(input.rate_gbp_per_g) != null
+      ? { rate_gbp_per_g: rateOrNull(input.rate_gbp_per_g) }
+      : {}),
     price_gbp: Number(input.price_gbp.toFixed(2)),
   };
 }
@@ -130,6 +144,7 @@ export async function updatePurchaseItem(
       carat: clean(input.carat, 20),
       weight_grams: input.weight_grams ?? null,
       hallmark: clean(input.hallmark, 200),
+      rate_gbp_per_g: rateOrNull(input.rate_gbp_per_g),
       price_gbp: Number(input.price_gbp.toFixed(2)),
       updated_at: new Date().toISOString(),
     })

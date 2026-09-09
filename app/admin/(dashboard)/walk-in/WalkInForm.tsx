@@ -28,6 +28,7 @@ type ItemLine = {
   metal_type: string;
   carat: string;
   weight_grams: string;
+  rate_gbp_per_g: string;
   hallmark: string;
   price_gbp: string;
 };
@@ -37,12 +38,24 @@ const EMPTY_LINE: ItemLine = {
   metal_type: 'Gold',
   carat: '',
   weight_grams: '',
+  rate_gbp_per_g: '',
   hallmark: '',
   price_gbp: '',
 };
 
 const lineTotal = (lines: ItemLine[]) =>
   lines.reduce((sum, l) => sum + (Number(l.price_gbp) || 0), 0);
+
+/** Weight x rate fills the line price whenever both are typed; the price
+ *  stays editable so a watch can still be priced as a lump. */
+function withComputedPrice(l: ItemLine): ItemLine {
+  const w = Number(l.weight_grams);
+  const r = Number(l.rate_gbp_per_g);
+  if (l.weight_grams.trim() && l.rate_gbp_per_g.trim() && w >= 0 && r >= 0) {
+    return { ...l, price_gbp: (Math.round(w * r * 100) / 100).toString() };
+  }
+  return l;
+}
 
 /** A UUID whose first 8 hex chars are the given paper reference; the rest is random. */
 function uuidWithPrefix(ref: string): string {
@@ -193,6 +206,7 @@ export function WalkInForm({ initialPaperRef }: { initialPaperRef?: string }) {
           metal_type: l.metal_type || null,
           carat: l.carat || null,
           weight_grams: l.weight_grams ? Number(l.weight_grams) : null,
+          rate_gbp_per_g: l.rate_gbp_per_g ? Number(l.rate_gbp_per_g) : null,
           hallmark: l.hallmark || null,
           price_gbp: Number(l.price_gbp || 0),
         })),
@@ -314,8 +328,26 @@ export function WalkInForm({ initialPaperRef }: { initialPaperRef?: string }) {
               <NumField
                 label="Weight (g)"
                 value={line.weight_grams}
-                onChange={(e) => patchLine(idx, { weight_grams: e.target.value })}
+                onChange={(e) =>
+                  setLines((prev) =>
+                    prev.map((l, i) =>
+                      i === idx ? withComputedPrice({ ...l, weight_grams: e.target.value }) : l,
+                    ),
+                  )
+                }
                 step="0.001"
+              />
+              <NumField
+                label="Rate paid (£/g)"
+                value={line.rate_gbp_per_g}
+                onChange={(e) =>
+                  setLines((prev) =>
+                    prev.map((l, i) =>
+                      i === idx ? withComputedPrice({ ...l, rate_gbp_per_g: e.target.value }) : l,
+                    ),
+                  )
+                }
+                step="0.01"
               />
               <Field
                 label="Hallmark / serial no."
@@ -324,7 +356,7 @@ export function WalkInForm({ initialPaperRef }: { initialPaperRef?: string }) {
                 placeholder="e.g. 375 Birmingham"
               />
               <NumField
-                label="Price (£)"
+                label="Line total (£)"
                 required
                 value={line.price_gbp}
                 onChange={(e) => patchLine(idx, { price_gbp: e.target.value })}

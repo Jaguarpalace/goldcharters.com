@@ -283,6 +283,12 @@ export type PurchaseItem = {
   weight_grams: number | null;
   /** Hallmark details or serial number, printed on the agreement line. */
   hallmark: string | null;
+  /**
+   * What we paid per gram on this line (migration 035). Entered by the
+   * admin; price_gbp = weight x rate for metal lines. Null for lump-priced
+   * pieces such as watches.
+   */
+  rate_gbp_per_g: number | null;
   price_gbp: number;
   /** Set once this line has been imported into the holdings ledger. */
   stock_item_id: string | null;
