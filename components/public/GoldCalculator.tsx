@@ -29,6 +29,7 @@ export function GoldCalculator({
   metal,
   heading: headingOverride,
   subhead: subheadOverride,
+  ctaHref: ctaHrefOverride,
 }: {
   rates: CalculatorRate[];
   asH1?: boolean;
@@ -36,13 +37,19 @@ export function GoldCalculator({
   /** Page-specific heading (the /gold-calculator page puts today's 9ct price in it). */
   heading?: string;
   subhead?: string;
+  /**
+   * Where "Request Valuation" goes. Defaults to the matching /sell-<metal>
+   * page's form; a page that carries its own form passes "#valuation-form"
+   * so the button scrolls down instead of leaving the page.
+   */
+  ctaHref?: string;
 }) {
   const [weights, setWeights] = useState<Weights>({});
   const filteredRates = metal ? rates.filter((r) => r.metal_type === metal) : rates;
   const metalSlug = metal ? metal.toLowerCase() : 'gold';
   const heading = headingOverride ?? (metal ? `${metal} Calculator` : 'Gold Calculator');
   const sectionId = `${metalSlug}-calculator`;
-  const ctaHref = `/sell-${metalSlug}#valuation-form`;
+  const ctaHref = ctaHrefOverride ?? `/sell-${metalSlug}#valuation-form`;
   // Subhead phrasing adapts to single-metal mode so we don't claim
   // "live gold prices" on a silver page.
   const subhead =

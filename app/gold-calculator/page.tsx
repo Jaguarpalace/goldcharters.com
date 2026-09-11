@@ -153,7 +153,13 @@ export default async function GoldCalculatorPage() {
 
       {/* GoldCalculator acts as the page hero - its title renders as <h1>,
           carrying today's 9ct figure so the heading answers the search. */}
-      <GoldCalculator rates={rates} asH1 heading={heading} subhead={subhead} />
+      <GoldCalculator
+        rates={rates}
+        asH1
+        heading={heading}
+        subhead={subhead}
+        ctaHref="#valuation-form"
+      />
 
       {/* Crawlable price table - the calculator itself is interactive, so the
           per-gram rates are repeated here as plain HTML for search engines
