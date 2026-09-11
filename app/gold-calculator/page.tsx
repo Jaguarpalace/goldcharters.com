@@ -116,9 +116,14 @@ function buildFaqs(rates: CalculatorRate[]) {
         "The spot price is the wholesale market rate for pure 24ct gold. Our paying rate is the spot price adjusted for your item's purity, less a transparent margin that covers refining and our costs. We show the rate before anything is weighed - you can check it against the live spot price at any time.",
     },
     {
+      question: 'How quickly do I get paid?',
+      answer:
+        'Within seconds. When you accept our figure in person - at the Ascot office or at your home - we send the money by instant bank transfer on the spot, and it normally shows in your account before the appointment is over. Cash is available for smaller sums. Pieces sent by insured post are paid by the same instant transfer on the day they arrive and are checked.',
+    },
+    {
       question: 'How do I sell after using the calculator?',
       answer:
-        'Send photographs through the valuation form below for a written figure within one working day, book a private appointment at our Ascot office, or arrange a home visit. Payment is same-day by bank transfer once you accept.',
+        'Send photographs through the valuation form below for a written figure within one working day, book a private appointment at our Ascot office, or arrange a home visit. Once you accept, payment is by instant bank transfer within seconds.',
     },
   ];
 }
@@ -137,7 +142,7 @@ export default async function GoldCalculatorPage() {
   const heading = nineCt
     ? `9ct Gold Price Per Gram Today: ${gbp(nineCt.price_per_gram)}`
     : 'Gold Price Per Gram Today';
-  const subhead = `Live UK rates for 9ct, 14ct, 18ct and 22ct gold${refreshed ? `, refreshed ${refreshed}` : ''}. Enter your weights in grams for an instant guide price.`;
+  const subhead = `Live UK rates for 9ct, 14ct, 18ct and 22ct gold${refreshed ? `, refreshed ${refreshed}` : ''}. Enter your weights in grams for an instant guide price. Sell in person and you are paid by instant bank transfer within seconds of accepting.`;
 
   return (
     <>
@@ -249,6 +254,17 @@ export default async function GoldCalculatorPage() {
                 )}
               </div>
             )}
+
+            <div className="mx-auto mt-8 max-w-3xl rounded-xl border border-gold-metallic/30 bg-gold-metallic/10 px-5 py-4 text-center">
+              <p className="font-display text-lg font-semibold text-gold-bright">
+                Paid within seconds, not days
+              </p>
+              <p className="mt-1 text-sm text-warmgrey">
+                Accept our figure at the Ascot office or at your home and the money is sent by
+                instant bank transfer while you are still at the table - it is usually in your
+                account before you leave. No fees, no waiting, no obligation to sell.
+              </p>
+            </div>
 
             <p className="mx-auto mt-6 max-w-3xl text-xs leading-relaxed text-warmgrey/70">
               Guide figures at today&rsquo;s paying rates. Stones and non-gold parts are excluded
