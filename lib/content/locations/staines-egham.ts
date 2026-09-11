@@ -8,7 +8,7 @@ export const stainesEgham: LocationContent = {
 
   metaTitle: 'Sell Gold, Watches & Jewellery in Staines & Egham - Charters Gold',
   metaDescription:
-    'Local Staines and Egham specialists for private gold, diamond, watch and handbag valuations. Walk-in by appointment, transparent offers, same-day payment.',
+    'Local Staines and Egham specialists for private gold, diamond, watch and handbag valuations. By appointment only, transparent offers, same-day payment.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Staines & Egham',
   heroTitle: 'Private Valuations for Staines & Egham',
@@ -68,7 +68,7 @@ export const stainesEgham: LocationContent = {
     {
       icon: 'post',
       title: 'Insured postal - for those who prefer it',
-      body: 'Less common locally given how easy walk-in is, but available if it suits you. Royal Mail Special Delivery from any TW18 / TW20 postbox reaches us next working day, tracked and insured up to £20,000.',
+      body: 'Less common locally given how short the drive to Ascot is, but available if it suits you. Royal Mail Special Delivery from any TW18 / TW20 postbox reaches us next working day, tracked and insured up to £20,000.',
     },
   ],
 

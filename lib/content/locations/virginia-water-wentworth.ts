@@ -13,7 +13,7 @@ export const virginiaWaterWentworth: LocationContent = {
   heroEyebrow: 'Selling Gold & Jewellery - Virginia Water',
   heroTitle: 'The Valuation House Next Door to Wentworth',
   heroIntro:
-    'Virginia Water sits three miles from our Ascot office - close enough that many GU25 clients simply walk in from the train, two stops down the line. For the Wentworth Estate and the surrounding private roads we work the other way round: a specialist comes to you, by appointment, with the discretion these addresses take for granted.',
+    'Virginia Water sits three miles from our Ascot office - close enough that many GU25 clients simply walk up from the train, two stops down the line. For the Wentworth Estate and the surrounding private roads we work the other way round: a specialist comes to you, by appointment, with the discretion these addresses take for granted.',
 
   travel: {
     distanceMiles: 3,

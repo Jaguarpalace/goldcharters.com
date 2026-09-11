@@ -83,7 +83,7 @@ export const twickenhamRichmond: LocationContent = {
     {
       question: 'Are you affected by rugby international weekends?',
       answer:
-        'The drive to Ascot is unaffected - Twickenham traffic mainly impacts the immediate stadium roads. We do recommend planning your route to avoid TW2 around match days. The direct train from Twickenham to Ascot is unaffected.',
+        'Rarely - we see clients on weekdays by appointment, and most internationals fall on a Saturday. On the odd Friday fixture the drive to Ascot is still unaffected, since Twickenham traffic mainly hits the immediate stadium roads; the direct train from Twickenham to Ascot runs as normal.',
     },
     {
       question: 'I have a piece from Hatton Garden - how does your offer compare?',
