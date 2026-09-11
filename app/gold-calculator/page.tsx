@@ -40,9 +40,12 @@ export async function generateMetadata(): Promise<Metadata> {
   const nineCt = findGold(rates, 9);
   if (!nineCt) return base;
 
+  // The date, not the pence, goes in the title: Google caches titles for
+  // hours while the rate moves, and a stale figure in the results reads as
+  // bait. The exact live figure lives on the page and in the description.
   const price = gbp(nineCt.price_per_gram);
-  const title = `9ct Gold Price Per Gram Today: ${price} | UK Calculator`;
-  const description = `9ct gold is worth ${price} per gram today, ${formatDateGB(new Date(), 'long')}. Live UK prices per gram for 9ct, 14ct, 18ct and 22ct scrap gold, a calculator, and what 5g, 10g and 20g are worth.`;
+  const title = `9ct Gold Price Per Gram Today, ${formatDateGB(new Date(), 'long').replace(/ (\d{4})$/, ' $1')} | Live UK Rate`;
+  const description = `We pay up to ${price} per gram for 9ct gold today, ${formatDateGB(new Date(), 'long')}. Live UK prices per gram for 9ct, 14ct, 18ct and 22ct scrap gold, a calculator, and what 5g, 10g and 20g are worth.`;
   return {
     ...base,
     title: { absolute: title },
@@ -139,10 +142,10 @@ export default async function GoldCalculatorPage() {
   const faqs = buildFaqs(rates);
   const refreshed = spots.fetched_at ? formatDateTimeGB(spots.fetched_at) : null;
 
-  const heading = nineCt
-    ? `9ct Gold Price Per Gram Today: ${gbp(nineCt.price_per_gram)}`
-    : 'Gold Price Per Gram Today';
-  const subhead = `Live UK rates for 9ct, 14ct, 18ct and 22ct gold${refreshed ? `, refreshed ${refreshed}` : ''}. Enter your weights in grams for an instant guide price. Sell in person and you are paid by instant bank transfer within seconds of accepting.`;
+  const heading = '9ct Gold Price Per Gram Today';
+  const subhead = nineCt
+    ? `We pay up to ${gbp(nineCt.price_per_gram)} per gram for 9ct gold right now${refreshed ? `, refreshed ${refreshed}` : ''}, with live UK rates for 14ct, 18ct and 22ct below. Enter your weights in grams for an instant guide price. Sell in person and you are paid by instant bank transfer within seconds of accepting.`
+    : `Live UK rates for 9ct, 14ct, 18ct and 22ct gold${refreshed ? `, refreshed ${refreshed}` : ''}. Enter your weights in grams for an instant guide price. Sell in person and you are paid by instant bank transfer within seconds of accepting.`;
 
   return (
     <>
