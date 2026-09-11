@@ -38,6 +38,17 @@ const nextConfig = {
       bodySizeLimit: '20mb',
     },
   },
+  // The 9ct blog guide was folded into the calculator page (Sep 2026): one
+  // page for the "9ct gold price per gram" family instead of two competing.
+  async redirects() {
+    return [
+      {
+        source: '/blog/how-much-is-9ct-gold-worth-per-gram',
+        destination: '/gold-calculator',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

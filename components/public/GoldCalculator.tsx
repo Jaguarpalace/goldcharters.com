@@ -27,22 +27,29 @@ export function GoldCalculator({
   rates,
   asH1 = false,
   metal,
+  heading: headingOverride,
+  subhead: subheadOverride,
 }: {
   rates: CalculatorRate[];
   asH1?: boolean;
   metal?: CalculatorRate['metal_type'];
+  /** Page-specific heading (the /gold-calculator page puts today's 9ct price in it). */
+  heading?: string;
+  subhead?: string;
 }) {
   const [weights, setWeights] = useState<Weights>({});
   const filteredRates = metal ? rates.filter((r) => r.metal_type === metal) : rates;
   const metalSlug = metal ? metal.toLowerCase() : 'gold';
-  const heading = metal ? `${metal} Calculator` : 'Gold Calculator';
+  const heading = headingOverride ?? (metal ? `${metal} Calculator` : 'Gold Calculator');
   const sectionId = `${metalSlug}-calculator`;
   const ctaHref = `/sell-${metalSlug}#valuation-form`;
   // Subhead phrasing adapts to single-metal mode so we don't claim
   // "live gold prices" on a silver page.
-  const subhead = metal
-    ? `Enter your ${metal.toLowerCase()} item weights in grams to receive an instant guide price. Rates reflect live ${metal.toLowerCase()} spot prices.`
-    : 'Enter your item weights in grams to receive an instant guide price. Rates are managed by our specialists and reflect current market conditions.';
+  const subhead =
+    subheadOverride ??
+    (metal
+      ? `Enter your ${metal.toLowerCase()} item weights in grams to receive an instant guide price. Rates reflect live ${metal.toLowerCase()} spot prices.`
+      : 'Enter your item weights in grams to receive an instant guide price. Rates are managed by our specialists and reflect current market conditions.');
 
   const rows = useMemo<CalculatedRow[]>(
     () =>
