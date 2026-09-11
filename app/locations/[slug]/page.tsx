@@ -30,7 +30,7 @@ export async function generateMetadata({
   const location = getLocationBySlug(params.slug);
   if (!location) return {};
   return {
-    title: location.metaTitle,
+    title: location.titleAbsolute ? { absolute: location.metaTitle } : location.metaTitle,
     description: location.metaDescription,
     alternates: { canonical: `${SITE_URL}/locations/${location.slug}` },
     openGraph: {

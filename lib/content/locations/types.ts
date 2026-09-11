@@ -31,6 +31,13 @@ export type LocationContent = {
 
   /* ---- Meta / SEO ---- */
   metaTitle: string;
+  /**
+   * When true the title is used exactly as written, with no " · Charters
+   * Gold" appended by the site-wide template. Set on pages whose title
+   * carries a benefit line instead of the brand (Sep 2026 test on the
+   * weaker towns + Bracknell: "Sell Gold & Jewellery in X - Paid in Seconds").
+   */
+  titleAbsolute?: boolean;
   metaDescription: string;
 
   /* ---- Hero ---- */

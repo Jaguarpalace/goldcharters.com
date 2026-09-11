@@ -6,7 +6,8 @@ export const reading: LocationContent = {
   region: 'Berkshire / Thames Valley',
   postcodes: 'RG1, RG2, RG4, RG5, RG6, RG30, RG31 and surrounding postcodes',
 
-  metaTitle: 'Sell Gold, Watches & Jewellery in Reading - Charters Gold',
+  metaTitle: 'Sell Gold & Jewellery in Reading - Paid in Seconds',
+  titleAbsolute: true,
   metaDescription:
     'Thames Valley specialists for private gold, watch, jewellery and handbag valuations. Reading and the M4 corridor served by appointment in Ascot or insured postal - same-day payment.',
 

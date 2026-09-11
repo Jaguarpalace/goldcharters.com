@@ -6,7 +6,8 @@ export const haslemere: LocationContent = {
   region: 'Surrey',
   postcodes: 'GU26, GU27 and the Surrey Hills villages',
 
-  metaTitle: 'Sell Gold, Watches & Jewellery in Haslemere - Charters Gold',
+  metaTitle: 'Sell Gold & Jewellery in Haslemere - Paid in Seconds',
+  titleAbsolute: true,
   metaDescription:
     'Jewellery valuations and gold buying for Haslemere and the Surrey Hills. One train change from Ascot, discreet home visits across GU27, same-day payment.',
 

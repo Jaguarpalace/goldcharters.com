@@ -6,7 +6,8 @@ export const ealing: LocationContent = {
   region: 'Greater London',
   postcodes: 'W5, W7, W13, UB1 and UB2',
 
-  metaTitle: 'Sell Gold, Watches & Jewellery in Ealing - Charters Gold',
+  metaTitle: 'Sell Gold & Jewellery in Ealing - Paid in Seconds',
+  titleAbsolute: true,
   metaDescription:
     'Sell gold, diamonds, watches and jewellery across the Ealing borough - Ealing Broadway to Southall. A private second opinion on any quote, live rates, same-day payment.',
 

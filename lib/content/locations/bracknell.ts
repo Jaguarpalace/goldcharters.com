@@ -11,7 +11,8 @@ export const bracknell: LocationContent = {
   region: 'Berkshire',
   postcodes: 'RG12, RG42 and RG45',
 
-  metaTitle: 'Sell Gold, Watches & Jewellery in Bracknell - Charters Gold',
+  metaTitle: 'Sell Gold & Jewellery in Bracknell - Paid in Seconds',
+  titleAbsolute: true,
   metaDescription:
     'Sell gold, watches and jewellery twelve minutes from Bracknell. Two stops on the train to Ascot, private appointments, home visits across RG12, RG42 and RG45, same-day payment.',
 

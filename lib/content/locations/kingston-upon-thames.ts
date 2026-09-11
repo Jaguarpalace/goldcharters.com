@@ -6,7 +6,8 @@ export const kingstonUponThames: LocationContent = {
   region: 'Greater London',
   postcodes: 'KT1, KT2, KT3 and neighbouring postcodes',
 
-  metaTitle: 'Sell Gold, Watches & Jewellery in Kingston upon Thames - Charters Gold',
+  metaTitle: 'Sell Gold & Jewellery in Kingston - Paid in Seconds',
+  titleAbsolute: true,
   metaDescription:
     'A private alternative to Kingston’s retail jewellers. Gold, diamond, watch and handbag valuations - home visits across KT postcodes, transparent live pricing, same-day payment.',
 
