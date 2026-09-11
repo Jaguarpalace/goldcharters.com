@@ -60,14 +60,27 @@ export function localBusinessSchema(settings: SiteSettings) {
     priceRange: '£££',
     address: postalAddress(settings),
     geo: geoCoordinates(settings),
-    // Weekdays only, by appointment (schema has no appointment flag; the
-    // hours below are the bookable window and the copy carries the rest).
+    // Mirrors the Google Business Profile exactly (confirmed by Paul 11 Sep
+    // 2026): seven days, shorter at the weekend, always by appointment.
+    // Schema has no appointment flag; the settings hours string carries it.
     openingHoursSpecification: [
       {
         '@type': 'OpeningHoursSpecification',
         dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-        opens: '10:00',
-        closes: '18:00',
+        opens: '09:30',
+        closes: '17:00',
+      },
+      {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: 'Saturday',
+        opens: '09:30',
+        closes: '13:30',
+      },
+      {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: 'Sunday',
+        opens: '09:30',
+        closes: '12:30',
       },
     ],
     areaServed: { '@type': 'Country', name: 'United Kingdom' },

@@ -32,7 +32,7 @@ export function mockSiteSettings(): SiteSettings {
     address_postcode: 'SL5 7ET',
     address_latitude: 51.4084,
     address_longitude: -0.6726,
-    opening_hours: 'Monday to Friday · By appointment only · Saturday & Sunday closed',
+    opening_hours: 'Monday to Friday 9:30am - 5pm · Saturday 9:30am - 1:30pm · Sunday 9:30am - 12:30pm · By appointment',
     top_bar_message: 'Discreet UK gold & jewellery specialists',
     top_bar_review_text: 'Excellent client reviews',
     top_bar_trust_text: 'Private valuations · Insured handling',
