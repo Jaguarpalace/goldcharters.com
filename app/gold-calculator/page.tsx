@@ -64,7 +64,7 @@ function buildFaqs(rates: CalculatorRate[]) {
   const eighteen = findGold(rates, 18);
   const twentyTwo = findGold(rates, 22);
   const live = (r: CalculatorRate | undefined, label: string) =>
-    r ? `${gbp(r.price_per_gram)} per gram for ${label}` : `the rate we pay today for ${label}, shown in the table above`;
+    r ? `${gbp(r.price_per_gram)} per gram for ${label}` : `the ${label} rate shown in the table above`;
 
   return [
     {
@@ -91,15 +91,15 @@ function buildFaqs(rates: CalculatorRate[]) {
     },
     {
       question: 'How much is 14ct (585) gold worth per gram?',
-      answer: `14ct gold is 58.5% pure, so it is worth a little over half again what 9ct fetches per gram. Today that is ${live(fourteen, '14ct')}.`,
+      answer: `14ct gold is 58.5% pure, so it is worth a little over half again what 9ct fetches per gram. Today we pay ${live(fourteen, '14ct')}.`,
     },
     {
       question: 'How much is 18ct (750) gold worth per gram today?',
-      answer: `18ct gold is 75% pure - exactly double 9ct - so it is worth twice as much per gram. Today that is ${live(eighteen, '18ct')}.`,
+      answer: `18ct gold is 75% pure - exactly double 9ct - so it is worth twice as much per gram. Today we pay ${live(eighteen, '18ct')}.`,
     },
     {
       question: 'How much is 22ct gold per gram?',
-      answer: `22ct gold is 91.6% pure, the standard for sovereigns and most Asian gold jewellery. Today that is ${live(twentyTwo, '22ct')}. Sovereigns and other coins are often worth more than their weight, so we check them separately.`,
+      answer: `22ct gold is 91.6% pure, the standard for sovereigns and most Asian gold jewellery. Today we pay ${live(twentyTwo, '22ct')}. Sovereigns and other coins are often worth more than their weight, so we check them separately.`,
     },
     {
       question: 'Why is 9ct gold worth less per gram than 18ct or 22ct?',
@@ -114,7 +114,7 @@ function buildFaqs(rates: CalculatorRate[]) {
     {
       question: 'How is your rate different from the gold spot price?',
       answer:
-        "The spot price is the wholesale market rate for pure 24ct gold. Our paying rate is the spot price adjusted for your item's purity, less a transparent margin that covers refining and our costs. We show the rate before anything is weighed - you can check it against the live spot price at any time.",
+        "The spot price is the wholesale market rate for pure gold. What we pay is that price adjusted for your item's purity, less our margin, and we show it before anything is weighed.",
     },
     {
       question: 'How quickly do I get paid?',
