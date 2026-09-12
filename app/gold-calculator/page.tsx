@@ -86,7 +86,7 @@ function buildFaqs(rates: CalculatorRate[]) {
     {
       question: 'How much is 10 grams of 9ct gold worth?',
       answer: nine
-        ? `At today's rate, 10 grams of 9ct gold is worth about ${gbp(nine.price_per_gram * 10)}. That is hallmarked weight only - stones, clasps and non-gold parts are excluded, and signed or antique pieces are often worth more than their weight.`
+        ? `At the rate we pay today, 10 grams of 9ct gold is worth about ${gbp(nine.price_per_gram * 10)}. That is hallmarked weight only - stones, clasps and non-gold parts are excluded, and signed or antique pieces are often worth more than their weight.`
         : 'Multiply the hallmarked weight in grams by the 9ct rate in the table above. Stones, clasps and non-gold parts are excluded from the weight.',
     },
     {
@@ -167,7 +167,7 @@ export default async function GoldCalculatorPage() {
               <span className="gc-eyebrow">
                 {refreshed ? `Rates refreshed ${refreshed}` : 'Updated Throughout The Day'}
               </span>
-              <h2 className="gc-heading mt-3">Today&rsquo;s Gold Price Per Gram, UK</h2>
+              <h2 className="gc-heading mt-3">The Gold Price Per Gram We Pay Today, in Seconds</h2>
               <p className="gc-subhead mt-4">
                 The rates below are what we pay today per gram, adjusted for purity. They move
                 with the gold market through the day. No hidden testing fees, no percentage games - the rate you see is the rate
@@ -207,10 +207,11 @@ export default async function GoldCalculatorPage() {
             {nineCt && (
               <div className="mx-auto mt-10 max-w-3xl">
                 <h3 className="font-display text-lg font-semibold text-white">
-                  What 9ct gold is worth at today&rsquo;s rate
+                  What your 9ct gold gets you today, paid in seconds
                 </h3>
                 <p className="mt-1 text-sm text-warmgrey">
-                  {gbp(nineCt.price_per_gram)} per gram, hallmarked weight only.
+                  We pay {gbp(nineCt.price_per_gram)} per gram today on hallmarked gold, and on
+                  unhallmarked gold once tested. Gold weight only, stones and clasps excluded.
                 </p>
                 <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                   {[1, 2, 4, 5, 6, 10, 20, 44, 50, 100].map((grams) => (
@@ -237,7 +238,7 @@ export default async function GoldCalculatorPage() {
                   rate ? (
                     <div key={label}>
                       <h3 className="font-display text-base font-semibold text-white">
-                        {label} gold at {gbp(rate.price_per_gram)} per gram
+                        {label} gold: we pay {gbp(rate.price_per_gram)} per gram today
                       </h3>
                       <ul className="mt-3 space-y-2">
                         {[5, 10, 20].map((grams) => (
