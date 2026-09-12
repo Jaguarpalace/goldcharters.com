@@ -29,23 +29,21 @@ const stamp = (purity: number) => Math.round(purity * 10).toString().padStart(3,
 
 /**
  * The page is built for one search family - "9ct gold price per gram
- * today" and its siblings for 14ct, 18ct and 22ct - so the title, heading
- * and description carry today's live figure. Search Console shows this
+ * today" and its siblings for 14ct, 18ct and 22ct. The title carries the
+ * date and the description a hook; the figures themselves live in the table
+ * and FAQs (Paul, 12 Sep 2026: no pence in the snippet or the subhead). Search Console shows this
  * cluster as our biggest source of impressions and, until now, one of the
  * weakest for clicks.
  */
 export async function generateMetadata(): Promise<Metadata> {
   const base = await buildPageMetadata('/gold-calculator');
-  const rates = await getCalculatorRates();
-  const nineCt = findGold(rates, 9);
-  if (!nineCt) return base;
 
   // The date, not the pence, goes in the title: Google caches titles for
   // hours while the rate moves, and a stale figure in the results reads as
-  // bait. The exact live figure lives on the page and in the description.
-  const price = gbp(nineCt.price_per_gram);
-  const title = `9ct Gold Price Per Gram Today, ${formatDateGB(new Date(), 'long').replace(/ (\d{4})$/, ' $1')} | Live UK Rate`;
-  const description = `We pay up to ${price} per gram for 9ct gold today, ${formatDateGB(new Date(), 'long')}. Live UK prices per gram for 9ct, 14ct, 18ct and 22ct scrap gold, a calculator, and what 5g, 10g and 20g are worth.`;
+  // bait. The exact figures live on the page only.
+  const title = `9ct Gold Price Per Gram Today, ${formatDateGB(new Date(), 'long').replace(/ (\d{4})$/, ' $1')} | Instant Guide Price`;
+  const description =
+    'Find out what your 9ct gold is worth per gram today. Enter the weight, see a guide figure in seconds, and get paid by bank transfer within seconds when you sell in person.';
   return {
     ...base,
     title: { absolute: title },
@@ -66,19 +64,19 @@ function buildFaqs(rates: CalculatorRate[]) {
   const eighteen = findGold(rates, 18);
   const twentyTwo = findGold(rates, 22);
   const live = (r: CalculatorRate | undefined, label: string) =>
-    r ? `${gbp(r.price_per_gram)} per gram for ${label}` : `the live rate for ${label} shown in the table above`;
+    r ? `${gbp(r.price_per_gram)} per gram for ${label}` : `the rate we pay today for ${label}, shown in the table above`;
 
   return [
     {
       question: 'How much is 9ct gold worth per gram today?',
       answer: nine
-        ? `Today we are paying ${gbp(nine.price_per_gram)} per gram for 9ct gold. The rate moves with the live gold spot price, so this page refreshes through the day - enter your weight in the calculator above for an instant total, or read it off the table.`
-        : 'The rate moves with the live gold spot price and refreshes on this page through the day - enter the carat and weight in the calculator above for an instant figure.',
+        ? `Today we are paying ${gbp(nine.price_per_gram)} per gram for 9ct gold. Our rate moves with the gold market, so what we pay is updated on this page through the day - enter your weight in the calculator above for an instant total, or read it off the table.`
+        : 'Our rate moves with the gold market and what we pay is updated on this page through the day - enter the carat and weight in the calculator above for an instant figure.',
     },
     {
       question: 'What is the price of 9ct gold per gram in the UK today, and why does it change?',
       answer:
-        "Every UK buyer prices 9ct gold from the same starting point: the London spot price for pure gold, quoted per troy ounce and converted to pounds per gram. 9ct is 37.5% gold, so its value is 37.5% of that figure, less the buyer's margin. Spot moves all day with the market and the pound-dollar rate, which is why a 9ct price quoted on Monday can differ by Friday. Ours is recalculated from the live spot price and shown here with the time it was refreshed.",
+        "Every UK buyer prices 9ct gold from the same starting point: the London spot price for pure gold, quoted per troy ounce and converted to pounds per gram. 9ct is 37.5% gold, so its value is 37.5% of that figure, less the buyer's margin. Spot moves all day with the market and the pound-dollar rate, which is why a 9ct price quoted on Monday can differ by Friday. What we pay today is shown in the table above, with the time it was last updated.",
     },
     {
       question: 'What is 375 gold, and is it the same as 9ct?',
@@ -143,16 +141,14 @@ export default async function GoldCalculatorPage() {
   const refreshed = spots.fetched_at ? formatDateTimeGB(spots.fetched_at) : null;
 
   const heading = '9ct Gold Price Per Gram Today';
-  const subhead = nineCt
-    ? `We pay up to ${gbp(nineCt.price_per_gram)} per gram for 9ct gold right now${refreshed ? `, refreshed ${refreshed}` : ''}, with live UK rates for 14ct, 18ct and 22ct below. Enter your weights in grams for an instant guide price. Sell in person and you are paid by instant bank transfer within seconds of accepting.`
-    : `Live UK rates for 9ct, 14ct, 18ct and 22ct gold${refreshed ? `, refreshed ${refreshed}` : ''}. Enter your weights in grams for an instant guide price. Sell in person and you are paid by instant bank transfer within seconds of accepting.`;
+  const subhead =
+    'Enter your weights in grams and see what we would pay today for 9ct, 14ct, 18ct and 22ct gold. Our rates move with the gold market through the day. Sell in person and you are paid by instant bank transfer within seconds of accepting.';
 
   return (
     <>
       <JsonLd data={[locationFaqSchema(faqs)]} />
 
-      {/* GoldCalculator acts as the page hero - its title renders as <h1>,
-          carrying today's 9ct figure so the heading answers the search. */}
+      {/* GoldCalculator acts as the page hero - its title renders as <h1>. */}
       <GoldCalculator
         rates={rates}
         asH1
@@ -173,8 +169,8 @@ export default async function GoldCalculatorPage() {
               </span>
               <h2 className="gc-heading mt-3">Today&rsquo;s Gold Price Per Gram, UK</h2>
               <p className="gc-subhead mt-4">
-                The rates below are what we pay per gram, adjusted for purity from the live spot
-                price. No hidden testing fees, no percentage games - the rate you see is the rate
+                The rates below are what we pay today per gram, adjusted for purity. They move
+                with the gold market through the day. No hidden testing fees, no percentage games - the rate you see is the rate
                 on the scales.
               </p>
             </div>
@@ -186,7 +182,7 @@ export default async function GoldCalculatorPage() {
                     <th className="py-3 pr-4 font-semibold">Metal &amp; carat</th>
                     <th className="py-3 pr-4 font-semibold">Hallmark</th>
                     <th className="py-3 pr-4 font-semibold">Purity</th>
-                    <th className="py-3 text-right font-semibold">We pay per gram</th>
+                    <th className="py-3 text-right font-semibold">We pay today, per gram</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -200,7 +196,7 @@ export default async function GoldCalculatorPage() {
                       <td className="py-3 pr-4 font-mono text-xs">{stamp(r.purity_percentage)}</td>
                       <td className="py-3 pr-4">{r.purity_percentage}%</td>
                       <td className="py-3 text-right font-semibold text-gold-bright">
-                        Up to {gbp(r.price_per_gram)}
+                        {gbp(r.price_per_gram)}
                       </td>
                     </tr>
                   ))}

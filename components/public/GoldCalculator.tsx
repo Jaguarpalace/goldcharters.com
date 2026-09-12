@@ -225,7 +225,7 @@ function RateRow({
           {rate.metal_type} {rate.carat_label}
         </div>
         <div className="text-[10px] text-warmgrey">
-          {rate.purity_percentage}% · Up to {formatGBP(rate.price_per_gram)}/g
+          {rate.purity_percentage}% purity
         </div>
       </div>
       <input
