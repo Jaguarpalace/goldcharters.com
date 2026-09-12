@@ -114,7 +114,7 @@ function buildFaqs(rates: CalculatorRate[]) {
     {
       question: 'How is your rate different from the gold spot price?',
       answer:
-        "The spot price is the wholesale market rate for pure gold. What we pay is that price adjusted for your item's purity, less our margin, and we show it before anything is weighed.",
+        "The spot price is the wholesale market rate for pure 24ct gold. Our rates follow it through the day and are adjusted for the purity of your item, so 9ct, 18ct and 22ct each have their own figure.",
     },
     {
       question: 'How quickly do I get paid?',
