@@ -40,7 +40,7 @@ export const bracknell: LocationContent = {
     },
     {
       title: 'Every route covered',
-      body: 'Drive over in twelve minutes, have a specialist come to your Bracknell address by appointment, or send smaller pieces by insured post. We also hold private valuation days across Berkshire; current dates are always on the booking page.',
+      body: 'Drive over in twelve minutes, have a specialist come to your Bracknell address by appointment, or send smaller pieces by insured post.',
     },
   ],
 

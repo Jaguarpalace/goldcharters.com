@@ -34,7 +34,7 @@ export const epsom: LocationContent = {
     },
     {
       title: 'Private, whichever route you choose',
-      body: 'A confidential appointment at our Ascot office, a home visit across the KT postcodes, or insured post for smaller pieces. We also hold private valuation days across the area - current dates are always on our booking page.',
+      body: 'A confidential appointment at our Ascot office, a home visit across the KT postcodes, or insured post for smaller pieces.',
     },
   ],
 

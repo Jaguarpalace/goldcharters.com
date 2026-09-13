@@ -34,7 +34,7 @@ export const camberley: LocationContent = {
     },
     {
       title: 'Every route covered',
-      body: 'Come to us in fifteen minutes, have a specialist visit your Camberley address by appointment, or use insured post for smaller pieces. We also hold private valuation days across the area - current dates are always on our booking page.',
+      body: 'Come to us in fifteen minutes, have a specialist visit your Camberley address by appointment, or use insured post for smaller pieces.',
     },
   ],
 
