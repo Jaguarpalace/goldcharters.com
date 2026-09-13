@@ -19,7 +19,7 @@ export const bracknell: LocationContent = {
   heroEyebrow: 'Gold Buyers Serving Bracknell',
   heroTitle: "Bracknell's Closest Private Valuation House, Two Stops Down the Line",
   heroIntro:
-    'Bracknell is the nearest large town to our Ascot office: about five miles along the London Road, a twelve-minute drive on a normal day, or two stops on the train from Bracknell station and one from Martins Heron. For Priestwood, Great Hollands, Harmans Water, Binfield, Warfield and Crowthorne we are closer than any dedicated gold and jewellery buyer, and a growing number of our regular clients come from the RG12 and RG42 postcodes. As the closest private gold buyers to Bracknell, we see more RG12 and RG42 jewellery than any counter in the town.',
+    'Bracknell is the nearest large town to our Ascot office: about five miles along the London Road, a twelve-minute drive on a normal day, or two stops on the train from Bracknell station and one from Martins Heron. For Priestwood, Great Hollands, Harmans Water, Binfield, Warfield and Crowthorne we are closer than any dedicated gold and jewellery buyer, and a growing number of our regular clients come from the RG12 and RG42 postcodes. As the nearest private gold buyer to Bracknell, twelve minutes away in Ascot, we see more RG12 and RG42 jewellery than any counter in the town.',
 
   travel: {
     distanceMiles: 5,
@@ -89,6 +89,11 @@ export const bracknell: LocationContent = {
   },
 
   faqs: [
+    {
+      question: "Who is the nearest private gold buyer to Bracknell?",
+      answer:
+        "Charters Gold in Ascot, five miles away. We are a private valuation house rather than a high-street counter or pawnbroker, and we come to homes across RG12, RG42 and RG45 by appointment, so the nearest specialist can also be the one at your kitchen table.",
+    },
     {
       question: 'Where can I sell gold in Bracknell?',
       answer:

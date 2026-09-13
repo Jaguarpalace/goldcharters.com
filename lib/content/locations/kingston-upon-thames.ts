@@ -14,7 +14,7 @@ export const kingstonUponThames: LocationContent = {
   heroEyebrow: 'Selling Gold & Jewellery - Kingston',
   heroTitle: 'The Private Alternative to Kingston’s Retail Counters',
   heroIntro:
-    'Kingston is one of the biggest retail centres in the South-East, and its jewellers are built for buying customers - not selling ones. When you are the seller, the economics flip: retail overheads come out of your price. We are a dedicated buying house forty minutes up the A308, we visit KT addresses by appointment, and our offers are built from live rates and auction results.',
+    'Kingston is one of the biggest retail centres in the South-East, and its jewellers are built for buying customers - not selling ones. When you are the seller, the economics flip: retail overheads come out of your price. We are a dedicated buying house forty minutes up the A308, we visit KT addresses by appointment, and our offers are built from live rates and auction results. For KT1, KT2 and KT3 we are the nearest private gold buyer built for sellers rather than shoppers, forty minutes up the A308 or at your door by appointment.',
 
   travel: {
     distanceMiles: 18,
@@ -79,6 +79,11 @@ export const kingstonUponThames: LocationContent = {
   },
 
   faqs: [
+    {
+      question: "Who is the nearest private gold buyer to Kingston?",
+      answer:
+        "Kingston's jewellers are retail shops that buy at the counter. The nearest private buying house is Charters Gold in Ascot, and for KT2, Coombe and Kingston Hill a home visit by appointment is usually quicker than the drive. Offers are built from live rates and auction results, explained in front of you.",
+    },
     {
       question: 'Why not sell to a jeweller in the Bentall Centre or the Ancient Market?',
       answer:

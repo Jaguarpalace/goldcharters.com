@@ -14,7 +14,7 @@ export const haslemere: LocationContent = {
   heroEyebrow: 'Selling Gold & Jewellery - Haslemere',
   heroTitle: 'Surrey Hills Valuations, Handled Quietly',
   heroIntro:
-    'Haslemere sits deep in the Surrey Hills, a long way from anywhere that buys jewellery seriously - which is exactly why we built our service to travel. A specialist visits GU26 and GU27 addresses by appointment, insured post reaches us overnight, and for those who prefer to come to us, the office in Ascot is a country drive or one easy train change away.',
+    'Haslemere sits deep in the Surrey Hills, a long way from anywhere that buys jewellery seriously - which is exactly why we built our service to travel. A specialist visits GU26 and GU27 addresses by appointment, insured post reaches us overnight, and for those who prefer to come to us, the office in Ascot is a country drive or one easy train change away. For GU26 and GU27 we are the nearest private gold buyer that will come to you, which in the Surrey Hills matters more than the mileage.',
 
   travel: {
     distanceMiles: 28,
@@ -79,6 +79,11 @@ export const haslemere: LocationContent = {
   },
 
   faqs: [
+    {
+      question: "Who is the nearest private gold buyer to Haslemere?",
+      answer:
+        "Charters Gold in Ascot. It is a 45-minute drive, but we are the closest dedicated buying house that visits Haslemere, Hindhead, Grayshott and the Chiddingfold villages by appointment, and insured post reaches us overnight. Everything is weighed and priced in front of you wherever the table is.",
+    },
     {
       question: 'Do you really come out as far as Haslemere?',
       answer:
