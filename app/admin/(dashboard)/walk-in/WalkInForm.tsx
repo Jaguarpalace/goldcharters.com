@@ -3,7 +3,10 @@
 import { useCallback, useEffect, useState, useTransition } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { createWalkInPurchase } from '@/lib/actions/valuationRequests';
+import {
+  completePurchaseFromRequest,
+  createWalkInPurchase,
+} from '@/lib/actions/valuationRequests';
 import { searchCustomers } from '@/lib/actions/customers';
 import {
   METAL_OPTIONS,
@@ -57,32 +60,70 @@ function withComputedPrice(l: ItemLine): ItemLine {
   return l;
 }
 
+/**
+ * Pre-filled state when the form completes an EXISTING valuation request
+ * (opened from the Bought stage on the request board) instead of creating
+ * a walk-in from scratch. The request's id is the purchase id, so the
+ * reference on screen matches the record and the printed document.
+ */
+export type ExistingPurchase = {
+  requestId: string;
+  customerId: string | null;
+  seller: {
+    first_name: string;
+    last_name: string;
+    email: string;
+    phone: string;
+    address_line1: string;
+    address_line2: string;
+    city: string;
+    postcode: string;
+  };
+  lines: ItemLine[];
+  payment: {
+    method: PaymentMethod | null;
+    reference: string;
+    sort_code: string;
+    account_number: string;
+  };
+  /** Holdings already exist for this request: lines are shown but locked. */
+  holdingsExist: boolean;
+};
+
 /** A UUID whose first 8 hex chars are the given paper reference; the rest is random. */
 function uuidWithPrefix(ref: string): string {
   return ref.toLowerCase() + crypto.randomUUID().slice(8);
 }
 
-export function WalkInForm({ initialPaperRef }: { initialPaperRef?: string }) {
+export function WalkInForm({
+  initialPaperRef,
+  existing,
+}: {
+  initialPaperRef?: string;
+  existing?: ExistingPurchase;
+}) {
   const router = useRouter();
   const [form, setForm] = useState({
-    first_name: '',
-    last_name: '',
-    email: '',
-    phone: '',
-    address_line1: '',
-    address_line2: '',
-    city: '',
-    postcode: '',
-    payment_method: 'cash' as PaymentMethod,
-    payment_reference: '',
-    payment_sort_code: '',
-    payment_account_number: '',
+    first_name: existing?.seller.first_name ?? '',
+    last_name: existing?.seller.last_name ?? '',
+    email: existing?.seller.email ?? '',
+    phone: existing?.seller.phone ?? '',
+    address_line1: existing?.seller.address_line1 ?? '',
+    address_line2: existing?.seller.address_line2 ?? '',
+    city: existing?.seller.city ?? '',
+    postcode: existing?.seller.postcode ?? '',
+    payment_method: (existing?.payment.method ?? 'cash') as PaymentMethod,
+    payment_reference: existing?.payment.reference ?? '',
+    payment_sort_code: existing?.payment.sort_code ?? '',
+    payment_account_number: existing?.payment.account_number ?? '',
   });
   // Every purchase is itemised - one line per piece, starting with one
   // open line. The request's headline fields (metal, weight, description)
   // are derived from the lines on save, so there is no separate single-item
   // section to fill in twice.
-  const [lines, setLines] = useState<ItemLine[]>([{ ...EMPTY_LINE }]);
+  const [lines, setLines] = useState<ItemLine[]>(
+    existing && existing.lines.length > 0 ? existing.lines : [{ ...EMPTY_LINE }],
+  );
   const [pending, startTransition] = useTransition();
   const [feedback, setFeedback] = useState<string | null>(null);
   // Returning customer picked from the name autocomplete. Their profile is
@@ -130,16 +171,17 @@ export function WalkInForm({ initialPaperRef }: { initialPaperRef?: string }) {
   // customer - BEFORE saving. The same id becomes the database row on save,
   // so screen, printed document and payment reference always agree.
   // Generated in an effect (not at render) to keep server/client HTML equal.
-  const [purchaseId, setPurchaseId] = useState<string | null>(null);
+  const [purchaseId, setPurchaseId] = useState<string | null>(existing?.requestId ?? null);
   // A purchase written up on a blank paper document already carries a
   // reference. Typing it here rebuilds the id from it, so the saved record
   // gets the same reference as the paper copy.
   const [paperRef, setPaperRef] = useState(initialPaperRef ?? '');
   useEffect(() => {
+    if (existing) return; // the request's own id is the purchase id
     const ref = paperRef.trim();
     if (/^[0-9a-f]{8}$/i.test(ref)) setPurchaseId(uuidWithPrefix(ref));
     else if (!ref) setPurchaseId(crypto.randomUUID());
-  }, [paperRef]);
+  }, [paperRef, existing]);
   const reference = purchaseId ? purchaseId.slice(0, 8).toUpperCase() : null;
 
   const patchLine = (idx: number, patch: Partial<ItemLine>) =>
@@ -176,9 +218,9 @@ export function WalkInForm({ initialPaperRef }: { initialPaperRef?: string }) {
     );
     const totalWeight = lines.reduce((sum, l) => sum + (Number(l.weight_grams) || 0), 0);
     startTransition(async () => {
-      const result = await createWalkInPurchase({
+      const payload = {
         id: purchaseId ?? undefined,
-        customer_id: linked?.id ?? null,
+        customer_id: linked?.id ?? existing?.customerId ?? null,
         first_name: form.first_name,
         last_name: form.last_name,
         email: form.email,
@@ -210,7 +252,10 @@ export function WalkInForm({ initialPaperRef }: { initialPaperRef?: string }) {
           hallmark: l.hallmark || null,
           price_gbp: Number(l.price_gbp || 0),
         })),
-      });
+      };
+      const result = existing
+        ? await completePurchaseFromRequest(existing.requestId, payload)
+        : await createWalkInPurchase(payload);
       if (result.ok) {
         // Send the admin straight to the printable document. They sign it,
         // hand the customer their copy, done.
@@ -288,6 +333,13 @@ export function WalkInForm({ initialPaperRef }: { initialPaperRef?: string }) {
 
       {/* ---------------------------------------------- Items */}
       <Section title="Items">
+        {existing?.holdingsExist && (
+          <p className="rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-[11px] text-amber-300">
+            Holdings have already been created for this purchase, so the item lines below are
+            saved as they are. Edit individual pieces from the request board or the holdings
+            ledger; seller details and payment can still be changed here.
+          </p>
+        )}
         <p className="text-[11px] text-warmgrey">
           One line per piece. Each line prints on the purchase document and becomes its own
           entry in the holdings ledger. Pick metal &quot;Other&quot; for watches, handbags and
@@ -406,6 +458,7 @@ export function WalkInForm({ initialPaperRef }: { initialPaperRef?: string }) {
             </span>
           </p>
         )}
+        {!existing && (
         <label className="block max-w-sm">
           <span className="text-[10px] font-medium uppercase tracking-luxe text-warmgrey">
             Paper reference <span className="ml-1 text-warmgrey/50">(optional)</span>
@@ -422,6 +475,7 @@ export function WalkInForm({ initialPaperRef }: { initialPaperRef?: string }) {
             on it and the saved record will carry the same one.
           </span>
         </label>
+        )}
         <div className="grid gap-3 md:grid-cols-3">
           <label className="block">
             <span className="text-[10px] font-medium uppercase tracking-luxe text-warmgrey">
@@ -485,8 +539,9 @@ export function WalkInForm({ initialPaperRef }: { initialPaperRef?: string }) {
           <p className="text-[11px] text-amber-400">{feedback}</p>
         ) : (
           <p className="text-[11px] text-warmgrey">
-            On save: creates the customer record, marks the purchase Bought and adds each line
-            to the holdings ledger, then opens the printable purchase document.
+            {existing
+              ? 'On save: updates the customer record, marks this request Bought with the payment, adds each line to the holdings ledger, then opens the printable purchase document.'
+              : 'On save: creates the customer record, marks the purchase Bought and adds each line to the holdings ledger, then opens the printable purchase document.'}
           </p>
         )}
         <button

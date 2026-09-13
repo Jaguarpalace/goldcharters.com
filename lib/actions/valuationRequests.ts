@@ -729,24 +729,20 @@ export type WalkInPurchaseInput = {
   payment_account_number?: string | null;
 };
 
-/**
- * Single-shot action for in-person walk-in purchases. Creates (or links) a
- * customer record, a valuation_request already at status='bought' with the
- * payment captured, and a stock_items row imported from it — so the same
- * Print button and Holdings dashboard the website flow uses keep working
- * unchanged. Returns the new valuation request id for the caller to
- * redirect to the printable document.
- */
-export async function createWalkInPurchase(
-  input: WalkInPurchaseInput,
-): Promise<
-  | { ok: true; data: { valuation_request_id: string; stock_item_id: string | null } }
-  | { ok: false; error: string }
-> {
-  const ctx = await requireAdminContext();
-  if ('error' in ctx) return { ok: false, error: ctx.error };
+type PurchaseAdminCtx = Exclude<Awaited<ReturnType<typeof requireAdminContext>>, { error: string }>;
 
-  // --- Validation -----------------------------------------------------
+type ValidatedPurchase = {
+  first: string;
+  last: string;
+  email: string;
+  phone: string;
+  items: NonNullable<WalkInPurchaseInput['items']>;
+};
+
+/** Shared by the walk-in and complete-from-request actions. */
+function validatePurchaseInput(
+  input: WalkInPurchaseInput,
+): { ok: true; data: ValidatedPurchase } | { ok: false; error: string } {
   const first = (input.first_name ?? '').trim();
   const last = (input.last_name ?? '').trim();
   const email = (input.email ?? '').trim().toLowerCase();
@@ -790,7 +786,19 @@ export async function createWalkInPurchase(
     };
   }
 
-  // --- Step 1: upsert customer ---------------------------------------
+  return { ok: true, data: { first, last, email, phone, items } };
+}
+
+/**
+ * Find, refresh or create the seller's customer row (shared by the walk-in
+ * and complete-from-request actions). Best-effort geocode for the map.
+ */
+async function upsertPurchaseCustomer(
+  ctx: PurchaseAdminCtx,
+  input: WalkInPurchaseInput,
+  v: ValidatedPurchase,
+): Promise<{ ok: true; customerId: string | null } | { ok: false; error: string }> {
+  const { first, last, email, phone } = v;
   const customerPatch = {
     first_name: first,
     last_name: last,
@@ -866,6 +874,159 @@ export async function createWalkInPurchase(
   // Coordinates for the Customers map - best effort, never blocks the sale.
   if (customerId) await geocodeCustomerBestEffort(ctx.admin, customerId, customerPatch.postcode);
 
+  return { ok: true, customerId };
+}
+
+/**
+ * Write the itemised lines (purchase_items) and, when `createStock` is set,
+ * one holding per line - or the legacy single lump holding when there are
+ * no lines. Returns the first holding id created, if any.
+ */
+async function insertPurchaseLines(
+  ctx: PurchaseAdminCtx,
+  args: {
+    requestId: string;
+    customerId: string | null;
+    input: WalkInPurchaseInput;
+    items: ValidatedPurchase['items'];
+    nowIso: string;
+    createStock: boolean;
+  },
+): Promise<string | null> {
+  const { requestId: valuationRequestId, customerId, input, items, nowIso, createStock } = args;
+  const spots = await getMetalSpots();
+  const spotFor = (metal: string | null | undefined) =>
+    metal === 'Gold'
+      ? spots.gold?.per_gram_gbp ?? null
+      : metal === 'Silver'
+      ? spots.silver?.per_gram_gbp ?? null
+      : metal === 'Platinum'
+      ? spots.platinum?.per_gram_gbp ?? null
+      : null;
+
+  let stock: { id: string } | null = null;
+
+  if (items.length > 0) {
+    // --- Step 3a: itemised path - one purchase_item + one holding per line.
+    for (const [idx, it] of items.entries()) {
+      const lineMetal = it.metal_type?.trim() || input.metal_type;
+      const lineStockMetal = normaliseMetalForHoldings(lineMetal);
+      // Fall back to the description when the carat field was left blank
+      // but the description itself is just a carat ("24ct").
+      const lineStockCarat = caratForHoldingsFromLine(lineMetal, it.carat, it.description);
+      const { data: line, error: lineErr } = await ctx.admin
+        .from('purchase_items')
+        .insert({
+          valuation_request_id: valuationRequestId,
+          position: idx + 1,
+          description: it.description.trim().slice(0, 500),
+          metal_type: lineMetal || null,
+          carat: it.carat?.trim() || null,
+          weight_grams: it.weight_grams ?? null,
+          // Spread-only so inserts keep working before migration 035 is applied.
+          ...(it.rate_gbp_per_g != null && Number.isFinite(it.rate_gbp_per_g)
+            ? { rate_gbp_per_g: Number(it.rate_gbp_per_g.toFixed(4)) }
+            : {}),
+          hallmark: it.hallmark?.trim() || null,
+          price_gbp: Number(it.price_gbp.toFixed(2)),
+        })
+        .select('id')
+        .single<{ id: string }>();
+      if (lineErr) {
+        console.error('[walkin:item]', lineErr);
+        continue;
+      }
+      if (!createStock) continue;
+      // Best-effort holding per line; the admin can retry from the board.
+      const { data: lineStock, error: lineStockErr } = await ctx.admin
+        .from('stock_items')
+        .insert({
+          valuation_request_id: valuationRequestId,
+          customer_id: customerId,
+          item_type: 'gold',
+          description: [
+            it.description.trim(),
+            it.hallmark?.trim() ? `Hallmark/serial: ${it.hallmark.trim()}` : null,
+            !lineStockCarat && it.carat?.trim() ? `Purity as noted: ${it.carat.trim()}` : null,
+          ]
+            .filter(Boolean)
+            .join(' · '),
+          metal_type: lineStockMetal,
+          carat: lineStockCarat,
+          purity_percentage: purityToPercent(lineStockCarat),
+          weight_grams: it.weight_grams ?? null,
+          acquired_at: nowIso,
+          acquired_paid_gbp: Number(it.price_gbp.toFixed(2)),
+          acquired_spot_gbp_per_g: spotFor(lineStockMetal),
+        })
+        .select('id')
+        .single<{ id: string }>();
+      if (lineStockErr) {
+        console.error('[walkin:item-stock]', lineStockErr);
+      } else if (lineStock) {
+        if (!stock) stock = lineStock;
+        await ctx.admin
+          .from('purchase_items')
+          .update({ stock_item_id: lineStock.id })
+          .eq('id', line!.id);
+      }
+    }
+  } else if (createStock) {
+    // --- Step 3b: legacy single-item path - unchanged behaviour.
+    const { data: lumpStock, error: stockErr } = await ctx.admin
+      .from('stock_items')
+      .insert({
+        valuation_request_id: valuationRequestId,
+        customer_id: customerId,
+        item_type: 'gold',
+        description: input.description?.trim() || null,
+        metal_type: normaliseMetalForHoldings(input.metal_type),
+        carat: normaliseCaratForHoldings(input.metal_type, input.carat),
+        purity_percentage: purityToPercent(normaliseCaratForHoldings(input.metal_type, input.carat)),
+        weight_grams: input.weight_grams ?? null,
+        acquired_at: nowIso,
+        acquired_paid_gbp: input.payment_amount_gbp,
+        acquired_spot_gbp_per_g: spotFor(input.metal_type),
+      })
+      .select('id')
+      .single<{ id: string }>();
+    if (stockErr) {
+      // The valuation request is in place; the admin can click "Add to
+      // holdings" on the board if this side failed. Don't block the response.
+      console.error('[walkin:stock]', stockErr);
+    } else {
+      stock = lumpStock;
+    }
+  }
+
+  return (stock as { id: string } | null)?.id ?? null;
+}
+
+/**
+ * Single-shot action for in-person walk-in purchases. Creates (or links) a
+ * customer record, a valuation_request already at status='bought' with the
+ * payment captured, and a stock_items row imported from it — so the same
+ * Print button and Holdings dashboard the website flow uses keep working
+ * unchanged. Returns the new valuation request id for the caller to
+ * redirect to the printable document.
+ */
+export async function createWalkInPurchase(
+  input: WalkInPurchaseInput,
+): Promise<
+  | { ok: true; data: { valuation_request_id: string; stock_item_id: string | null } }
+  | { ok: false; error: string }
+> {
+  const ctx = await requireAdminContext();
+  if ('error' in ctx) return { ok: false, error: ctx.error };
+
+  const validated = validatePurchaseInput(input);
+  if (!validated.ok) return validated;
+  const { first, last, email, phone, items } = validated.data;
+
+  const customer = await upsertPurchaseCustomer(ctx, input, validated.data);
+  if (!customer.ok) return customer;
+  const customerId = customer.customerId;
+
   // --- Step 2: insert valuation_request already at status='bought' ---
   // A well-formed client-generated id is honoured so the reference shown on
   // screen before saving matches the saved record exactly.
@@ -937,109 +1098,14 @@ export async function createWalkInPurchase(
       .eq('id', valuationRequestId);
   }
 
-  const spots = await getMetalSpots();
-  const spotFor = (metal: string | null | undefined) =>
-    metal === 'Gold'
-      ? spots.gold?.per_gram_gbp ?? null
-      : metal === 'Silver'
-      ? spots.silver?.per_gram_gbp ?? null
-      : metal === 'Platinum'
-      ? spots.platinum?.per_gram_gbp ?? null
-      : null;
-
-  let stock: { id: string } | null = null;
-
-  if (items.length > 0) {
-    // --- Step 3a: itemised path - one purchase_item + one holding per line.
-    for (const [idx, it] of items.entries()) {
-      const lineMetal = it.metal_type?.trim() || input.metal_type;
-      const lineStockMetal = normaliseMetalForHoldings(lineMetal);
-      // Fall back to the description when the carat field was left blank
-      // but the description itself is just a carat ("24ct").
-      const lineStockCarat = caratForHoldingsFromLine(lineMetal, it.carat, it.description);
-      const { data: line, error: lineErr } = await ctx.admin
-        .from('purchase_items')
-        .insert({
-          valuation_request_id: valuationRequestId,
-          position: idx + 1,
-          description: it.description.trim().slice(0, 500),
-          metal_type: lineMetal || null,
-          carat: it.carat?.trim() || null,
-          weight_grams: it.weight_grams ?? null,
-          // Spread-only so inserts keep working before migration 035 is applied.
-          ...(it.rate_gbp_per_g != null && Number.isFinite(it.rate_gbp_per_g)
-            ? { rate_gbp_per_g: Number(it.rate_gbp_per_g.toFixed(4)) }
-            : {}),
-          hallmark: it.hallmark?.trim() || null,
-          price_gbp: Number(it.price_gbp.toFixed(2)),
-        })
-        .select('id')
-        .single<{ id: string }>();
-      if (lineErr) {
-        console.error('[walkin:item]', lineErr);
-        continue;
-      }
-      // Best-effort holding per line; the admin can retry from the board.
-      const { data: lineStock, error: lineStockErr } = await ctx.admin
-        .from('stock_items')
-        .insert({
-          valuation_request_id: valuationRequestId,
-          customer_id: customerId,
-          item_type: 'gold',
-          description: [
-            it.description.trim(),
-            it.hallmark?.trim() ? `Hallmark/serial: ${it.hallmark.trim()}` : null,
-            !lineStockCarat && it.carat?.trim() ? `Purity as noted: ${it.carat.trim()}` : null,
-          ]
-            .filter(Boolean)
-            .join(' · '),
-          metal_type: lineStockMetal,
-          carat: lineStockCarat,
-          purity_percentage: purityToPercent(lineStockCarat),
-          weight_grams: it.weight_grams ?? null,
-          acquired_at: nowIso,
-          acquired_paid_gbp: Number(it.price_gbp.toFixed(2)),
-          acquired_spot_gbp_per_g: spotFor(lineStockMetal),
-        })
-        .select('id')
-        .single<{ id: string }>();
-      if (lineStockErr) {
-        console.error('[walkin:item-stock]', lineStockErr);
-      } else if (lineStock) {
-        if (!stock) stock = lineStock;
-        await ctx.admin
-          .from('purchase_items')
-          .update({ stock_item_id: lineStock.id })
-          .eq('id', line!.id);
-      }
-    }
-  } else {
-    // --- Step 3b: legacy single-item path - unchanged behaviour.
-    const { data: lumpStock, error: stockErr } = await ctx.admin
-      .from('stock_items')
-      .insert({
-        valuation_request_id: valuationRequestId,
-        customer_id: customerId,
-        item_type: 'gold',
-        description: input.description?.trim() || null,
-        metal_type: normaliseMetalForHoldings(input.metal_type),
-        carat: normaliseCaratForHoldings(input.metal_type, input.carat),
-        purity_percentage: purityToPercent(normaliseCaratForHoldings(input.metal_type, input.carat)),
-        weight_grams: input.weight_grams ?? null,
-        acquired_at: nowIso,
-        acquired_paid_gbp: input.payment_amount_gbp,
-        acquired_spot_gbp_per_g: spotFor(input.metal_type),
-      })
-      .select('id')
-      .single<{ id: string }>();
-    if (stockErr) {
-      // The valuation request is in place; the admin can click "Add to
-      // holdings" on the board if this side failed. Don't block the response.
-      console.error('[walkin:stock]', stockErr);
-    } else {
-      stock = lumpStock;
-    }
-  }
+  const stockId = await insertPurchaseLines(ctx, {
+    requestId: valuationRequestId,
+    customerId,
+    input,
+    items,
+    nowIso,
+    createStock: true,
+  });
 
   revalidatePath('/admin/valuation-requests');
   revalidatePath('/admin/customers');
@@ -1047,11 +1113,113 @@ export async function createWalkInPurchase(
 
   return {
     ok: true,
-    data: {
-      valuation_request_id: valuationRequestId,
-      stock_item_id: (stock as { id: string } | null)?.id ?? null,
-    },
+    data: { valuation_request_id: valuationRequestId, stock_item_id: stockId },
   };
+}
+
+/**
+ * Complete a purchase on an EXISTING valuation request (the website flow,
+ * once the seller has come in): the admin fills the same form as a walk-in
+ * - seller details, itemised lines, payment - and this action links or
+ * refreshes the customer, updates the request in place (status='bought',
+ * payment captured), replaces its itemised lines and creates one holding
+ * per line, exactly as the walk-in path does. If holdings already exist
+ * for the request the lines and holdings are left alone and only the
+ * seller details and payment are updated, so nothing is ever duplicated.
+ */
+export async function completePurchaseFromRequest(
+  requestId: string,
+  input: WalkInPurchaseInput,
+): Promise<
+  | { ok: true; data: { valuation_request_id: string; stock_item_id: string | null } }
+  | { ok: false; error: string }
+> {
+  const ctx = await requireAdminContext();
+  if ('error' in ctx) return { ok: false, error: ctx.error };
+
+  const validated = validatePurchaseInput(input);
+  if (!validated.ok) return validated;
+  const { first, last, email, phone, items } = validated.data;
+
+  const { data: prior } = await ctx.admin
+    .from('valuation_requests')
+    .select('id, status, paid_at')
+    .eq('id', requestId)
+    .is('deleted_at', null)
+    .maybeSingle<{ id: string; status: string; paid_at: string | null }>();
+  if (!prior) return { ok: false, error: 'Request not found.' };
+
+  const customer = await upsertPurchaseCustomer(ctx, input, validated.data);
+  if (!customer.ok) return customer;
+  const customerId = customer.customerId;
+
+  const nowIso = new Date().toISOString();
+  const { error: vrErr } = await ctx.admin
+    .from('valuation_requests')
+    .update({
+      first_name: first,
+      last_name: last,
+      email,
+      phone,
+      metal_type: input.metal_type,
+      carat: input.carat?.trim() || null,
+      weight_grams: input.weight_grams ?? null,
+      description: input.description?.trim() || null,
+      status: 'bought',
+      payment_amount: input.payment_amount_gbp,
+      payment_method: input.payment_method ?? 'cash',
+      payment_reference: input.payment_reference?.trim() || requestId.slice(0, 8).toUpperCase(),
+      // Spread-only so updates keep working before migration 031 is applied.
+      ...(input.payment_sort_code?.trim()
+        ? { payment_sort_code: input.payment_sort_code.trim().slice(0, 20) }
+        : {}),
+      ...(input.payment_account_number?.trim()
+        ? { payment_account_number: input.payment_account_number.trim().slice(0, 20) }
+        : {}),
+      paid_at: prior.paid_at ?? nowIso,
+      updated_at: nowIso,
+    })
+    .eq('id', requestId);
+  if (vrErr) {
+    console.error('[purchase:complete]', vrErr);
+    return { ok: false, error: vrErr.message };
+  }
+
+  await logAdminAction({
+    admin: ctx.admin,
+    actorId: ctx.userId,
+    entity_type: 'valuation_request',
+    entity_id: requestId,
+    action: 'walk_in_purchase',
+    before: { status: prior.status },
+    after: { status: 'bought', payment_amount: input.payment_amount_gbp },
+    note: `Purchase completed for ${first} ${last}: ${items.length} line${items.length === 1 ? '' : 's'}, £${input.payment_amount_gbp.toFixed(2)}`,
+  });
+
+  // Holdings already created (from the request board) mean the lines are
+  // spoken for: leave items and stock untouched.
+  const { count: stockCount } = await ctx.admin
+    .from('stock_items')
+    .select('id', { count: 'exact', head: true })
+    .eq('valuation_request_id', requestId)
+    .is('deleted_at', null);
+  let stockId: string | null = null;
+  if (!stockCount) {
+    await ctx.admin.from('purchase_items').delete().eq('valuation_request_id', requestId);
+    stockId = await insertPurchaseLines(ctx, {
+      requestId,
+      customerId,
+      input,
+      items,
+      nowIso,
+      createStock: true,
+    });
+  }
+
+  revalidatePath('/admin/valuation-requests');
+  revalidatePath('/admin/customers');
+  revalidatePath('/admin/holdings');
+  return { ok: true, data: { valuation_request_id: requestId, stock_item_id: stockId } };
 }
 
 /** Save internal notes for a request. Notes are admin-only; never sent to the customer. */

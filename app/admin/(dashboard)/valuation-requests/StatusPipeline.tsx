@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   VALUATION_PIPELINE,
   VALUATION_STATUS_LABELS,
@@ -17,6 +18,11 @@ import { BookingModal } from './BookingModal';
  *
  * Moving to "Booked" opens a calendar modal so the visit's date and time are
  * captured with the status - they feed the overview bookings calendar.
+ *
+ * Moving to "Bought" opens the purchase form (seller details, itemised
+ * lines, payment) pre-filled from the request; the status is saved as
+ * Bought when that form is saved, never before, so a Bought request always
+ * has its purchase document behind it.
  *
  * "Rejected" is a separate terminal state shown as a small destructive button.
  * Legacy statuses ('valued', 'completed') map onto the closest stage so old
@@ -39,6 +45,7 @@ export function StatusPipeline({
    * copy of the row in sync (badge colour, filter eligibility, etc.). */
   onChange?: (status: ValuationRequestStatus, patch?: { booked_for: string }) => void;
 }) {
+  const router = useRouter();
   const [status, setStatus] = useState<ValuationRequestStatus>(currentStatus);
   const [bookedFor, setBookedFor] = useState<string | null>(initialBookedFor ?? null);
   const [bookingOpen, setBookingOpen] = useState(false);
@@ -106,7 +113,13 @@ export function StatusPipeline({
               <button
                 type="button"
                 disabled={pending}
-                onClick={() => (stage === 'booked' ? setBookingOpen(true) : setTo(stage))}
+                onClick={() =>
+                  stage === 'booked'
+                    ? setBookingOpen(true)
+                    : stage === 'bought'
+                      ? router.push(`/admin/valuation-requests/${requestId}/purchase`)
+                      : setTo(stage)
+                }
                 className={
                   'group flex w-full flex-col items-start gap-1 rounded-lg border px-2.5 py-2 text-left transition disabled:cursor-wait ' +
                   (active
