@@ -14,7 +14,12 @@ export const reading: LocationContent = {
   heroEyebrow: 'Selling Gold & Jewellery - Reading',
   heroTitle: 'Specialist Valuations for the Thames Valley',
   heroIntro:
-    "Around twelve miles from Reading via the A329, our Ascot office serves the Thames Valley’s residential and tech-corridor clients. Many Reading-area enquiries arrive by insured Royal Mail Special Delivery, but the journey is straightforward - a direct train, in fact - and we welcome in-person appointments, particularly for higher-value pieces. For RG1 to RG6 and the western suburbs we are the nearest private gold buyer that is not a shop: a direct train or half an hour on the M4, or a specialist at your door by appointment.",
+    "Around twelve miles from Reading via the A329, our Ascot office serves the Thames Valley’s residential and tech-corridor clients. Many Reading-area enquiries arrive by insured Royal Mail Special Delivery, but the journey is straightforward - a direct train, in fact - and we welcome in-person appointments, particularly for higher-value pieces. For RG1 to RG6 and the western suburbs we are the nearest private gold buyer that is not a shop.",
+
+  spotlight: {
+    title: 'Gold buyers for Reading: every carat, not only the watches',
+    body: 'The M4 corridor sends us watches and signed rings, but most people who sell gold in Reading are selling something plainer: a broken chain, a single earring, a ring that no longer fits, sovereigns kept in a drawer since the 1980s. As private gold buyers we price all of it the same way, whether it arrives by Special Delivery or across the table: hallmark checked, weighed in front of you or photographed on the scales, the live rate for its carat applied and shown. As jewellery buyers we look before anything is called scrap, because a signed or antique piece is worth more whole than melted. Payment follows the figure, not the calendar: cash for gold on smaller amounts in person, instant bank transfer within seconds on everything else, the day it is agreed.',
+  },
 
   travel: {
     distanceMiles: 12,
@@ -81,9 +86,9 @@ export const reading: LocationContent = {
 
   faqs: [
     {
-      question: "Who is the nearest private gold buyer to Reading?",
+      question: 'If I post my gold, how am I paid, and is cash possible?',
       answer:
-        "Reading has jewellers and pawnbrokers that buy over the counter. The nearest private valuation house is Charters Gold in Ascot, twelve miles away on a direct train, and we visit RG1, RG2, RG4, RG5, RG6, RG30 and RG31 by appointment. One specialist, one client, weighed and priced in front of you.",
+        'Posted pieces are paid by instant bank transfer the day they arrive and are checked, so the money is with you before the empty box is back. Cash for gold is available for smaller amounts if you come to the office or we visit; larger sums are always by transfer, which gives you a record of the sale.',
     },
     {
       question: 'Is the postal route safe for a £10,000 watch?',
