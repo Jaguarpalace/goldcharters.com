@@ -9,7 +9,7 @@ export const reading: LocationContent = {
   metaTitle: 'Sell Gold & Jewellery in Reading - Paid in Seconds',
   titleAbsolute: true,
   metaDescription:
-    'Thames Valley specialists for private gold, watch, jewellery and handbag valuations. Reading and the M4 corridor served by appointment in Ascot or insured postal - same-day payment.',
+    'Sell gold in Reading without the counter. Weighed and priced in front of you at the live rate, paid by instant bank transfer within seconds. Post it insured, or we come to RG1 to RG6.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Reading',
   heroTitle: 'Specialist Valuations for the Thames Valley',

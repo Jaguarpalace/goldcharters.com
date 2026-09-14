@@ -9,7 +9,7 @@ export const kingstonUponThames: LocationContent = {
   metaTitle: 'Sell Gold & Jewellery in Kingston - Paid in Seconds',
   titleAbsolute: true,
   metaDescription:
-    'A private alternative to Kingston’s retail jewellers. Gold, diamond, watch and handbag valuations - home visits across KT postcodes, transparent live pricing, same-day payment.',
+    'Kingston’s jewellers buy at the counter. We come to your home in KT1, KT2 or KT3, price every piece in front of you, and pay within seconds of you accepting. Private, by appointment.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Kingston',
   heroTitle: 'The Private Alternative to Kingston’s Retail Counters',
