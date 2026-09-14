@@ -45,6 +45,15 @@ export type LocationContent = {
   heroTitle: string;
   heroIntro: string;
 
+  /**
+   * Optional short section shown directly under the hero: one heading and
+   * one paragraph written around whatever the rest of the page does NOT
+   * already say (pricing, payment, what we buy). Carries the town's
+   * "gold buyers" / "jewellery buyers" / "cash for gold" phrasing once each,
+   * in plain sentences. Added page by page from Sep 2026, weakest first.
+   */
+  spotlight?: { title: string; body: string };
+
   /* ---- Travel & catchment ---- */
   travel: {
     distanceMiles: number;

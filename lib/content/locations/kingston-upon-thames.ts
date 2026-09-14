@@ -14,7 +14,12 @@ export const kingstonUponThames: LocationContent = {
   heroEyebrow: 'Selling Gold & Jewellery - Kingston',
   heroTitle: 'The Private Alternative to Kingston’s Retail Counters',
   heroIntro:
-    'Kingston is one of the biggest retail centres in the South-East, and its jewellers are built for buying customers - not selling ones. When you are the seller, the economics flip: retail overheads come out of your price. We are a dedicated buying house forty minutes up the A308, we visit KT addresses by appointment, and our offers are built from live rates and auction results. For KT1, KT2 and KT3 we are the nearest private gold buyer built for sellers rather than shoppers, forty minutes up the A308 or at your door by appointment.',
+    'Kingston is one of the biggest retail centres in the South-East, and its jewellers are built for buying customers - not selling ones. When you are the seller, the economics flip: retail overheads come out of your price. We are a dedicated buying house forty minutes up the A308, we visit KT addresses by appointment, and our offers are built from live rates and auction results. For KT1, KT2 and KT3 we are the private gold buyer built for sellers rather than shoppers.',
+
+  spotlight: {
+    title: 'Gold buyers for Kingston: how and when you are paid',
+    body: 'Selling gold often means being asked to wait: for a cheque to clear, for a transfer in three to five working days, for someone senior to sign it off. As private gold buyers we agree the figure at the table and pay it there. Cash for gold on smaller amounts; instant bank transfer within seconds for the rest, usually in your account before the scales are packed away. The same goes for everything we buy as jewellery buyers: a diamond ring priced on its stones and its maker, or a Datejust priced on model, condition and papers, is paid the same way, the same day, whether you sell gold in Kingston at your home or at our office in Ascot. You keep a copy of the purchase document.',
+  },
 
   travel: {
     distanceMiles: 18,
@@ -80,9 +85,9 @@ export const kingstonUponThames: LocationContent = {
 
   faqs: [
     {
-      question: "Who is the nearest private gold buyer to Kingston?",
+      question: 'Do you pay cash for gold, or is it bank transfer only?',
       answer:
-        "Kingston's jewellers are retail shops that buy at the counter. The nearest private buying house is Charters Gold in Ascot, and for KT2, Coombe and Kingston Hill a home visit by appointment is usually quicker than the drive. Offers are built from live rates and auction results, explained in front of you.",
+        'Both. Smaller amounts can be paid in cash at the appointment. Larger sums go by instant bank transfer, which reaches your account within seconds of you accepting and gives you a record of the sale. Either way you are paid before we leave, never "in a few days".',
     },
     {
       question: 'Why not sell to a jeweller in the Bentall Centre or the Ancient Market?',

@@ -115,6 +115,18 @@ export default async function LocationPage({ params }: { params: { slug: string 
         </div>
       </section>
 
+      {/* SPOTLIGHT - optional, one heading + one paragraph per page */}
+      {location.spotlight && (
+        <section className="py-8 lg:py-12 border-b border-gold-metallic/15">
+          <div className="gc-container">
+            <div className="mx-auto max-w-3xl">
+              <h2 className="gc-heading">{location.spotlight.title}</h2>
+              <p className="mt-4 text-base leading-relaxed text-warmgrey">{location.spotlight.body}</p>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* TRAVEL + WHY HERE */}
       <section className="py-8 lg:py-12">
         <div className="gc-container">
