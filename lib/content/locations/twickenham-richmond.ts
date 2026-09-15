@@ -8,12 +8,17 @@ export const twickenhamRichmond: LocationContent = {
 
   metaTitle: 'Sell Gold, Watches & Jewellery in Twickenham & Richmond - Charters Gold',
   metaDescription:
-    'Private valuations for residents of Twickenham, Richmond, Kew, East Sheen and the wider south-west London riverside. Specialist appointments at our Ascot office, a straightforward drive or direct train away.',
+    'Sell gold in Richmond or Twickenham privately. We come to TW1, TW9 and TW10, price every piece in front of you and pay within seconds. Or a direct train to Ascot.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Twickenham & Richmond',
   heroTitle: 'Private Valuations for South-West London Riverside',
   heroIntro:
     'Around fifteen miles from Richmond town centre, our Ascot office is a straightforward drive or a direct train for south-west London riverside clients. We work regularly with clients from TW1, TW2, TW9, TW10 and the wider riverside - Twickenham, Richmond, Kew, East Sheen, St Margarets, Petersham and Ham.',
+
+  spotlight: {
+    title: 'Gold buyers for Richmond and Twickenham: one table for the whole box',
+    body: 'Richmond has bullion counters that buy by weight and jewellers that buy what they can resell. As private gold buyers we do both at the same table, whether that table is at your home in TW9 or TW10 or at our office in Ascot, a direct train from Richmond. A box from a Petersham or St Margarets house usually holds all three kinds of thing: plain gold that prices by carat and gram at the live rate, signed or antique pieces that we price as jewellery buyers on the maker and the stones, and a watch or two priced on model and papers. You see which is which before anything is weighed, and nothing is called scrap that is worth more whole. When you sell gold in Richmond with us, payment is immediate: cash for gold on smaller amounts, instant bank transfer within seconds on the rest.',
+  },
 
   travel: {
     distanceMiles: 15,
@@ -80,6 +85,11 @@ export const twickenhamRichmond: LocationContent = {
   },
 
   faqs: [
+    {
+      question: 'Can I be paid in cash, whether you visit me in Richmond or I come to Ascot?',
+      answer:
+        'For smaller amounts, yes, at either. Larger sums go by instant bank transfer, which lands within seconds of you accepting and gives you a record of the sale. Either way it happens at the table, before the appointment ends.',
+    },
     {
       question: 'Are you affected by rugby international weekends?',
       answer:
