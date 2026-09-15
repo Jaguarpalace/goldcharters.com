@@ -8,12 +8,17 @@ export const guildford: LocationContent = {
 
   metaTitle: 'Sell Gold, Watches & Jewellery in Guildford - Charters Gold',
   metaDescription:
-    'Sell gold, diamonds, watches and designer handbags with a private Surrey valuation house. Direct train from Guildford to Ascot, home visits across GU postcodes, same-day payment.',
+    'Sell gold in Guildford at trade prices, not high-street prices. Direct train to Ascot, or we come to GU1 to GU5. Priced in front of you, paid within seconds.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Guildford',
   heroTitle: 'Trade Prices, Not High Street Prices, for Surrey’s County Town',
   heroIntro:
     'Guildford has no shortage of places to sell jewellery - a high street of chain jewellers, pawnbrokers and gold counters. What it lacks is a dedicated private valuation house. We are forty minutes away by direct train from Guildford station, we visit GU addresses by appointment, and our offers are built from live metal prices and auction results rather than a shop-counter formula.',
+
+  spotlight: {
+    title: 'Gold buyers for Guildford: what half an hour with us looks like',
+    body: 'Bring the pieces, photo identification and any boxes or papers, either to our office in Ascot, forty minutes by direct train from Guildford, or let us come to you anywhere in GU1 to GU5. As private gold buyers we take the gold first: carat from the hallmark, weight on the scales, the live rate applied, broken pieces included. As jewellery buyers we then set aside anything signed, set or period, because a Mappin & Webb brooch or a diamond ring is priced on what it is, not on the gold in it. Watches come last, on model, condition and papers. Every figure goes on one written document that stands whether you decide today or next month. If you sell gold in Guildford with us on the day, it is cash for gold on smaller amounts or instant bank transfer within seconds on the rest, before you leave the table.',
+  },
 
   travel: {
     distanceMiles: 17,
@@ -80,6 +85,11 @@ export const guildford: LocationContent = {
   },
 
   faqs: [
+    {
+      question: 'Do you pay cash for gold in Guildford, or is everything by bank transfer?',
+      answer:
+        'Both are available. Smaller amounts can be paid in cash at the appointment, in Ascot or at your home. Anything larger is paid by instant bank transfer within seconds of you accepting, which also gives you a record of the sale. You are never asked to wait for a cheque.',
+    },
     {
       question: 'Why would I not just sell on Guildford High Street?',
       answer:
