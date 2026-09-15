@@ -11,6 +11,7 @@ import { countUpcomingAppointments } from '@/lib/actions/appointments';
 import { ThemeToggle, type AdminTheme } from './ThemeToggle';
 import { AdminBrand } from './AdminBrand';
 import { AdminShell } from './AdminShell';
+import { MarkInternalDevice } from './_components/MarkInternalDevice';
 import { IdleLogout } from './IdleLogout';
 import { SignOutButton } from './SignOutButton';
 import { NavSections } from './NavSections';
@@ -210,6 +211,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   return (
     <div data-admin-theme={theme} className="admin-shell min-h-screen">
       <IdleLogout />
+      <MarkInternalDevice />
       <AdminShell sidebar={sidebar}>{children}</AdminShell>
     </div>
   );

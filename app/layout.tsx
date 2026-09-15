@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Manrope } from 'next/font/google';
-import { Analytics } from '@vercel/analytics/next';
+import { VercelAnalytics } from '@/components/public/VercelAnalytics';
 import './globals.css';
 import { getSiteSettings } from '@/lib/queries/homepage';
 import { Header } from '@/components/public/Header';
@@ -167,7 +167,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           adsLabel={settings.google_ads_conversion_label ?? null}
         />
         <RecoveryRedirect />
-        <Analytics />
+        <VercelAnalytics />
       </body>
     </html>
   );

@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { onConsentChange, readConsent } from '@/lib/consent/consent';
 import { captureAttribution } from '@/lib/attribution/attribution';
+import { isInternalDevice } from '@/lib/analytics/internal';
 
 /**
  * Google tag (GA4, optionally Google Ads), loaded only with consent.
@@ -32,7 +33,7 @@ export function GoogleTag({ gaId, adsId, adsLabel }: { gaId: string | null; adsI
   }, [pathname, isAdmin]);
 
   useEffect(() => {
-    if (!gaId || isAdmin) return;
+    if (!gaId || isAdmin || isInternalDevice()) return;
 
     const load = () => {
       if (loaded.current) return;
