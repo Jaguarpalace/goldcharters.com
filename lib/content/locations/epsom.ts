@@ -8,12 +8,17 @@ export const epsom: LocationContent = {
 
   metaTitle: 'Sell Gold, Watches & Jewellery in Epsom - Charters Gold',
   metaDescription:
-    'Sell gold, diamonds, watches and jewellery near Epsom. Racing pieces a speciality - thirty minutes from our Ascot office, home visits across KT postcodes, same-day payment.',
+    'Sell gold in Epsom, racing pieces included. Thirty minutes from Ascot, or we come to KT17 to KT19. Priced in front of you, paid within seconds.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Epsom',
   heroTitle: 'From One Racing Town to Another',
   heroIntro:
     'Epsom and Ascot understand each other: two towns built around the turf, and two places where racing jewellery, presentation pieces and Derby-week finery pass down through families. Our Ascot office is around thirty minutes away, we know exactly what a racing piece is worth beyond its metal, and we visit Epsom addresses by appointment.',
+
+  spotlight: {
+    title: 'Gold buyers for Epsom: the paperwork, then the money',
+    body: 'Selling gold should leave you with more than the money. As private gold buyers we work under the UK anti-money-laundering rules, so we ask for photo identification, record what we buy, and hand you a signed purchase document listing every piece, its weight, its carat and the price agreed. That is as true for a Derby badge as for a 22ct bangle, and as jewellery buyers we note the maker and the stones on signed pieces so the record matches the value. It takes a few minutes, at our Ascot office or at your home in KT17, KT18 or KT19, and it is why you can sell gold in Epsom to us without wondering later what happened to what. Once the document is signed, payment follows at the table: cash for gold on smaller amounts, instant bank transfer within seconds on the rest.',
+  },
 
   travel: {
     distanceMiles: 18,
@@ -78,6 +83,11 @@ export const epsom: LocationContent = {
   },
 
   faqs: [
+    {
+      question: 'Is it cash or bank transfer when you buy gold in Epsom?',
+      answer:
+        'Your choice on smaller amounts; cash is available at the appointment, in Ascot or at your home. Larger sums are paid by instant bank transfer, which reaches your account within seconds of you accepting and leaves both of us with a record. Nobody is sent away to wait for a cheque.',
+    },
     {
       question: 'I have Derby memorabilia - badges, a presentation piece. Is that your territory?',
       answer:
