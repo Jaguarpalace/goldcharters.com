@@ -32,7 +32,7 @@ export const kingstonUponThames: LocationContent = {
   whyHere: [
     {
       title: 'Seller-side economics, not shop economics',
-      body: 'A Kingston retail jeweller buying your ring must fund the Bentall Centre-adjacent rent it sells from. We hold no retail stock and no shop window: each piece is priced individually against the live metal rate or auction comparables, and the difference lands in your figure.',
+      body: 'A Kingston retail jeweller buying your ring must fund the Bentall Centre-adjacent rent it sells from. We hold no retail stock and no shop window: each piece is priced individually against our per-gram rate or auction comparables, and the difference lands in your figure.',
     },
     {
       title: 'At home on Coombe Hill',

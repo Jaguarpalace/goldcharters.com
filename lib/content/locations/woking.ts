@@ -26,7 +26,7 @@ export const woking: LocationContent = {
   whyHere: [
     {
       title: 'Commuter-belt collections, correctly priced',
-      body: 'Woking sells us the classic professional portfolio: the Rolex bought on a City bonus, the engagement ring being upgraded at year ten, sovereigns inherited from a Horsell grandparent. We price each against live metal rates and current watch-market results - not a counter formula built for scrap.',
+      body: 'Woking sells us the classic professional portfolio: the Rolex bought on a City bonus, the engagement ring being upgraded at year ten, sovereigns inherited from a Horsell grandparent. We price each against our per-gram rates and current watch-market results - not a counter formula built for scrap.',
     },
     {
       title: 'Local to the golf-belt estates',

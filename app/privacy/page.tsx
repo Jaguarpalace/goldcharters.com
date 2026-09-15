@@ -187,7 +187,7 @@ export default async function PrivacyPage() {
       <ul>
         <li>
           <strong>Service providers:</strong> trusted suppliers we engage to provide services on our
-          behalf, including secure hosting (Supabase, Vercel), email and communications providers,
+          behalf, including secure hosting providers, email and communications providers,
           identity verification platforms, postal and courier carriers (e.g. Royal Mail Special
           Delivery, secure couriers), refining partners, payment processors, accountants and
           professional advisers. All such providers are bound by confidentiality and data

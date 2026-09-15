@@ -82,7 +82,7 @@ export const maidenheadBray: LocationContent = {
     {
       question: 'Is it worth the drive to Ascot rather than selling in Maidenhead?',
       answer:
-        'Usually, yes - and the difference tends to grow with the value of the piece. High-street buyers price to a formula that covers retail overheads; we price each piece individually against live metal rates and, for signed or period jewellery, current auction results. Twenty minutes often pays for itself several times over. If you’d rather not travel at all, we’ll come to you.',
+        'Usually, yes - and the difference tends to grow with the value of the piece. High-street buyers price to a formula that covers retail overheads; we price each piece individually against our per-gram rates and, for signed or period jewellery, current auction results. Twenty minutes often pays for itself several times over. If you’d rather not travel at all, we’ll come to you.',
     },
     {
       question: 'Can you visit us in Bray or Cookham?',
