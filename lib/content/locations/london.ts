@@ -63,7 +63,7 @@ export const london: LocationContent = {
     {
       icon: 'post',
       title: 'Insured postal valuation',
-      body: 'For pieces up to £20,000 we use Royal Mail Special Delivery - fully insured, signed-for, tracked next-working-day. We provide a free postage label and a step-by-step packing guide. Funds are released the same day we accept your piece.',
+      body: 'For smaller pieces, Royal Mail Special Delivery is the route: tracked, signed for, next working day, with Royal Mail compensation available up to £2,500. For anything worth more than that we come to you. Funds are released the same day we accept your piece.',
     },
     {
       icon: 'in-person',
@@ -73,7 +73,7 @@ export const london: LocationContent = {
     {
       icon: 'collect',
       title: 'Home visit for significant pieces',
-      body: 'For collections, single pieces above £20,000, or where a relative is unable to travel, we arrange a private visit at a London address by appointment. Identification on arrival; valuation is given in writing.',
+      body: 'For collections, single pieces worth more than £2,500, or where a relative is unable to travel, we arrange a private visit at a London address by appointment. Identification on arrival; valuation is given in writing.',
     },
   ],
 
@@ -86,7 +86,7 @@ export const london: LocationContent = {
     {
       question: 'Is the postal route really safe for a piece worth £15,000?',
       answer:
-        'Yes - Royal Mail Special Delivery insures up to £20,000 with tracked, signed-for, next-working-day handling. We provide a packing guide that satisfies the insurance terms. Once the piece is in the system you receive tracking, and we confirm receipt the same morning it arrives.',
+        'Not for £15,000. Royal Mail\x27s compensation on Special Delivery tops out at £2,500, so for a piece of that value we come to you or you come to us. For pieces within that cover, Special Delivery is tracked, signed for and next working day; add the compensation at the counter and keep your proof of posting. Once the piece is in the system you receive tracking, and we confirm receipt the same morning it arrives.',
     },
     {
       question: 'Do you collect from London?',

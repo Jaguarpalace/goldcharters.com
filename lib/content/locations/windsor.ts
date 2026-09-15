@@ -67,7 +67,7 @@ export const windsor: LocationContent = {
     {
       icon: 'post',
       title: 'Insured postal valuation',
-      body: 'For smaller pieces or when timing makes a visit difficult, Royal Mail Special Delivery from any SL4 postbox reaches us next working day, insured up to £20,000.',
+      body: 'For smaller pieces or when timing makes a visit difficult, Royal Mail Special Delivery from any SL4 postbox reaches us next working day, with Royal Mail compensation available up to £2,500.',
     },
   ],
 

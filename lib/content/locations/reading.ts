@@ -9,7 +9,7 @@ export const reading: LocationContent = {
   metaTitle: 'Sell Gold & Jewellery in Reading - Paid in Seconds',
   titleAbsolute: true,
   metaDescription:
-    'Sell gold in Reading without the counter. Weighed and priced in front of you at the live rate, paid by instant bank transfer within seconds. Post it insured, or we come to RG1 to RG6.',
+    'Sell gold in Reading without the counter. Weighed and priced in front of you at the live rate, paid by instant bank transfer the same day. Post it insured, or we come to RG1 to RG6.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Reading',
   heroTitle: 'Specialist Valuations for the Thames Valley',
@@ -18,7 +18,7 @@ export const reading: LocationContent = {
 
   spotlight: {
     title: 'Gold buyers for Reading: every carat, not only the watches',
-    body: 'The M4 corridor sends us watches and signed rings, but most people who sell gold in Reading are selling something plainer: a broken chain, a single earring, a ring that no longer fits, sovereigns kept in a drawer since the 1980s. As private gold buyers we price all of it the same way, whether it arrives by Special Delivery or across the table: hallmark checked, weighed in front of you or photographed on the scales, the live rate for its carat applied and shown. As jewellery buyers we look before anything is called scrap, because a signed or antique piece is worth more whole than melted. Payment follows the figure, not the calendar: cash for gold on smaller amounts in person, instant bank transfer within seconds on everything else, the day it is agreed.',
+    body: 'The M4 corridor sends us watches and signed rings, but most people who sell gold in Reading are selling something plainer: a broken chain, a single earring, a ring that no longer fits, sovereigns kept in a drawer since the 1980s. As private gold buyers we price all of it the same way, whether it arrives by Special Delivery or across the table: hallmark checked, weighed in front of you or photographed on the scales, the live rate for its carat applied and shown. As jewellery buyers we look before anything is called scrap, because a signed or antique piece is worth more whole than melted. Payment follows the figure, not the calendar: cash for gold on smaller amounts in person, instant bank transfer on everything else, the same day it is agreed and usually within seconds.',
   },
 
   travel: {
@@ -36,7 +36,7 @@ export const reading: LocationContent = {
     },
     {
       title: 'Easy postal service if the drive is awkward',
-      body: 'For pieces up to £20,000, Royal Mail Special Delivery from any Reading postbox reaches us next working day. Particularly useful for clients in Reading itself, Earley, Woodley and Tilehurst who would rather not make the drive.',
+      body: 'For pieces within Royal Mail\x27s £2,500 compensation cover, Special Delivery from any Reading postbox reaches us next working day. Particularly useful for clients in Reading itself, Earley, Woodley and Tilehurst who would rather not make the drive.',
     },
     {
       title: 'No high-street pressure',
@@ -65,7 +65,7 @@ export const reading: LocationContent = {
     {
       icon: 'post',
       title: 'Insured postal valuation',
-      body: 'Often the easiest route for Reading-area clients - Royal Mail Special Delivery from any RG postbox reaches us next working day, tracked and insured up to £20,000. We provide a free postage label and a step-by-step packing guide.',
+      body: 'Often the easiest route for Reading-area clients - Royal Mail Special Delivery from any RG postbox reaches us next working day, tracked and signed for, with Royal Mail compensation available up to £2,500. Ask us for packing advice before you send.',
     },
     {
       icon: 'in-person',
@@ -93,7 +93,7 @@ export const reading: LocationContent = {
     {
       question: 'Is the postal route safe for a £10,000 watch?',
       answer:
-        'Yes - Royal Mail Special Delivery insures up to £20,000 with tracked, signed-for, next-working-day handling. We provide a packing guide that satisfies the insurance terms. Once posted you receive tracking, and we confirm receipt the same morning it arrives.',
+        'Not for £10,000. Royal Mail\x27s compensation on Special Delivery tops out at £2,500, so for a watch of that value we come to you or you come to us. For pieces within that cover, Special Delivery is tracked, signed for and next working day; add the compensation at the counter and keep your proof of posting. Once posted you receive tracking, and we confirm receipt the same morning it arrives.',
     },
     {
       question: 'I bought my watch on a corporate finance scheme - can you still buy it?',

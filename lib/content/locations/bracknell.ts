@@ -79,7 +79,7 @@ export const bracknell: LocationContent = {
     {
       icon: 'post',
       title: 'Insured postal valuation',
-      body: 'Royal Mail Special Delivery from any Bracknell or Crowthorne post office reaches us next working day, tracked and insured up to £20,000. The practical route for a single smaller piece.',
+      body: 'Royal Mail Special Delivery from any Bracknell or Crowthorne post office reaches us next working day, tracked and signed for, with Royal Mail compensation available up to £2,500. The practical route for a single smaller piece.',
     },
   ],
 
@@ -102,7 +102,7 @@ export const bracknell: LocationContent = {
     {
       question: 'Why choose Charters Gold as your gold buyers in Bracknell?',
       answer:
-        'Because we are the nearest private gold buyers to Bracknell, twelve minutes away in Ascot, and we come to you across RG12, RG42 and RG45 by appointment. Every piece is weighed and priced in front of you at the live rate for its carat, watches and signed jewellery are valued on the market rather than melted weight, and payment is by bank transfer within seconds of you agreeing the figure. One specialist, one client, no counter and no queue.',
+        'Because we are the nearest private gold buyers to Bracknell, twelve minutes away in Ascot, and we come to you across RG12, RG42 and RG45 by appointment. Every piece is weighed and priced in front of you at the live rate for its carat, watches and signed jewellery are valued on the market rather than melted weight, and payment is by bank transfer the same day, usually within seconds of you agreeing the figure. One specialist, one client, no counter and no queue.',
     },
     {
       question: "Is there a gold buyer near Bracknell that isn't a high-street counter?",

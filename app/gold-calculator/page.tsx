@@ -43,7 +43,7 @@ export async function generateMetadata(): Promise<Metadata> {
   // bait. The exact figures live on the page only.
   const title = `9ct Gold Price Per Gram Today, ${formatDateGB(new Date(), 'long').replace(/ (\d{4})$/, ' $1')} | Instant Guide Price`;
   const description =
-    'Find out what your 9ct gold is worth per gram today. Enter the weight, see a guide figure in seconds, and get paid by bank transfer within seconds when you sell in person.';
+    'Find out what your 9ct gold is worth per gram today. Enter the weight, see a guide figure in seconds, and get paid by bank transfer the same day, often within seconds, when you sell in person.';
   return {
     ...base,
     title: { absolute: title },
@@ -119,12 +119,12 @@ function buildFaqs(rates: CalculatorRate[]) {
     {
       question: 'How quickly do I get paid?',
       answer:
-        'Within seconds. When you accept our figure in person - at the Ascot office or at your home - we send the money by instant bank transfer on the spot, and it normally shows in your account before the appointment is over. Cash is available for smaller sums. Pieces sent by insured post are paid by the same instant transfer on the day they arrive and are checked.',
+        'The same day, and usually within seconds. When you accept our figure in person - at the Ascot office or at your home - we send the money by instant bank transfer on the spot, and it normally shows in your account before the appointment is over. Cash is available for smaller sums. Pieces sent by insured post are paid by the same instant transfer on the day they arrive and are checked.',
     },
     {
       question: 'How do I sell after using the calculator?',
       answer:
-        'Send photographs through the valuation form below for a written figure within one working day, book a private appointment at our Ascot office, or arrange a home visit. Once you accept, payment is by instant bank transfer within seconds.',
+        'Send photographs through the valuation form below for a written figure within one working day, book a private appointment at our Ascot office, or arrange a home visit. Once you accept, payment is by instant bank transfer the same day, usually within seconds.',
     },
   ];
 }
@@ -142,7 +142,7 @@ export default async function GoldCalculatorPage() {
 
   const heading = '9ct Gold Price Per Gram Today';
   const subhead =
-    'Enter your weights in grams and see what we would pay today for 9ct, 14ct, 18ct and 22ct gold. Our rates move with the gold market through the day. Sell in person and you are paid by instant bank transfer within seconds of accepting.';
+    'Enter your weights in grams and see what we would pay today for 9ct, 14ct, 18ct and 22ct gold. Our rates move with the gold market through the day. Sell in person and you are paid by instant bank transfer the same day, usually within seconds of accepting.';
 
   return (
     <>
@@ -263,7 +263,7 @@ export default async function GoldCalculatorPage() {
 
             <div className="mx-auto mt-8 max-w-3xl rounded-xl border border-gold-metallic/30 bg-gold-metallic/10 px-5 py-4 text-center">
               <p className="font-display text-lg font-semibold text-gold-bright">
-                Paid within seconds, not days
+                Paid the same day, usually within seconds
               </p>
               <p className="mt-1 text-sm text-warmgrey">
                 Accept our figure at the Ascot office or at your home and the money is sent by

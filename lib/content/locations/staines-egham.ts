@@ -68,7 +68,7 @@ export const stainesEgham: LocationContent = {
     {
       icon: 'post',
       title: 'Insured postal - for those who prefer it',
-      body: 'Less common locally given how short the drive to Ascot is, but available if it suits you. Royal Mail Special Delivery from any TW18 / TW20 postbox reaches us next working day, tracked and insured up to £20,000.',
+      body: 'Less common locally given how short the drive to Ascot is, but available if it suits you. Royal Mail Special Delivery from any TW18 / TW20 postbox reaches us next working day, tracked and signed for, with Royal Mail compensation available up to £2,500.',
     },
   ],
 

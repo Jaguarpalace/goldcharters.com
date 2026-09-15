@@ -69,7 +69,7 @@ export const beaconsfieldGerrardsCross: LocationContent = {
     {
       icon: 'post',
       title: 'Insured postal valuation',
-      body: 'For single smaller pieces, Royal Mail Special Delivery from Beaconsfield or Gerrards Cross reaches us next working day, tracked and insured up to £20,000.',
+      body: 'For single smaller pieces, Royal Mail Special Delivery from Beaconsfield or Gerrards Cross reaches us next working day, tracked and signed for, with Royal Mail compensation available up to £2,500.',
     },
   ],
 

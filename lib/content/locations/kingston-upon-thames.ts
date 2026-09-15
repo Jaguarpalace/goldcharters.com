@@ -9,7 +9,7 @@ export const kingstonUponThames: LocationContent = {
   metaTitle: 'Sell Gold & Jewellery in Kingston - Paid in Seconds',
   titleAbsolute: true,
   metaDescription:
-    'Kingston’s jewellers buy at the counter. We come to your home in KT1, KT2 or KT3, price every piece in front of you, and pay within seconds of you accepting. Private, by appointment.',
+    'Kingston’s jewellers buy at the counter. We come to your home in KT1, KT2 or KT3, price every piece in front of you, and pay the same day, usually within seconds of you accepting. Private, by appointment.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Kingston',
   heroTitle: 'The Private Alternative to Kingston’s Retail Counters',
@@ -18,7 +18,7 @@ export const kingstonUponThames: LocationContent = {
 
   spotlight: {
     title: 'Gold buyers for Kingston: how and when you are paid',
-    body: 'Selling gold often means being asked to wait: for a cheque to clear, for a transfer in three to five working days, for someone senior to sign it off. As private gold buyers we agree the figure at the table and pay it there. Cash for gold on smaller amounts; instant bank transfer within seconds for the rest, usually in your account before the scales are packed away. The same goes for everything we buy as jewellery buyers: a diamond ring priced on its stones and its maker, or a Datejust priced on model, condition and papers, is paid the same way, the same day, whether you sell gold in Kingston at your home or at our office in Ascot. You keep a copy of the purchase document.',
+    body: 'Selling gold often means being asked to wait: for a cheque to clear, for a transfer in three to five working days, for someone senior to sign it off. As private gold buyers we agree the figure at the table and pay it there. Cash for gold on smaller amounts; instant bank transfer for the rest, sent the same day and usually in your account before the scales are packed away. The same goes for everything we buy as jewellery buyers: a diamond ring priced on its stones and its maker, or a Datejust priced on model, condition and papers, is paid the same way, the same day, whether you sell gold in Kingston at your home or at our office in Ascot. You keep a copy of the purchase document.',
   },
 
   travel: {
@@ -74,7 +74,7 @@ export const kingstonUponThames: LocationContent = {
     {
       icon: 'post',
       title: 'Insured postal valuation',
-      body: 'Royal Mail Special Delivery from any Kingston post office arrives next working day, tracked and insured up to £20,000. Ideal for single smaller pieces.',
+      body: 'Royal Mail Special Delivery from any Kingston post office arrives next working day, tracked and signed for, with Royal Mail compensation available up to £2,500. Ideal for single smaller pieces.',
     },
   ],
 
@@ -87,7 +87,7 @@ export const kingstonUponThames: LocationContent = {
     {
       question: 'Do you pay cash for gold, or is it bank transfer only?',
       answer:
-        'Both. Smaller amounts can be paid in cash at the appointment. Larger sums go by instant bank transfer, which reaches your account within seconds of you accepting and gives you a record of the sale. Either way you are paid before we leave, never "in a few days".',
+        'Both. Smaller amounts can be paid in cash at the appointment. Larger sums go by instant bank transfer, sent the same day and usually in your account within seconds of you accepting and gives you a record of the sale. Either way you are paid before we leave, never "in a few days".',
     },
     {
       question: 'Why not sell to a jeweller in the Bentall Centre or the Ancient Market?',

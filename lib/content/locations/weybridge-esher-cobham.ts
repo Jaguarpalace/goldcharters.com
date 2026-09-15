@@ -8,7 +8,7 @@ export const weybridgeEsherCobham: LocationContent = {
 
   metaTitle: 'Sell Gold, Watches & Jewellery in Weybridge, Esher & Cobham - Charters Gold',
   metaDescription:
-    'Sell gold in Weybridge, Esher or Cobham behind your own gates, or at our Ascot office. Priced in front of you, paid by instant transfer within seconds.',
+    'Sell gold in Weybridge, Esher or Cobham behind your own gates, or at our Ascot office. Priced in front of you, paid by instant transfer the same day.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Elmbridge',
   heroTitle: 'Specialists for the Weybridge, Esher & Cobham Triangle',
@@ -74,7 +74,7 @@ export const weybridgeEsherCobham: LocationContent = {
     {
       icon: 'post',
       title: 'Insured postal valuation',
-      body: 'For single smaller pieces, Royal Mail Special Delivery reaches us next working day, tracked and insured up to £20,000. For anything significant we recommend the home visit instead.',
+      body: 'For single smaller pieces, Royal Mail Special Delivery reaches us next working day, tracked and signed for, with Royal Mail compensation available up to £2,500. For anything significant we recommend the home visit instead.',
     },
   ],
 

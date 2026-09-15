@@ -125,16 +125,14 @@ export default async function TermsPage() {
         warranties in clause 3 and agree to provide all information requested by us.
       </p>
 
-      <h3>5.2 Postal Submissions - At Your Own Risk</h3>
+      <h3>5.2 Postal Submissions</h3>
       <p>
-        Where you choose to post Items to us, you do so <strong>entirely at your own risk</strong>.
-        You are solely responsible for ensuring adequate insurance, secure packaging and a tracked,
-        signed-for delivery method.{' '}
-        <strong>
-          We accept no responsibility for loss, theft, damage or delay during transit prior to
-          confirmed receipt by us.
-        </strong>{' '}
-        We strongly recommend Royal Mail Special Delivery or an equivalent insured courier service.
+        Where you choose to post Items to us, we recommend Royal Mail Special Delivery with the
+        additional compensation added at the counter (currently available up to £2,500), secure
+        packaging and a tracked, signed-for service, and we recommend post only for Items within
+        that value. Items remain in your care until we confirm receipt, which we do on the day they
+        arrive, and we photograph every parcel on opening. Loss or damage in transit is covered by
+        Royal Mail's compensation rather than by us, so please keep your proof of posting.
       </p>
 
       <h3>5.3 Inspection</h3>
@@ -180,8 +178,8 @@ export default async function TermsPage() {
       <p>
         Payment will be made by bank transfer to an account in your name, or by such other lawful
         method as agreed in writing. We do not pay third parties.{' '}
-        <strong>Payment is typically released within one (1) Working Day</strong> of Offer
-        acceptance and successful completion of identity verification, but timing is not guaranteed.
+        <strong>Payment is made on the day your Offer is accepted</strong> and identity verification is
+        complete, by instant bank transfer, and is usually with you within seconds.
         We are not liable for any delays caused by banks, payment processors, identity providers or
         events beyond our reasonable control.
       </p>
@@ -201,11 +199,6 @@ export default async function TermsPage() {
         <li>
           We may require completion of identity verification before returning Items, in line with
           our AML obligations.
-        </li>
-        <li>
-          We reserve the right to charge reasonable administrative fees, testing costs and return
-          shipping where Items were materially misdescribed by you or where we have incurred
-          third-party expert costs.
         </li>
       </ul>
 

@@ -73,7 +73,7 @@ export const surrey: LocationContent = {
     {
       icon: 'post',
       title: 'Insured postal valuation',
-      body: 'For clients further from Ascot (Guildford, Farnham, Godalming) Royal Mail Special Delivery offers a tracked, insured, next-working-day option for pieces up to £20,000.',
+      body: 'For clients further from Ascot (Guildford, Farnham, Godalming) Royal Mail Special Delivery offers a tracked, signed-for, next-working-day option with Royal Mail compensation available up to £2,500; above that value we come to you.',
     },
   ],
 

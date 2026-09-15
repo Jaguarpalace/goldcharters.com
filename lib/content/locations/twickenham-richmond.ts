@@ -8,7 +8,7 @@ export const twickenhamRichmond: LocationContent = {
 
   metaTitle: 'Sell Gold, Watches & Jewellery in Twickenham & Richmond - Charters Gold',
   metaDescription:
-    'Sell gold in Richmond or Twickenham privately. We come to TW1, TW9 and TW10, price every piece in front of you and pay within seconds. Or a direct train to Ascot.',
+    'Sell gold in Richmond or Twickenham privately. We come to TW1, TW9 and TW10, price every piece in front of you and pay the same day, usually within seconds. Or a direct train to Ascot.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Twickenham & Richmond',
   heroTitle: 'Private Valuations for South-West London Riverside',
@@ -17,7 +17,7 @@ export const twickenhamRichmond: LocationContent = {
 
   spotlight: {
     title: 'Gold buyers for Richmond and Twickenham: one table for the whole box',
-    body: 'Richmond has bullion counters that buy by weight and jewellers that buy what they can resell. As private gold buyers we do both at the same table, whether that table is at your home in TW9 or TW10 or at our office in Ascot, a direct train from Richmond. A box from a Petersham or St Margarets house usually holds all three kinds of thing: plain gold that prices by carat and gram at the live rate, signed or antique pieces that we price as jewellery buyers on the maker and the stones, and a watch or two priced on model and papers. You see which is which before anything is weighed, and nothing is called scrap that is worth more whole. When you sell gold in Richmond with us, payment is immediate: cash for gold on smaller amounts, instant bank transfer within seconds on the rest.',
+    body: 'Richmond has bullion counters that buy by weight and jewellers that buy what they can resell. As private gold buyers we do both at the same table, whether that table is at your home in TW9 or TW10 or at our office in Ascot, a direct train from Richmond. A box from a Petersham or St Margarets house usually holds all three kinds of thing: plain gold that prices by carat and gram at the live rate, signed or antique pieces that we price as jewellery buyers on the maker and the stones, and a watch or two priced on model and papers. You see which is which before anything is weighed, and nothing is called scrap that is worth more whole. When you sell gold in Richmond with us, payment is immediate: cash for gold on smaller amounts, instant bank transfer on the rest, sent the same day and usually with you within seconds.',
   },
 
   travel: {
@@ -75,7 +75,7 @@ export const twickenhamRichmond: LocationContent = {
     {
       icon: 'post',
       title: 'Insured postal valuation',
-      body: 'For smaller pieces or busy diaries, Royal Mail Special Delivery from any TW postbox reaches us next working day, tracked and insured up to £20,000.',
+      body: 'For smaller pieces or busy diaries, Royal Mail Special Delivery from any TW postbox reaches us next working day, tracked and signed for, with Royal Mail compensation available up to £2,500.',
     },
   ],
 
@@ -88,7 +88,7 @@ export const twickenhamRichmond: LocationContent = {
     {
       question: 'Can I be paid in cash, whether you visit me in Richmond or I come to Ascot?',
       answer:
-        'For smaller amounts, yes, at either. Larger sums go by instant bank transfer, which lands within seconds of you accepting and gives you a record of the sale. Either way it happens at the table, before the appointment ends.',
+        'For smaller amounts, yes, at either. Larger sums go by instant bank transfer, sent the same day and usually with you within seconds of you accepting and gives you a record of the sale. Either way it happens at the table, before the appointment ends.',
     },
     {
       question: 'Are you affected by rugby international weekends?',

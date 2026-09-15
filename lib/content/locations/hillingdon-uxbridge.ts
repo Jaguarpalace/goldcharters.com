@@ -67,7 +67,7 @@ export const hillingdonUxbridge: LocationContent = {
     {
       icon: 'post',
       title: 'Insured postal valuation',
-      body: 'Royal Mail Special Delivery from any borough post office arrives next working day, tracked and insured up to £20,000 - the simple route for single pieces.',
+      body: 'Royal Mail Special Delivery from any borough post office arrives next working day, tracked and signed for, with Royal Mail compensation available up to £2,500 - the simple route for single pieces.',
     },
   ],
 

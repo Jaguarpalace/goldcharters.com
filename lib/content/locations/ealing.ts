@@ -68,7 +68,7 @@ export const ealing: LocationContent = {
     {
       icon: 'post',
       title: 'Insured postal valuation',
-      body: 'Royal Mail Special Delivery from any Ealing post office reaches us next working day, tracked and insured up to £20,000. We call with a figure the day it lands.',
+      body: 'Royal Mail Special Delivery from any Ealing post office reaches us next working day, tracked and signed for, with Royal Mail compensation available up to £2,500. We call with a figure the day it lands.',
     },
   ],
 
@@ -101,7 +101,7 @@ export const ealing: LocationContent = {
     {
       question: 'Is my gold safe going by post?',
       answer:
-        'Royal Mail Special Delivery is tracked end-to-end, requires a signature, and insures up to £20,000 - it is how much of the UK trade moves metal. Photograph everything before sending; we photograph everything on arrival and confirm receipt the same morning.',
+        'Royal Mail Special Delivery is tracked end-to-end, requires a signature, and carries compensation of up to £2,500 when you add it at the counter, so it suits smaller pieces; for anything worth more we come to you. Photograph everything before sending; we photograph everything on arrival and confirm receipt the same morning.',
     },
   ],
 

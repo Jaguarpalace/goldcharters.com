@@ -8,7 +8,7 @@ export const epsom: LocationContent = {
 
   metaTitle: 'Sell Gold, Watches & Jewellery in Epsom - Charters Gold',
   metaDescription:
-    'Sell gold in Epsom, racing pieces included. Thirty minutes from Ascot, or we come to KT17 to KT19. Priced in front of you, paid within seconds.',
+    'Sell gold in Epsom, racing pieces included. Thirty minutes from Ascot, or we come to KT17 to KT19. Priced in front of you, paid the same day.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Epsom',
   heroTitle: 'From One Racing Town to Another',
@@ -17,7 +17,7 @@ export const epsom: LocationContent = {
 
   spotlight: {
     title: 'Gold buyers for Epsom: the paperwork, then the money',
-    body: 'Selling gold should leave you with more than the money. As private gold buyers we work under the UK anti-money-laundering rules, so we ask for photo identification, record what we buy, and hand you a signed purchase document listing every piece, its weight, its carat and the price agreed. That is as true for a Derby badge as for a 22ct bangle, and as jewellery buyers we note the maker and the stones on signed pieces so the record matches the value. It takes a few minutes, at our Ascot office or at your home in KT17, KT18 or KT19, and it is why you can sell gold in Epsom to us without wondering later what happened to what. Once the document is signed, payment follows at the table: cash for gold on smaller amounts, instant bank transfer within seconds on the rest.',
+    body: 'Selling gold should leave you with more than the money. As private gold buyers we work under the UK anti-money-laundering rules, so we ask for photo identification, record what we buy, and hand you a signed purchase document listing every piece, its weight, its carat and the price agreed. That is as true for a Derby badge as for a 22ct bangle, and as jewellery buyers we note the maker and the stones on signed pieces so the record matches the value. It takes a few minutes, at our Ascot office or at your home in KT17, KT18 or KT19, and it is why you can sell gold in Epsom to us without wondering later what happened to what. Once the document is signed, payment follows at the table: cash for gold on smaller amounts, instant bank transfer on the rest, sent the same day and usually with you within seconds.',
   },
 
   travel: {
@@ -73,7 +73,7 @@ export const epsom: LocationContent = {
     {
       icon: 'post',
       title: 'Insured postal valuation',
-      body: 'Royal Mail Special Delivery from any Epsom post office arrives next working day, tracked and insured up to £20,000. We call with a figure the day it lands.',
+      body: 'Royal Mail Special Delivery from any Epsom post office arrives next working day, tracked and signed for, with Royal Mail compensation available up to £2,500. We call with a figure the day it lands.',
     },
   ],
 
@@ -86,7 +86,7 @@ export const epsom: LocationContent = {
     {
       question: 'Is it cash or bank transfer when you buy gold in Epsom?',
       answer:
-        'Your choice on smaller amounts; cash is available at the appointment, in Ascot or at your home. Larger sums are paid by instant bank transfer, which reaches your account within seconds of you accepting and leaves both of us with a record. Nobody is sent away to wait for a cheque.',
+        'Your choice on smaller amounts; cash is available at the appointment, in Ascot or at your home. Larger sums are paid by instant bank transfer, sent the same day and usually in your account within seconds of you accepting and leaves both of us with a record. Nobody is sent away to wait for a cheque.',
     },
     {
       question: 'I have Derby memorabilia - badges, a presentation piece. Is that your territory?',

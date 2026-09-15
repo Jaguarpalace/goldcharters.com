@@ -69,7 +69,7 @@ export const marlowHenley: LocationContent = {
     {
       icon: 'post',
       title: 'Insured postal valuation',
-      body: 'Royal Mail Special Delivery from Marlow or Henley post office arrives next working day, tracked and insured up to £20,000. We call with a figure the day it lands.',
+      body: 'Royal Mail Special Delivery from Marlow or Henley post office arrives next working day, tracked and signed for, with Royal Mail compensation available up to £2,500. We call with a figure the day it lands.',
     },
   ],
 

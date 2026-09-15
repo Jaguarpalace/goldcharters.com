@@ -66,7 +66,7 @@ export const ascot: LocationContent = {
     {
       icon: 'post',
       title: 'Insured postal valuation',
-      body: 'For smaller pieces or out-of-area enquiries, Royal Mail Special Delivery from any SL5 postbox reaches us next working day, tracked and insured up to £20,000.',
+      body: 'For smaller pieces or out-of-area enquiries, Royal Mail Special Delivery from any SL5 postbox reaches us next working day, tracked and signed for, with Royal Mail compensation available up to £2,500.',
     },
   ],
 

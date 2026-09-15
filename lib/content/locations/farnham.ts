@@ -69,7 +69,7 @@ export const farnham: LocationContent = {
     {
       icon: 'post',
       title: 'Insured postal valuation',
-      body: 'Royal Mail Special Delivery from Farnham post office reaches us next working day, tracked and insured up to £20,000 - ideal for single smaller pieces.',
+      body: 'Royal Mail Special Delivery from Farnham post office reaches us next working day, tracked and signed for, with Royal Mail compensation available up to £2,500 - ideal for single smaller pieces.',
     },
   ],
 

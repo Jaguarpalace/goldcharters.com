@@ -21,6 +21,9 @@ export function generateStaticParams() {
 }
 
 export const revalidate = 86400;
+// Only the 24 hand-written slugs exist; anything else is a real 404 at the
+// router, not a rendered not-found page with a 200 status.
+export const dynamicParams = false;
 
 export async function generateMetadata({
   params,

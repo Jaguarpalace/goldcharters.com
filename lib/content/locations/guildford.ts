@@ -8,7 +8,7 @@ export const guildford: LocationContent = {
 
   metaTitle: 'Sell Gold, Watches & Jewellery in Guildford - Charters Gold',
   metaDescription:
-    'Sell gold in Guildford at trade prices, not high-street prices. Direct train to Ascot, or we come to GU1 to GU5. Priced in front of you, paid within seconds.',
+    'Sell gold in Guildford at trade prices, not high-street prices. Direct train to Ascot, or we come to GU1 to GU5. Priced in front of you, paid the same day.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Guildford',
   heroTitle: 'Trade Prices, Not High Street Prices, for Surrey’s County Town',
@@ -17,7 +17,7 @@ export const guildford: LocationContent = {
 
   spotlight: {
     title: 'Gold buyers for Guildford: what half an hour with us looks like',
-    body: 'Bring the pieces, photo identification and any boxes or papers, either to our office in Ascot, forty minutes by direct train from Guildford, or let us come to you anywhere in GU1 to GU5. As private gold buyers we take the gold first: carat from the hallmark, weight on the scales, the live rate applied, broken pieces included. As jewellery buyers we then set aside anything signed, set or period, because a Mappin & Webb brooch or a diamond ring is priced on what it is, not on the gold in it. Watches come last, on model, condition and papers. Every figure goes on one written document that stands whether you decide today or next month. If you sell gold in Guildford with us on the day, it is cash for gold on smaller amounts or instant bank transfer within seconds on the rest, before you leave the table.',
+    body: 'Bring the pieces, photo identification and any boxes or papers, either to our office in Ascot, forty minutes by direct train from Guildford, or let us come to you anywhere in GU1 to GU5. As private gold buyers we take the gold first: carat from the hallmark, weight on the scales, the live rate applied, broken pieces included. As jewellery buyers we then set aside anything signed, set or period, because a Mappin & Webb brooch or a diamond ring is priced on what it is, not on the gold in it. Watches come last, on model, condition and papers. Every figure goes on one written document that stands whether you decide today or next month. If you sell gold in Guildford with us on the day, it is cash for gold on smaller amounts or instant bank transfer on the rest, sent before you leave the table and usually with you within seconds.',
   },
 
   travel: {
@@ -75,7 +75,7 @@ export const guildford: LocationContent = {
     {
       icon: 'post',
       title: 'Insured postal valuation',
-      body: 'Royal Mail Special Delivery from any Guildford post office arrives next working day, tracked and insured up to £20,000. We photograph, assess and call you with a figure the day it lands.',
+      body: 'Royal Mail Special Delivery from any Guildford post office arrives next working day, tracked and signed for, with Royal Mail compensation available up to £2,500. We photograph, assess and call you with a figure the day it lands.',
     },
   ],
 
@@ -88,7 +88,7 @@ export const guildford: LocationContent = {
     {
       question: 'Do you pay cash for gold in Guildford, or is everything by bank transfer?',
       answer:
-        'Both are available. Smaller amounts can be paid in cash at the appointment, in Ascot or at your home. Anything larger is paid by instant bank transfer within seconds of you accepting, which also gives you a record of the sale. You are never asked to wait for a cheque.',
+        'Both are available. Smaller amounts can be paid in cash at the appointment, in Ascot or at your home. Anything larger is paid by instant bank transfer the same day, usually within seconds of you accepting, which also gives you a record of the sale. You are never asked to wait for a cheque.',
     },
     {
       question: 'Why would I not just sell on Guildford High Street?',

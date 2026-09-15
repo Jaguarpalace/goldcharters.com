@@ -69,7 +69,7 @@ export const woking: LocationContent = {
     {
       icon: 'post',
       title: 'Insured postal valuation',
-      body: 'Royal Mail Special Delivery from any Woking post office reaches us next working day, tracked and insured up to £20,000 - we assess and call you with a figure the day it arrives.',
+      body: 'Royal Mail Special Delivery from any Woking post office reaches us next working day, tracked and signed for, with Royal Mail compensation available up to £2,500 - we assess and call you with a figure the day it arrives.',
     },
   ],
 

@@ -64,7 +64,7 @@ export const haslemere: LocationContent = {
     {
       icon: 'post',
       title: 'Insured postal valuation',
-      body: 'Royal Mail Special Delivery from Haslemere post office reaches us next working day, tracked and insured up to £20,000. We photograph everything on arrival and call you with a figure the same day.',
+      body: 'Royal Mail Special Delivery from Haslemere post office reaches us next working day, tracked and signed for, with Royal Mail compensation available up to £2,500. We photograph everything on arrival and call you with a figure the same day.',
     },
     {
       icon: 'in-person',
@@ -92,7 +92,7 @@ export const haslemere: LocationContent = {
     {
       question: 'What is the safest way to get smaller pieces to you?',
       answer:
-        'Royal Mail Special Delivery - tracked end to end, signature on arrival, insured up to £20,000. Photograph everything before sending; we photograph everything on arrival and confirm receipt the same morning. For anything you would rather not post, that is what the home visit is for.',
+        'Royal Mail Special Delivery - tracked end to end, signature on arrival, Royal Mail compensation available up to £2,500 - for pieces within that value. Photograph everything before sending; we photograph everything on arrival and confirm receipt the same morning. For anything you would rather not post, that is what the home visit is for.',
     },
     {
       question: 'We are clearing a family house near Chiddingfold - can you look at everything?',

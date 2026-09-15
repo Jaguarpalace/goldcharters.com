@@ -39,8 +39,12 @@ export function FAQSection({ faqs, asH1 = false }: { faqs: Faq[]; asH1?: boolean
           ))}
         </div>
 
-        <div className="mx-auto mt-10 max-w-3xl space-y-3">
-          {grouped[activeCategory].map((faq) => {
+        {/* Every category is rendered into the HTML and inactive ones are hidden,
+            so the FAQ text Google sees matches the FAQPage schema (all questions
+            and answers are in the page, not only the active tab). */}
+        {categories.map((cat) => (
+        <div key={cat} className="mx-auto mt-10 max-w-3xl space-y-3" hidden={cat !== activeCategory}>
+          {grouped[cat].map((faq) => {
             const open = openId === faq.id;
             return (
               <div key={faq.id} className="gc-card overflow-hidden">
@@ -63,15 +67,17 @@ export function FAQSection({ faqs, asH1 = false }: { faqs: Faq[]; asH1?: boolean
                     </svg>
                   </span>
                 </button>
-                {open && (
-                  <div className="border-t border-gold-metallic/15 px-6 py-5 text-sm text-warmgrey">
-                    {faq.answer}
-                  </div>
-                )}
+                <div
+                  className="border-t border-gold-metallic/15 px-6 py-5 text-sm text-warmgrey"
+                  hidden={!open}
+                >
+                  {faq.answer}
+                </div>
               </div>
             );
           })}
         </div>
+        ))}
       </div>
     </section>
   );

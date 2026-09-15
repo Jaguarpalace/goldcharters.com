@@ -96,11 +96,11 @@ export function CookieConsent() {
           }}
         />
 
-        <div className="p-5">
+        <div className="p-3.5 sm:p-5">
           <div className="flex items-start gap-3">
             <span
               aria-hidden
-              className="mt-0.5 flex h-8 w-8 flex-none items-center justify-center rounded-full text-gold-metallic"
+              className="mt-0.5 hidden h-8 w-8 flex-none sm:flex items-center justify-center rounded-full text-gold-metallic"
               style={{
                 background:
                   'linear-gradient(135deg, rgba(212,175,55,0.15), rgba(255,215,0,0.05))',
@@ -130,17 +130,23 @@ export function CookieConsent() {
               </p>
               <h2
                 id="cookie-consent-title"
-                className="mt-1 font-display text-lg leading-tight text-white"
+                className="mt-0.5 font-display text-base leading-tight text-white sm:mt-1 sm:text-lg"
               >
                 Cookies on Charters Gold
               </h2>
             </div>
           </div>
 
-          <p className="mt-3 text-[12px] leading-relaxed text-warmgrey">
-            We use a small number of cookies to run the site, remember your basket and - only with
-            your permission - understand how visitors use the site so we can improve it. You can
-            change your choice at any time via the footer.{' '}
+          <p className="mt-2 text-[11px] leading-snug text-warmgrey sm:mt-3 sm:text-[12px] sm:leading-relaxed">
+            <span className="sm:hidden">
+              A few cookies run the site; analytics only with your permission. Change it any time in
+              the footer.{' '}
+            </span>
+            <span className="hidden sm:inline">
+              We use a small number of cookies to run the site, remember your basket and - only with
+              your permission - understand how visitors use the site so we can improve it. You can
+              change your choice at any time via the footer.{' '}
+            </span>
             <Link
               href="/cookies"
               className="text-gold-tint underline decoration-gold-metallic/40 underline-offset-2 hover:text-gold-bright"
@@ -172,7 +178,7 @@ export function CookieConsent() {
             </div>
           )}
 
-          <div className="mt-4 flex flex-wrap items-center gap-2">
+          <div className="mt-3 flex flex-wrap items-center gap-2 sm:mt-4">
             {panel === 'collapsed' ? (
               <>
                 <button
@@ -186,14 +192,14 @@ export function CookieConsent() {
                   <button
                     type="button"
                     onClick={rejectAll}
-                    className="rounded-full border border-gold-metallic/50 bg-transparent px-4 py-2 text-[12px] font-semibold uppercase tracking-luxe text-gold-tint transition hover:border-gold-metallic hover:text-gold-bright"
+                    className="rounded-full border border-gold-metallic/50 bg-transparent px-3.5 py-1.5 text-[11px] sm:px-4 sm:py-2 sm:text-[12px] font-semibold uppercase tracking-luxe text-gold-tint transition hover:border-gold-metallic hover:text-gold-bright"
                   >
                     Reject all
                   </button>
                   <button
                     type="button"
                     onClick={acceptAll}
-                    className="rounded-full bg-gold-gradient px-4 py-2 text-[12px] font-semibold uppercase tracking-luxe text-ink-950 shadow-[0_0_18px_rgba(212,175,55,0.3)] transition hover:shadow-[0_0_24px_rgba(255,215,0,0.4)]"
+                    className="rounded-full bg-gold-gradient px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-luxe text-ink-950 shadow-[0_0_18px_rgba(212,175,55,0.3)] transition hover:shadow-[0_0_24px_rgba(255,215,0,0.4)] sm:px-4 sm:py-2 sm:text-[12px]"
                   >
                     Accept all
                   </button>
@@ -219,7 +225,7 @@ export function CookieConsent() {
                   <button
                     type="button"
                     onClick={savePreferences}
-                    className="rounded-full bg-gold-gradient px-4 py-2 text-[12px] font-semibold uppercase tracking-luxe text-ink-950 shadow-[0_0_18px_rgba(212,175,55,0.3)] transition hover:shadow-[0_0_24px_rgba(255,215,0,0.4)]"
+                    className="rounded-full bg-gold-gradient px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-luxe text-ink-950 shadow-[0_0_18px_rgba(212,175,55,0.3)] transition hover:shadow-[0_0_24px_rgba(255,215,0,0.4)] sm:px-4 sm:py-2 sm:text-[12px]"
                   >
                     Save preferences
                   </button>
