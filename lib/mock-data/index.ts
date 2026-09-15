@@ -68,7 +68,7 @@ export function mockHomepageSections(): HomepageSection[] {
           'Discreet Valuations',
           'Gold & Jewellery Specialists',
           'Secure UK Service',
-          'Based on Live Gold Prices',
+          'Priced at the rate we pay today',
         ],
       },
       display_order: 1,
@@ -80,7 +80,7 @@ export function mockHomepageSections(): HomepageSection[] {
       section_key: 'sell_intro',
       title: 'Sell Your Gold With Confidence',
       subtitle: null,
-      body: 'Whether you have scrap gold, broken jewellery, coins, bars, chains or rings, our specialists provide fast and professional valuations based on live gold prices.',
+      body: 'Whether you have scrap gold, broken jewellery, coins, bars, chains or rings, our specialists provide fast and professional valuations at the rate we pay today.',
       cta_label: 'Sell My Gold',
       cta_href: '/sell-gold',
       image_url: null,
@@ -104,7 +104,7 @@ export function mockHomepageSections(): HomepageSection[] {
       section_key: 'silver_intro',
       title: 'Sell Silver With Confidence',
       subtitle: null,
-      body: 'Whether you have sterling silver, silver coins, bars, scrap silver or hallmarked pieces, our specialists provide fast and professional valuations based on live silver prices.',
+      body: 'Whether you have sterling silver, silver coins, bars, scrap silver or hallmarked pieces, our specialists provide fast and professional valuations at the rate we pay today for silver.',
       cta_label: 'Sell My Silver',
       cta_href: '/sell-silver',
       image_url: null,
@@ -217,7 +217,7 @@ export function mockHomepageSections(): HomepageSection[] {
       section_key: 'valuation_explainer',
       title: 'How We Value Your Gold & Jewellery',
       subtitle: 'Transparent, considered, market-led.',
-      body: 'Every piece is reviewed by a specialist before an offer is made. We assess weight, carat and purity against live gold prices, then consider gemstones, diamond quality, brand provenance, age, rarity, condition and supporting documentation. You are under no obligation to accept the offer.',
+      body: 'Every piece is reviewed by a specialist before an offer is made. We assess weight, carat and purity against the rate we pay today, then consider gemstones, diamond quality, brand provenance, age, rarity, condition and supporting documentation. You are under no obligation to accept the offer.',
       cta_label: null,
       cta_href: null,
       image_url: null,
@@ -776,7 +776,7 @@ The starting point is the **24ct (pure) spot price** quoted on the London Bullio
 - 18ct = 75.0% of the pure price
 - 9ct = 37.5% of the pure price
 
-Then any dealer subtracts a small margin for refining cost and risk. We typically pay between **88% and 95%** of the purity-adjusted spot price for 22ct jewellery, depending on condition and quantity.
+Every dealer then prices below that figure to cover refining and risk, which is why no two buyers quote the same number. The rate we pay for 22ct is published on our gold calculator and applied per gram; the worked example below uses a round illustrative figure.
 
 ## What this means in pounds
 
@@ -784,13 +784,13 @@ If 24ct gold is trading at £62/g on the day you sell, the maths is:
 
 - Pure spot per gram: £62.00
 - 22ct equivalent: £62.00 × 91.6% = £56.79
-- Our offer at 92% margin: £56.79 × 92% = **£52.25/g**
+- Our rate on the day (illustrative): **£52.25/g**
 
 Bring in a 10g 22ct chain and you'd expect roughly £520, give or take a couple of pounds for the live market.
 
 ## What can change the offer
 
-- **Hallmarks** - a stamped piece is faster to verify and gets a better margin
+- **Hallmarks** - a stamped piece is faster to verify and priced with more confidence
 - **Weight** - bigger pieces are cheaper to refine per gram, so larger lots often get slightly better rates
 - **Condition** - broken jewellery is fine; what matters is weight and purity, not aesthetics
 - **Market movement** - gold prices change minute by minute. We quote based on the price at the moment we make the offer

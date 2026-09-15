@@ -13,7 +13,7 @@ export const hounslow: LocationContent = {
   heroEyebrow: 'Selling Gold & Jewellery - Hounslow Borough',
   heroTitle: 'Live Rates for a Borough That Knows Its Gold',
   heroIntro:
-    'From Chiswick’s Victorian terraces to the gold shops of Hounslow High Street, this borough holds more precious metal than almost anywhere in West London - and its sellers know the difference between a fair rate and a shop-window one. We quote the live per-gram price for your exact carat, weigh everything in front of you, and pay the same day.',
+    'From Chiswick’s Victorian terraces to the gold shops of Hounslow High Street, this borough holds more precious metal than almost anywhere in West London - and its sellers know the difference between a fair rate and a shop-window one. We quote our per-gram price for your exact carat, weigh everything in front of you, and pay the same day.',
 
   travel: {
     distanceMiles: 14,
@@ -26,7 +26,7 @@ export const hounslow: LocationContent = {
   whyHere: [
     {
       title: '22ct gold priced the way it should be',
-      body: 'Hounslow households hold serious 22ct gold - bridal sets, bangles, rope chains, guineas. Some high-street counters quote low and rely on sellers not checking the day’s rate. We work the other way: the live per-gram price for your exact carat is on the table before the metal touches the scale.',
+      body: 'Hounslow households hold serious 22ct gold - bridal sets, bangles, rope chains, guineas. Some high-street counters quote low and rely on sellers not checking the day’s rate. We work the other way: our per-gram price for your exact carat is on the table before the metal touches the scale.',
     },
     {
       title: 'A second opinion that costs nothing',
@@ -57,7 +57,7 @@ export const hounslow: LocationContent = {
     {
       icon: 'in-person',
       title: 'Private appointment in Ascot',
-      body: 'Thirty minutes down the A30 or M4, with parking near the office. Everything is weighed and tested in front of you, with the live rate visible as we work.',
+      body: 'Thirty minutes down the A30 or M4, with parking near the office. Everything is weighed and tested in front of you, with our rate visible as we work.',
     },
     {
       icon: 'collect',
@@ -101,6 +101,6 @@ export const hounslow: LocationContent = {
 
   cta: {
     title: 'Begin your Hounslow valuation',
-    body: 'Send photographs through the valuation form for a guide figure within one working day - or book a home visit and see the live rate at your own table.',
+    body: 'Send photographs through the valuation form for a guide figure within one working day - or book a home visit and see our rate at your own table.',
   },
 };

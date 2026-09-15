@@ -59,7 +59,7 @@ export const beaconsfieldGerrardsCross: LocationContent = {
     {
       icon: 'in-person',
       title: 'Private appointment in Ascot',
-      body: 'Thirty minutes via the M40 and M25. Confidential, by name, one specialist - with modern watches priced against live market indices while you watch.',
+      body: 'Thirty minutes via the M40 and M25. Confidential, by name, one specialist - with modern watches priced against current market results while you watch.',
     },
     {
       icon: 'collect',

@@ -17,7 +17,7 @@ export const twickenhamRichmond: LocationContent = {
 
   spotlight: {
     title: 'Gold buyers for Richmond and Twickenham: one table for the whole box',
-    body: 'Richmond has bullion counters that buy by weight and jewellers that buy what they can resell. As private gold buyers we do both at the same table, whether that table is at your home in TW9 or TW10 or at our office in Ascot, a direct train from Richmond. A box from a Petersham or St Margarets house usually holds all three kinds of thing: plain gold that prices by carat and gram at the live rate, signed or antique pieces that we price as jewellery buyers on the maker and the stones, and a watch or two priced on model and papers. You see which is which before anything is weighed, and nothing is called scrap that is worth more whole. When you sell gold in Richmond with us, payment is immediate: cash for gold on smaller amounts, instant bank transfer on the rest, sent the same day and usually with you within seconds.',
+    body: 'Richmond has bullion counters that buy by weight and jewellers that buy what they can resell. As private gold buyers we do both at the same table, whether that table is at your home in TW9 or TW10 or at our office in Ascot, a direct train from Richmond. A box from a Petersham or St Margarets house usually holds all three kinds of thing: plain gold that prices by carat and gram at the rate we pay today, signed or antique pieces that we price as jewellery buyers on the maker and the stones, and a watch or two priced on model and papers. You see which is which before anything is weighed, and nothing is called scrap that is worth more whole. When you sell gold in Richmond with us, payment is immediate: cash for gold on smaller amounts, instant bank transfer on the rest, sent the same day and usually with you within seconds.',
   },
 
   travel: {
@@ -98,7 +98,7 @@ export const twickenhamRichmond: LocationContent = {
     {
       question: 'I have a piece from Hatton Garden - how does your offer compare?',
       answer:
-        "We benchmark against trade and consumer auction prices for the same piece, not against high-street retailer margins. Put the Hatton Garden figure next to ours and we will show you how ours is built, line by line, with the conversation happening privately.",
+        "We benchmark against trade and consumer auction prices for the same piece, not against high-street retailer margins. Most clients find our figure equals or exceeds other gold buyers' offers, and we show you how ours is built, line by line, with the conversation happening privately.",
     },
     {
       question: 'Can you visit me in Richmond Hill / Petersham?',

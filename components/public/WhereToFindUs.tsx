@@ -20,7 +20,7 @@ export function WhereToFindUs({ events }: { events: EventSummary[] }) {
           </span>
           <h2 className="gc-heading mt-3">Book a Private Appointment</h2>
           <p className="gc-subhead mt-3">
-            We hold private valuation days at our Ascot showroom and travel to pop-up locations across the
+            We hold private valuation days at our Ascot office and travel to your home address across the
             UK. Reserve a slot and have your gold, jewellery, watches or handbags valued in person.
           </p>
         </div>

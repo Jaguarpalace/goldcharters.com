@@ -98,11 +98,6 @@ export const surrey: LocationContent = {
       answer:
         'Two routes work well for clients in southern Surrey: either an in-person appointment in Ascot (≈35 minutes via the A322), or insured postal via Royal Mail Special Delivery. We arrange whichever suits your timing.',
     },
-    {
-      question: 'Are you VAT-registered? Will I be charged VAT?',
-      answer:
-        'VAT does not apply to second-hand gold and most second-hand jewellery sold to a dealer - we explain the exact treatment for your specific piece when we make the offer.',
-    },
   ],
 
   cta: {

@@ -35,7 +35,7 @@ export const epsom: LocationContent = {
     },
     {
       title: 'The professional-belt portfolio, properly priced',
-      body: 'Epsom’s commuter households bring us the classic collection: the engagement ring being upgraded, the Rolex from a City bonus, sovereigns inherited from an Ewell grandparent. Each is priced individually - live per-gram rates for metal, current market results for watches and signed pieces.',
+      body: 'Epsom’s commuter households bring us the classic collection: the engagement ring being upgraded, the Rolex from a City bonus, sovereigns inherited from an Ewell grandparent. Each is priced individually - our per-gram rates for metal, current market results for watches and signed pieces.',
     },
     {
       title: 'Private, whichever route you choose',
@@ -96,7 +96,7 @@ export const epsom: LocationContent = {
     {
       question: 'Why travel to Ascot rather than sell in Epsom or Sutton?',
       answer:
-        'Compare the figures - it costs nothing. High-street offers are formula-driven and priced to fund retail premises; we price each piece individually against live rates and current market results, in writing. For racing and signed pieces especially, the difference tends to be significant. And if travelling does not suit, we come to you.',
+        'Compare the figures - it costs nothing. High-street offers are formula-driven and priced to fund retail premises; we price each piece individually at our per-gram rates and current market results, in writing. For racing and signed pieces especially, the difference tends to be significant. And if travelling does not suit, we come to you.',
     },
     {
       question: 'Can you handle a full jewellery box after a bereavement?',

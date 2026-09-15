@@ -14,7 +14,7 @@ export const kingstonUponThames: LocationContent = {
   heroEyebrow: 'Selling Gold & Jewellery - Kingston',
   heroTitle: 'The Private Alternative to Kingston’s Retail Counters',
   heroIntro:
-    'Kingston is one of the biggest retail centres in the South-East, and its jewellers are built for buying customers - not selling ones. When you are the seller, the economics flip: retail overheads come out of your price. We are a dedicated buying house forty minutes up the A308, we visit KT addresses by appointment, and our offers are built from live rates and auction results. For KT1, KT2 and KT3 we are the private gold buyer built for sellers rather than shoppers.',
+    'Kingston is one of the biggest retail centres in the South-East, and its jewellers are built for buying customers - not selling ones. When you are the seller, the economics flip: retail overheads come out of your price. We are a dedicated buying house forty minutes up the A308, we visit KT addresses by appointment, and our offers are built from our per-gram rates and auction results. For KT1, KT2 and KT3 we are the private gold buyer built for sellers rather than shoppers.',
 
   spotlight: {
     title: 'Gold buyers for Kingston: how and when you are paid',
@@ -102,7 +102,7 @@ export const kingstonUponThames: LocationContent = {
     {
       question: 'Do you buy East Asian and 22ct gold?',
       answer:
-        'Yes - including Korean 24ct pieces common in New Malden households and 22ct South Asian jewellery. High-carat gold carries the strongest per-gram rates; we weigh and quote against the live rate in front of you, with no testing fees.',
+        'Yes - including Korean 24ct pieces common in New Malden households and 22ct South Asian jewellery. High-carat gold carries the strongest per-gram rates; we weigh and quote at our rate in front of you, with no testing fees.',
     },
     {
       question: 'I’m in Surbiton without a car - what’s the easiest route?',

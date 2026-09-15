@@ -96,7 +96,7 @@ export const london: LocationContent = {
     {
       question: 'How does the offer compare to Hatton Garden?',
       answer:
-        "We benchmark against trade and consumer auction prices for the same piece, not against high-street retailer margins. Bring the Hatton Garden figure with you and we will show you how ours is built, line by line. The comparison costs nothing, and the conversation happens privately rather than across a shared counter.",
+        "We benchmark against trade and consumer auction prices for the same piece, not against high-street retailer margins. Most clients find our figure equals or exceeds other gold buyers' offers, and we show you how ours is built, line by line. The comparison costs nothing, and the conversation happens privately rather than across a shared counter.",
     },
     {
       question: 'What documentation do I need?',

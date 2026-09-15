@@ -35,7 +35,7 @@ export const haslemere: LocationContent = {
     },
     {
       title: 'Fair, checkable pricing wherever the valuation happens',
-      body: 'Metal is quoted at the live per-gram rate for its exact carat - checkable against our public gold calculator at any moment. Watches and signed pieces are priced against current market results, and every figure is put in writing with no obligation attached.',
+      body: 'Metal is quoted at our per-gram rate for its exact carat - checkable against our public gold calculator at any moment. Watches and signed pieces are priced against current market results, and every figure is put in writing with no obligation attached.',
     },
   ],
 
@@ -102,7 +102,7 @@ export const haslemere: LocationContent = {
     {
       question: 'How do I know your rates are fair from out here?',
       answer:
-        'Check them before we meet: our gold calculator publishes the live per-gram rates we pay for every carat, and the same rates apply whether the valuation happens in Ascot or at your kitchen table in Haslemere. Written figures valid for 24 hours, and no pressure to decide at the table.',
+        'Check them before we meet: our gold calculator publishes the per-gram rates we pay for every carat, and the same rates apply whether the valuation happens in Ascot or at your kitchen table in Haslemere. Written figures valid for 24 hours, and no pressure to decide at the table.',
     },
   ],
 

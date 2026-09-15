@@ -26,7 +26,7 @@ export const camberley: LocationContent = {
   whyHere: [
     {
       title: 'Genuinely local - not a trek into town',
-      body: 'Selling from Camberley has traditionally meant a high-street counter in town or a drive into Guildford or London. We are closer than any of them, with the pricing of a dedicated buying house: live per-gram rates for metal, current market results for watches and signed pieces, and no retail overheads coming out of your figure.',
+      body: 'Selling from Camberley has traditionally meant a high-street counter in town or a drive into Guildford or London. We are closer than any of them, with the pricing of a dedicated buying house: our per-gram rates for metal, current market results for watches and signed pieces, and no retail overheads coming out of your figure.',
     },
     {
       title: 'At home with service and presentation pieces',
@@ -97,7 +97,7 @@ export const camberley: LocationContent = {
     {
       question: 'Do you buy broken or odd gold - single earrings, snapped chains?',
       answer:
-        'Every week. Broken gold prices the same per gram as intact gold of the same carat - the live rate is on our gold calculator. Bring the whole tin; we will separate what carries value from what does not, at no charge.',
+        'Every week. Broken gold prices the same per gram as intact gold of the same carat - the rate we pay today is on our gold calculator. Bring the whole tin; we will separate what carries value from what does not, at no charge.',
     },
   ],
 

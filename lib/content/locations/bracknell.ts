@@ -32,7 +32,7 @@ export const bracknell: LocationContent = {
   whyHere: [
     {
       title: 'Next door, without the high-street counter',
-      body: 'Selling gold from Bracknell has usually meant a counter in the Lexicon or a pawnbroker\'s window. We are a private valuation house twelve minutes away: one specialist, one client, by appointment, with live per-gram rates for metal and current market results for watches and signed pieces. No retail overheads come out of your figure and nobody is watching over your shoulder.',
+      body: 'Selling gold from Bracknell has usually meant a counter in the Lexicon or a pawnbroker\'s window. We are a private valuation house twelve minutes away: one specialist, one client, by appointment, with our per-gram rates for metal and current market results for watches and signed pieces. No retail overheads come out of your figure and nobody is watching over your shoulder.',
     },
     {
       title: 'Two generations of Bracknell gold',
@@ -102,7 +102,7 @@ export const bracknell: LocationContent = {
     {
       question: 'Why choose Charters Gold as your gold buyers in Bracknell?',
       answer:
-        'Because we are the nearest private gold buyers to Bracknell, twelve minutes away in Ascot, and we come to you across RG12, RG42 and RG45 by appointment. Every piece is weighed and priced in front of you at the live rate for its carat, watches and signed jewellery are valued on the market rather than melted weight, and payment is by bank transfer the same day, usually within seconds of you agreeing the figure. One specialist, one client, no counter and no queue.',
+        'Because we are the nearest private gold buyers to Bracknell, twelve minutes away in Ascot, and we come to you across RG12, RG42 and RG45 by appointment. Every piece is weighed and priced in front of you at our rate for its carat today, watches and signed jewellery are valued on the market rather than melted weight, and payment is by bank transfer the same day, usually within seconds of you agreeing the figure. One specialist, one client, no counter and no queue.',
     },
     {
       question: "Is there a gold buyer near Bracknell that isn't a high-street counter?",
@@ -112,7 +112,7 @@ export const bracknell: LocationContent = {
     {
       question: 'How much is 9ct gold worth per gram today?',
       answer:
-        'The live rate is on our gold calculator and moves with the market during the day. 9ct is 37.5% pure, so the figure per gram is roughly three eighths of the fine gold price less our margin, which we show rather than hide. The same applies to 14ct, 18ct and 22ct, and to broken gold, which is worth exactly the same per gram as intact gold of the same carat.',
+        'The rate we pay today is on our gold calculator and moves with the market during the day. 9ct is 37.5% pure, so the figure per gram is roughly three eighths of the fine gold price less our margin, which we show rather than hide. The same applies to 14ct, 18ct and 22ct, and to broken gold, which is worth exactly the same per gram as intact gold of the same carat.',
     },
     {
       question: 'Can you come to my home in Bracknell or Crowthorne?',
@@ -122,7 +122,7 @@ export const bracknell: LocationContent = {
     {
       question: 'Do you buy broken gold, single earrings and scrap?',
       answer:
-        'Every week. Bring the whole tin: we separate what carries value from what does not, at no charge, and price the gold at the live rate for its carat. Odd earrings, snapped chains, dental gold and worn-through rings all count.',
+        'Every week. Bring the whole tin: we separate what carries value from what does not, at no charge, and price the gold at our rate for its carat today. Odd earrings, snapped chains, dental gold and worn-through rings all count.',
     },
     {
       question: 'Do you buy watches and jewellery as well as gold?',

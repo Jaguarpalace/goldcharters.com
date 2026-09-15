@@ -61,8 +61,7 @@ export default async function PrivacyPage() {
       <p>
         For the purposes of the UK General Data Protection Regulation ("UK GDPR") and the Data
         Protection Act 2018, the data controller is <strong>{businessName}</strong>, trading from{' '}
-        {address}. Where required, we are or will be registered with the Information Commissioner's
-        Office ("ICO").
+        {address}.
       </p>
       <p>
         Any questions about this Policy or your personal data should be sent to{' '}

@@ -18,7 +18,7 @@ export const reading: LocationContent = {
 
   spotlight: {
     title: 'Gold buyers for Reading: every carat, not only the watches',
-    body: 'The M4 corridor sends us watches and signed rings, but most people who sell gold in Reading are selling something plainer: a broken chain, a single earring, a ring that no longer fits, sovereigns kept in a drawer since the 1980s. As private gold buyers we price all of it the same way, whether it arrives by Special Delivery or across the table: hallmark checked, weighed in front of you or photographed on the scales, the live rate for its carat applied and shown. As jewellery buyers we look before anything is called scrap, because a signed or antique piece is worth more whole than melted. Payment follows the figure, not the calendar: cash for gold on smaller amounts in person, instant bank transfer on everything else, the same day it is agreed and usually within seconds.',
+    body: 'The M4 corridor sends us watches and signed rings, but most people who sell gold in Reading are selling something plainer: a broken chain, a single earring, a ring that no longer fits, sovereigns kept in a drawer since the 1980s. As private gold buyers we price all of it the same way, whether it arrives by Special Delivery or across the table: hallmark checked, weighed in front of you or photographed on the scales, our rate for its carat applied and shown. As jewellery buyers we look before anything is called scrap, because a signed or antique piece is worth more whole than melted. Payment follows the figure, not the calendar: cash for gold on smaller amounts in person, instant bank transfer on everything else, the same day it is agreed and usually within seconds.',
   },
 
   travel: {

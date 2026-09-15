@@ -13,7 +13,7 @@ export const woking: LocationContent = {
   heroEyebrow: 'Selling Gold & Jewellery - Woking',
   heroTitle: 'A Private Valuation House Twenty Minutes from Woking',
   heroIntro:
-    'Woking’s commuter money buys good watches and better rings - and when the time comes to sell them, the town itself offers little beyond pawnbrokers and chain counters. Our Ascot office is twenty minutes away through Chobham, we visit GU addresses by appointment, and every offer is priced from live rates with the working shown.',
+    'Woking’s commuter money buys good watches and better rings - and when the time comes to sell them, the town itself offers little beyond pawnbrokers and chain counters. Our Ascot office is twenty minutes away through Chobham, we visit GU addresses by appointment, and every offer is priced at our published rates with the working shown.',
 
   travel: {
     distanceMiles: 11,
@@ -34,7 +34,7 @@ export const woking: LocationContent = {
     },
     {
       title: '22ct and Asian gold, valued transparently',
-      body: 'Woking’s communities hold significant 22ct gold - bridal sets, bangles, guineas. We weigh in front of you, quote the live per-gram rate for the exact carat, and pay the same day. No "testing fees", no percentage games.',
+      body: 'Woking’s communities hold significant 22ct gold - bridal sets, bangles, guineas. We weigh in front of you, quote our per-gram rate for the exact carat, and pay the same day. No "testing fees", no percentage games.',
     },
   ],
 
@@ -82,7 +82,7 @@ export const woking: LocationContent = {
     {
       question: 'How is your offer different from the gold counters in Woking town centre?',
       answer:
-        'Two ways. First, the rate: we quote the live per-gram price for your exact carat while the metal sits on the scale in front of you. Second, what we look for before weighing: signed pieces, period jewellery and good watches are worth far more than their metal, and a scrap counter has no reason to tell you that. We do.',
+        'Two ways. First, the rate: we quote our per-gram price for your exact carat while the metal sits on the scale in front of you. Second, what we look for before weighing: signed pieces, period jewellery and good watches are worth far more than their metal, and a scrap counter has no reason to tell you that. We do.',
     },
     {
       question: 'Do you buy 22ct Indian and Asian gold?',

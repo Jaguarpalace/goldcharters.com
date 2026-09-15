@@ -191,10 +191,7 @@ export default async function TermsPage() {
       </p>
       <ul>
         <li>
-          Return delivery will be by tracked, insured method at our cost up to a maximum declared
-          value of £1,000. Where Items exceed this value, any additional insurance is at your cost
-          and your discretion. By submitting Items above this value by post, you accept the limit
-          of liability set out in this Policy.
+          Return delivery will be by tracked, insured method at our cost.
         </li>
         <li>
           We may require completion of identity verification before returning Items, in line with
@@ -259,7 +256,7 @@ export default async function TermsPage() {
           We are not liable for any loss or delay caused by events beyond our reasonable control,
           including but not limited to acts of God, war, terrorism, pandemics, government action,
           internet failure, postal disruption, courier failure, third-party service provider
-          failure (including Supabase, Vercel, banks, payment processors), strikes, market
+          failure (including hosting providers, banks and payment processors), strikes, market
           fluctuations or extreme weather.
         </li>
         <li>

@@ -102,6 +102,6 @@ export const heathrow: LocationContent = {
 
   cta: {
     title: 'Begin your Heathrow-area valuation',
-    body: 'WhatsApp is the fastest channel for airport-area clients on tight timing. A specialist will confirm a same-day or next-day slot and a guide figure within an hour.',
+    body: 'WhatsApp is the fastest channel for airport-area clients on tight timing. A specialist will confirm a same-day slot and a guide figure within an hour.',
   },
 };

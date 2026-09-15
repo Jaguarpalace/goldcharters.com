@@ -92,7 +92,7 @@ export const farnham: LocationContent = {
     {
       question: 'Do you buy silver - flatware canteens, tea services?',
       answer:
-        'Yes. Hallmarked silver is weighed against the live rate as a floor, and better makers, early dates and complete services are priced above it where the market supports it. Bring the whole canteen; part-services still carry value.',
+        'Yes. Hallmarked silver is weighed at our silver rate as a floor, and better makers, early dates and complete services are priced above it where the market supports it. Bring the whole canteen; part-services still carry value.',
     },
     {
       question: 'Can you come out to Frensham or Churt?',

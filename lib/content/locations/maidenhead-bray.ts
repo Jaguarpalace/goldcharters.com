@@ -26,7 +26,7 @@ export const maidenheadBray: LocationContent = {
   whyHere: [
     {
       title: 'The alternative to selling in town',
-      body: 'Maidenhead’s high street offers chain jewellers and pawnbrokers - convenient, but priced for retail margins and speed. We are a dedicated buying house: no shop, no window stock to fund, offers built from live metal prices and current auction results rather than a counter formula.',
+      body: 'Maidenhead’s high street offers chain jewellers and pawnbrokers - convenient, but priced for retail margins and speed. We are a dedicated buying house: no shop, no window stock to fund, offers built from our per-gram rates and current auction results rather than a counter formula.',
     },
     {
       title: 'At home with riverside estates and older families',

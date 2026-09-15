@@ -18,12 +18,12 @@ const SEO_DEFAULTS: Record<string, { title: string; description: string }> = {
   '/sell-gold': {
     title: 'Sell Gold For Cash · Private UK Specialists',
     description:
-      'Sell gold rings, chains, bracelets, coins, bars and scrap gold to a discreet UK private valuation house. Same-day payment, live spot pricing, no obligation.',
+      'Sell gold rings, chains, bracelets, coins, bars and scrap gold to a discreet UK private valuation house. Same-day payment, our published per-gram rates, no obligation.',
   },
   '/sell-silver': {
     title: 'Sell Silver For Cash · Private UK Specialists',
     description:
-      'Sell sterling silver, silver coins, bars, scrap silver and hallmarked pieces to a discreet UK private valuation house. Same-day payment, live spot pricing, no obligation.',
+      'Sell sterling silver, silver coins, bars, scrap silver and hallmarked pieces to a discreet UK private valuation house. Same-day payment, our published per-gram rates, no obligation.',
   },
   '/sell-jewellery': {
     title: 'Sell Fine Jewellery · Diamond, Antique & Branded Specialists',
@@ -54,7 +54,7 @@ const SEO_DEFAULTS: Record<string, { title: string; description: string }> = {
   '/book': {
     title: 'Book a Private Appointment · Gold & Jewellery Valuations',
     description:
-      'Reserve a private valuation slot at our Ascot showroom or a UK pop-up location. Pick a date and time, meet a specialist in person - no obligation to sell.',
+      'Reserve a private valuation slot at our Ascot office or a pop-up at your home address. Pick a date and time, meet a specialist in person - no obligation to sell.',
   },
   '/blog': {
     title: 'Insights & Guides · Charters Gold',

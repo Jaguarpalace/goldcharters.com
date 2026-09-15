@@ -14,7 +14,7 @@ export const ealing: LocationContent = {
   heroEyebrow: 'Selling Gold & Jewellery - Ealing',
   heroTitle: 'The Queen of the Suburbs Deserves a Proper Price',
   heroIntro:
-    'Ealing spans two of London’s great jewellery stories: Edwardian family homes around Pitshanger and the Common with a century of inherited pieces, and Southall - the busiest gold quarter in Britain outside Hatton Garden. Wherever you sit between them, we offer the same thing: live per-gram rates, individual assessment, and a written figure with no obligation. For W5, W7, W13 and Southall we are the nearest private gold buyer outside the counter trade: appointment only, at our Ascot office or at your home.',
+    'Ealing spans two of London’s great jewellery stories: Edwardian family homes around Pitshanger and the Common with a century of inherited pieces, and Southall - the busiest gold quarter in Britain outside Hatton Garden. Wherever you sit between them, we offer the same thing: our per-gram rates, individual assessment, and a written figure with no obligation. For W5, W7, W13 and Southall we are the nearest private gold buyer outside the counter trade: appointment only, at our Ascot office or at your home.',
 
   travel: {
     distanceMiles: 21,
@@ -27,7 +27,7 @@ export const ealing: LocationContent = {
   whyHere: [
     {
       title: 'A second opinion against Southall’s counters',
-      body: 'The Broadway’s gold shops are legitimate and competitive - and they are shops, with margins to protect. Before you accept any counter’s figure, get ours in writing: the live per-gram rate for your carat, weighed in front of you, free. Sellers who compare rarely regret the twenty minutes.',
+      body: 'The Broadway’s gold shops are legitimate and competitive - and they are shops, with margins to protect. Before you accept any counter’s figure, get ours in writing: our per-gram rate for your carat, weighed in front of you, free. Sellers who compare rarely regret the twenty minutes.',
     },
     {
       title: 'Fluent in 22ct and set Asian jewellery',
@@ -81,7 +81,7 @@ export const ealing: LocationContent = {
     {
       question: "Who is the nearest private gold buyer to Ealing?",
       answer:
-        "Southall has the busiest gold counters outside Hatton Garden, and they buy on volume. The nearest private valuation house is Charters Gold in Ascot, forty minutes down the M4, and we visit W5, W7, W13, UB1 and UB2 by appointment with live per-gram rates and a written figure before you decide.",
+        "Southall has the busiest gold counters outside Hatton Garden, and they buy on volume. The nearest private valuation house is Charters Gold in Ascot, forty minutes down the M4, and we visit W5, W7, W13, UB1 and UB2 by appointment with our per-gram rates and a written figure before you decide.",
     },
     {
       question: 'I already have a quote from a Southall jeweller - will you beat it?',
