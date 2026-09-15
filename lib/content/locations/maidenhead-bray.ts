@@ -8,7 +8,7 @@ export const maidenheadBray: LocationContent = {
 
   metaTitle: 'Sell Gold, Watches & Jewellery in Maidenhead & Bray - Charters Gold',
   metaDescription:
-    'Private gold, diamond, watch and handbag valuations for Maidenhead and Bray. Twenty minutes from our Ascot office - transparent offers, home visits, same-day payment.',
+    'Sell gold, diamonds and watches in Maidenhead or Bray. Twenty minutes from our Ascot office or at your home in SL6, priced in front of you, paid the same day.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Maidenhead & Bray',
   heroTitle: 'Thames Valley Valuations, Twenty Minutes from Home',

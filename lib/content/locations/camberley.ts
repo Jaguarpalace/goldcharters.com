@@ -8,10 +8,10 @@ export const camberley: LocationContent = {
 
   metaTitle: 'Sell Gold, Watches & Jewellery in Camberley - Charters Gold',
   metaDescription:
-    'Sell gold, diamonds, watches and jewellery seven miles from Camberley. Direct train to Ascot, private appointments, home visits across GU postcodes, same-day payment.',
+    'Sell gold and jewellery seven miles from Camberley, two stops on the train, or at your home in GU15 to GU17. Priced in front of you, paid the same day.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Camberley',
-  heroTitle: 'Your Nearest Private Valuation House, One Stop Up the Line',
+  heroTitle: 'Your Nearest Private Valuation House, Two Stops Up the Line',
   heroIntro:
     'Camberley sits seven miles from our Ascot office - a fifteen-minute drive along the A30, or a few minutes on the direct train through Bagshot. For Frimley, Mytchett and the Sandhurst side of town we are the closest dedicated valuation house there is, and most Camberley clients treat us as their local.',
 
@@ -59,7 +59,7 @@ export const camberley: LocationContent = {
     {
       icon: 'in-person',
       title: 'Private appointment in Ascot',
-      body: 'Fifteen minutes by car or one stop up the branch line. One specialist, one client - hallmarks checked and everything weighed in front of you, with the figure explained.',
+      body: 'Fifteen minutes by car or two stops up the branch line. One specialist, one client - hallmarks checked and everything weighed in front of you, with the figure explained.',
     },
     {
       icon: 'collect',

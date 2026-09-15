@@ -8,7 +8,7 @@ export const hounslow: LocationContent = {
 
   metaTitle: 'Sell Gold, Watches & Jewellery in Hounslow - Charters Gold',
   metaDescription:
-    'Sell 22ct gold, jewellery, watches and diamonds across the Hounslow borough - from Chiswick to Hounslow High Street. Live per-gram rates, home visits, same-day payment.',
+    'Sell 22ct gold, jewellery and watches across Hounslow and Chiswick. The rate per gram shown as we weigh, home visits by appointment, paid the same day.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Hounslow Borough',
   heroTitle: 'Live Rates for a Borough That Knows Its Gold',
@@ -18,7 +18,7 @@ export const hounslow: LocationContent = {
   travel: {
     distanceMiles: 14,
     drive:
-      'Around 30 minutes: A30 through Staines and Bedfont to Hounslow, or the M4 to Junction 3 for Osterley, Brentford and Chiswick. Manageable outside the M4 peak.',
+      'Around 30 minutes: A30 through Staines and Bedfont to Hounslow, or the M4 to Junction 2 for Brentford and Chiswick and Junction 3 for Osterley and Heston. Manageable outside the M4 peak.',
     publicTransport:
       'South Western Railway from Hounslow or Isleworth toward Staines connects to the Ascot line - around 50 minutes with one easy change. Most clients drive or book a home visit instead.',
   },

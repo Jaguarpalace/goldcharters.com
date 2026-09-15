@@ -9,7 +9,7 @@ export const ealing: LocationContent = {
   metaTitle: 'Sell Gold & Jewellery in Ealing - Paid in Seconds',
   titleAbsolute: true,
   metaDescription:
-    'Sell gold, diamonds, watches and jewellery across the Ealing borough - Ealing Broadway to Southall. A private second opinion on any quote, live rates, same-day payment.',
+    'Sell gold and jewellery in Ealing or Southall without the counter. A private second opinion on any quote, at your home in W5, W7 or W13, paid the same day.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Ealing',
   heroTitle: 'The Queen of the Suburbs Deserves a Proper Price',
@@ -19,7 +19,7 @@ export const ealing: LocationContent = {
   travel: {
     distanceMiles: 21,
     drive:
-      'Around 35-40 minutes via the M4 to Junction 2 then the A406/Uxbridge Road, or Junction 3 for Southall and West Ealing. Best outside the M4 peak.',
+      'Around 35-40 minutes via the M4 to Junction 1 then the A406 and Uxbridge Road, or Junction 3 for Southall and West Ealing. Best outside the M4 peak.',
     publicTransport:
       'No practical direct route - the Elizabeth line serves Ealing and Southall but heads the wrong way for Ascot. Ealing clients almost always take a home visit or drive.',
   },

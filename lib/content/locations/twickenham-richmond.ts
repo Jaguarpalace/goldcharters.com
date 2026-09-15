@@ -8,7 +8,7 @@ export const twickenhamRichmond: LocationContent = {
 
   metaTitle: 'Sell Gold, Watches & Jewellery in Twickenham & Richmond - Charters Gold',
   metaDescription:
-    'Sell gold in Richmond or Twickenham privately. We come to TW1, TW9 and TW10, price every piece in front of you and pay the same day, usually within seconds. Or a direct train to Ascot.',
+    'Sell gold in Richmond or Twickenham privately. We come to TW1, TW9 and TW10, price every piece in front of you and pay the same day. Or a direct train to Ascot.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Twickenham & Richmond',
   heroTitle: 'Private Valuations for South-West London Riverside',
@@ -98,7 +98,7 @@ export const twickenhamRichmond: LocationContent = {
     {
       question: 'I have a piece from Hatton Garden - how does your offer compare?',
       answer:
-        "We benchmark against trade and consumer auction prices for the same piece, not against high-street retailer margins. Most south-west London clients find our figure equals or exceeds Hatton Garden's best offer, with the conversation happening privately.",
+        "We benchmark against trade and consumer auction prices for the same piece, not against high-street retailer margins. Put the Hatton Garden figure next to ours and we will show you how ours is built, line by line, with the conversation happening privately.",
     },
     {
       question: 'Can you visit me in Richmond Hill / Petersham?',

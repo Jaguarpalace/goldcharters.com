@@ -92,7 +92,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
               )}
               <p className="mt-2 space-y-0.5 text-xs">
                 <a
-                  href={`tel:${settings.phone}`}
+                  href={`tel:${settings.phone.replace(/\D/g, '')}`}
                   className="block text-warmgrey hover:text-gold-bright"
                 >
                   {formatUkPhone(settings.phone)}

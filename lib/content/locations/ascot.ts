@@ -8,7 +8,7 @@ export const ascot: LocationContent = {
 
   metaTitle: 'Sell Gold, Watches & Fine Jewellery in Ascot - Charters Gold',
   metaDescription:
-    'Private valuations for Ascot, Sunninghill and Sunningdale residents. Specialist house for racing brooches, equestrian pieces, signed jewellery, Rolex and Patek Philippe watches.',
+    'Sell gold, watches and jewellery in Ascot, on St George\'s Lane off the High Street. Priced in front of you, paid the same day. Racing pieces a speciality.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Ascot',
   heroTitle: 'A Specialist House in the Heart of Ascot',

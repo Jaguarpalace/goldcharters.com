@@ -13,11 +13,11 @@ export const guildford: LocationContent = {
   heroEyebrow: 'Selling Gold & Jewellery - Guildford',
   heroTitle: 'Trade Prices, Not High Street Prices, for Surrey’s County Town',
   heroIntro:
-    'Guildford has no shortage of places to sell jewellery - a high street of chain jewellers, pawnbrokers and gold counters. What it lacks is a dedicated private valuation house. We are forty minutes away by direct train from Guildford station, we visit GU addresses by appointment, and our offers are built from live metal prices and auction results rather than a shop-counter formula.',
+    'Guildford has no shortage of places to sell jewellery - a high street of chain jewellers, pawnbrokers and gold counters. What it lacks is a dedicated private valuation house. We are around 45 minutes away by direct train from Guildford station, we visit GU addresses by appointment, and our offers are built from live metal prices and auction results rather than a shop-counter formula.',
 
   spotlight: {
     title: 'Gold buyers for Guildford: what half an hour with us looks like',
-    body: 'Bring the pieces, photo identification and any boxes or papers, either to our office in Ascot, forty minutes by direct train from Guildford, or let us come to you anywhere in GU1 to GU5. As private gold buyers we take the gold first: carat from the hallmark, weight on the scales, the live rate applied, broken pieces included. As jewellery buyers we then set aside anything signed, set or period, because a Mappin & Webb brooch or a diamond ring is priced on what it is, not on the gold in it. Watches come last, on model, condition and papers. Every figure goes on one written document, valid for 24 hours, so you can take it away and think without anyone at your elbow. If you sell gold in Guildford with us on the day, it is cash for gold on smaller amounts or instant bank transfer on the rest, sent before you leave the table and usually with you within seconds.',
+    body: 'Bring the pieces, photo identification and any boxes or papers, either to our office in Ascot, around 45 minutes by direct train from Guildford, or let us come to you anywhere in GU1 to GU5. As private gold buyers we take the gold first: carat from the hallmark, weight on the scales, the live rate applied, broken pieces included. As jewellery buyers we then set aside anything signed, set or period, because a Mappin & Webb brooch or a diamond ring is priced on what it is, not on the gold in it. Watches come last, on model, condition and papers. Every figure goes on one written document, valid for 24 hours, so you can take it away and think without anyone at your elbow. If you sell gold in Guildford with us on the day, it is cash for gold on smaller amounts or instant bank transfer on the rest, sent before you leave the table and usually with you within seconds.',
   },
 
   travel: {
@@ -25,7 +25,7 @@ export const guildford: LocationContent = {
     drive:
       'Around 30-35 minutes: A322 through Bagshot and Lightwater to the A3, or the country route through Chobham and Woking. Straightforward outside peak hours.',
     publicTransport:
-      'Direct train from Guildford to Ascot on the South Western Railway line via Aldershot and Camberley - around 40 minutes, no changes, and our office is a short walk from Ascot station.',
+      'Direct train from Guildford to Ascot on the South Western Railway line via Aldershot and Camberley - around 45 minutes, no changes, and our office is a short walk from Ascot station.',
   },
 
   whyHere: [
@@ -98,7 +98,7 @@ export const guildford: LocationContent = {
     {
       question: 'Is there really a direct train to you?',
       answer:
-        'Yes - the Ascot-Guildford line runs via Aldershot, Ash Vale, Frimley and Camberley, taking around 40 minutes, and our office is a short walk from Ascot station up to St George’s Lane. Many Guildford clients find the train simpler than parking in town for a high-street quote.',
+        'Yes - the Ascot-Guildford line runs via Aldershot, Ash Vale, Frimley and Camberley, taking around 45 minutes, and our office is a short walk from Ascot station up to St George’s Lane. Many Guildford clients find the train simpler than parking in town for a high-street quote.',
     },
     {
       question: 'Do you cover the villages - Ripley, the Horsleys, Shalford?',

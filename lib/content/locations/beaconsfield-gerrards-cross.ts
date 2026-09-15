@@ -8,7 +8,7 @@ export const beaconsfieldGerrardsCross: LocationContent = {
 
   metaTitle: 'Sell Gold, Watches & Jewellery in Beaconsfield & Gerrards Cross - Charters Gold',
   metaDescription:
-    'Private valuations for the South Bucks money belt - Beaconsfield, Gerrards Cross and the Chalfonts. Modern watch and diamond specialists, discreet home visits, same-day payment.',
+    'Sell gold, watches and diamonds from Beaconsfield, Gerrards Cross or the Chalfonts. Valued at your home by appointment or in Ascot, paid the same day.',
 
   heroEyebrow: 'Selling Gold & Jewellery - South Bucks',
   heroTitle: 'Specialists for the Beaconsfield & Gerrards Cross Belt',

@@ -8,7 +8,7 @@ export const heathrow: LocationContent = {
 
   metaTitle: 'Sell Gold & Jewellery near Heathrow - Charters Gold',
   metaDescription:
-    'Private valuations for residents and travellers in the Heathrow corridor. Quick same-day appointments at our Ascot office, around 20 minutes from Terminal 5. Insured postal service for international clients.',
+    'Sell gold and jewellery near Heathrow, twenty minutes from Terminal 5. Private appointments in Ascot or at your address, paid by bank transfer the same day.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Heathrow',
   heroTitle: 'Private Valuations a Short Drive from the Airport',
@@ -91,7 +91,7 @@ export const heathrow: LocationContent = {
     {
       question: 'I have Indian 22ct gold from my family. Do you buy that?',
       answer:
-        'Yes - 22ct, 21ct and 24ct gold are all standard for us. We assay accurately rather than assuming purity, which often produces a higher offer than high-street pawnbrokers who default to a conservative carat assumption.',
+        'Yes - 22ct, 21ct and 24ct gold are all standard for us. We test each piece for its actual purity rather than assuming a conservative carat, which is where value is most often lost on high-carat gold.',
     },
     {
       question: 'I’m holding a piece for a relative overseas. Can I act on their behalf?',

@@ -50,7 +50,6 @@ export const stainesEgham: LocationContent = {
     'Wraysbury',
     'Old Windsor',
     'Sunninghill',
-    'Lyne',
     'Longcross',
   ],
 

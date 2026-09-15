@@ -8,7 +8,7 @@ export const farnham: LocationContent = {
 
   metaTitle: 'Sell Gold, Watches & Jewellery in Farnham - Charters Gold',
   metaDescription:
-    'Sell gold, antique jewellery, watches and silver near Farnham. Thirty minutes from our Ascot office - period pieces valued on provenance, home visits, same-day payment.',
+    'Sell gold, antique jewellery and silver near Farnham. Period pieces valued on what they are, at your home in GU9 or GU10 or in Ascot, paid the same day.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Farnham',
   heroTitle: 'A Valuation House That Knows What Farnham Owns',

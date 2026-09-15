@@ -8,7 +8,7 @@ export const windsor: LocationContent = {
 
   metaTitle: 'Sell Gold, Watches & Jewellery in Windsor - Charters Gold',
   metaDescription:
-    'Local Windsor specialists for gold, diamond, watch and handbag valuations. A short drive from our Ascot office - private appointments, transparent offers, same-day payment.',
+    'Sell gold, watches and jewellery in Windsor, fifteen minutes from our Ascot office or at your home in SL4. Priced in front of you, paid the same day.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Windsor',
   heroTitle: 'A Specialist Valuation House on Your Doorstep',

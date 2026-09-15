@@ -11,11 +11,11 @@ insert into public.site_settings (
   footer_description, footer_disclaimer, seo_title, seo_description
 ) values (
   'Charters Gold',
-  '0800 047 2348',
-  'office@chartersgold.co.uk',
-  '+44 7700 900123',
+  '07951 999 999',
+  'info@chartersgold.co.uk',
+  '+447951999999',
   'Index House, St George''s Lane, Ascot, Berkshire, SL5 7ET',
-  'Monday – Saturday · 10:00 – 18:00 · By appointment',
+  'Monday to Friday 9:30am - 5pm · Saturday 9:30am - 1:30pm · Sunday 9:30am - 12:30pm · By appointment',
   'Index House, St George''s Lane',
   'Ascot',
   'Berkshire',
@@ -23,13 +23,13 @@ insert into public.site_settings (
   51.4084,
   -0.6726,
   'Discreet UK gold & jewellery specialists',
-  'Excellent client reviews',
+  'Private, by appointment',
   'Private valuations · Insured handling',
   'Same-day payment available',
-  'Charters Gold is a private valuation house specialising in gold, fine jewellery and antique pieces. We buy from private clients across the United Kingdom and curate a small collection of pieces available to purchase online.',
+  'Charters Gold is a private valuation house in Ascot buying gold, fine jewellery, luxury watches and designer handbags from private clients across Berkshire, Surrey and the UK. Priced in front of you, paid the same day.',
   'Valuations are subject to inspection, item condition, market prices and verification. Offers may vary depending on purity, weight, gemstones, brand, demand and documentation. Calculator prices are guide prices only.',
   'Charters Gold · Private UK Gold & Jewellery Specialists',
-  'Sell gold, diamonds and fine jewellery to a discreet UK private valuation house, or browse our curated collection of jewellery and gold pieces.'
+  'Sell gold, diamonds, watches and fine jewellery to a private valuation house in Ascot. Priced in front of you, paid the same day, no obligation.'
 ) on conflict do nothing;
 
 -- Homepage sections

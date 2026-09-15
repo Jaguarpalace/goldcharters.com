@@ -8,7 +8,7 @@ export const surrey: LocationContent = {
 
   metaTitle: 'Sell Gold, Watches & Fine Jewellery in Surrey - Charters Gold',
   metaDescription:
-    'Surrey-based specialists for private gold, diamond, watch and designer handbag valuations. Serving Weybridge, Cobham, Esher, Guildford, Woking, Sunningdale, Virginia Water and the wider stockbroker belt.',
+    'Private gold, diamond and watch buyers for Surrey, from Sunningdale and Virginia Water to Guildford and Farnham. Home visits by appointment, paid the same day.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Surrey',
   heroTitle: 'Your County’s Private Valuation House',
@@ -16,11 +16,11 @@ export const surrey: LocationContent = {
     'Charters Gold is based in Ascot, on the Surrey/Berkshire border - minutes from Sunningdale, Virginia Water and Wentworth - and serves clients across the county from one of England’s wealthiest commuter belts. From St George’s Hill to Guildford, from Sunningdale to Esher, we offer private valuations, transparent offers and same-day payment for pieces of meaningful value.',
 
   travel: {
-    distanceMiles: 0,
+    distanceMiles: 3,
     drive:
       'Our Ascot office sits on the Surrey/Berkshire border, minutes from Sunningdale and Virginia Water. Most of the county is within a 20-40 minute drive. Parking close by.',
     publicTransport:
-      'South Western Railway connects much of Surrey to Ascot - direct trains from Guildford on the Ascot line, and connections via Staines from Weybridge, Woking and the north of the county.',
+      'South Western Railway connects much of Surrey to Ascot: direct trains from Guildford, Camberley and Egham, and from Weybridge a change at Virginia Water. From Woking and the north of the county most clients drive, or have us come to them.',
   },
 
   whyHere: [

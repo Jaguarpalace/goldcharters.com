@@ -14,7 +14,7 @@ export const bracknell: LocationContent = {
   metaTitle: 'Sell Gold & Jewellery in Bracknell - Paid in Seconds',
   titleAbsolute: true,
   metaDescription:
-    'Sell gold, watches and jewellery twelve minutes from Bracknell. Two stops on the train to Ascot, private appointments, home visits across RG12, RG42 and RG45, same-day payment.',
+    'Sell gold and jewellery twelve minutes from Bracknell, or at your home in RG12, RG42 or RG45. Weighed and priced in front of you, paid the same day.',
 
   heroEyebrow: 'Gold Buyers Serving Bracknell',
   heroTitle: "Bracknell's Closest Private Valuation House, Two Stops Down the Line",

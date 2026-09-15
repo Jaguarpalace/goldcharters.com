@@ -43,7 +43,7 @@ export async function generateMetadata(): Promise<Metadata> {
   // bait. The exact figures live on the page only.
   const title = `9ct Gold Price Per Gram Today, ${formatDateGB(new Date(), 'long').replace(/ (\d{4})$/, ' $1')} | Instant Guide Price`;
   const description =
-    'Find out what your 9ct gold is worth per gram today. Enter the weight, see a guide figure in seconds, and get paid by bank transfer the same day, often within seconds, when you sell in person.';
+    'See what your 9ct gold is worth per gram today. Enter the weight for a guide figure in seconds, then sell in person and be paid the same day, often within seconds.';
   return {
     ...base,
     title: { absolute: title },

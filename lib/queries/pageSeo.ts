@@ -34,7 +34,7 @@ const SEO_DEFAULTS: Record<string, { title: string; description: string }> = {
     // 59 chars — survives Google's ~60-char title truncation intact.
     title: 'Sell Antique & Vintage Jewellery · UK Private Specialists',
     description:
-      'Sell antique and vintage jewellery - Victorian, Edwardian, Art Deco, signed and inherited pieces - valued on period and provenance, never scrap weight. Same-day payment.',
+      'Sell antique and vintage jewellery: Victorian, Edwardian, Art Deco, signed and inherited pieces valued on period and provenance, never scrap weight. Paid the same day.',
   },
   '/sell-handbags': {
     title: 'Sell Designer Handbags · Hermès, Chanel, Louis Vuitton · UK Specialists',

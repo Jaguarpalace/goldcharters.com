@@ -8,7 +8,7 @@ export const london: LocationContent = {
 
   metaTitle: 'Sell Gold & Jewellery in London - Private Valuations | Charters Gold',
   metaDescription:
-    'A discreet alternative to Hatton Garden. Private gold, diamond, watch and handbag valuations for London clients. Insured postal service or private appointments at our Ascot office.',
+    'A discreet alternative to Hatton Garden. Private gold, diamond and watch valuations at your London address or at our Ascot office, paid the same day.',
 
   heroEyebrow: 'Selling Gold & Jewellery - London',
   heroTitle: 'Discreet Valuations for London Clients',
@@ -96,7 +96,7 @@ export const london: LocationContent = {
     {
       question: 'How does the offer compare to Hatton Garden?',
       answer:
-        "We benchmark against trade and consumer auction prices for the same piece, not against high-street retailer margins. Most clients find our figure equals or exceeds Hatton Garden's best offer - and the conversation happens privately rather than in a shared showroom.",
+        "We benchmark against trade and consumer auction prices for the same piece, not against high-street retailer margins. Bring the Hatton Garden figure with you and we will show you how ours is built, line by line. The comparison costs nothing, and the conversation happens privately rather than across a shared counter.",
     },
     {
       question: 'What documentation do I need?',

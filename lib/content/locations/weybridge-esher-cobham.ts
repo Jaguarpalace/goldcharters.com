@@ -25,7 +25,7 @@ export const weybridgeEsherCobham: LocationContent = {
     drive:
       'Around 25 minutes from Weybridge via the A317 and A30 through Chertsey; Esher and Cobham add a few minutes via the A244 or A245. All comfortably off-peak journeys.',
     publicTransport:
-      'Rail requires a change at Weybridge or Staines, so most Elmbridge clients drive - or have us drive to them, which for this area is at least half of our appointments.',
+      'Rail from Weybridge means a change at Virginia Water, so most Elmbridge clients drive - or have us drive to them, which for this area is at least half of our appointments.',
   },
 
   whyHere: [

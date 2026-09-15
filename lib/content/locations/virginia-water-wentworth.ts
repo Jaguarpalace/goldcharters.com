@@ -8,7 +8,7 @@ export const virginiaWaterWentworth: LocationContent = {
 
   metaTitle: 'Sell Gold, Watches & Jewellery in Virginia Water - Charters Gold',
   metaDescription:
-    'Private valuations for Virginia Water and the Wentworth Estate, minutes from our Ascot office. Discreet home visits to gated addresses, transparent offers, same-day payment.',
+    'Sell gold and jewellery in Virginia Water or on the Wentworth Estate, three miles from our Ascot office. Discreet home visits, paid the same day.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Virginia Water',
   heroTitle: 'The Valuation House Next Door to Wentworth',

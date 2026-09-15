@@ -9,7 +9,7 @@ export const kingstonUponThames: LocationContent = {
   metaTitle: 'Sell Gold & Jewellery in Kingston - Paid in Seconds',
   titleAbsolute: true,
   metaDescription:
-    'Kingston’s jewellers buy at the counter. We come to your home in KT1, KT2 or KT3, price every piece in front of you, and pay the same day, usually within seconds of you accepting. Private, by appointment.',
+    'Kingston\'s jewellers buy at the counter. We come to KT1, KT2 or KT3, price every piece in front of you and pay the same day. Private, by appointment.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Kingston',
   heroTitle: 'The Private Alternative to Kingston’s Retail Counters',
@@ -24,7 +24,7 @@ export const kingstonUponThames: LocationContent = {
   travel: {
     distanceMiles: 18,
     drive:
-      'Around 35-40 minutes via the A308 through Hampton Court and Kingston Bridge, or the M3 to Sunbury then the A308. Coombe and Kingston Hill sit slightly closer via Richmond Park’s Kingston Gate.',
+      'Around 35-40 minutes via the A308 through Hampton Court and Kingston Bridge, or the M3 to Sunbury then the A308.',
     publicTransport:
       'Rail needs a change at Twickenham or Clapham Junction, so many Kingston clients prefer a home visit - for KT2 and Coombe it is usually the better answer anyway.',
   },

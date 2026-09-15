@@ -50,13 +50,13 @@ export function GoldCalculator({
   const heading = headingOverride ?? (metal ? `${metal} Calculator` : 'Gold Calculator');
   const sectionId = `${metalSlug}-calculator`;
   const ctaHref = ctaHrefOverride ?? `/sell-${metalSlug}#valuation-form`;
-  // Subhead phrasing adapts to single-metal mode so we don't claim
-  // "live gold prices" on a silver page.
+  // Every figure is what Charters would pay today, never a market or spot
+  // price - the same framing the /gold-calculator page uses.
   const subhead =
     subheadOverride ??
     (metal
-      ? `Enter your ${metal.toLowerCase()} item weights in grams to receive an instant guide price. Rates reflect live ${metal.toLowerCase()} spot prices.`
-      : 'Enter your item weights in grams to receive an instant guide price. Rates are managed by our specialists and reflect current market conditions.');
+      ? `Enter your ${metal.toLowerCase()} item weights in grams to see what we would pay today. Our ${metal.toLowerCase()} rates move with the market through the day; every figure is a guide, confirmed when we see the piece.`
+      : 'Enter your item weights in grams to see what we would pay today. Our rates move with the market through the day; every figure is a guide, confirmed when we see the piece.');
 
   const rows = useMemo<CalculatedRow[]>(
     () =>

@@ -8,7 +8,7 @@ export const marlowHenley: LocationContent = {
 
   metaTitle: 'Sell Gold, Watches & Jewellery in Marlow & Henley - Charters Gold',
   metaDescription:
-    'Private valuations for Marlow, Henley-on-Thames and the riverside villages. Twenty-five minutes from our Ascot office - discreet appointments, home visits, same-day payment.',
+    'Sell gold and jewellery in Marlow or Henley-on-Thames. Discreet appointments in Ascot or at your riverside address, priced in front of you, paid the same day.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Marlow & Henley',
   heroTitle: 'Specialists for the Thames-Side Towns',
@@ -92,7 +92,7 @@ export const marlowHenley: LocationContent = {
     {
       question: 'Can we meet somewhere other than the house or your office?',
       answer:
-        'For higher-value pieces we keep valuations to our office or a private home visit - it protects both sides and keeps the conversation off the high street. We also hold private valuation days across the area; current dates are on our booking page.',
+        'For higher-value pieces we keep valuations to our office or a private home visit - it protects both sides and keeps the conversation off the high street.',
     },
     {
       question: 'How do you price an Art Deco ring against a modern one?',

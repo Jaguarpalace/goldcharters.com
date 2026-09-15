@@ -9,12 +9,12 @@ export const reading: LocationContent = {
   metaTitle: 'Sell Gold & Jewellery in Reading - Paid in Seconds',
   titleAbsolute: true,
   metaDescription:
-    'Sell gold in Reading without the counter. Weighed and priced in front of you at the live rate, paid by instant bank transfer the same day. Post it insured, or we come to RG1 to RG6.',
+    'Sell gold in Reading without the counter. Weighed and priced in front of you, paid by instant bank transfer the same day. Post it, or we come to RG1 to RG6.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Reading',
   heroTitle: 'Specialist Valuations for the Thames Valley',
   heroIntro:
-    "Around twelve miles from Reading via the A329, our Ascot office serves the Thames Valley’s residential and tech-corridor clients. Many Reading-area enquiries arrive by insured Royal Mail Special Delivery, but the journey is straightforward - a direct train, in fact - and we welcome in-person appointments, particularly for higher-value pieces. For RG1 to RG6 and the western suburbs we are the nearest private gold buyer that is not a shop.",
+    "Around fifteen miles from Reading via the A329, our Ascot office serves the Thames Valley’s residential and tech-corridor clients. Many Reading-area enquiries arrive by insured Royal Mail Special Delivery, but the journey is straightforward - a direct train, in fact - and we welcome in-person appointments, particularly for higher-value pieces. For RG1 to RG6 and the western suburbs we are the nearest private gold buyer that is not a shop.",
 
   spotlight: {
     title: 'Gold buyers for Reading: every carat, not only the watches',
@@ -22,11 +22,11 @@ export const reading: LocationContent = {
   },
 
   travel: {
-    distanceMiles: 12,
+    distanceMiles: 15,
     drive:
       'Around 25-30 minutes via the A329 and A329(M) through Bracknell, or the M4 to Junction 10. Parking close by.',
     publicTransport:
-      'Reading to Ascot is a direct South Western Railway service of roughly 20-25 minutes, no change required. Ascot station is a short walk from our office.',
+      'Reading to Ascot is a direct South Western Railway service of roughly 30 minutes, no change required. Ascot station is a short walk from our office.',
   },
 
   whyHere: [

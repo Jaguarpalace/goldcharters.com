@@ -8,7 +8,7 @@ export const hillingdonUxbridge: LocationContent = {
 
   metaTitle: 'Sell Gold, Watches & Jewellery in Hillingdon & Uxbridge - Charters Gold',
   metaDescription:
-    'Private gold, diamond and watch valuations for Uxbridge, Ruislip, Northwood and the Hillingdon borough. Live pricing, home visits by appointment, same-day payment.',
+    'Sell gold, diamonds and watches in Uxbridge, Ruislip or Northwood. A specialist at your door by appointment, priced in front of you, paid the same day.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Hillingdon & Uxbridge',
   heroTitle: 'Metroland’s Jewellery, Valued Properly',
@@ -30,7 +30,7 @@ export const hillingdonUxbridge: LocationContent = {
     },
     {
       title: 'An alternative to the trek into town',
-      body: 'Selling from Hillingdon has traditionally meant Uxbridge pawnbrokers or a journey to Hatton Garden. We offer a third route: a private valuation house reachable round the M25, or a specialist at your own front door - with pricing that matches or beats the trip into London.',
+      body: 'Selling from Hillingdon has traditionally meant Uxbridge pawnbrokers or a journey to Hatton Garden. We offer a third route: a private valuation house reachable round the M25, or a specialist at your own front door - with pricing built from the same trade and auction data you would be quoted in Hatton Garden, without the journey.',
     },
     {
       title: 'At home across the borough’s range',

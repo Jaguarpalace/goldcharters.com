@@ -8,7 +8,7 @@ export const woking: LocationContent = {
 
   metaTitle: 'Sell Gold, Watches & Jewellery in Woking - Charters Gold',
   metaDescription:
-    'Sell gold, diamonds, luxury watches and designer handbags near Woking. Twenty minutes from our Ascot office through Chobham - private appointments, home visits, same-day payment.',
+    'Sell gold, watches and handbags near Woking, twenty minutes through Chobham or at your home in GU21 to GU24. Priced in front of you, paid the same day.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Woking',
   heroTitle: 'A Private Valuation House Twenty Minutes from Woking',

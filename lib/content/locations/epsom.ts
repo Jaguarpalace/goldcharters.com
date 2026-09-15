@@ -35,7 +35,7 @@ export const epsom: LocationContent = {
     },
     {
       title: 'The professional-belt portfolio, properly priced',
-      body: 'Epsom’s commuter households bring us the classic collection: the engagement ring being upgraded, the Rolex from a City bonus, sovereigns inherited from a College Town grandparent. Each is priced individually - live per-gram rates for metal, current market results for watches and signed pieces.',
+      body: 'Epsom’s commuter households bring us the classic collection: the engagement ring being upgraded, the Rolex from a City bonus, sovereigns inherited from an Ewell grandparent. Each is priced individually - live per-gram rates for metal, current market results for watches and signed pieces.',
     },
     {
       title: 'Private, whichever route you choose',

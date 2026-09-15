@@ -7,14 +7,12 @@ import type { ReactNode } from 'react';
  * The "Get a Valuation" / "Open the form" link.
  *
  * Behaviour (per Rishi's brief):
- *   - Always lands the customer on the METAL form by default.
- *   - If they're already on a page that renders the metal variant
- *     (homepage, /sell-gold, /sell-silver), smooth-scroll instead of
- *     navigating to avoid a wasted page load.
- *   - Anywhere else — including /sell-jewellery, /sell-watches and
- *     /sell-handbags which render their own contextual forms — navigate
- *     to /sell-gold so the user lands on the metal form, not the
- *     contextual one. That's what this button represents.
+ *   - If the page the customer is on has a valuation form (every sell-*
+ *     page, every location page, the calculator, the homepage), smooth-
+ *     scroll to it. A watch seller on /sell-watches gets the watch form,
+ *     a Reading seller stays on the Reading page. (Changed 16 Sep 2026:
+ *     the old behaviour sent everyone to the metal form on /sell-gold.)
+ *   - Pages without a form (blog, legal, contact) navigate to /sell-gold.
  */
 export function GetValuationLink({
   className,
@@ -32,9 +30,7 @@ export function GetValuationLink({
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     onNavigate?.();
 
-    const onMetalPage =
-      pathname === '/' || pathname === '/sell-gold' || pathname === '/sell-silver';
-    if (onMetalPage && typeof document !== 'undefined' && document.getElementById('valuation-form')) {
+    if (typeof document !== 'undefined' && document.getElementById('valuation-form')) {
       e.preventDefault();
       window.history.replaceState(null, '', `${pathname}#valuation-form`);
       document.getElementById('valuation-form')?.scrollIntoView({ behavior: 'smooth' });
