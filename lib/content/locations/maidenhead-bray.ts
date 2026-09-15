@@ -97,7 +97,7 @@ export const maidenheadBray: LocationContent = {
     {
       question: 'How quickly is payment made?',
       answer:
-        'Same day, by bank transfer, once you accept a figure - whether the valuation happened in Ascot, at your home, or by post. There is no pressure to decide on the spot; a written offer stays open while you think.',
+        'Same day, by bank transfer, once you accept a figure - whether the valuation happened in Ascot, at your home, or by post. There is no pressure to decide on the spot; the written offer is valid for 24 hours, and if you need longer we simply price the piece again when you are ready.',
     },
   ],
 

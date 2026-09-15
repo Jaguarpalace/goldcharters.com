@@ -64,7 +64,7 @@ export const kingstonUponThames: LocationContent = {
     {
       icon: 'in-person',
       title: 'Private appointment in Ascot',
-      body: 'Forty minutes via Hampton Court, with parking near the office. Confidential, unhurried, one specialist - and a written figure that stands whether you decide today or next month.',
+      body: 'Forty minutes via Hampton Court, with parking near the office. Confidential, unhurried, one specialist - and a written figure that is valid for 24 hours, with no pressure to decide at the table.',
     },
     {
       icon: 'collect',

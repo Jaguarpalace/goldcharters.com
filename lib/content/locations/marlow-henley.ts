@@ -59,7 +59,7 @@ export const marlowHenley: LocationContent = {
     {
       icon: 'in-person',
       title: 'Private appointment in Ascot',
-      body: 'A twenty-five minute drive from either town. Confidential, by name, with a single specialist - and a written figure that stands whether you decide today or next month.',
+      body: 'A twenty-five minute drive from either town. Confidential, by name, with a single specialist - and a written figure that is valid for 24 hours, with no pressure to decide at the table.',
     },
     {
       icon: 'collect',

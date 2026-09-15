@@ -102,7 +102,7 @@ export const haslemere: LocationContent = {
     {
       question: 'How do I know your rates are fair from out here?',
       answer:
-        'Check them before we meet: our gold calculator publishes the live per-gram rates we pay for every carat, and the same rates apply whether the valuation happens in Ascot or at your kitchen table in Haslemere. Written figures, no pressure, and the offer stands while you think.',
+        'Check them before we meet: our gold calculator publishes the live per-gram rates we pay for every carat, and the same rates apply whether the valuation happens in Ascot or at your kitchen table in Haslemere. Written figures valid for 24 hours, and no pressure to decide at the table.',
     },
   ],
 

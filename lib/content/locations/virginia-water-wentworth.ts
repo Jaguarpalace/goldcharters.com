@@ -93,7 +93,7 @@ export const virginiaWaterWentworth: LocationContent = {
     {
       question: 'Is the valuation really without obligation?',
       answer:
-        'Completely. No fee for the inspection, a written figure that stands whether you accept it today or come back in three months, and no follow-up pressure. Most Wentworth introductions come by word of mouth, which only works if every conversation is left open.',
+        'Completely. No fee for the inspection, a written figure that is valid for 24 hours, and no follow-up pressure; if you come back later we simply price the piece again at that day's rate. Most Wentworth introductions come by word of mouth, which only works if every conversation is left open.',
     },
   ],
 
