@@ -20,7 +20,9 @@ import { isInternalDevice } from '@/lib/analytics/internal';
  *     page load, so enquiries can be attributed even when the tag is off.
  *
  * Configured from /admin/analytics via site settings; renders nothing when
- * no measurement id is set.
+ * neither a GA4 measurement id nor a Google Ads conversion id is set. Either
+ * one alone is enough to load the tag (Ads-only accounts still need the
+ * conversion pings).
  */
 export function GoogleTag({ gaId, adsId, adsLabel }: { gaId: string | null; adsId: string | null; adsLabel: string | null }) {
   const pathname = usePathname();
@@ -33,7 +35,8 @@ export function GoogleTag({ gaId, adsId, adsLabel }: { gaId: string | null; adsI
   }, [pathname, isAdmin]);
 
   useEffect(() => {
-    if (!gaId || isAdmin || isInternalDevice()) return;
+    const tagId = gaId || adsId;
+    if (!tagId || isAdmin || isInternalDevice()) return;
 
     const load = () => {
       if (loaded.current) return;
@@ -51,10 +54,10 @@ export function GoogleTag({ gaId, adsId, adsLabel }: { gaId: string | null; adsI
       });
       const s = document.createElement('script');
       s.async = true;
-      s.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(gaId)}`;
+      s.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(tagId)}`;
       document.head.appendChild(s);
       window.gtag('js', new Date());
-      window.gtag('config', gaId, { anonymize_ip: true, send_page_view: true });
+      if (gaId) window.gtag('config', gaId, { anonymize_ip: true, send_page_view: true });
       if (adsId) {
         window.gtag('config', adsId);
         window.__gcAds = adsLabel ? { id: adsId, label: adsLabel } : null;
