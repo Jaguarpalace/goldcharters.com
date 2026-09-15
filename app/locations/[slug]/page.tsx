@@ -13,6 +13,8 @@ import {
 } from '@/lib/seo/structuredData';
 import { ValuationForm } from '@/components/public/ValuationForm';
 import { GetValuationLink } from '@/components/public/GetValuationLink';
+import { TrackedLink } from '@/components/public/TrackedLink';
+import { formatUkPhone } from '@/lib/format';
 
 // Statically pre-render every location at build time → fastest possible
 // response, perfect Lighthouse score, ideal for SEO crawlers.
@@ -114,6 +116,29 @@ export default async function LocationPage({ params }: { params: { slug: string 
                 Today&rsquo;s Gold Price Per Gram
               </Link>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* START STRIP - one tap to the form for visitors who arrive ready to sell
+          (paid clicks especially). Scrolls to the form on this page; the phone
+          link counts as a phone_click in the tag. */}
+      <section className="border-b border-gold-metallic/15 bg-ink-900/60">
+        <div className="gc-container flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="font-display text-lg font-semibold text-white">Start your {location.name} valuation</p>
+            <p className="text-[12px] text-warmgrey">Free, no obligation, two minutes to fill in. Paid the same day if you decide to sell.</p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <GetValuationLink className="gc-btn-primary whitespace-nowrap !px-4 !py-2 text-[12px]">Start your valuation</GetValuationLink>
+            <TrackedLink
+              event="phone_click"
+              params={{ where: 'location-strip' }}
+              href={`tel:${settings.phone.replace(/D/g, '')}`}
+              className="whitespace-nowrap text-[12px] font-semibold uppercase tracking-luxe text-gold-tint hover:text-gold-bright"
+            >
+              or call {formatUkPhone(settings.phone)}
+            </TrackedLink>
           </div>
         </div>
       </section>
