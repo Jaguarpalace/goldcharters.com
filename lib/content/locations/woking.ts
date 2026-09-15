@@ -87,7 +87,7 @@ export const woking: LocationContent = {
     {
       question: 'Do you buy 22ct Indian and Asian gold?',
       answer:
-        'Yes, regularly - bridal sets, bangles, guinea coins and chains. 22ct carries one of the strongest per-gram rates, and we quote it live and transparently. Unhallmarked pieces are tested in front of you at no charge.',
+        'Yes, regularly - bridal sets, bangles, guinea coins and chains. 22ct carries one of the strongest per-gram rates, and we quote it openly, per gram, before the piece is weighed. Unhallmarked pieces are tested in front of you at no charge.',
     },
     {
       question: 'Can someone come to my home in Hook Heath or West Byfleet?',

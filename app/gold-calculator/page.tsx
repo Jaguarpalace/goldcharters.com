@@ -43,7 +43,7 @@ export async function generateMetadata(): Promise<Metadata> {
   // bait. The exact figures live on the page only.
   const title = `9ct Gold Price Per Gram Today, ${formatDateGB(new Date(), 'long').replace(/ (\d{4})$/, ' $1')} | Instant Guide Price`;
   const description =
-    'See what your 9ct gold is worth per gram today. Enter the weight for a guide figure in seconds, then sell in person and be paid the same day, often within seconds.';
+    'See what your 9ct gold is worth per gram today. Enter the weight for a guide figure, then sell in person and be paid the same day, often within seconds.';
   return {
     ...base,
     title: { absolute: title },
@@ -76,7 +76,7 @@ function buildFaqs(rates: CalculatorRate[]) {
     {
       question: 'What is the price of 9ct gold per gram in the UK today, and why does it change?',
       answer:
-        "Every UK buyer prices 9ct gold from the same starting point: the London spot price for pure gold, quoted per troy ounce and converted to pounds per gram. 9ct is 37.5% gold, so its value is 37.5% of that figure, less the buyer's margin. Spot moves all day with the market and the pound-dollar rate, which is why a 9ct price quoted on Monday can differ by Friday. What we pay today is shown in the table above, with the time it was last updated.",
+        "Every UK buyer prices 9ct gold from the same starting point: the London spot price for pure gold, quoted per troy ounce and converted to pounds per gram. 9ct is 37.5% gold, so its value is 37.5% of that figure, less the amount the buyer keeps to cover refining and risk. Spot moves all day with the market and the pound-dollar rate, which is why a 9ct price quoted on Monday can differ by Friday. What we pay today is shown in the table above, with the time it was last updated.",
     },
     {
       question: 'What is 375 gold, and is it the same as 9ct?',

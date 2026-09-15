@@ -34,7 +34,7 @@ const SEO_DEFAULTS: Record<string, { title: string; description: string }> = {
     // 59 chars — survives Google's ~60-char title truncation intact.
     title: 'Sell Antique & Vintage Jewellery · UK Private Specialists',
     description:
-      'Sell antique and vintage jewellery: Victorian, Edwardian, Art Deco, signed and inherited pieces valued on period and provenance, never scrap weight. Paid the same day.',
+      'Sell antique and vintage jewellery: Victorian, Edwardian, Art Deco and signed pieces valued on period and provenance, never scrap weight. Paid the same day.',
   },
   '/sell-handbags': {
     title: 'Sell Designer Handbags · Hermès, Chanel, Louis Vuitton · UK Specialists',
@@ -54,7 +54,7 @@ const SEO_DEFAULTS: Record<string, { title: string; description: string }> = {
   '/book': {
     title: 'Book a Private Appointment · Gold & Jewellery Valuations',
     description:
-      'Reserve a private valuation slot at our Ascot office or a pop-up at your home address. Pick a date and time, meet a specialist in person - no obligation to sell.',
+      'Reserve a private valuation slot at our Ascot office or at your home. Pick a date and time, meet a specialist in person, no obligation to sell.',
   },
   '/blog': {
     title: 'Insights & Guides · Charters Gold',

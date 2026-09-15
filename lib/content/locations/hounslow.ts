@@ -11,7 +11,7 @@ export const hounslow: LocationContent = {
     'Sell 22ct gold, jewellery and watches across Hounslow and Chiswick. The rate per gram shown as we weigh, home visits by appointment, paid the same day.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Hounslow Borough',
-  heroTitle: 'Live Rates for a Borough That Knows Its Gold',
+  heroTitle: 'Rates Shown as We Weigh, for a Borough That Knows Its Gold',
   heroIntro:
     'From Chiswick’s Victorian terraces to the gold shops of Hounslow High Street, this borough holds more precious metal than almost anywhere in West London - and its sellers know the difference between a fair rate and a shop-window one. We quote our per-gram price for your exact carat, weigh everything in front of you, and pay the same day.',
 
@@ -80,7 +80,7 @@ export const hounslow: LocationContent = {
     {
       question: 'How does your rate compare with the gold shops on Hounslow High Street?',
       answer:
-        'Ask them for their per-gram rate for your carat, then ask us - both should be checkable against the day’s spot price, which you can see on our gold calculator. We publish our working; a fair buyer will always tell you the rate before the weight. If a counter quotes a total without showing the rate, that is your answer.',
+        'Ask them for their per-gram rate for your carat, then ask us - ours is published per carat on our gold calculator, so you can check it before you come. We publish our working; a fair buyer will always tell you the rate before the weight. If a counter quotes a total without showing the rate, that is your answer.',
     },
     {
       question: 'Do you buy 22 carat and 24 carat Asian gold?',

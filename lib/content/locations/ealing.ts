@@ -86,12 +86,12 @@ export const ealing: LocationContent = {
     {
       question: 'I already have a quote from a Southall jeweller - will you beat it?',
       answer:
-        'Bring it and we will tell you straight. Our rate is set from the live market, not from a competitor’s number, so sometimes we beat a quote comfortably and occasionally we tell you the quote in your hand is fair - which is worth knowing too. Either way you leave with a written figure and no obligation.',
+        'Bring it and we will tell you straight. Our rate is set from the gold market on the day, not from a competitor’s number, so sometimes we beat a quote comfortably and occasionally we tell you the quote in your hand is fair - which is worth knowing too. Either way you leave with a written figure and no obligation.',
     },
     {
       question: 'How do you value set pieces - polki, kundan, stone-set bridal jewellery?',
       answer:
-        'On two tracks. Where craftsmanship and condition give a piece resale value as jewellery, we price it as jewellery - above metal weight. Where the honest market is the metal, we say so and quote the live 22ct rate. The distinction is explained before anything is agreed, not after.',
+        'On two tracks. Where craftsmanship and condition give a piece resale value as jewellery, we price it as jewellery - above metal weight. Where the honest market is the metal, we say so and quote our 22ct rate for the day. The distinction is explained before anything is agreed, not after.',
     },
     {
       question: 'Can you visit an elderly relative in Ealing without me there?',

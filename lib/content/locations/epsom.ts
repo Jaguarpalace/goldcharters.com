@@ -86,7 +86,7 @@ export const epsom: LocationContent = {
     {
       question: 'Is it cash or bank transfer when you buy gold in Epsom?',
       answer:
-        'Your choice on smaller amounts; cash is available at the appointment, in Ascot or at your home. Larger sums are paid by instant bank transfer, sent the same day and usually in your account within seconds of you accepting and leaves both of us with a record. Nobody is sent away to wait for a cheque.',
+        'Your choice on smaller amounts; cash is available at the appointment, in Ascot or at your home. Larger sums are paid by instant bank transfer, sent the same day, usually in your account within seconds of you accepting, and it leaves both of us with a record. Nobody is sent away to wait for a cheque.',
     },
     {
       question: 'I have Derby memorabilia - badges, a presentation piece. Is that your territory?',
@@ -106,7 +106,7 @@ export const epsom: LocationContent = {
     {
       question: 'Do you buy 22ct Asian gold?',
       answer:
-        'Yes, regularly - bridal sets, bangles and chains. 22ct carries one of the strongest per-gram rates, quoted live and transparently while the piece sits on the scale in front of you. Unhallmarked items are tested at no charge.',
+        'Yes, regularly - bridal sets, bangles and chains. 22ct carries one of the strongest per-gram rates, quoted openly while the piece sits on the scale in front of you. Unhallmarked items are tested at no charge.',
     },
   ],
 

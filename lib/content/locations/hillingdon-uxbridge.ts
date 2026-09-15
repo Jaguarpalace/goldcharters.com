@@ -34,7 +34,7 @@ export const hillingdonUxbridge: LocationContent = {
     },
     {
       title: 'At home across the borough’s range',
-      body: 'From Denham’s golf-belt houses to Hayes family gold, the borough spans every kind of piece we buy. 22ct Asian gold is quoted live per gram; signed and period pieces are priced against auction results, never bullion weight.',
+      body: 'From Denham’s golf-belt houses to Hayes family gold, the borough spans every kind of piece we buy. 22ct Asian gold is quoted per gram at our rate for the day; signed and period pieces are priced against auction results, never bullion weight.',
     },
   ],
 
@@ -85,7 +85,7 @@ export const hillingdonUxbridge: LocationContent = {
     {
       question: 'Is it worth coming to you rather than going into Hatton Garden?',
       answer:
-        'Compare the figures and the effort. Hatton Garden means the Metropolitan line, then shopping your pieces counter to counter. We put a written offer on the table from a single unhurried appointment - at our office or your home - priced against the same live market those counters use. Most clients find the number lands within a whisker or better, without the day out.',
+        'Compare the figures and the effort. Hatton Garden means the Metropolitan line, then shopping your pieces counter to counter. We put a written offer on the table from a single unhurried appointment - at our office or your home - priced from the same market data those counters use. Most clients find the number lands within a whisker or better, without the day out.',
     },
     {
       question: 'Do you cover Denham and Harefield, on the edges of the borough?',

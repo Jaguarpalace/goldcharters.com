@@ -88,7 +88,7 @@ export const twickenhamRichmond: LocationContent = {
     {
       question: 'Can I be paid in cash, whether you visit me in Richmond or I come to Ascot?',
       answer:
-        'For smaller amounts, yes, at either. Larger sums go by instant bank transfer, sent the same day and usually with you within seconds of you accepting and gives you a record of the sale. Either way it happens at the table, before the appointment ends.',
+        'For smaller amounts, yes, at either. Larger sums go by instant bank transfer, sent the same day, usually with you within seconds of you accepting, and it gives you a record of the sale. Either way it happens at the table, before the appointment ends.',
     },
     {
       question: 'Are you affected by rugby international weekends?',

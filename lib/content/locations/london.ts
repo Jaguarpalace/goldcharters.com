@@ -30,7 +30,7 @@ export const london: LocationContent = {
     },
     {
       title: 'No high-street brand markup on the offer',
-      body: "We don't operate a chain of shops or pay rent in Mayfair. That means the figure we offer reflects the piece, the live market and a fair trade margin - not the cost of a Bond Street window.",
+      body: "We don't operate a chain of shops or pay rent in Mayfair. That means the figure we offer reflects the piece and the gold market on the day - not the cost of a Bond Street window.",
     },
     {
       title: 'Discretion suited to estate and inherited pieces',

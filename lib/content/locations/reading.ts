@@ -103,7 +103,7 @@ export const reading: LocationContent = {
     {
       question: 'Do you do company purchases? My business bought the piece.',
       answer:
-        'Yes - we transact with both private individuals and limited companies, and provide VAT-compliant documentation for company purchases. We will confirm the specific tax treatment on the offer.',
+        'Yes - we transact with both private individuals and limited companies, and provide full documentation for company purchases.',
     },
     {
       question: 'What about pieces with original box and papers?',

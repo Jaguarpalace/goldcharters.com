@@ -87,7 +87,7 @@ export const kingstonUponThames: LocationContent = {
     {
       question: 'Do you pay cash for gold, or is it bank transfer only?',
       answer:
-        'Both. Smaller amounts can be paid in cash at the appointment. Larger sums go by instant bank transfer, sent the same day and usually in your account within seconds of you accepting and gives you a record of the sale. Either way you are paid before we leave, never "in a few days".',
+        'Both. Smaller amounts can be paid in cash at the appointment. Larger sums go by instant bank transfer, sent the same day, usually in your account within seconds of you accepting, and it gives you a record of the sale. Either way you are paid before we leave, never "in a few days".',
     },
     {
       question: 'Why not sell to a jeweller in the Bentall Centre or the Ancient Market?',

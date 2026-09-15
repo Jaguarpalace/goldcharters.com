@@ -92,7 +92,7 @@ export const haslemere: LocationContent = {
     {
       question: 'What is the safest way to get smaller pieces to you?',
       answer:
-        'Royal Mail Special Delivery - tracked end to end, signature on arrival, Royal Mail compensation available up to £2,500 - for pieces within that value. Photograph everything before sending; we photograph everything on arrival and confirm receipt the same morning. For anything you would rather not post, that is what the home visit is for.',
+        'Royal Mail Special Delivery, for pieces within its compensation cover of up to £2,500: tracked end to end, with a signature on arrival. Photograph everything before sending; we photograph everything on arrival and confirm receipt the same morning. For anything you would rather not post, that is what the home visit is for.',
     },
     {
       question: 'We are clearing a family house near Chiddingfold - can you look at everything?',
@@ -102,7 +102,7 @@ export const haslemere: LocationContent = {
     {
       question: 'How do I know your rates are fair from out here?',
       answer:
-        'Check them before we meet: our gold calculator publishes the per-gram rates we pay for every carat, and the same rates apply whether the valuation happens in Ascot or at your kitchen table in Haslemere. Written figures valid for 24 hours, and no pressure to decide at the table.',
+        'Check them before we meet: our gold calculator publishes the per-gram rates we pay for every carat, and the same rates apply whether the valuation happens in Ascot or at your kitchen table in Haslemere. The written figure is valid for 24 hours, and there is no pressure to decide at the table.',
     },
   ],
 

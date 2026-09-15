@@ -191,7 +191,9 @@ export default async function TermsPage() {
       </p>
       <ul>
         <li>
-          Return delivery will be by tracked, insured method at our cost.
+          Return delivery will be by a tracked, insured method at our cost. Items above the value
+          covered by Royal Mail Special Delivery are returned by insured courier or by hand at a home
+          visit, also at our cost.
         </li>
         <li>
           We may require completion of identity verification before returning Items, in line with

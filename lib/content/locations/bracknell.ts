@@ -112,7 +112,7 @@ export const bracknell: LocationContent = {
     {
       question: 'How much is 9ct gold worth per gram today?',
       answer:
-        'The rate we pay today is on our gold calculator and moves with the market during the day. 9ct is 37.5% pure, so the figure per gram is roughly three eighths of the fine gold price less our margin, which we show rather than hide. The same applies to 14ct, 18ct and 22ct, and to broken gold, which is worth exactly the same per gram as intact gold of the same carat.',
+        'The rate we pay today is on our gold calculator and moves with the market during the day. 9ct is 37.5% pure, so the figure per gram is roughly three eighths of the fine gold price less the amount every buyer keeps to cover refining and risk; ours is published on the calculator rather than hidden. The same applies to 14ct, 18ct and 22ct, and to broken gold, which is worth exactly the same per gram as intact gold of the same carat.',
     },
     {
       question: 'Can you come to my home in Bracknell or Crowthorne?',
