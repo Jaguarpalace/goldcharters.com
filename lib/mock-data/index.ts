@@ -776,7 +776,7 @@ The starting point is the **24ct (pure) spot price** quoted on the London Bullio
 - 18ct = 75.0% of the pure price
 - 9ct = 37.5% of the pure price
 
-Every dealer then prices below that figure to cover refining and risk, which is why no two buyers quote the same number. The rate we pay for 22ct is published on our gold calculator and applied per gram; the worked example below uses a round illustrative figure.
+Every dealer then prices below that figure to cover refining and risk, which is why no two buyers quote the same number. The rate we pay for 22ct is published on our gold calculator and applied per gram; the worked example below shows how the carat maths works.
 
 ## What this means in pounds
 
@@ -784,9 +784,9 @@ If 24ct gold is trading at £62/g on the day you sell, the maths is:
 
 - Pure spot per gram: £62.00
 - 22ct equivalent: £62.00 × 91.6% = £56.79
-- Our rate on the day (illustrative): **£52.25/g**
+- Our rate for 22ct on the day: shown on the gold calculator, applied per gram
 
-Bring in a 10g 22ct chain and you'd expect roughly £520, give or take a couple of pounds for the live market.
+Bring in a 10g 22ct chain and the calculator shows you what we would pay today, before you leave the house.
 
 ## What can change the offer
 
@@ -795,7 +795,7 @@ Bring in a 10g 22ct chain and you'd expect roughly £520, give or take a couple 
 - **Condition** - broken jewellery is fine; what matters is weight and purity, not aesthetics
 - **Market movement** - gold prices change minute by minute. We quote based on the price at the moment we make the offer
 
-## Want a live figure?
+## Want today's figure?
 
 Use our [gold calculator](/gold-calculator) for an instant guide price across every common carat. Final offers always need an in-person purity check, but the calculator gets you within a few pounds.`,
       featured_image_url: null,
