@@ -65,6 +65,8 @@ export type BookAppointmentInput = {
   notes?: string | null;
   preferredContactMethod: string;
   consent: boolean;
+  /** Where the visitor came from (lib/attribution). Optional; stored when present. */
+  attribution?: Partial<Record<'landing_page' | 'source_page' | 'referrer' | 'utm_source' | 'utm_medium' | 'utm_campaign' | 'utm_term' | 'gclid', string | null | undefined>>;
 };
 
 export type BookResult =
@@ -95,6 +97,18 @@ async function getEventForBooking(eventId: string): Promise<AppointmentEvent | n
     .eq('is_published', true)
     .maybeSingle();
   return (data as AppointmentEvent) ?? null;
+}
+
+/** Trimmed, length-capped attribution columns (migration 036); spread-only. */
+function attributionPatch(a: BookAppointmentInput['attribution']): Record<string, string> {
+  const out: Record<string, string> = {};
+  if (!a) return out;
+  const caps: Record<string, number> = { landing_page: 300, source_page: 300, referrer: 500, utm_source: 120, utm_medium: 120, utm_campaign: 120, utm_term: 120, gclid: 200 };
+  for (const [k, max] of Object.entries(caps)) {
+    const v = a[k as keyof typeof a];
+    if (typeof v === 'string' && v.trim()) out[k] = v.trim().slice(0, max);
+  }
+  return out;
 }
 
 export async function bookAppointment(
@@ -157,6 +171,7 @@ export async function bookAppointment(
   const { data: row, error } = await admin
     .from('appointments')
     .insert({
+      ...attributionPatch(input.attribution),
       event_id: eventId,
       starts_at: startsAt,
       ends_at: slotEnd(event, startsAt),

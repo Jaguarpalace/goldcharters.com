@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { formatUkPhone } from '@/lib/format';
+import { track } from '@/lib/analytics/track';
 import { usePathname } from 'next/navigation';
 import type { SiteSettings } from '@/types/database';
 import { Logo } from './Logo';
@@ -93,6 +94,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
               <p className="mt-2 space-y-0.5 text-xs">
                 <a
                   href={`tel:${settings.phone.replace(/\D/g, '')}`}
+                  onClick={() => track('phone_click', { where: 'footer' })}
                   className="block text-warmgrey hover:text-gold-bright"
                 >
                   {formatUkPhone(settings.phone)}

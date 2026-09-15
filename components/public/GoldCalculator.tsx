@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import type { CalculatorRate } from '@/types/database';
 import { formatGBP } from '@/lib/format';
+import { track } from '@/lib/analytics/track';
 
 type Weights = Record<string, string>;
 
@@ -188,6 +189,7 @@ function TotalRow({ total, ctaHref }: { total: number; ctaHref: string }) {
       <div className="mt-3 flex items-center justify-between gap-3 lg:contents lg:mt-0">
         <Link
           href={ctaHref}
+          onClick={() => track('calculator_request_click', { total: Math.round(total) })}
           className="gc-btn-primary inline-flex items-center justify-center whitespace-nowrap !px-3 !py-1.5 text-[11px] lg:w-full"
         >
           Request Valuation

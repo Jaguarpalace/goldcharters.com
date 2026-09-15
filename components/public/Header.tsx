@@ -10,6 +10,7 @@ import { BUY_ENABLED } from '@/lib/features';
 import { GetValuationLink } from './GetValuationLink';
 import { buildWhatsappUrl } from '@/lib/whatsapp';
 import { formatUkPhone } from '@/lib/format';
+import { track } from '@/lib/analytics/track';
 
 const SELL_LINKS = [
   { label: 'Sell Gold', href: '/sell-gold' },
@@ -97,6 +98,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
               lives in the admin price-dashboard. */}
           <a
             href={`tel:${phoneDigits}`}
+            onClick={() => track('phone_click', { where: 'header' })}
             className="hidden items-center gap-1.5 whitespace-nowrap text-[12px] font-medium uppercase tracking-luxe text-gold-tint hover:text-gold-bright md:inline-flex"
           >
             <PhoneIcon />
@@ -110,6 +112,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
           {whatsappHref && (
             <a
               href={whatsappHref}
+              onClick={() => track('whatsapp_click', { where: 'header' })}
               target="_blank"
               rel="noopener noreferrer"
               className="hidden items-center gap-2 whitespace-nowrap rounded-full border border-gold-metallic/40 px-4 py-2 text-[12px] font-semibold uppercase tracking-luxe text-gold-tint transition hover:border-gold-metallic hover:bg-ink-900/70 hover:text-gold-bright md:inline-flex"
@@ -124,6 +127,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
           {whatsappHref && (
             <a
               href={whatsappHref}
+              onClick={() => track('whatsapp_click', { where: 'header' })}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Chat on WhatsApp"
@@ -155,6 +159,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
             {/* Phone strip at the top of the drawer */}
             <a
               href={`tel:${phoneDigits}`}
+              onClick={() => track('phone_click', { where: 'mobile-menu' })}
               className="inline-flex items-center justify-center gap-2 rounded-xl border border-gold-metallic/15 bg-ink-900/60 px-4 py-2.5 text-[11px] font-medium uppercase tracking-luxe text-gold-tint"
             >
               <PhoneIcon />

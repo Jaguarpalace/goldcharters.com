@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { buildWhatsappUrl } from '@/lib/whatsapp';
+import { track } from '@/lib/analytics/track';
 
 /**
  * Floating click-to-chat WhatsApp pill, pinned to the bottom-left on
@@ -34,6 +35,7 @@ export function WhatsAppButton({ whatsapp }: { whatsapp: string | null | undefin
   return (
     <a
       href={href}
+      onClick={() => track('whatsapp_click', { where: 'floating' })}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat on WhatsApp"

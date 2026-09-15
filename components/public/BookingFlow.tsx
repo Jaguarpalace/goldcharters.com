@@ -1,6 +1,8 @@
 'use client';
 
 import { useMemo, useRef, useState, useTransition } from 'react';
+import { getAttribution } from '@/lib/attribution/attribution';
+import { track } from '@/lib/analytics/track';
 import { bookAppointment, findNearestEvents, type NearestResult } from '@/lib/actions/appointments';
 import { APPOINTMENT_SERVICES, type ComputedEvent, type ComputedSlot } from '@/lib/appointments/slots';
 import { formatDistance } from '@/lib/appointments/geo';
@@ -307,6 +309,7 @@ function BookingForEvent({
       notes: String(fd.get('notes') ?? '') || null,
       preferredContactMethod: String(fd.get('preferred_contact_method') ?? 'phone'),
       consent: fd.get('consent') === 'on',
+      attribution: getAttribution(),
     };
 
     // File instances can't be carried inside a plain-object server-action
@@ -321,6 +324,7 @@ function BookingForEvent({
     startTransition(async () => {
       const result = await bookAppointment(payload, photoData);
       if (result.ok) {
+        track('book_appointment', { city: event.city, page: payload.attribution.source_page });
         onSlotBooked(event.id, slot.startsAt);
         onBooked({
           reference: result.reference,

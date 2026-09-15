@@ -6,6 +6,7 @@ import { getSiteSettings } from '@/lib/queries/homepage';
 import { Header } from '@/components/public/Header';
 import { Footer } from '@/components/public/Footer';
 import { CookieConsent } from '@/components/public/CookieConsent';
+import { GoogleTag } from '@/components/public/GoogleTag';
 import { WhatsAppButton } from '@/components/public/WhatsAppButton';
 import { RecoveryRedirect } from '@/components/public/RecoveryRedirect';
 import { JsonLd } from '@/lib/seo/JsonLd';
@@ -160,6 +161,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <Footer settings={settings} />
         <WhatsAppButton whatsapp={settings.whatsapp} />
         <CookieConsent />
+        <GoogleTag
+          gaId={settings.ga_measurement_id ?? null}
+          adsId={settings.google_ads_conversion_id ?? null}
+          adsLabel={settings.google_ads_conversion_label ?? null}
+        />
         <RecoveryRedirect />
         <Analytics />
       </body>

@@ -87,6 +87,7 @@ const NAV_SECTIONS: Array<{ key: string; title: string; items: NavItem[] }> = [
       { href: '/admin/audit-log', label: 'Audit Log' },
       { href: '/admin/trash', label: 'Trash' },
       { href: '/admin/security', label: 'Security', manager: true },
+      { href: '/admin/analytics', label: 'Analytics' },
       { href: '/admin/settings', label: 'Settings' },
     ],
   },

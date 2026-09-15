@@ -39,6 +39,10 @@ export type SiteSettings = {
    * Disclaimer document. Newlines are preserved when rendered for print.
    */
   purchase_disclaimer_text: string | null;
+  /** Google tag ids, set in /admin/analytics. Null = the tag never loads. */
+  ga_measurement_id?: string | null;
+  google_ads_conversion_id?: string | null;
+  google_ads_conversion_label?: string | null;
   updated_at: string;
 };
 
@@ -243,6 +247,15 @@ export type ValuationRequest = {
    * calendar modal (migration 032). Kept for history after the visit.
    */
   booked_for: string | null;
+  /* ---- Attribution (migration 036): where the enquiry came from ---- */
+  landing_page?: string | null;
+  source_page?: string | null;
+  referrer?: string | null;
+  utm_source?: string | null;
+  utm_medium?: string | null;
+  utm_campaign?: string | null;
+  utm_term?: string | null;
+  gclid?: string | null;
   created_at: string;
   updated_at: string;
   /** ISO timestamp when soft-deleted, or null while active. */
@@ -819,6 +832,15 @@ export type Appointment = {
   consent_accepted: boolean;
   status: AppointmentStatus;
   cancel_token: string;
+  /* ---- Attribution (migration 036): where the enquiry came from ---- */
+  landing_page?: string | null;
+  source_page?: string | null;
+  referrer?: string | null;
+  utm_source?: string | null;
+  utm_medium?: string | null;
+  utm_campaign?: string | null;
+  utm_term?: string | null;
+  gclid?: string | null;
   created_at: string;
   updated_at: string;
 };

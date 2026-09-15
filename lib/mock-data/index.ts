@@ -46,6 +46,9 @@ export function mockSiteSettings(): SiteSettings {
     seo_description:
       'Sell gold, diamonds, fine jewellery, luxury watches and designer handbags to a discreet UK private valuation house. Same-day payment, transparent valuations, no obligation.',
     purchase_disclaimer_text: null,
+    ga_measurement_id: null,
+    google_ads_conversion_id: null,
+    google_ads_conversion_label: null,
     updated_at: new Date().toISOString(),
   };
 }

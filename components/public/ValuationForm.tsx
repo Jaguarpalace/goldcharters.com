@@ -2,6 +2,8 @@
 
 import { createContext, useContext, useMemo, useState, useTransition } from 'react';
 import { submitValuationRequest } from '@/lib/actions/valuationRequests';
+import { appendAttribution, getAttribution } from '@/lib/attribution/attribution';
+import { track } from '@/lib/analytics/track';
 import { MultiImageUploader, type SelectedFile } from './MultiImageUploader';
 import type { FormVariant } from '@/types/database';
 import {
@@ -184,10 +186,14 @@ function ValuationFormInner({ variant = 'metal', defaultItemType }: Props) {
 
     formData.delete('photos');
     files.forEach((f) => formData.append('photos', f.file, f.file.name));
+    // Where this enquiry came from (landing page, referrer, campaign): stored
+    // with the request so /admin/analytics can attribute it.
+    appendAttribution(formData);
 
     startTransition(async () => {
       const result = await submitValuationRequest(formData);
       if (result.ok) {
+        track('generate_lead', { form_variant: String(formData.get('form_variant') ?? ''), page: getAttribution().source_page });
         setSuccess({
           id: result.requestId,
           persisted: result.persisted,

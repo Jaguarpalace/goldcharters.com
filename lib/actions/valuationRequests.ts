@@ -87,6 +87,20 @@ function optionalFromSet(v: FormDataEntryValue | null, allowed: Set<string>): st
   return allowed.has(s) ? s : null;
 }
 
+/** attr_* fields appended by the public form (lib/attribution/attribution.ts). */
+function attributionFromForm(formData: FormData): Record<string, string> {
+  const out: Record<string, string> = {};
+  const keys: Array<[string, number]> = [
+    ['landing_page', 300], ['source_page', 300], ['referrer', 500],
+    ['utm_source', 120], ['utm_medium', 120], ['utm_campaign', 120], ['utm_term', 120], ['gclid', 200],
+  ];
+  for (const [k, max] of keys) {
+    const v = text(formData.get('attr_' + k), max);
+    if (v) out[k] = v;
+  }
+  return out;
+}
+
 function optionalNumber(v: FormDataEntryValue | null): number | null {
   if (typeof v !== 'string' || !v.trim()) return null;
   const n = Number(v);
@@ -219,9 +233,14 @@ export async function submitValuationRequest(
   const admin = getAdminSupabase();
   if (!admin) return { ok: false, error: 'Server is not configured to accept submissions.' };
 
+  // Attribution (migration 036). Spread-only so inserts keep working before
+  // the columns exist; values are plain text, trimmed and length-capped.
+  const attribution = attributionFromForm(formData);
+
   const { data: request, error: insertError } = await admin
     .from('valuation_requests')
     .insert({
+      ...attribution,
       first_name: firstName,
       last_name: lastName,
       email,
