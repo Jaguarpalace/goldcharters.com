@@ -8,12 +8,17 @@ export const weybridgeEsherCobham: LocationContent = {
 
   metaTitle: 'Sell Gold, Watches & Jewellery in Weybridge, Esher & Cobham - Charters Gold',
   metaDescription:
-    'Private valuations for the Elmbridge triangle - Weybridge, Esher, Cobham and St George’s Hill. Discreet home visits to gated estates, modern watch specialists, same-day payment.',
+    'Sell gold in Weybridge, Esher or Cobham behind your own gates, or at our Ascot office. Priced in front of you, paid by instant transfer within seconds.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Elmbridge',
   heroTitle: 'Specialists for the Weybridge, Esher & Cobham Triangle',
   heroIntro:
     'The Elmbridge towns hold some of the most valuable private jewellery and watch collections in the country - and some of the strongest reasons to sell discreetly. From St George’s Hill to Oxshott, we handle valuations the way this area expects: by private appointment at our Ascot office twenty-five minutes away, or at your own address behind your own gates.',
+
+  spotlight: {
+    title: 'Gold buyers for Weybridge, Esher and Cobham: large sums, paid properly',
+    body: 'Not everything we buy in Elmbridge is a Royal Oak. As private gold buyers we also take the plain pieces from the same drawer, from a 9ct christening bracelet to a bar bought in 2020, weighed and priced at the live rate for its carat, and as jewellery buyers we price the Alhambra or the solitaire on the maker and the stones rather than the metal. What changes at this level is the money. Sums here are often five figures, so payment is by instant bank transfer, sent while you watch and usually in your account within seconds, with the signed purchase document as your record; cash for gold is available for smaller amounts. Whether you sell gold in Weybridge or Cobham to us behind your own gates or at our Ascot office twenty-five minutes away, the transfer lands before the appointment ends.',
+  },
 
   travel: {
     distanceMiles: 13,
@@ -79,6 +84,11 @@ export const weybridgeEsherCobham: LocationContent = {
   },
 
   faqs: [
+    {
+      question: 'For larger sums, is it cash for gold or bank transfer?',
+      answer:
+        'Larger sums are always by instant bank transfer, sent at the table and usually with you within seconds, because that protects both sides and gives you a record. Cash for gold is available for smaller amounts at the appointment, at your home or in Ascot.',
+    },
     {
       question: 'Do you visit St George’s Hill and Burwood Park addresses?',
       answer:
