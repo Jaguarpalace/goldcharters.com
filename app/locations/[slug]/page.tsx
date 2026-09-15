@@ -23,7 +23,7 @@ export function generateStaticParams() {
 }
 
 export const revalidate = 86400;
-// Only the 24 hand-written slugs exist; anything else is a real 404 at the
+// Only the 25 hand-written slugs exist; anything else is a real 404 at the
 // router, not a rendered not-found page with a 200 status.
 export const dynamicParams = false;
 
@@ -134,7 +134,7 @@ export default async function LocationPage({ params }: { params: { slug: string 
             <TrackedLink
               event="phone_click"
               params={{ where: 'location-strip' }}
-              href={`tel:${settings.phone.replace(/D/g, '')}`}
+              href={`tel:${settings.phone.replace(/\D/g, '')}`}
               className="whitespace-nowrap text-[12px] font-semibold uppercase tracking-luxe text-gold-tint hover:text-gold-bright"
             >
               or call {formatUkPhone(settings.phone)}
