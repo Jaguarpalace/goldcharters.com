@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { requireAdminRole, type SaveResult } from './_helpers';
+import { pingIndexNow } from '@/lib/seo/indexnow';
 import type { BlogPost } from '@/types/database';
 
 type UpsertBlog = {
@@ -68,6 +69,11 @@ export async function upsertBlogPost(input: UpsertBlog): Promise<SaveResult<Blog
     return { ok: false, error: error.message };
   }
   refresh(row.slug);
+  // Tell Bing straight away, but only for posts the public can actually see.
+  // Never awaited in a way that could fail the save (pingIndexNow swallows all).
+  if (row.published) {
+    await pingIndexNow([`/blog/${row.slug}`, '/blog']);
+  }
   return { ok: true, data: data as BlogPost };
 }
 
