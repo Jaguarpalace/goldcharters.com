@@ -9,6 +9,7 @@ import { CookieConsent } from '@/components/public/CookieConsent';
 import { GoogleTag } from '@/components/public/GoogleTag';
 import { WhatsAppButton } from '@/components/public/WhatsAppButton';
 import { StickyCta } from '@/components/public/StickyCta';
+import { ScrollToHash } from '@/components/public/ScrollToHash';
 import { RecoveryRedirect } from '@/components/public/RecoveryRedirect';
 import { JsonLd } from '@/lib/seo/JsonLd';
 import {
@@ -162,6 +163,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <Footer settings={settings} />
         <WhatsAppButton whatsapp={settings.whatsapp} />
         <StickyCta phone={settings.phone} />
+        <ScrollToHash />
         <CookieConsent />
         <GoogleTag
           gaId={settings.ga_measurement_id ?? null}
