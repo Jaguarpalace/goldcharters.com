@@ -160,7 +160,7 @@ export default async function BlogPostPage({ params }: Params) {
         </section>
       )}
 
-      <style>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         .prose-blog {
           color: #b8b8b8;
           font-size: 16px;
@@ -214,7 +214,7 @@ export default async function BlogPostPage({ params }: Params) {
         .prose-blog a:hover {
           color: #ffd700;
         }
-      `}</style>
+      ` }} />
     </>
   );
 }

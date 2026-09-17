@@ -43,7 +43,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
 
   return (
     <footer className="border-t border-gold-metallic/15 bg-ink-950">
-      <div className="gc-container py-6 lg:py-10">
+      <div className="gc-container py-6 pb-24 lg:py-10 lg:pb-24">
         {/*
           Layout strategy:
           - Mobile: brand block full-width on top, then a 2×2 grid of the four

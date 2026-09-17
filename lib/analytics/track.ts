@@ -21,7 +21,9 @@ export type TrackEvent =
   | 'book_appointment'
   | 'phone_click'
   | 'whatsapp_click'
-  | 'calculator_request_click';
+  | 'calculator_request_click'
+  /** Sticky bottom bar: intent to start, not a conversion. */
+  | 'cta_click';
 
 export function track(name: TrackEvent, params: Record<string, string | number | boolean | null | undefined> = {}): void {
   if (typeof window === 'undefined' || typeof window.gtag !== 'function') return;
