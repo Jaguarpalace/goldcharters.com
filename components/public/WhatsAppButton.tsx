@@ -7,13 +7,13 @@ import { track } from '@/lib/analytics/track';
 
 /**
  * Floating click-to-chat WhatsApp pill, pinned to the bottom-left on
- * tablet+ screens. On mobile we surface WhatsApp as a compact icon inside
- * the header instead — see Header.tsx — so the pill is hidden there.
+ * large screens only. Below lg it would collide with the sticky CTA bar,
+ * so WhatsApp lives as a compact icon in the header instead (Header.tsx).
  *
  * Hidden when:
  *   - We're inside the admin
  *   - site_settings.whatsapp is empty
- *   - The viewport is under md breakpoint (mobile uses the header icon)
+ *   - The viewport is under lg breakpoint (phones and tablets use the header icon)
  */
 
 export function WhatsAppButton({ whatsapp }: { whatsapp: string | null | undefined }) {
@@ -44,7 +44,7 @@ export function WhatsAppButton({ whatsapp }: { whatsapp: string | null | undefin
         'group fixed bottom-5 left-5 z-50 hidden items-center gap-2.5 rounded-full ' +
         'border border-gold-metallic/40 bg-ink-950/85 px-4 py-2.5 shadow-[0_12px_32px_-8px_rgba(212,175,55,0.45)] backdrop-blur ' +
         'transition-all duration-300 hover:border-gold-metallic hover:bg-ink-900 hover:shadow-[0_16px_40px_-8px_rgba(212,175,55,0.65)] ' +
-        'md:inline-flex ' +
+        'lg:inline-flex ' +
         (mounted ? 'translate-y-0 opacity-100' : 'translate-y-3 opacity-0')
       }
       style={{ transitionProperty: 'opacity, transform, box-shadow, background-color, border-color' }}

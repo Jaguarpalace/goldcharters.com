@@ -122,7 +122,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
             </a>
           )}
 
-          {/* WhatsApp - mobile only. On md+ the floating WhatsApp pill takes
+          {/* WhatsApp - phones and tablets. On lg+ the floating WhatsApp pill takes
               over (see WhatsAppButton.tsx). Sized to match the hamburger. */}
           {whatsappHref && (
             <a
@@ -131,7 +131,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Chat on WhatsApp"
-              className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-full border border-gold-metallic/30 bg-ink-900/60"
+              className="lg:hidden inline-flex h-10 w-10 items-center justify-center rounded-full border border-gold-metallic/30 bg-ink-900/60"
             >
               <WhatsAppIcon size={16} />
             </a>
