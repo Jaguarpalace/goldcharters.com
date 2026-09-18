@@ -8,12 +8,17 @@ export const stainesEgham: LocationContent = {
 
   metaTitle: 'Sell Gold, Watches & Jewellery in Staines & Egham - Charters Gold',
   metaDescription:
-    'Local Staines and Egham specialists for private gold, diamond, watch and handbag valuations. By appointment only, transparent offers, same-day payment.',
+    'Private gold buyers for Staines and Egham. Sell gold priced in front of you, figure held for 24 hours, paid the same day. Direct train from Egham to Ascot.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Staines & Egham',
   heroTitle: 'Private Valuations for Staines & Egham',
   heroIntro:
     'Staines and Egham sit a short drive from our Ascot office - around 15-20 minutes - and remain a core part of our catchment. We value gold, fine jewellery, designer handbags and luxury watches for clients across Staines, Englefield Green, Virginia Water, Thorpe, Chertsey and the wider TW18 / TW19 / TW20 / GU25 area. Private appointments only - no public showroom.',
+
+  spotlight: {
+    title: "Gold buyers for Staines and Egham: today's figure, held for a day",
+    body: "The price of gold moves through the day and what we pay per gram moves with it, so the honest answer to what a chain is worth is always a figure with a date on it. As private gold buyers this is how we handle that: the piece is tested and weighed in front of you, priced by carat and gram at the rate we pay that day, and the figure is written down and held for 24 hours. If the market slips overnight, your figure stands until the day is up. Nobody honest can tell you whether gold will be higher next month, and we will not pretend to. As jewellery buyers we price signed and antique pieces on what they are, and those figures depend far less on the day's gold price. Come to the Ascot office, a direct train from Egham or 15 to 20 minutes by car, or have us visit you at home. When you sell gold in Staines or Egham with us you are paid the same day you accept, usually within seconds: cash for gold on smaller amounts, instant bank transfer on the rest.",
+  },
 
   travel: {
     distanceMiles: 8,
@@ -29,12 +34,12 @@ export const stainesEgham: LocationContent = {
       body: 'We are not a chain or a national buy-up scheme. Our office is just up the road in Ascot, we know the Staines and Egham high streets well, and many of our clients are introduced by family or neighbours who have used us before.',
     },
     {
-      title: 'A specialist alternative to the high-street pawnshop',
-      body: 'Staines has cash-for-gold shops and Egham has a small handful of jewellers - most operating on retail margins, with walk-in counters. We are different: by appointment, one specialist, no public foot traffic, and prices benchmarked against trade and auction values.',
+      title: 'By appointment, not over a counter',
+      body: 'We are not a walk-in shop. Every valuation is by appointment with one specialist and no public foot traffic, and every price is benchmarked against trade and auction values, with the working shown.',
     },
     {
-      title: 'The natural choice for pieces of meaningful value',
-      body: 'For a single broken chain a high-street shop is fine - we are still happy to value it, but we are particularly well-suited to pieces where the figure matters: a five-figure watch, a signed engagement ring, an inherited collection, a Birkin.',
+      title: 'From a single chain to a whole collection',
+      body: 'A single broken chain gets the same attention as a five-figure watch: tested, weighed and priced in front of you. Where we are particularly useful is when the figure matters: a signed engagement ring, an inherited collection, a Birkin.',
     },
   ],
 
@@ -96,6 +101,31 @@ export const stainesEgham: LocationContent = {
       question: 'My elderly relative cannot travel - can you come to them?',
       answer:
         'Yes - particularly common locally. We arrange a private home visit in TW18 / TW19 / TW20 / GU25 by appointment. We carry photographic identification and provide written acknowledgement of every piece before leaving your address.',
+    },
+    {
+      question: 'How do I find out what my gold is worth before I travel?',
+      answer:
+        'Put the carat and the weight into our gold calculator for a guide at what we pay today. The carat is the small number stamped on the piece: 375 is 9ct, 585 is 14ct, 750 is 18ct and 916 is 22ct. Kitchen scales are accurate enough for a guide. The final figure is confirmed when the piece is tested and weighed in front of you.',
+    },
+    {
+      question: 'Do you buy sovereigns and other gold coins?',
+      answer:
+        'Yes. Sovereigns and half sovereigns turn up most, often a single coin mounted in a ring or on a chain, along with the occasional Krugerrand. Common dates are bought on their gold content; a scarce date or mintmark is priced as a coin. If your sovereign is in a mount, leave it there: the mount is usually 9ct and is weighed and paid separately.',
+    },
+    {
+      question: 'Can I sell an engagement ring or a diamond I no longer wear?',
+      answer:
+        'Yes. The stone is priced on its size and quality and the mount on its gold or platinum, so a diamond ring is never simply weighed. Bring the certificate or receipt if you still have them. It is one of the most private things people sell, and an appointment with one specialist and nobody else in the room is how we handle it.',
+    },
+    {
+      question: 'Can I choose between cash for gold and a bank transfer?',
+      answer:
+        'On smaller amounts, yes, the choice is yours. Larger sums are always paid by instant bank transfer, sent while you are with us and usually in your account within seconds, which is safer on the train home and leaves a record for both sides. Either way you are paid the same day you accept the figure.',
+    },
+    {
+      question: 'I live in Ashford, Stanwell or Laleham. Can I sell gold to you?',
+      answer:
+        'Yes. All three are around 25 minutes from the Ascot office by car, and Staines station is on the direct line to Ascot if you would rather not drive. Home visits across TW15, TW18 and TW19 are by appointment for anyone who cannot travel.',
     },
   ],
 
