@@ -9,6 +9,7 @@ import type {
   Product,
   ProductCategory,
   ProductImage,
+  Review,
   Service,
   SiteSettings,
   TrustCard,
@@ -512,6 +513,64 @@ export function mockFaqs(): Faq[] {
         'No. You are under no obligation. Our specialists provide a clear valuation; the decision to accept is entirely yours.',
       display_order: 10,
       visible: true,
+    },
+  ];
+}
+
+/**
+ * Layout placeholders for a developer machine only (see lib/queries/reviews.ts).
+ * Deliberately worded as samples so they can never be mistaken for, or
+ * published as, real customer reviews.
+ */
+export function mockReviews(): Review[] {
+  const base = {
+    rating: 5,
+    source: 'google' as const,
+    source_url: null,
+    featured: true,
+    published: true,
+    created_at: '2026-09-18T00:00:00Z',
+    updated_at: '2026-09-18T00:00:00Z',
+    is_sample: true,
+  };
+  return [
+    {
+      ...base,
+      id: 'sample-review-1',
+      author_name: 'Sample Customer A.',
+      body: 'SAMPLE TEXT, layout preview only. A real review goes here, copied word for word from Google: what the customer sold, how the appointment went and how quickly they were paid.',
+      review_date: '2026-09-10',
+      town_slug: 'ascot',
+      display_order: 1,
+    },
+    {
+      ...base,
+      id: 'sample-review-2',
+      author_name: 'Sample Customer B.',
+      body: 'SAMPLE TEXT, layout preview only. Shorter reviews sit comfortably in the same card.',
+      review_date: '2026-08-22',
+      town_slug: 'maidenhead-bray',
+      display_order: 2,
+    },
+    {
+      ...base,
+      id: 'sample-review-3',
+      author_name: 'Sample Customer C.',
+      body: 'SAMPLE TEXT, layout preview only. Longer reviews are trimmed on the cards after a few lines and shown in full on the reviews page, so one enthusiastic customer does not stretch the whole row out of shape. This sentence exists to show that trimming at work on a phone and on a desktop screen.',
+      review_date: '2026-07-30',
+      town_slug: null,
+      display_order: 3,
+    },
+    {
+      ...base,
+      id: 'sample-review-4',
+      author_name: 'Sample Customer D.',
+      rating: 4,
+      featured: false,
+      body: 'SAMPLE TEXT, layout preview only. A four star sample, to show how fewer stars look.',
+      review_date: '2026-06-14',
+      town_slug: 'woking',
+      display_order: 4,
     },
   ];
 }

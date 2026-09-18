@@ -9,6 +9,7 @@ import {
 } from '@/lib/seo/structuredData';
 import { buildPageMetadata } from '@/lib/queries/pageSeo';
 import { ValuationForm } from '@/components/public/ValuationForm';
+import { ReviewsBlock } from '@/components/public/ReviewsBlock';
 import { HowItWorks } from '@/components/public/HowItWorks';
 
 export const revalidate = 86400;
@@ -200,6 +201,7 @@ export default function SellAntiqueJewelleryPage() {
         </div>
       </section>
 
+      <ReviewsBlock />
       <section className="py-6 lg:py-10" id="valuation-form">
         <div className="gc-container max-w-4xl">
           <ValuationForm variant="jewellery" defaultItemType="jewellery" />

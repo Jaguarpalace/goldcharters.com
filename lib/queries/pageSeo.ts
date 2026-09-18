@@ -78,6 +78,11 @@ const SEO_DEFAULTS: Record<string, { title: string; description: string }> = {
     description:
       'Answers to common questions about selling gold, jewellery, watches and handbags, our valuation process, ID requirements and payment timelines.',
   },
+  '/reviews': {
+    title: 'Customer Reviews · Charters Gold',
+    description:
+      'What clients say about selling gold and jewellery to Charters Gold in Ascot. Genuine reviews, shown word for word, with a link to the full list on Google.',
+  },
   '/locations': {
     title: 'Areas We Cover · UK Gold & Jewellery Specialists',
     description:

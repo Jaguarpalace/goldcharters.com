@@ -8,6 +8,7 @@ import { buildPageMetadata } from '@/lib/queries/pageSeo';
 import { SellSection } from '@/components/public/SellSection';
 import { ItemsWeBuy } from '@/components/public/ItemsWeBuy';
 import { ValuationForm } from '@/components/public/ValuationForm';
+import { ReviewsBlock } from '@/components/public/ReviewsBlock';
 import { HowItWorks } from '@/components/public/HowItWorks';
 import { ValuationExplanation } from '@/components/public/ValuationExplanation';
 
@@ -67,6 +68,7 @@ export default async function SellJewelleryPage() {
 
       <ItemsWeBuy items={items} />
       <HowItWorks />
+      <ReviewsBlock />
       <section className="py-6 lg:py-10" id="valuation-form">
         <div className="gc-container max-w-4xl">
           <ValuationForm variant="jewellery" defaultItemType="jewellery" />

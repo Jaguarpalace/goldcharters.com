@@ -12,6 +12,7 @@ import {
   SITE_URL,
 } from '@/lib/seo/structuredData';
 import { ValuationForm } from '@/components/public/ValuationForm';
+import { ReviewsBlock } from '@/components/public/ReviewsBlock';
 import { GetValuationLink } from '@/components/public/GetValuationLink';
 import { TrackedLink } from '@/components/public/TrackedLink';
 import { formatUkPhone } from '@/lib/format';
@@ -307,6 +308,9 @@ export default async function LocationPage({ params }: { params: { slug: string 
           </div>
         </section>
       )}
+
+      {/* REVIEWS - this town's clients first, then the featured ones */}
+      <ReviewsBlock townSlug={location.slug} />
 
       {/* CTA + INLINE VALUATION FORM */}
       <section className="py-8 lg:py-12 border-t border-gold-metallic/15" id="valuation-form">

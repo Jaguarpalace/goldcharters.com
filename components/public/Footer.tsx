@@ -27,6 +27,7 @@ const INFO_LINKS = [
   { label: 'Areas We Cover', href: '/locations' },
   { label: 'Blog', href: '/blog' },
   { label: 'FAQs', href: '/faqs' },
+  { label: 'Reviews', href: '/reviews' },
   { label: 'Contact', href: '/contact' },
 ];
 

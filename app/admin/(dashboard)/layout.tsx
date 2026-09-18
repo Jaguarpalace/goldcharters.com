@@ -61,6 +61,7 @@ const NAV_SECTIONS: Array<{ key: string; title: string; items: NavItem[] }> = [
       { href: '/admin/services', label: 'Services' },
       { href: '/admin/items-we-buy', label: 'Items We Buy' },
       { href: '/admin/faqs', label: 'FAQs' },
+      { href: '/admin/reviews', label: 'Reviews' },
       { href: '/admin/blog', label: 'Blog' },
       { href: '/admin/media', label: 'Media Library' },
       { href: '/admin/seo', label: 'Page SEO' },

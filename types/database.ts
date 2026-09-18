@@ -43,6 +43,14 @@ export type SiteSettings = {
   ga_measurement_id?: string | null;
   google_ads_conversion_id?: string | null;
   google_ads_conversion_label?: string | null;
+  /**
+   * Overall Google rating shown beside the review cards, edited at
+   * /admin/reviews (migration 037). The badge hides until rating and count are set.
+   */
+  google_rating?: number | null;
+  google_review_count?: number | null;
+  google_reviews_url?: string | null;
+  google_write_review_url?: string | null;
   updated_at: string;
 };
 
@@ -101,6 +109,30 @@ export type Faq = {
   answer: string;
   display_order: number;
   visible: boolean;
+};
+
+export type ReviewSource = 'google' | 'direct' | 'other';
+
+/** A genuine customer review, copied word for word (migration 037). */
+export type Review = {
+  id: string;
+  /** First name and initial unless the customer agreed to their full name. */
+  author_name: string;
+  rating: number;
+  body: string;
+  /** ISO date (yyyy-mm-dd) the review was left. */
+  review_date: string;
+  source: ReviewSource;
+  source_url: string | null;
+  /** Optional /locations/<slug>; the review also shows on that town's page. */
+  town_slug: string | null;
+  featured: boolean;
+  published: boolean;
+  display_order: number;
+  created_at: string;
+  updated_at: string;
+  /** Dev-only placeholder, never stored and never rendered in production. */
+  is_sample?: boolean;
 };
 
 export type FaqCategory =

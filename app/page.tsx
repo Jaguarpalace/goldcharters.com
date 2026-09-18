@@ -23,6 +23,7 @@ import { ValuationExplanation } from '@/components/public/ValuationExplanation';
 import { HowItWorks } from '@/components/public/HowItWorks';
 import { TrustSection } from '@/components/public/TrustSection';
 import { ValuationForm } from '@/components/public/ValuationForm';
+import { ReviewsBlock } from '@/components/public/ReviewsBlock';
 import { FAQSection } from '@/components/public/FAQSection';
 import { WhereToFindUs } from '@/components/public/WhereToFindUs';
 
@@ -122,6 +123,8 @@ export default async function HomePage() {
       />
       <TrustSection cards={trust} />
       <WhereToFindUs events={events} />
+
+      <ReviewsBlock />
 
       <section className="relative py-6 lg:py-10" id="valuation-form">
         <div className="gc-container">
