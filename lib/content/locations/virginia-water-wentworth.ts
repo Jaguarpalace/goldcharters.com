@@ -8,12 +8,17 @@ export const virginiaWaterWentworth: LocationContent = {
 
   metaTitle: 'Sell Gold, Watches & Jewellery in Virginia Water - Charters Gold',
   metaDescription:
-    'Sell gold and jewellery in Virginia Water or on the Wentworth Estate, three miles from our Ascot office. Discreet home visits, paid the same day.',
+    'Sell gold, bullion and jewellery in Virginia Water or on the Wentworth Estate to private gold buyers three miles away in Ascot. Paid the same day.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Virginia Water',
   heroTitle: 'The Valuation House Next Door to Wentworth',
   heroIntro:
     'Virginia Water sits three miles from our Ascot office - close enough that many GU25 clients simply walk up from the train, two stops down the line. For the Wentworth Estate and the surrounding private roads we work the other way round: a specialist comes to you, by appointment, with the discretion these addresses take for granted.',
+
+  spotlight: {
+    title: 'Gold buyers for Virginia Water: bars and coins from the safe, as well as the jewellery',
+    body: 'A good deal of the gold in GU25 has never been worn. It sits in a safe as bars, Krugerrands, Britannias and sovereigns, bought as a hedge and now being turned back into money for a house move, a gift to the children or simply a tidier estate. As private gold buyers we price investment gold on its fine gold content at the rate we pay that day: bars by weight and purity, bullion coins by the gold in them, and scarcer sovereigns as the coins they are. Bring the assay cards and certificates if you have them. As jewellery buyers we take the box from the same safe at the same sitting, from a plain 18ct bracelet to the signed pieces, each priced on its own line. It can happen at your home or at our Ascot office ten minutes away. Sums of this size are paid by instant bank transfer the same day you accept, usually within seconds, with cash for gold kept for the smaller amounts. When you sell gold in Virginia Water with us, the written figure is valid for 24 hours and nothing is decided in a hurry.',
+  },
 
   travel: {
     distanceMiles: 3,
@@ -94,6 +99,26 @@ export const virginiaWaterWentworth: LocationContent = {
       question: 'Is the valuation really without obligation?',
       answer:
         'Completely. No fee for the inspection, a written figure that is valid for 24 hours, and no follow-up pressure; if you come back later we simply price the piece again at the rate on the day. Most Wentworth introductions come by word of mouth, which only works if every conversation is left open.',
+    },
+    {
+      question: 'Do you only deal in important pieces, or can I sell an ordinary gold chain?',
+      answer:
+        'An ordinary chain is just as welcome. 9ct, 18ct and 22ct are tested, weighed in front of you and priced by carat and gram at the rate we pay that day, broken or not, and our gold calculator will give you a guide figure before you come. A few minutes at the office is all it takes.',
+    },
+    {
+      question: 'What paperwork is involved in selling gold bars or bullion coins?',
+      answer:
+        'Photo identification, and for larger sales a recent proof of address, because we buy under the UK anti-money-laundering rules. Original invoices and assay certificates are helpful but not essential. You receive a signed purchase document listing each bar or coin, its weight and the price paid, which is the record your accountant will ask for.',
+    },
+    {
+      question: 'Do you pay cash for gold on larger sales?',
+      answer:
+        'No. Cash is for smaller amounts only. Larger sales are paid by instant bank transfer, sent while we are still with you and usually in your account within seconds, which is safer for a household and leaves a clean record for both sides. You are paid the same day you accept the figure.',
+    },
+    {
+      question: 'Do you cover Thorpe, Lyne and Longcross as well as the estate?',
+      answer:
+        'Yes. Thorpe, Lyne, Longcross, Trumps Green and Stroude are all within ten to fifteen minutes of the office, and Longcross and Virginia Water stations are both on the direct line to Ascot. Home visits are by appointment anywhere in GU25 and the neighbouring KT16 and TW20 villages.',
     },
   ],
 
