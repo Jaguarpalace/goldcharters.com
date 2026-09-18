@@ -8,12 +8,17 @@ export const ascot: LocationContent = {
 
   metaTitle: 'Sell Gold, Watches & Fine Jewellery in Ascot - Charters Gold',
   metaDescription:
-    'Sell gold, watches and jewellery in Ascot, on St George\'s Lane off the High Street. Priced in front of you, paid the same day. Racing pieces a speciality.',
+    'Sell gold in Ascot to private gold buyers just off the High Street. 9ct to 22ct, gold coins and diamond rings priced in front of you, paid the same day.',
 
   heroEyebrow: 'Selling Gold & Jewellery - Ascot',
   heroTitle: 'A Specialist House in the Heart of Ascot',
   heroIntro:
     "Our office sits on St George's Lane, just off Ascot High Street and minutes from the racecourse - the natural home for valuations across the SL5 postcode. We are particularly well-versed in racing brooches, signed jewellery from Royal Ascot week, equestrian pieces, and the kinds of luxury watches that find their way into Sunningdale and Wentworth homes.",
+
+  spotlight: {
+    title: 'Gold buyers in Ascot: near enough to go home and think it over',
+    body: "For every racing brooch that comes through our door there are a dozen plainer things: a 9ct chain with a broken clasp, a wedding band, a few gold coins from a christening box. That is what most people who sell gold in Ascot are selling, and as private gold buyers we price it the way you would hope: the hallmark is read, the piece goes on the scales in front of you, and it is priced by carat and gram at the rate we pay that day. As jewellery buyers we look before we weigh, so a diamond ring or a signed brooch is priced as what it is, never as scrap. Being this close changes how you can sell. Our figure is written down and valid for 24 hours, and when home is five minutes away in Sunninghill or ten in Sunningdale that is worth something: take the paper home, talk it over, come back tomorrow or not at all. If you would rather not travel, we come to you anywhere in SL5. Say yes, and you are paid the same day, usually within seconds: cash for gold on smaller amounts, instant bank transfer on the rest.",
+  },
 
   travel: {
     distanceMiles: 0,
@@ -80,6 +85,36 @@ export const ascot: LocationContent = {
       question: 'I want to sell my gold - where do I start?',
       answer:
         "Three easy routes. For an instant guide figure, enter the carat and weight into our gold calculator. For a written estimate, send a few photographs through the valuation form and a specialist replies within one working day. Or simply book a private appointment at our Ascot office - we check the hallmarks, weigh everything in front of you and explain the figure, with no fee and no obligation to sell.",
+    },
+    {
+      question: 'Can I sell 9ct gold in Ascot if it is only one small piece?',
+      answer:
+        'Yes. 9ct is the gold in most British jewellery boxes, stamped 375 inside the ring or on the clasp, and a single chain, a lone earring or a ring that had to be cut off is well worth bringing in. Bent, broken or tangled makes no difference, because 9ct is bought on its weight, and yellow, white and rose gold all count the same. The figure we pay for 9ct today is on our gold calculator if you would like a guide before you set off.',
+    },
+    {
+      question: 'Do you buy gold coins as well as jewellery?',
+      answer:
+        'Yes - sovereigns and half sovereigns most often, along with Krugerrands, Britannias and the occasional older European coin. Common dates are bought on their gold content at the rate we pay that day. A scarcer date, a branch mintmark or a proof coin still in its Royal Mint box is priced as a coin, which can be a good deal more. One request: please do not clean them first, because polishing takes the collector value off a coin for good.',
+    },
+    {
+      question: 'Do you buy diamond rings and engagement rings, or only the gold?',
+      answer:
+        'We buy the whole ring. The stones are priced on their size and quality and the mount on its gold or platinum, so a diamond ring is never simply weighed. Bring the certificate, the receipt or the box if you still have them, as they help, though we see plenty of rings that arrive with nothing at all. Engagement rings from a marriage that has ended are among the things we are asked about most, and they are handled as quietly as everything else here.',
+    },
+    {
+      question: 'Is a jewellery valuation in Ascot free, and what do I get in writing?',
+      answer:
+        'It is free, whether or not you go on to sell. You leave with our offer in writing, each piece listed with the price we would pay, valid for 24 hours. It helps to know what that figure is: a selling valuation, meaning what a buyer will actually pay you today. That is normally well below an insurance replacement value, so it is not the document an insurer asks for, but it is the honest answer to what your jewellery is worth if you sell it.',
+    },
+    {
+      question: 'Can I leave the Ascot office with cash for gold?',
+      answer:
+        'For smaller amounts, yes, and it is counted out at the table. Larger sums are paid by instant bank transfer, sent while you are still sitting with us and usually in your account within seconds, which is safer than carrying cash back up the High Street and leaves both of us with a record. Either way you are paid the same day you accept the figure.',
+    },
+    {
+      question: 'I live in Sunninghill or Sunningdale and want to sell gold - how does it work?',
+      answer:
+        'Book a time that suits you, seven days a week, as we see one client at a time. From Sunninghill the office is about five minutes by car and from Sunningdale about ten, with parking close by. Bring the pieces and photo identification, allow around half an hour, and you will leave with either the money or a written figure to think about. If getting out is difficult, we come to you instead.',
     },
     {
       question: 'Do you value racing brooches and presentation pieces?',
