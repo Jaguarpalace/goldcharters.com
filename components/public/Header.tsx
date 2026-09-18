@@ -26,10 +26,23 @@ const BUY_LINKS = [
   { label: 'Shop Gold', href: '/shop?category=gold-coins' },
 ];
 
-const INFO_LINKS = [
+/**
+ * `wideOnly` links join the desktop bar from 1420px. The bar is full: on a
+ * laptop-width screen every extra link used to squeeze the logo, down to
+ * nothing once Reviews was added. They stay in the mobile menu and the
+ * footer at every width.
+ *
+ * Desktop tiers, measured Sep 2026 so the logo always keeps its full size:
+ *   1024+  logo, What We Buy, How It Works, Reviews, Contact, Get a Valuation, phone
+ *   1120+  plus the Calculator button
+ *   1320+  plus the WhatsApp pill (below that the floating pill covers it)
+ *   1420+  plus Blog and FAQs
+ */
+const INFO_LINKS: { label: string; href: string; wideOnly?: boolean }[] = [
   { label: 'How It Works', href: '/how-it-works' },
-  { label: 'Blog', href: '/blog' },
-  { label: 'FAQs', href: '/faqs' },
+  { label: 'Reviews', href: '/reviews' },
+  { label: 'Blog', href: '/blog', wideOnly: true },
+  { label: 'FAQs', href: '/faqs', wideOnly: true },
   { label: 'Contact', href: '/contact' },
 ];
 
@@ -53,7 +66,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
         {/* Left cluster: logo, plus - below desktop - the two gold CTAs
             right beside it so they are visible without opening the menu.
             On lg+ the same two buttons live at the end of the nav row. */}
-        <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+        <div className="flex min-w-0 items-center gap-2 sm:gap-3 lg:flex-none">
           <Logo businessName={settings.business_name} size="compact" />
           <div className="flex items-center gap-1.5 sm:gap-2 lg:hidden">
             <GetValuationLink className="gc-btn-primary whitespace-nowrap !px-3 !py-2 text-[11px] sm:!px-4 sm:!py-2.5 sm:text-[12px]">
@@ -78,7 +91,10 @@ export function Header({ settings }: { settings: SiteSettings }) {
             <Link
               key={l.href}
               href={l.href}
-              className="whitespace-nowrap text-sm font-medium text-warmgrey hover:text-gold-bright"
+              className={
+                'whitespace-nowrap text-sm font-medium text-warmgrey hover:text-gold-bright' +
+                (l.wideOnly ? ' hidden min-[1420px]:inline' : '')
+              }
             >
               {l.label}
             </Link>
@@ -87,7 +103,9 @@ export function Header({ settings }: { settings: SiteSettings }) {
             <GetValuationLink className="gc-btn-primary whitespace-nowrap">
               Get a Valuation
             </GetValuationLink>
-            <CalculatorLink />
+            <span className="hidden min-[1120px]:inline-flex">
+              <CalculatorLink />
+            </span>
           </div>
         </nav>
 
@@ -115,7 +133,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
               onClick={() => track('whatsapp_click', { where: 'header' })}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden items-center gap-2 whitespace-nowrap rounded-full border border-gold-metallic/40 px-4 py-2 text-[12px] font-semibold uppercase tracking-luxe text-gold-tint transition hover:border-gold-metallic hover:bg-ink-900/70 hover:text-gold-bright md:inline-flex"
+              className="hidden items-center gap-2 whitespace-nowrap rounded-full border border-gold-metallic/40 px-4 py-2 text-[12px] font-semibold uppercase tracking-luxe text-gold-tint transition hover:border-gold-metallic hover:bg-ink-900/70 hover:text-gold-bright md:inline-flex lg:hidden min-[1320px]:inline-flex"
             >
               <WhatsAppIcon size={14} />
               WhatsApp
