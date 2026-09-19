@@ -24,6 +24,7 @@ import { epsom } from './epsom';
 import { haslemere } from './haslemere';
 import { bracknell } from './bracknell';
 import { slough } from './slough';
+import { chertsey } from './chertsey';
 
 /**
  * Locations are deliberately ordered by relevance / commercial priority,
@@ -39,6 +40,7 @@ export const LOCATIONS: LocationContent[] = [
   camberley,
   surrey,
   stainesEgham,
+  chertsey,
   london,
   weybridgeEsherCobham,
   maidenheadBray,
@@ -80,17 +82,18 @@ export function getAllLocationSlugs(): string[] {
 const NEARBY: Record<string, string[]> = {
   'ascot': ['bracknell', 'virginia-water-wentworth', 'windsor', 'camberley', 'staines-egham', 'maidenhead-bray'],
   'bracknell': ['ascot', 'windsor', 'camberley', 'maidenhead-bray', 'virginia-water-wentworth', 'reading'],
-  'virginia-water-wentworth': ['ascot', 'bracknell', 'staines-egham', 'windsor', 'weybridge-esher-cobham', 'woking'],
+  'virginia-water-wentworth': ['ascot', 'bracknell', 'staines-egham', 'chertsey', 'windsor', 'weybridge-esher-cobham', 'woking'],
   'windsor': ['slough', 'maidenhead-bray', 'ascot', 'bracknell', 'staines-egham', 'heathrow'],
   'slough': ['windsor', 'maidenhead-bray', 'beaconsfield-gerrards-cross', 'heathrow', 'hillingdon-uxbridge', 'staines-egham'],
   'camberley': ['ascot', 'bracknell', 'woking', 'farnham', 'guildford', 'virginia-water-wentworth'],
   'surrey': ['guildford', 'woking', 'weybridge-esher-cobham', 'epsom', 'virginia-water-wentworth', 'staines-egham'],
-  'staines-egham': ['virginia-water-wentworth', 'ascot', 'windsor', 'heathrow', 'twickenham-richmond'],
+  'staines-egham': ['virginia-water-wentworth', 'chertsey', 'ascot', 'windsor', 'heathrow', 'twickenham-richmond'],
+  'chertsey': ['virginia-water-wentworth', 'staines-egham', 'weybridge-esher-cobham', 'woking', 'ascot', 'surrey'],
   'london': ['kingston-upon-thames', 'twickenham-richmond', 'ealing', 'hounslow', 'hillingdon-uxbridge'],
-  'weybridge-esher-cobham': ['woking', 'kingston-upon-thames', 'epsom', 'virginia-water-wentworth', 'guildford', 'staines-egham'],
+  'weybridge-esher-cobham': ['woking', 'chertsey', 'kingston-upon-thames', 'epsom', 'virginia-water-wentworth', 'guildford', 'staines-egham'],
   'maidenhead-bray': ['windsor', 'slough', 'ascot', 'bracknell', 'marlow-henley', 'beaconsfield-gerrards-cross'],
   'marlow-henley': ['maidenhead-bray', 'windsor', 'reading', 'beaconsfield-gerrards-cross', 'ascot'],
-  'woking': ['guildford', 'camberley', 'weybridge-esher-cobham', 'virginia-water-wentworth', 'ascot', 'surrey'],
+  'woking': ['guildford', 'camberley', 'weybridge-esher-cobham', 'chertsey', 'virginia-water-wentworth', 'ascot', 'surrey'],
   'guildford': ['woking', 'farnham', 'haslemere', 'weybridge-esher-cobham', 'surrey', 'ascot'],
   'farnham': ['guildford', 'haslemere', 'camberley', 'woking'],
   'haslemere': ['guildford', 'farnham', 'woking', 'surrey'],
@@ -126,7 +129,7 @@ const COUNTY_GROUPS: Array<{ title: string; slugs: string[] }> = [
   },
   {
     title: 'Surrey',
-    slugs: ['virginia-water-wentworth', 'camberley', 'weybridge-esher-cobham', 'woking', 'guildford', 'farnham', 'haslemere', 'epsom', 'staines-egham', 'surrey'],
+    slugs: ['virginia-water-wentworth', 'chertsey', 'camberley', 'weybridge-esher-cobham', 'woking', 'guildford', 'farnham', 'haslemere', 'epsom', 'staines-egham', 'surrey'],
   },
   {
     title: 'London',
