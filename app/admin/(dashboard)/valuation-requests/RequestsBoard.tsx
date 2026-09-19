@@ -540,9 +540,17 @@ function RequestRow({
         <td className="px-2 py-2.5 align-top">
           <div className="font-medium text-white">
             {request.first_name} {request.last_name}
+            {request.utm_source === 'phone' && (
+              <span
+                title="Booked by staff after a phone call"
+                className="ml-2 rounded bg-sky-500/10 px-1.5 py-0.5 align-middle text-[8px] font-semibold uppercase tracking-luxe text-sky-300"
+              >
+                Phone
+              </span>
+            )}
           </div>
           <div className="text-[11px] text-warmgrey">
-            <span className="truncate">{request.email}</span>
+            <span className="truncate">{request.email || 'no email yet'}</span>
             <span className="text-warmgrey/50"> · </span>
             <span className="whitespace-nowrap">{request.phone}</span>
           </div>

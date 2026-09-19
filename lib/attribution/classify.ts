@@ -26,6 +26,7 @@ export type EnquirySource =
   | 'TikTok'
   | 'Direct'
   | 'Email'
+  | 'Phone'
   | 'Referral'
   | 'Unknown';
 
@@ -52,6 +53,8 @@ export function classifySource(a: AttributionFields, siteHost = 'chartersgold.co
   const src = (a.utm_source ?? '').toLowerCase();
   const med = (a.utm_medium ?? '').toLowerCase();
   if (src) {
+    // Bookings typed in by staff after a phone call (createPhoneBooking).
+    if (src === 'phone') return 'Phone';
     if (src.includes('google') && /cpc|ppc|paid|ads/.test(med)) return 'Google Ads';
     if (src.includes('google')) return 'Google';
     if (src.includes('bing')) return 'Bing';

@@ -118,7 +118,7 @@ export default async function AdminOverview() {
       .map((r): CalendarBooking => ({
         id: r.id,
         when: r.booked_for as string,
-        kind: 'valuation',
+        kind: r.utm_source === 'phone' ? 'phone' : 'valuation',
         name: `${r.first_name} ${r.last_name}`.trim(),
         detail:
           [
@@ -131,7 +131,8 @@ export default async function AdminOverview() {
             .filter(Boolean)
             .join(' · ') || null,
         description: r.description,
-        location: null,
+        // Phone bookings show the number, so it is one glance to ring back.
+        location: r.utm_source === 'phone' && r.phone ? `Tel ${r.phone}` : null,
         href: '/admin/valuation-requests',
       })),
     ...popupAppointments.map((a): CalendarBooking => ({

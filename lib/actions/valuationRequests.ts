@@ -689,6 +689,130 @@ export async function updateValuationStatus(
   return { ok: true };
 }
 
+/* ------------------------------------------------------ Phone bookings */
+
+export type PhoneBookingInput = {
+  first_name: string;
+  last_name: string;
+  phone: string;
+  /** Optional - phone callers often do not give one. Collected at purchase. */
+  email?: string | null;
+  /** Gold | Silver | Platinum, or anything else for "other". */
+  metal_type: string;
+  /** Free text: what they say they are bringing. */
+  item?: string | null;
+  carat?: string | null;
+  weight_grams?: number | null;
+  notes?: string | null;
+  /** ISO timestamp of the visit. */
+  booked_for: string;
+};
+
+/**
+ * Book a visit for someone who phoned instead of using the website.
+ *
+ * Saved as an ordinary valuation request that is already at status='booked',
+ * so it appears on the overview calendar, sits in the Valuation Requests
+ * pipeline, and completes into a purchase and holdings exactly like a web
+ * enquiry. Tagged utm_source='phone' so Analytics counts phone enquiries as
+ * their own source. No email is sent to anyone.
+ */
+export async function createPhoneBooking(
+  input: PhoneBookingInput,
+): Promise<{ ok: true; data: { id: string } } | { ok: false; error: string }> {
+  const ctx = await requireAdminContext();
+  if ('error' in ctx) return { ok: false, error: ctx.error };
+
+  const first = (input.first_name ?? '').trim().slice(0, 80);
+  const last = (input.last_name ?? '').trim().slice(0, 80);
+  const phone = (input.phone ?? '').trim().slice(0, 40);
+  const email = (input.email ?? '').trim().toLowerCase().slice(0, 200);
+  if (!first || !last) return { ok: false, error: 'First name and surname are required.' };
+  if (phone.replace(/\D/g, '').length < 7) {
+    return { ok: false, error: 'Add their phone number, so you can ring them back.' };
+  }
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return { ok: false, error: 'That email looks wrong. Leave it blank if you do not have one.' };
+  }
+
+  const when = new Date(input.booked_for);
+  if (Number.isNaN(when.getTime())) return { ok: false, error: 'Pick a valid date and time.' };
+  if (when.getTime() < Date.now() - 24 * 60 * 60 * 1000) {
+    return { ok: false, error: 'That date has already passed.' };
+  }
+
+  const metal = ALLOWED_METALS.has(input.metal_type) ? input.metal_type : null;
+  // The column has a CHECK constraint (migration 017): anything outside the
+  // known purities is stored as "not sure" rather than failing the insert.
+  const caratRaw = (input.carat ?? '').trim();
+  const carat = ALLOWED_PURITIES.has(caratRaw) ? caratRaw : null;
+  const grams = Number(input.weight_grams);
+  const weight = Number.isFinite(grams) && grams > 0 && grams < 100000 ? Math.round(grams * 1000) / 1000 : null;
+  const item = (input.item ?? '').trim().slice(0, 1000) || null;
+  const extra = (input.notes ?? '').trim().slice(0, 2000);
+
+  const base = {
+    first_name: first,
+    last_name: last,
+    email,
+    phone,
+    preferred_contact_method: 'phone' as PreferredContactMethod,
+    consent_accepted: true,
+    form_variant: 'metal' as FormVariant,
+    item_type: (metal === 'Gold' ? 'gold' : 'other') as ValuationItemType,
+    metal_type: metal,
+    carat,
+    weight_grams: weight,
+    description: item,
+    notes: extra ? `Phone booking. ${extra}` : 'Phone booking.',
+    status: 'booked' as ValuationRequestStatus,
+    booked_for: when.toISOString(),
+  };
+
+  // Attribution columns arrived with migration 036; fall back without them
+  // so the booking still saves on a database that predates it.
+  let { data, error } = await ctx.admin
+    .from('valuation_requests')
+    .insert({ ...base, utm_source: 'phone', utm_medium: 'call' })
+    .select('id')
+    .single();
+  if (error && (error.code === '42703' || error.code === 'PGRST204')) {
+    ({ data, error } = await ctx.admin.from('valuation_requests').insert(base).select('id').single());
+  }
+  if (error || !data) {
+    console.error('[phone-booking:insert]', error);
+    return { ok: false, error: error?.message ?? 'Could not save the booking.' };
+  }
+  const id = (data as { id: string }).id;
+
+  // With an email we can file them in the customer directory straight away;
+  // without one the purchase form links the customer when they come in.
+  if (email) {
+    await ensureCustomerForRequest(ctx.admin, { first_name: first, last_name: last, email, phone });
+  }
+
+  await logAdminAction({
+    admin: ctx.admin,
+    actorId: ctx.userId,
+    entity_type: 'valuation_request',
+    entity_id: id,
+    action: 'create',
+    after: { status: 'booked', booked_for: base.booked_for, source: 'phone' },
+    note: `Phone booking · ${when.toLocaleString('en-GB', {
+      timeZone: 'Europe/London',
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+      hour: '2-digit',
+      minute: '2-digit',
+    })}`,
+  });
+
+  revalidatePath('/admin');
+  revalidatePath('/admin/valuation-requests');
+  return { ok: true, data: { id } };
+}
+
 /* --------------------------------------------------------- Walk-in flow */
 
 export type WalkInPurchaseInput = {

@@ -1,20 +1,27 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
+import { PhoneBookingModal } from './PhoneBookingModal';
 
 /**
  * Interactive bookings calendar for the admin overview - the day-to-day
  * diary. Shows every valuation-request booking (status Booked, with a
  * booked_for slot) and every pop-up appointment on one month grid; clicking
  * a day lists that day's visits with time, customer, items and where.
+ *
+ * "+ Phone booking" on the selected day opens the form for callers: the
+ * website form is not the only way people book, and before this there was
+ * nowhere to put someone who simply rang.
  */
 
 export type CalendarBooking = {
   id: string;
   /** ISO timestamp of the visit. */
   when: string;
-  kind: 'valuation' | 'popup';
+  /** 'phone' = typed in by staff after a call (still a valuation request). */
+  kind: 'valuation' | 'popup' | 'phone';
   name: string;
   /** Compact item facts: "Gold · 22ct · 15.8g". */
   detail: string | null;
@@ -39,6 +46,8 @@ export function BookingsCalendar({ bookings }: { bookings: CalendarBooking[] }) 
     return new Date(n.getFullYear(), n.getMonth(), 1);
   });
   const [selected, setSelected] = useState<string>(todayKey);
+  const [adding, setAdding] = useState(false);
+  const router = useRouter();
 
   // Bookings grouped by local day, each day's list in time order.
   const byDay = useMemo(() => {
@@ -216,9 +225,20 @@ export function BookingsCalendar({ bookings }: { bookings: CalendarBooking[] }) 
 
       {/* Selected day */}
       <div className="mt-3 border-t border-gold-metallic/15 pt-3">
-        <p className="text-[10px] font-semibold uppercase tracking-luxe text-warmgrey">
-          {selectedLabel}
-        </p>
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-[10px] font-semibold uppercase tracking-luxe text-warmgrey">
+            {selectedLabel}
+          </p>
+          {selected >= todayKey && (
+            <button
+              type="button"
+              onClick={() => setAdding(true)}
+              className="rounded-md border border-gold-metallic/40 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-luxe text-gold-tint transition hover:border-gold-metallic hover:bg-gold-metallic/15 hover:text-gold-bright"
+            >
+              + Phone booking
+            </button>
+          )}
+        </div>
         {dayBookings.length > 0 ? (
           <ul className="mt-2 space-y-2">
             {dayBookings.map((b) => (
@@ -249,6 +269,18 @@ export function BookingsCalendar({ bookings }: { bookings: CalendarBooking[] }) 
           </div>
         )}
       </div>
+
+      {adding && (
+        <PhoneBookingModal
+          day={selected}
+          onClose={() => setAdding(false)}
+          onSaved={() => {
+            setAdding(false);
+            // Re-run the server page so the new visit appears on the grid.
+            router.refresh();
+          }}
+        />
+      )}
     </section>
   );
 }
@@ -277,10 +309,12 @@ function BookingRow({ booking }: { booking: CalendarBooking }) {
                 'flex-none rounded px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-luxe ' +
                 (booking.kind === 'valuation'
                   ? 'bg-gold-metallic/15 text-gold-tint'
-                  : 'bg-emerald-500/10 text-emerald-300')
+                  : booking.kind === 'phone'
+                    ? 'bg-sky-500/10 text-sky-300'
+                    : 'bg-emerald-500/10 text-emerald-300')
               }
             >
-              {booking.kind === 'valuation' ? 'Valuation' : 'Pop-up'}
+              {booking.kind === 'valuation' ? 'Valuation' : booking.kind === 'phone' ? 'Phone' : 'Pop-up'}
             </span>
           </span>
           {booking.detail && (
