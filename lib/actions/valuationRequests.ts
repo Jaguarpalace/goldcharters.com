@@ -407,8 +407,11 @@ export type RequestNextActions = {
     stock_number: string;
     status: 'held' | 'sold' | 'written_off';
   } | null;
-  /** True when the customer has at least one ID-type document AND at least
-   *  one proof of address on file. */
+  /** True when the customer has at least one photo ID document on file
+   *  (ID card, passport or driving licence). Proof of address is no longer
+   *  required for the badge to clear - Rishi's rule, Sep 2026: staff take a
+   *  driving licence at every purchase and nothing else, so requiring a second
+   *  document left every request flagged for ever. */
   kyc_complete: boolean;
 };
 
@@ -504,8 +507,7 @@ export async function listValuationRequests(): Promise<ValuationRequestRow[]> {
   for (const cid of customerIds) {
     const own = docs.filter((d) => d.customer_id === cid);
     const hasId = own.some((d) => ID_DOC_TYPES.has(d.doc_type));
-    const hasPoa = own.some((d) => d.doc_type === 'proof_of_address');
-    kycByCustomer.set(cid, hasId && hasPoa);
+    kycByCustomer.set(cid, hasId);
   }
 
   // ----- Refresh photo links -----------------------------------------------

@@ -731,7 +731,7 @@ function RequestCard({
  * there's nothing actionable.
  *
  *   - "Add to holdings"  : status=bought + payment set + no stock row yet
- *   - "Missing KYC"      : matched customer is missing ID and/or POA docs
+ *   - "Missing KYC"      : matched customer has no photo ID document on file
  *   - "Customer not linked": no customer record matched — rare since
  *                            submission now auto-links, but possible for
  *                            legacy data
@@ -767,7 +767,7 @@ function NextActionPills({ request }: { request: Row }) {
         <Link
           href={`/admin/customers/${customer.id}?tab=documents`}
           onClick={(e) => e.stopPropagation()}
-          title="Customer is missing ID and/or proof of address"
+          title="No passport, driving licence or ID card on file for this customer - click to add one"
           className="inline-flex items-center gap-1 rounded-full bg-red-500/15 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-luxe text-red-300 ring-1 ring-red-500/40 transition hover:bg-red-500/25"
         >
           <span aria-hidden className="inline-block h-1.5 w-1.5 rounded-full bg-red-300" />
