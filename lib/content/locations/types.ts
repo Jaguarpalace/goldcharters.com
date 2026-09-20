@@ -54,6 +54,16 @@ export type LocationContent = {
    */
   spotlight?: { title: string; body: string };
 
+  /**
+   * Set on towns where another buyer is nearer than our Ascot office. The
+   * page then leads with "we come to you": a home-visit button in the hero
+   * and start strip, this reassurance section under it, the home-visit card
+   * first, and a valuation form that switches into home-visit mode. It is a
+   * REQUEST we qualify by phone, never an instant booking. Trial: Maidenhead,
+   * Sep 2026.
+   */
+  homeVisit?: { title: string; intro: string; points: string[]; note?: string };
+
   /* ---- Travel & catchment ---- */
   travel: {
     distanceMiles: number;

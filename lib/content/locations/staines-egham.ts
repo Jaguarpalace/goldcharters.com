@@ -20,6 +20,20 @@ export const stainesEgham: LocationContent = {
     body: "The price of gold moves through the day and what we pay per gram moves with it, so the honest answer to what a chain is worth is always a figure with a date on it. As private gold buyers this is how we handle that: the piece is tested and weighed in front of you, priced by carat and gram at the rate we pay that day, and the figure is written down and held for 24 hours. If the market slips overnight, your figure stands until the day is up. Nobody honest can tell you whether gold will be higher next month, and we will not pretend to. As jewellery buyers we price signed and antique pieces on what they are, and those figures depend far less on the day's gold price. Come to the Ascot office, a direct train from Egham or 15 to 20 minutes by car, or have us visit you at home. When you sell gold in Staines or Egham with us you are paid the same day you accept, usually within seconds: cash for gold on smaller amounts, instant bank transfer on the rest.",
   },
 
+  homeVisit: {
+    title: "We come to you in Staines, Egham and Ashford",
+    intro:
+      "Nothing to carry and nowhere to park. Tell us roughly what you have and we ring you to agree a time, often the same week.",
+    points: [
+      "One specialist comes to your home in TW15, TW18, TW19 or TW20 and shows photo ID at the door.",
+      "Your gold is tested and weighed on your own table while you watch, and family are welcome in the room.",
+      "There is no call-out fee and nothing to sign up to. If the figure does not suit you, we leave.",
+      "You get the figure in writing, valid for 24 hours, so there is no rush.",
+      "If you decide to sell, the money is sent by instant bank transfer before we go, usually within seconds.",
+    ],
+    note: "For one or two small pieces, the Ascot office is a direct train from Egham and is usually quicker.",
+  },
+
   travel: {
     distanceMiles: 8,
     drive:
@@ -66,8 +80,8 @@ export const stainesEgham: LocationContent = {
     },
     {
       icon: 'collect',
-      title: 'Home visit for less mobile clients',
-      body: 'Particularly common for older clients or following a bereavement. We arrange a private visit at your home in TW18 / TW19 / TW20 / GU25 by appointment, with identification on arrival and written acknowledgement before any piece leaves your hand.',
+      title: 'Home visit across Staines and Egham',
+      body: 'By appointment at your home in TW18 / TW19 / TW20 / GU25, and particularly common for older clients or following a bereavement. Identification on arrival and written acknowledgement before any piece leaves your hand.',
     },
     {
       icon: 'post',

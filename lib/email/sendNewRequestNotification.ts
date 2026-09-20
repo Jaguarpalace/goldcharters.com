@@ -51,7 +51,9 @@ export async function sendNewRequestNotification(
       from: getFromAddress(),
       to: recipients,
       replyTo: request.email,
-      subject: rendered.subject,
+      // A home-visit request needs a phone call back, so say so in the
+      // inbox list rather than only inside the email.
+      subject: isHomeVisitRequest(request) ? `HOME VISIT - ${rendered.subject}` : rendered.subject,
       html: rendered.html,
     });
     if (error) {
@@ -94,6 +96,7 @@ async function buildVariables(req: ValuationRequest, photoCount: number): Promis
 
 function buildDetailsTable(req: ValuationRequest, photoCount: number): string {
   const rows: Array<[string, string]> = [
+    ...(isHomeVisitRequest(req) ? [['Route', 'HOME VISIT REQUESTED - ring to agree a time'] as [string, string]] : []),
     ['Branch', req.form_variant ? BRANCH_LABELS[req.form_variant] ?? '—' : '—'],
     ...(req.metal_type ? [['Metal', req.metal_type] as [string, string]] : []),
     ...(req.item_category ? [['Form / Category', req.item_category] as [string, string]] : []),
@@ -123,6 +126,15 @@ ${rows
   )
   .join('')}
 </table>`;
+}
+
+/**
+ * The valuation form marks a home-visit request at the top of the description
+ * (no dedicated column during the Sep 2026 trial). Keep in step with the
+ * marker written in components/public/ValuationForm.tsx.
+ */
+function isHomeVisitRequest(req: ValuationRequest): boolean {
+  return (req.description ?? '').trimStart().startsWith('[HOME VISIT REQUESTED]');
 }
 
 function buildDescriptionBlock(req: ValuationRequest): string {

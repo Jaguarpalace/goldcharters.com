@@ -26,6 +26,20 @@ export const slough: LocationContent = {
     body: 'Much of the gold in Slough was made overseas and carries a 916 or 750 stamp rather than a British hallmark, and some carries no mark at all. As private gold buyers we do not price on the stamp or on a cautious guess. Every piece is tested, so 22ct is paid as 22ct and a 21ct chain is paid as 21ct, and the weight goes on the scales in grams while you watch, with the tola conversion shown if that is how you know your set. As jewellery buyers we look at the stones and the maker before anything is called scrap, because a diamond set or a signed bangle is worth more whole. You can sell gold in Slough with us at your own kitchen table or at our office in Ascot, and the figure is the same at either: written down, valid for 24 hours, paid the same day you accept it, usually within seconds.',
   },
 
+  homeVisit: {
+    title: "We come to you in Slough, Langley and Burnham",
+    intro:
+      "A full wedding set is not something to carry across town, so we bring the scales to you. Tell us roughly what you have and we ring you to agree a time.",
+    points: [
+      "One specialist comes to your home anywhere in SL1, SL2 or SL3 and shows photo ID at the door.",
+      "Every piece is tested for its real purity and weighed in grams at your table, so 22ct is paid as 22ct. Family are welcome at the table.",
+      "No call-out fee and no obligation. If the figure is not right for you, we thank you and leave.",
+      "The figure is written down and valid for 24 hours, so the family can talk it over.",
+      "If you sell, you are paid by instant bank transfer before we leave, usually within seconds.",
+    ],
+    note: "For a single small piece, the Ascot office or Royal Mail Special Delivery is usually quicker.",
+  },
+
   travel: {
     distanceMiles: 9,
     drive:

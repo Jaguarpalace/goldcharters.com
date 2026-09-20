@@ -21,6 +21,20 @@ export const maidenheadBray: LocationContent = {
     body: 'Twenty minutes is not far, but nobody wants to drive it on a guess. So start at home. The small stamp inside a ring or on a clasp gives you the carat (375 is 9ct, 750 is 18ct, 916 is 22ct), kitchen scales give you the grams, and our gold calculator turns the two into a guide figure at the rate we pay today. As private gold buyers we then do the same sum properly, at our Ascot office or at your own table in SL6: the gold is tested rather than taken on its stamp, and everything is weighed in front of you. The only surprises are stones, springs and the odd piece that is not what its stamp says. As jewellery buyers we will also tell you when a piece should not be on the scales at all: a signed ring or an old-cut diamond is worth more than its weight, and the calculator cannot see that. When you sell gold in Maidenhead with us the figure goes in writing, valid for 24 hours, and if you accept it you are paid the same day, usually within seconds: cash for gold on smaller amounts, instant bank transfer on the rest.',
   },
 
+  homeVisit: {
+    title: 'We come to you in Maidenhead, Bray and Cookham',
+    intro:
+      'No drive, no parking, nothing to carry. Tell us roughly what you have and we ring you to agree a time.',
+    points: [
+      'One specialist comes to your home and shows photo ID at the door.',
+      'Your gold is tested and weighed at your own table, in front of you. Family are welcome to sit in.',
+      'No call-out fee and no obligation. If you say no, we thank you and leave.',
+      'The figure is written down and valid for 24 hours, so you can think it over.',
+      'If you sell, you are paid by instant bank transfer before we leave, usually within seconds.',
+    ],
+    note: 'For one or two small pieces, the Ascot office or Royal Mail Special Delivery is usually quicker.',
+  },
+
   travel: {
     distanceMiles: 9,
     drive:

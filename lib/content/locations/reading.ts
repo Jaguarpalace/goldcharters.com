@@ -21,6 +21,20 @@ export const reading: LocationContent = {
     body: 'The M4 corridor sends us watches and signed rings, but most people who sell gold in Reading are selling something plainer: a broken chain, a single earring, a ring that no longer fits, sovereigns kept in a drawer since the 1980s. As private gold buyers we price all of it the same way, whether it arrives by Special Delivery or across the table: hallmark checked, weighed in front of you or photographed on the scales, our rate for its carat applied and shown. As jewellery buyers we look before anything is called scrap, because a signed or antique piece is worth more whole than melted. Payment follows the figure, not the calendar: cash for gold on smaller amounts in person, instant bank transfer on everything else, the same day it is agreed and usually within seconds.',
   },
 
+  homeVisit: {
+    title: "We come to you in Reading, Caversham, Earley and Woodley",
+    intro:
+      "Reading is half an hour from our Ascot office, so a home visit makes most sense for a jewellery box, a collection or anything you would rather not carry. Tell us roughly what you have and we ring you to agree a time.",
+    points: [
+      "One specialist comes to your home in RG1 to RG6, RG30 or RG31 and shows photo ID at the door.",
+      "Everything is tested and weighed at your own table while you watch. Family are welcome to sit in.",
+      "No call-out fee, and no obligation to sell. If you say no, we thank you and go.",
+      "You get the figure in writing, valid for 24 hours, so there is no need to decide on the spot.",
+      "If you sell, the money is sent by instant bank transfer before we leave, usually within seconds.",
+    ],
+    note: "For one or two small pieces, Royal Mail Special Delivery is usually quicker, and it is how many Reading clients sell to us.",
+  },
+
   travel: {
     distanceMiles: 15,
     drive:

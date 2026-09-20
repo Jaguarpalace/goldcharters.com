@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useMemo, useState, useTransition } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState, useTransition } from 'react';
 import { submitValuationRequest } from '@/lib/actions/valuationRequests';
 import { appendAttribution, getAttribution } from '@/lib/attribution/attribution';
 import { track } from '@/lib/analytics/track';
@@ -168,7 +168,25 @@ function ValuationFormInner({ variant = 'metal', defaultItemType }: Props) {
   >(null);
   const [isPending, startTransition] = useTransition();
 
-  const meta = VARIANT_META[variant];
+  // Home-visit mode: switched on by HomeVisitButton on the same page (custom
+  // event) or by a ?visit=home link. Adds a postcode and preferred times, and
+  // marks the request so staff see at a glance that a visit was asked for.
+  const [homeVisit, setHomeVisit] = useState(false);
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get('visit') === 'home') setHomeVisit(true);
+    const on = () => setHomeVisit(true);
+    window.addEventListener('gc:home-visit', on);
+    return () => window.removeEventListener('gc:home-visit', on);
+  }, []);
+
+  const meta = homeVisit
+    ? {
+        eyebrow: 'We come to you',
+        title: 'Request a home visit',
+        subtitle:
+          'Tell us roughly what you have and where you are. We ring you to agree a time. No call-out fee, no obligation.',
+      }
+    : VARIANT_META[variant];
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -184,6 +202,18 @@ function ValuationFormInner({ variant = 'metal', defaultItemType }: Props) {
     const firstName = String(formData.get('first_name') ?? '').trim();
     const email = String(formData.get('email') ?? '').trim();
 
+    // No new database column for the trial: the visit details ride at the top
+    // of the description, where the admin board already shows them.
+    if (homeVisit) {
+      const postcode = String(formData.get('visit_postcode') ?? '').trim().toUpperCase();
+      const times = String(formData.get('visit_times') ?? '').trim();
+      const written = String(formData.get('description') ?? '').trim();
+      const header = `[HOME VISIT REQUESTED] Postcode: ${postcode || 'not given'}.${times ? ` Best times: ${times}.` : ''}`;
+      formData.set('description', [header, written].filter(Boolean).join('\n'));
+    }
+    formData.delete('visit_postcode');
+    formData.delete('visit_times');
+
     formData.delete('photos');
     files.forEach((f) => formData.append('photos', f.file, f.file.name));
     // Where this enquiry came from (landing page, referrer, campaign): stored
@@ -193,7 +223,11 @@ function ValuationFormInner({ variant = 'metal', defaultItemType }: Props) {
     startTransition(async () => {
       const result = await submitValuationRequest(formData);
       if (result.ok) {
-        track('generate_lead', { form_variant: String(formData.get('form_variant') ?? ''), page: getAttribution().source_page });
+        track('generate_lead', {
+          form_variant: String(formData.get('form_variant') ?? ''),
+          page: getAttribution().source_page,
+          route: homeVisit ? 'home-visit' : 'standard',
+        });
         setSuccess({
           id: result.requestId,
           persisted: result.persisted,
@@ -230,6 +264,40 @@ function ValuationFormInner({ variant = 'metal', defaultItemType }: Props) {
       {defaultItemType && <input type="hidden" name="item_type" value={defaultItemType} />}
 
       <FormHeader meta={meta} variant={variant} />
+
+      {homeVisit && (
+        <div className="rounded-xl border border-gold-metallic/50 bg-gold-metallic/10 p-4 sm:p-5">
+          <p className="text-xs font-semibold uppercase tracking-luxe text-gold-bright">Home visit request</p>
+          <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <label className="gc-label" htmlFor="visit_postcode">
+                Your postcode
+              </label>
+              <input
+                id="visit_postcode"
+                name="visit_postcode"
+                required
+                autoComplete="postal-code"
+                placeholder="SL6 ..."
+                className="gc-input"
+              />
+            </div>
+            <div>
+              <label className="gc-label" htmlFor="visit_times">
+                Days or times that suit you
+              </label>
+              <input id="visit_times" name="visit_times" placeholder="e.g. weekday mornings" className="gc-input" />
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setHomeVisit(false)}
+            className="mt-3 text-[11px] uppercase tracking-luxe text-warmgrey transition hover:text-gold-bright"
+          >
+            Not a home visit? Switch back
+          </button>
+        </div>
+      )}
 
       {variant === 'metal' && <MetalBranch />}
       {variant === 'jewellery' && <JewelleryBranch />}
@@ -296,7 +364,7 @@ function ValuationFormInner({ variant = 'metal', defaultItemType }: Props) {
       )}
 
       <button type="submit" disabled={isPending} className="gc-btn-primary w-full sm:w-auto">
-        {isPending ? 'Submitting…' : 'Request My Valuation'}
+        {isPending ? 'Submitting…' : homeVisit ? 'Request My Home Visit' : 'Request My Valuation'}
       </button>
 
       <p className="text-[11px] leading-relaxed text-warmgrey/70">

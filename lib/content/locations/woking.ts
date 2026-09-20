@@ -28,6 +28,20 @@ export const woking: LocationContent = {
     body: 'Woking empties onto the Waterloo line before eight and fills up again after six, which puts weekday shop hours out of reach for most people who live here. As private gold buyers working by appointment we keep different hours: seven days a week, weekend mornings included, at our office in Ascot, with parking close by. Allow half an hour. Plain gold is priced by carat and gram at the rate we pay that day, and as jewellery buyers we put to one side anything signed, stone-set or old enough to be worth more whole than melted. The figure is written down and valid for 24 hours, so nothing has to be decided on a Saturday morning if you would rather sleep on it. People who sell gold in Woking with us are paid the same day they accept, usually within seconds: cash for gold on smaller amounts, instant bank transfer on the rest. And if getting to Ascot is the difficulty, we come to you.',
   },
 
+  homeVisit: {
+    title: "We come to you in Woking, Knaphill and West Byfleet",
+    intro:
+      "There is no direct train from Woking to Ascot, so if the drive does not suit you, we come to you. Tell us roughly what you have and we ring you to agree a time.",
+    points: [
+      "One specialist comes to your home across GU21 to GU24 and KT14 and shows photo ID at the door.",
+      "Your gold is sorted by carat, tested and weighed at your table, with family welcome to sit in.",
+      "No call-out fee and no obligation to sell. If you say no, that is the end of it.",
+      "The figure goes in writing and stays valid for 24 hours, so you can sleep on it.",
+      "If you sell, payment is by instant bank transfer before we leave, usually within seconds.",
+    ],
+    note: "For one or two small pieces, a weekend appointment at the Ascot office is usually quicker.",
+  },
+
   travel: {
     distanceMiles: 11,
     drive:

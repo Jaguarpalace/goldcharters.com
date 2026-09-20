@@ -13,6 +13,7 @@ import {
 } from '@/lib/seo/structuredData';
 import { ValuationForm } from '@/components/public/ValuationForm';
 import { ReviewsBlock } from '@/components/public/ReviewsBlock';
+import { HomeVisitButton } from '@/components/public/HomeVisitButton';
 import { GetValuationLink } from '@/components/public/GetValuationLink';
 import { TrackedLink } from '@/components/public/TrackedLink';
 import { formatUkPhone } from '@/lib/format';
@@ -62,6 +63,12 @@ export default async function LocationPage({ params }: { params: { slug: string 
 
   const settings = await getSiteSettings();
   const nearby = getNearbyLocations(location.slug);
+  // Home-visit towns lead with "we come to you", so that card goes first.
+  const processOptions = location.homeVisit
+    ? [...location.processOptions].sort(
+        (a, b) => Number(b.icon === 'collect') - Number(a.icon === 'collect'),
+      )
+    : location.processOptions;
 
   return (
     <>
@@ -110,7 +117,14 @@ export default async function LocationPage({ params }: { params: { slug: string 
             <h1 className="gc-heading-xl mt-3">{location.heroTitle}</h1>
             <p className="gc-subhead mt-5">{location.heroIntro}</p>
             <div className="mt-7 flex flex-wrap justify-center gap-3">
-              <GetValuationLink className="gc-btn-primary">Get a Valuation</GetValuationLink>
+              {location.homeVisit && (
+                <HomeVisitButton where="hero" className="gc-btn-primary">
+                  We come to you - request a home visit
+                </HomeVisitButton>
+              )}
+              <GetValuationLink className={location.homeVisit ? 'gc-btn-secondary' : 'gc-btn-primary'}>
+                Get a Valuation
+              </GetValuationLink>
               {/* Keyword-rich anchor: tells Google what the calculator page
                   is about from every location page. */}
               <Link href="/gold-calculator" className="gc-btn-secondary">
@@ -132,6 +146,11 @@ export default async function LocationPage({ params }: { params: { slug: string 
           </div>
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <GetValuationLink className="gc-btn-primary whitespace-nowrap !px-4 !py-2 text-[12px]">Start your valuation</GetValuationLink>
+            {location.homeVisit && (
+              <HomeVisitButton where="strip" className="gc-btn-secondary whitespace-nowrap !px-4 !py-2 text-[12px]">
+                Home visit
+              </HomeVisitButton>
+            )}
             <TrackedLink
               event="phone_click"
               params={{ where: 'location-strip' }}
@@ -143,6 +162,43 @@ export default async function LocationPage({ params }: { params: { slug: string 
           </div>
         </div>
       </section>
+
+      {/* HOME VISIT - only on towns where another buyer is nearer than our office */}
+      {location.homeVisit && (
+        <section className="border-b border-gold-metallic/15 py-8 lg:py-12">
+          <div className="gc-container">
+            <div className="gc-card gc-card-gold-edge mx-auto max-w-3xl p-6 sm:p-8">
+              <span className="gc-eyebrow">Home visits</span>
+              <h2 className="gc-heading mt-3">{location.homeVisit.title}</h2>
+              <p className="mt-4 text-base leading-relaxed text-warmgrey">{location.homeVisit.intro}</p>
+              <ul className="mt-5 space-y-3">
+                {location.homeVisit.points.map((point) => (
+                  <li key={point} className="flex items-start gap-3 text-sm leading-relaxed text-white/90">
+                    <span
+                      aria-hidden
+                      className="mt-0.5 inline-flex h-5 w-5 flex-none items-center justify-center rounded-full"
+                      style={{ background: 'linear-gradient(135deg, #A67C00, #D4AF37, #FFD700, #B8860B)' }}
+                    >
+                      <svg width="10" height="10" viewBox="0 0 14 14" fill="none" stroke="#050505" strokeWidth="2.4">
+                        <path d="M2 7.5L5 10.5L11 4" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </span>
+                    {point}
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-6 flex flex-wrap items-center gap-4">
+                <HomeVisitButton where="section" className="gc-btn-primary">
+                  Request a home visit
+                </HomeVisitButton>
+                {location.homeVisit.note && (
+                  <p className="text-[12px] leading-relaxed text-warmgrey">{location.homeVisit.note}</p>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* SPOTLIGHT - optional, one heading + one paragraph per page */}
       {location.spotlight && (
@@ -203,7 +259,7 @@ export default async function LocationPage({ params }: { params: { slug: string 
             <h2 className="gc-heading mt-3">Three ways to engage with us</h2>
           </div>
           <ul className="mx-auto mt-8 grid max-w-5xl gap-4 sm:grid-cols-3">
-            {location.processOptions.map((opt, idx) => (
+            {processOptions.map((opt, idx) => (
               <li
                 key={opt.title}
                 className="rounded-xl border border-gold-metallic/20 bg-ink-900/60 p-5"
@@ -223,6 +279,14 @@ export default async function LocationPage({ params }: { params: { slug: string 
                   {idx + 1}. {opt.title}
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-warmgrey">{opt.body}</p>
+                {location.homeVisit && opt.icon === 'collect' && (
+                  <HomeVisitButton
+                    where="card"
+                    className="mt-4 text-[11px] font-semibold uppercase tracking-luxe text-gold-tint transition hover:text-gold-bright"
+                  >
+                    Request a home visit →
+                  </HomeVisitButton>
+                )}
               </li>
             ))}
           </ul>
