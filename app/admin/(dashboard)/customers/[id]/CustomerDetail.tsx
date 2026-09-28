@@ -280,7 +280,7 @@ function DocumentsTab({
       <div className="rounded-lg border border-gold-metallic/15">
         {docs.length === 0 ? (
           <p className="px-3 py-10 text-center text-sm text-warmgrey">
-            No documents yet. Upload an ID, driving licence or proof of address above.
+            No documents yet. Upload a driving licence above.
           </p>
         ) : (
           <ul className="divide-y divide-gold-metallic/10">
@@ -305,7 +305,11 @@ function UploadForm({
   customerId: string;
   onUploaded: (d: CustomerDocument) => void;
 }) {
-  const [docType, setDocType] = useState<CustomerDocumentType>('id');
+  // Staff take a driving licence at every purchase and nothing else (Rishi's
+  // rule, Sep 2026), so the form starts on it. The other types stay behind a
+  // link for the rare customer who does not drive.
+  const [docType, setDocType] = useState<CustomerDocumentType>('driving_licence');
+  const [showTypes, setShowTypes] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [pending, startTransition] = useTransition();
   const [feedback, setFeedback] = useState<{ ok: boolean; text: string } | null>(null);
@@ -324,6 +328,8 @@ function UploadForm({
       if (result.ok && result.data) {
         onUploaded(result.data);
         setFile(null);
+        setDocType('driving_licence');
+        setShowTypes(false);
         // Reset the file input by way of the form element.
         (e.target as HTMLFormElement).reset();
         setFeedback({ ok: true, text: 'Uploaded.' });
@@ -343,27 +349,42 @@ function UploadForm({
         Upload document
       </h2>
       <p className="text-[11px] text-warmgrey">
-        PDF, JPG, PNG, WEBP or HEIC - up to 15MB. Documents are stored privately and only viewable
-        by signed-in admins via short-lived links.
+        A driving licence is all that is needed to clear the Missing KYC flag. PDF, JPG, PNG, WEBP
+        or HEIC - up to 15MB. Documents are stored privately and only viewable by signed-in admins
+        via short-lived links.
       </p>
 
       <div className="grid gap-3 md:grid-cols-[180px,1fr]">
-        <label className="block">
+        <div className="block">
           <span className="text-[10px] font-medium uppercase tracking-luxe text-warmgrey">
             Type
           </span>
-          <select
-            value={docType}
-            onChange={(e) => setDocType(e.target.value as CustomerDocumentType)}
-            className="mt-1 w-full rounded-md border border-gold-metallic/20 bg-ink-950/60 px-3 py-2 text-sm text-white focus:border-gold-metallic focus:outline-none"
-          >
-            {CUSTOMER_DOCUMENT_TYPES.map((t) => (
-              <option key={t} value={t}>
-                {CUSTOMER_DOCUMENT_TYPE_LABELS[t]}
-              </option>
-            ))}
-          </select>
-        </label>
+          {showTypes ? (
+            <select
+              aria-label="Document type"
+              value={docType}
+              onChange={(e) => setDocType(e.target.value as CustomerDocumentType)}
+              className="mt-1 w-full rounded-md border border-gold-metallic/20 bg-ink-950/60 px-3 py-2 text-sm text-white focus:border-gold-metallic focus:outline-none"
+            >
+              {CUSTOMER_DOCUMENT_TYPES.map((t) => (
+                <option key={t} value={t}>
+                  {CUSTOMER_DOCUMENT_TYPE_LABELS[t]}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <div className="mt-1 flex items-center justify-between gap-2 rounded-md border border-gold-metallic/20 bg-ink-950/60 px-3 py-2 text-sm text-white">
+              <span>{CUSTOMER_DOCUMENT_TYPE_LABELS.driving_licence}</span>
+              <button
+                type="button"
+                onClick={() => setShowTypes(true)}
+                className="text-[10px] font-medium uppercase tracking-luxe text-warmgrey underline underline-offset-2 transition hover:text-gold-tint"
+              >
+                No licence?
+              </button>
+            </div>
+          )}
+        </div>
 
         <label className="block">
           <span className="text-[10px] font-medium uppercase tracking-luxe text-warmgrey">

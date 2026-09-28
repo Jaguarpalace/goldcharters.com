@@ -45,6 +45,8 @@ function clean(v: string | null | undefined, max = 200): string | null {
 function refresh(id?: string) {
   revalidatePath('/admin/customers');
   if (id) revalidatePath(`/admin/customers/${id}`);
+  // The requests board shows "Missing KYC" from the documents on file.
+  revalidatePath('/admin/valuation-requests');
 }
 
 /* ---------------------------------------------------------------- Customer */

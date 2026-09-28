@@ -475,9 +475,9 @@ export type CustomerDocumentType =
   | 'other';
 
 export const CUSTOMER_DOCUMENT_TYPES: CustomerDocumentType[] = [
-  'id',
-  'passport',
   'driving_licence',
+  'passport',
+  'id',
   'proof_of_address',
   'other',
 ];

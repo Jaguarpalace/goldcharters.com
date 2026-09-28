@@ -25,9 +25,9 @@ export default async function AdminCustomersPage({
         <span className="text-xs uppercase tracking-luxe text-gold-metallic">KYC</span>
         <h1 className="mt-1 font-display text-2xl text-white">Customers</h1>
         <p className="mt-1 max-w-2xl text-xs text-warmgrey">
-          Directory of people we've valued or bought from. Each customer can hold ID, driving
-          licence and proof-of-address documents, and shows their full enquiry history matched by
-          email. The Map tab plots every customer with a postcode.
+          Directory of people we've valued or bought from. Each customer holds a driving licence
+          on file, which is all KYC needs, and shows their full enquiry history matched by email.
+          The Map tab plots every customer with a postcode.
         </p>
       </header>
 
