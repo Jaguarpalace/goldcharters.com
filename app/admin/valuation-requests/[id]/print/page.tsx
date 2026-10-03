@@ -192,7 +192,7 @@ export default async function PurchasePrintPage({
             </table>
             {request.payment_amount != null &&
               Number(request.payment_amount) !== itemsTotal && (
-                <p className="print-items muted" style={{ marginTop: 6 }}>
+                <p className="print-items muted" style={{ marginTop: 'calc(6px * var(--sp))' }}>
                   Amount settled: {money(Number(request.payment_amount))}
                 </p>
               )}
@@ -218,7 +218,7 @@ export default async function PurchasePrintPage({
             )}
           </div>
           {request.description && (
-            <div className="print-field" style={{ marginTop: 12 }}>
+            <div className="print-field" style={{ marginTop: 'calc(12px * var(--sp))' }}>
               <span>Description</span>
               <strong>{request.description}</strong>
             </div>

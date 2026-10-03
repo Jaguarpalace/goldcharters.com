@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type ReactNode } from 'react';
+import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 
 type Theme = 'classic' | 'blackgold';
 
@@ -13,14 +13,27 @@ type Theme = 'classic' | 'blackgold';
  *     the browser actually prints
  *   - All print-related CSS, scoped by `.theme-classic` / `.theme-blackgold`
  *     so swapping is just a class change
+ *   - Fitting the document onto one A4 side (see fitSheetToPage)
  *
  * Server-rendered document content is passed in as `children`.
  */
 export function PrintShell({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>('classic');
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const fit = () => fitSheetToPage(root);
+    fit();
+    // Measure again once the brand font has loaded, and right before printing.
+    document.fonts?.ready.then(fit).catch(() => {});
+    window.addEventListener('beforeprint', fit);
+    return () => window.removeEventListener('beforeprint', fit);
+  }, []);
 
   return (
-    <div className={`print-page theme-${theme}`}>
+    <div ref={rootRef} className={`print-page theme-${theme}`}>
       {/* Injected as markup, not a text node: the CSS contains quotes and
           apostrophes that the server HTML-escapes inside <style>, which made
           React's hydration diff flag a false mismatch in dev. */}
@@ -68,6 +81,68 @@ export function PrintShell({ children }: { children: ReactNode }) {
   );
 }
 
+/* ------------------------------------------------- Fit to one A4 side ---- */
+/*
+ * A purchase with three, four or five items used to push the signatures and
+ * the footnote onto a second page. Before showing and before printing, the
+ * sheet is measured at its printed width: if it is taller than one A4 side,
+ * the spacing closes up first (--sp), then the type comes down a little
+ * (--fs), one step at a time, until it fits. The last step keeps the
+ * disclaimer at about 9px. If even that cannot fit (a very long list), the
+ * document goes back to full size and runs onto a second page as before.
+ */
+const FIT_STEPS: ReadonlyArray<readonly [space: number, type: number]> = [
+  [1, 1],
+  [0.85, 1],
+  [0.7, 1],
+  [0.6, 0.97],
+  [0.5, 0.94],
+  [0.45, 0.91],
+  [0.4, 0.88],
+  [0.35, 0.86],
+];
+
+function fitSheetToPage(root: HTMLElement) {
+  const sheet = root.querySelector<HTMLElement>('.print-sheet');
+  if (!sheet) return;
+
+  // One A4 side in CSS pixels, measured rather than assumed.
+  const probe = document.createElement('div');
+  probe.style.cssText = 'position:absolute;visibility:hidden;width:1px;height:297mm;';
+  document.body.appendChild(probe);
+  const pageHeight = probe.getBoundingClientRect().height;
+  probe.remove();
+
+  // Measure at the printed width, whatever the size of the window.
+  const width = sheet.style.width;
+  const maxWidth = sheet.style.maxWidth;
+  sheet.style.width = '210mm';
+  sheet.style.maxWidth = 'none';
+
+  const apply = ([space, type]: readonly [number, number]) => {
+    root.style.setProperty('--sp', String(space));
+    root.style.setProperty('--fs', String(type));
+  };
+  // The sheet is at least one A4 side tall (min-height), so it only grows
+  // past that height when its content runs over.
+  const fits = () => sheet.getBoundingClientRect().height <= pageHeight + 0.5;
+
+  let chosen = FIT_STEPS[0];
+  for (const step of FIT_STEPS) {
+    apply(step);
+    chosen = step;
+    if (fits()) break;
+  }
+  if (!fits()) {
+    chosen = FIT_STEPS[0];
+    apply(chosen);
+  }
+
+  sheet.style.width = width;
+  sheet.style.maxWidth = maxWidth;
+  root.dataset.fit = chosen.join(' / ');
+}
+
 /* -------------------------------------------------------- Stylesheet ----- */
 /*
  * Both themes are declared side by side. The wrapper className decides which
@@ -89,8 +164,11 @@ const PRINT_CSS = `
        naming 'Manrope' alone only worked where the font happened to be
        installed, which is why one PC printed in a fallback. */
     font-family: var(--font-manrope), 'Manrope', system-ui, sans-serif;
-    font-size: 12.5px;
-    line-height: 1.45;
+    /* Fit-to-page scales, set by fitSheetToPage: --sp spacing, --fs type. */
+    --sp: 1;
+    --fs: 1;
+    font-size: calc(12.5px * var(--fs));
+    line-height: calc(1.3 + 0.15 * var(--sp));
     min-height: 100vh;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
@@ -108,7 +186,7 @@ const PRINT_CSS = `
     /* These act as the visible margin between paper edge and content. Bigger
        than typical screen padding so the printed document doesn't feel
        cramped against the paper edge. */
-    padding: 14mm 16mm 12mm;
+    padding: max(9mm, calc(14mm * var(--sp))) 16mm max(8mm, calc(12mm * var(--sp)));
   }
 
   /* ---------- Layout primitives (theme-neutral) ---------- */
@@ -119,63 +197,63 @@ const PRINT_CSS = `
     gap: 20px;
     border-bottom-width: 2px;
     border-bottom-style: solid;
-    padding-bottom: 10px;
+    padding-bottom: calc(10px * var(--sp));
   }
-  .print-logo { width: 72px; height: 72px; object-fit: contain; }
+  .print-logo { width: calc(56px + 16px * var(--sp)); height: calc(56px + 16px * var(--sp)); object-fit: contain; }
   .print-brand { text-align: right; }
   .print-brand h1 {
-    font-size: 21px;
+    font-size: calc(21px * var(--fs));
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     margin: 0;
   }
-  .print-brand p { margin: 5px 0 0; font-size: 12px; }
+  .print-brand p { margin: calc(5px * var(--sp)) 0 0; font-size: calc(12px * var(--fs)); }
 
-  .print-doc-title { font-size: 22px; font-weight: 700; margin: 16px 0 3px; }
-  .print-doc-sub { font-size: 12px; margin: 0 0 14px; }
+  .print-doc-title { font-size: calc(22px * var(--fs)); font-weight: 700; margin: calc(16px * var(--sp)) 0 calc(3px * var(--sp)); }
+  .print-doc-sub { font-size: calc(12px * var(--fs)); margin: 0 0 calc(14px * var(--sp)); }
 
-  .print-section { margin-top: 16px; }
+  .print-section { margin-top: calc(16px * var(--sp)); }
   .print-section h2 {
-    font-size: 12px;
+    font-size: calc(12px * var(--fs));
     font-weight: 700;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     border-bottom-width: 1px;
     border-bottom-style: solid;
-    padding-bottom: 4px;
-    margin: 0 0 9px;
+    padding-bottom: calc(4px * var(--sp));
+    margin: 0 0 calc(9px * var(--sp));
   }
 
   .print-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     column-gap: 24px;
-    row-gap: 7px;
+    row-gap: calc(7px * var(--sp));
   }
   .print-field { display: flex; flex-direction: column; }
   .print-field span {
-    font-size: 9.5px;
+    font-size: calc(9.5px * var(--fs));
     text-transform: uppercase;
     letter-spacing: 0.16em;
   }
-  .print-field strong { font-size: 13px; font-weight: 600; }
+  .print-field strong { font-size: calc(13px * var(--fs)); font-weight: 600; }
 
-  .print-disclaimer { white-space: pre-wrap; font-size: 10.5px; line-height: 1.45; }
+  .print-disclaimer { white-space: pre-wrap; font-size: calc(10.5px * var(--fs)); line-height: calc(1.3 + 0.15 * var(--sp)); }
 
   /* Itemised purchase lines */
-  .print-items { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .print-items { width: 100%; border-collapse: collapse; font-size: calc(12px * var(--fs)); }
   .print-items th {
     text-align: left;
-    font-size: 9.5px;
+    font-size: calc(9.5px * var(--fs));
     text-transform: uppercase;
     letter-spacing: 0.16em;
     font-weight: 600;
-    padding: 5px 8px 5px 0;
+    padding: max(2px, calc(5px * var(--sp))) 8px max(2px, calc(5px * var(--sp))) 0;
     border-bottom: 1px solid rgba(128, 128, 128, 0.55);
   }
   .print-items td {
-    padding: 6px 8px 6px 0;
+    padding: max(2.5px, calc(6px * var(--sp))) 8px max(2.5px, calc(6px * var(--sp))) 0;
     border-bottom: 1px solid rgba(128, 128, 128, 0.3);
     vertical-align: top;
   }
@@ -184,40 +262,40 @@ const PRINT_CSS = `
     border-bottom: none;
     border-top: 2px solid rgba(128, 128, 128, 0.55);
     font-weight: 700;
-    padding-top: 8px;
+    padding-top: max(4px, calc(8px * var(--sp)));
   }
-  .print-items .muted { font-size: 11.5px; opacity: 0.75; }
+  .print-items .muted { font-size: calc(11.5px * var(--fs)); opacity: 0.75; }
 
   .print-signatures {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 32px;
-    margin-top: 26px;
+    margin-top: calc(26px * var(--sp));
   }
   .print-sig-block {
     border-top-width: 1px;
     border-top-style: solid;
-    padding-top: 9px;
+    padding-top: calc(9px * var(--sp));
   }
   .print-sig-block .label {
-    font-size: 10px;
+    font-size: calc(10px * var(--fs));
     text-transform: uppercase;
     letter-spacing: 0.16em;
   }
-  .print-sig-block .name { font-size: 13.5px; font-weight: 600; margin-top: 5px; }
-  .print-sig-line { display: inline-block; width: 100%; min-height: 26px; }
+  .print-sig-block .name { font-size: calc(13.5px * var(--fs)); font-weight: 600; margin-top: calc(5px * var(--sp)); }
+  .print-sig-line { display: inline-block; width: 100%; min-height: max(18px, calc(26px * var(--sp))); }
 
   .print-foot {
     /* Pushed to the foot of the sheet by the flex column, never closer than
        36px to the signatures. */
     margin-top: auto;
-    padding-top: 10px;
+    padding-top: calc(10px * var(--sp));
     border-top-width: 1px;
     border-top-style: solid;
-    font-size: 9.5px;
+    font-size: calc(9.5px * var(--fs));
     text-align: center;
   }
-  .print-signatures { margin-bottom: 36px; }
+  .print-signatures { margin-bottom: max(14px, calc(36px * var(--sp))); }
 
   /* ---------- Classic (white + black + gold accent) ---------- */
   .print-page.theme-classic { background: #ffffff; color: #111111; }
