@@ -6,7 +6,8 @@ export const virginiaWaterWentworth: LocationContent = {
   region: 'Surrey',
   postcodes: 'GU25 and the Wentworth Estate',
 
-  metaTitle: 'Sell Gold, Watches & Jewellery in Virginia Water - Charters Gold',
+  metaTitle: 'Sell Gold in Virginia Water & Wentworth - Paid in Seconds',
+  titleAbsolute: true,
   metaDescription:
     'Sell gold, bullion and jewellery in Virginia Water or on the Wentworth Estate to private gold buyers three miles away in Ascot. Paid the same day.',
 

@@ -6,7 +6,8 @@ export const farnham: LocationContent = {
   region: 'Surrey',
   postcodes: 'GU9, GU10 and the surrounding villages',
 
-  metaTitle: 'Sell Gold, Watches & Jewellery in Farnham - Charters Gold',
+  metaTitle: 'Sell Gold & Jewellery in Farnham - Paid in Seconds',
+  titleAbsolute: true,
   metaDescription:
     'Sell gold, antique jewellery and silver near Farnham. Period pieces valued on what they are, at your home in GU9 or GU10 or in Ascot, paid the same day.',
 

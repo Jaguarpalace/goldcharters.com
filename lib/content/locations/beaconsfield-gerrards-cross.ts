@@ -6,7 +6,8 @@ export const beaconsfieldGerrardsCross: LocationContent = {
   region: 'Buckinghamshire',
   postcodes: 'HP9, SL9 and the Chalfonts',
 
-  metaTitle: 'Sell Gold, Watches & Jewellery in Beaconsfield & Gerrards Cross - Charters Gold',
+  metaTitle: 'Sell Gold in Beaconsfield & Gerrards Cross - Paid in Seconds',
+  titleAbsolute: true,
   metaDescription:
     'Sell gold, watches and diamonds from Beaconsfield, Gerrards Cross or the Chalfonts. Valued at your home by appointment or in Ascot, paid the same day.',
 

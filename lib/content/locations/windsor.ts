@@ -6,7 +6,8 @@ export const windsor: LocationContent = {
   region: 'Royal Borough of Windsor and Maidenhead',
   postcodes: 'SL4, SL5, SL6 and neighbouring postcodes',
 
-  metaTitle: 'Sell Gold, Watches & Jewellery in Windsor - Charters Gold',
+  metaTitle: 'Sell Gold & Jewellery in Windsor - Paid in Seconds',
+  titleAbsolute: true,
   metaDescription:
     'Private gold buyers for Windsor, Eton and Datchet, 15 minutes away in Ascot or at your home in SL4. Sell gold priced in front of you, paid the same day.',
 

@@ -6,7 +6,8 @@ export const camberley: LocationContent = {
   region: 'Surrey',
   postcodes: 'GU15, GU16, GU17 and GU47',
 
-  metaTitle: 'Sell Gold, Watches & Jewellery in Camberley - Charters Gold',
+  metaTitle: 'Sell Gold & Jewellery in Camberley - Paid in Seconds',
+  titleAbsolute: true,
   metaDescription:
     'Sell gold and jewellery seven miles from Camberley, two stops on the train, or at your home in GU15 to GU17. Priced in front of you, paid the same day.',
 

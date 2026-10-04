@@ -6,7 +6,8 @@ export const marlowHenley: LocationContent = {
   region: 'Buckinghamshire & Oxfordshire',
   postcodes: 'SL7, RG9 and the riverside villages',
 
-  metaTitle: 'Sell Gold, Watches & Jewellery in Marlow & Henley - Charters Gold',
+  metaTitle: 'Sell Gold & Jewellery in Marlow & Henley - Paid in Seconds',
+  titleAbsolute: true,
   metaDescription:
     'Sell gold and jewellery in Marlow or Henley-on-Thames. Discreet appointments in Ascot or at your riverside address, priced in front of you, paid the same day.',
 

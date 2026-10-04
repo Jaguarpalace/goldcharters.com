@@ -6,7 +6,8 @@ export const london: LocationContent = {
   region: 'Greater London',
   postcodes: 'W1, SW1, NW1, EC, WC, SW3, SW7, NW8 and surrounding postcodes',
 
-  metaTitle: 'Sell Gold & Jewellery in London - Private Valuations | Charters Gold',
+  metaTitle: 'Sell Gold & Jewellery in London - Paid in Seconds',
+  titleAbsolute: true,
   metaDescription:
     'A discreet alternative to Hatton Garden. Private gold, diamond and watch valuations at your London address or at our Ascot office, paid the same day.',
 

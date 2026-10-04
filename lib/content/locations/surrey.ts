@@ -6,7 +6,8 @@ export const surrey: LocationContent = {
   region: 'Surrey',
   postcodes: 'GU, KT, RH, TW20, SM postcode districts',
 
-  metaTitle: 'Sell Gold, Watches & Fine Jewellery in Surrey - Charters Gold',
+  metaTitle: 'Sell Gold & Jewellery in Surrey - Paid in Seconds',
+  titleAbsolute: true,
   metaDescription:
     'Private gold, diamond and watch buyers for Surrey, from Sunningdale and Virginia Water to Guildford and Farnham. Home visits by appointment, paid the same day.',
 

@@ -6,7 +6,8 @@ export const heathrow: LocationContent = {
   region: 'West London / South Bucks',
   postcodes: 'TW6, UB, TW3, TW4, TW5 and surrounding airport-corridor postcodes',
 
-  metaTitle: 'Sell Gold & Jewellery near Heathrow - Charters Gold',
+  metaTitle: 'Sell Gold & Jewellery near Heathrow - Paid in Seconds',
+  titleAbsolute: true,
   metaDescription:
     'Sell gold and jewellery near Heathrow, twenty minutes from Terminal 5. Private appointments in Ascot or at your address, paid by bank transfer the same day.',
 

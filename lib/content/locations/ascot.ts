@@ -7,6 +7,7 @@ export const ascot: LocationContent = {
   postcodes: 'SL5 and surrounding postcodes',
 
   metaTitle: 'Sell Gold, Watches & Fine Jewellery in Ascot - Charters Gold',
+  titleAbsolute: true,
   metaDescription:
     'Sell gold in Ascot to private gold buyers just off the High Street. 9ct to 22ct, gold coins and diamond rings priced in front of you, paid the same day.',
 

@@ -6,7 +6,8 @@ export const stainesEgham: LocationContent = {
   region: 'Surrey',
   postcodes: 'TW18, TW19, TW20, GU25 and surrounding postcodes',
 
-  metaTitle: 'Sell Gold, Watches & Jewellery in Staines & Egham - Charters Gold',
+  metaTitle: 'Sell Gold & Jewellery in Staines & Egham - Paid in Seconds',
+  titleAbsolute: true,
   metaDescription:
     'Private gold buyers for Staines and Egham. Sell gold priced in front of you, figure held for 24 hours, paid the same day. Direct train from Egham to Ascot.',
 

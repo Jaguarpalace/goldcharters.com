@@ -6,7 +6,8 @@ export const hillingdonUxbridge: LocationContent = {
   region: 'Greater London',
   postcodes: 'UB8, UB9, UB10, HA4 and HA6',
 
-  metaTitle: 'Sell Gold, Watches & Jewellery in Hillingdon & Uxbridge - Charters Gold',
+  metaTitle: 'Sell Gold, Watches & Jewellery in Hillingdon & Uxbridge',
+  titleAbsolute: true,
   metaDescription:
     'Sell gold, diamonds and watches in Uxbridge, Ruislip or Northwood. A specialist at your door by appointment, priced in front of you, paid the same day.',
 

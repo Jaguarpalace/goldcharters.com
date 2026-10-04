@@ -6,7 +6,8 @@ export const guildford: LocationContent = {
   region: 'Surrey',
   postcodes: 'GU1 to GU5 and surrounding villages',
 
-  metaTitle: 'Sell Gold, Watches & Jewellery in Guildford - Charters Gold',
+  metaTitle: 'Sell Gold & Jewellery in Guildford - Paid in Seconds',
+  titleAbsolute: true,
   metaDescription:
     'Sell gold in Guildford at trade prices, not high-street prices. Direct train to Ascot, or we come to GU1 to GU5. Priced in front of you, paid the same day.',
 

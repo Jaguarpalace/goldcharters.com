@@ -6,7 +6,8 @@ export const weybridgeEsherCobham: LocationContent = {
   region: 'Surrey',
   postcodes: 'KT10, KT11, KT12 and KT13',
 
-  metaTitle: 'Sell Gold, Watches & Jewellery in Weybridge, Esher & Cobham - Charters Gold',
+  metaTitle: 'Sell Gold in Weybridge, Esher & Cobham - Paid in Seconds',
+  titleAbsolute: true,
   metaDescription:
     'Sell gold in Weybridge, Esher or Cobham behind your own gates, or at our Ascot office. Priced in front of you, paid by instant transfer the same day.',
 

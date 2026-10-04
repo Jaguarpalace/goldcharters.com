@@ -6,7 +6,8 @@ export const twickenhamRichmond: LocationContent = {
   region: 'South West London',
   postcodes: 'TW1, TW2, TW9, TW10, SW13, SW14 and surrounding postcodes',
 
-  metaTitle: 'Sell Gold, Watches & Jewellery in Twickenham & Richmond - Charters Gold',
+  metaTitle: 'Sell Gold, Watches & Jewellery in Twickenham & Richmond',
+  titleAbsolute: true,
   metaDescription:
     'Sell gold in Richmond or Twickenham privately. We come to TW1, TW9 and TW10, price every piece in front of you and pay the same day. Or a direct train to Ascot.',
 

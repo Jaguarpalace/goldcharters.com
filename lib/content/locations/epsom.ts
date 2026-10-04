@@ -6,7 +6,8 @@ export const epsom: LocationContent = {
   region: 'Surrey',
   postcodes: 'KT17, KT18, KT19 and neighbouring postcodes',
 
-  metaTitle: 'Sell Gold, Watches & Jewellery in Epsom - Charters Gold',
+  metaTitle: 'Sell Gold & Jewellery in Epsom - Paid in Seconds',
+  titleAbsolute: true,
   metaDescription:
     'Sell gold in Epsom, racing pieces included. Thirty minutes from Ascot, or we come to KT17 to KT19. Priced in front of you, paid the same day.',
 

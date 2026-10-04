@@ -6,7 +6,8 @@ export const hounslow: LocationContent = {
   region: 'Greater London',
   postcodes: 'TW3, TW4, TW5, TW7, TW8 and W4',
 
-  metaTitle: 'Sell Gold, Watches & Jewellery in Hounslow - Charters Gold',
+  metaTitle: 'Sell Gold & Jewellery in Hounslow - Paid in Seconds',
+  titleAbsolute: true,
   metaDescription:
     'Sell 22ct gold, jewellery and watches across Hounslow and Chiswick. The rate per gram shown as we weigh, home visits by appointment, paid the same day.',
 
