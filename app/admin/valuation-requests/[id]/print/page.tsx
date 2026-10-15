@@ -312,8 +312,8 @@ export default async function PurchasePrintPage({
 }
 
 /**
- * Purchase date and time, UK clock, safe for a file name:
- * "2026-10-15_14-32" (no colons, which Windows refuses in file names).
+ * Purchase date (UK order, day first) and time, UK clock, safe for a file
+ * name: "15-10-2026_14-32" (no slashes or colons, which Windows refuses).
  * The same purchase always saves under the same name.
  */
 function fileStamp(iso: string): string {
@@ -327,7 +327,7 @@ function fileStamp(iso: string): string {
     hour12: false,
   }).formatToParts(new Date(iso));
   const get = (type: string) => parts.find((p) => p.type === type)?.value ?? '00';
-  return `${get('year')}-${get('month')}-${get('day')}_${get('hour')}-${get('minute')}`;
+  return `${get('day')}-${get('month')}-${get('year')}_${get('hour')}-${get('minute')}`;
 }
 
 function renderField(label: string, value: string | null | undefined) {

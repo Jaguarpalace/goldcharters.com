@@ -24,7 +24,7 @@ export function PrintShell({
   children: ReactNode;
   /**
    * The browser's "Save as PDF" names the file after the page title, so
-   * this becomes the saved file's name (e.g. "3F2A9C1B_2026-10-15_14-32").
+   * this becomes the saved file's name (e.g. "3F2A9C1B_15-10-2026_14-32").
    */
   documentTitle?: string;
 }) {
