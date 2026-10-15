@@ -20,6 +20,7 @@ import {
   type PaymentMethod,
 } from '@/types/database';
 import { Typeahead } from '../_components/Typeahead';
+import { PostcodeFinder } from '../_components/PostcodeFinder';
 
 /** Per-line metal choices. "Other" covers watches, handbags and anything
  * else that can't be priced at spot - those lines are exempt from the
@@ -324,10 +325,24 @@ export function WalkInForm({
           <Field label="Phone" required value={form.phone} onChange={update('phone')} />
         </div>
         <div className="mt-3 grid gap-3 md:grid-cols-2">
+          <Field label="Postcode" value={form.postcode} onChange={update('postcode')} />
+          <div className="self-end">
+            <PostcodeFinder
+              postcode={form.postcode}
+              onPick={(a) =>
+                setForm((prev) => ({
+                  ...prev,
+                  address_line1: a.line1,
+                  address_line2: a.line2,
+                  city: a.city,
+                  postcode: a.postcode,
+                }))
+              }
+            />
+          </div>
           <Field label="Address line 1" value={form.address_line1} onChange={update('address_line1')} />
           <Field label="Address line 2" value={form.address_line2} onChange={update('address_line2')} />
           <Field label="City" value={form.city} onChange={update('city')} />
-          <Field label="Postcode" value={form.postcode} onChange={update('postcode')} />
         </div>
       </Section>
 

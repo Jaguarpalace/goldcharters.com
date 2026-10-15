@@ -24,6 +24,7 @@ export function Typeahead<T>({
   minChars = 2,
   autoFocus,
   emptyHint,
+  inputClassName,
 }: {
   value: string;
   onChange: (next: string) => void;
@@ -39,6 +40,8 @@ export function Typeahead<T>({
   autoFocus?: boolean;
   /** Shown under the list when the query returned nothing. */
   emptyHint?: string;
+  /** Replaces the default input styling, e.g. 'gc-input' inside a modal. */
+  inputClassName?: string;
 }) {
   const [results, setResults] = useState<T[]>([]);
   const [open, setOpen] = useState(false);
@@ -127,7 +130,10 @@ export function Typeahead<T>({
             setOpen(false);
           }
         }}
-        className="mt-1 w-full rounded-md border border-gold-metallic/20 bg-ink-950/60 px-3 py-2 text-sm text-white placeholder:text-warmgrey/50 focus:border-gold-metallic focus:outline-none disabled:opacity-60"
+        className={
+          inputClassName ??
+          'mt-1 w-full rounded-md border border-gold-metallic/20 bg-ink-950/60 px-3 py-2 text-sm text-white placeholder:text-warmgrey/50 focus:border-gold-metallic focus:outline-none disabled:opacity-60'
+        }
       />
       {showList && (
         <ul

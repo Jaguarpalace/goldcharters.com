@@ -17,9 +17,34 @@ type Theme = 'classic' | 'blackgold';
  *
  * Server-rendered document content is passed in as `children`.
  */
-export function PrintShell({ children }: { children: ReactNode }) {
+export function PrintShell({
+  children,
+  documentTitle,
+}: {
+  children: ReactNode;
+  /**
+   * The browser's "Save as PDF" names the file after the page title, so
+   * this becomes the saved file's name (e.g. "3F2A9C1B_2026-10-15_14-32").
+   */
+  documentTitle?: string;
+}) {
   const [theme, setTheme] = useState<Theme>('classic');
   const rootRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    if (!documentTitle) return;
+    const previous = document.title;
+    const apply = () => {
+      document.title = documentTitle;
+    };
+    apply();
+    // Again right before printing, in case the router set its own title since.
+    window.addEventListener('beforeprint', apply);
+    return () => {
+      window.removeEventListener('beforeprint', apply);
+      document.title = previous;
+    };
+  }, [documentTitle]);
 
   useLayoutEffect(() => {
     const root = rootRef.current;

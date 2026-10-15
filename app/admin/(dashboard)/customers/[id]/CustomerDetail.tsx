@@ -20,6 +20,7 @@ import {
   upsertCustomer,
 } from '@/lib/actions/customers';
 import { useRouter } from 'next/navigation';
+import { PostcodeFinder } from '../../_components/PostcodeFinder';
 
 type Tab = 'details' | 'documents' | 'history' | 'holdings';
 
@@ -159,10 +160,24 @@ function DetailsTab({ customer }: { customer: Customer }) {
           Address
         </legend>
         <div className="grid gap-3 md:grid-cols-2">
+          <TextField label="Postcode" value={form.postcode} onChange={update('postcode')} />
+          <div className="self-end">
+            <PostcodeFinder
+              postcode={form.postcode}
+              onPick={(a) =>
+                setForm((prev) => ({
+                  ...prev,
+                  address_line1: a.line1,
+                  address_line2: a.line2,
+                  city: a.city,
+                  postcode: a.postcode,
+                }))
+              }
+            />
+          </div>
           <TextField label="Line 1" value={form.address_line1} onChange={update('address_line1')} />
           <TextField label="Line 2" value={form.address_line2} onChange={update('address_line2')} />
           <TextField label="City" value={form.city} onChange={update('city')} />
-          <TextField label="Postcode" value={form.postcode} onChange={update('postcode')} />
           <TextField label="Country" value={form.country} onChange={update('country')} />
         </div>
       </fieldset>

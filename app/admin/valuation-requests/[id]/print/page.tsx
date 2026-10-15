@@ -100,9 +100,10 @@ export default async function PurchasePrintPage({
   const fullName = `${request.first_name} ${request.last_name}`.trim();
   const issuedAt = request.paid_at ?? request.updated_at ?? new Date().toISOString();
   const issuedDate = formatDateGB(issuedAt, 'long');
+  const reference = request.id.slice(0, 8).toUpperCase();
 
   return (
-    <PrintShell>
+    <PrintShell documentTitle={`${reference}_${fileStamp(issuedAt)}`}>
       <div className="print-sheet">
         <header className="print-header">
           <img
@@ -122,7 +123,7 @@ export default async function PurchasePrintPage({
 
         <h1 className="print-doc-title">Purchase Confirmation &amp; Seller's Disclaimer</h1>
         <p className="print-doc-sub">
-          Reference: <strong>{request.id.slice(0, 8).toUpperCase()}</strong> · Issued {issuedDate}
+          Reference: <strong>{reference}</strong> · Issued {issuedDate}
         </p>
 
         {/* ----------------------------- Seller --------------------------- */}
@@ -308,6 +309,25 @@ export default async function PurchasePrintPage({
       </div>
     </PrintShell>
   );
+}
+
+/**
+ * Purchase date and time, UK clock, safe for a file name:
+ * "2026-10-15_14-32" (no colons, which Windows refuses in file names).
+ * The same purchase always saves under the same name.
+ */
+function fileStamp(iso: string): string {
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Europe/London',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).formatToParts(new Date(iso));
+  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? '00';
+  return `${get('year')}-${get('month')}-${get('day')}_${get('hour')}-${get('minute')}`;
 }
 
 function renderField(label: string, value: string | null | undefined) {

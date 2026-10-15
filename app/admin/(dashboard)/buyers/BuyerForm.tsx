@@ -2,6 +2,7 @@
 
 import type { Buyer, BuyerKind } from '@/types/database';
 import type { BuyerInput } from '@/lib/actions/buyers';
+import { PostcodeFinder } from '../_components/PostcodeFinder';
 
 /** Controlled field set shared by the Buyers page and the inline "new buyer" step on a sale. */
 export type BuyerDraft = {
@@ -133,10 +134,24 @@ export function BuyerFields({
       </div>
 
       <div className={'grid gap-3 ' + (compact ? 'md:grid-cols-2' : 'md:grid-cols-3')}>
+        <Field label="Postcode" value={draft.postcode} onChange={set('postcode')} />
+        <div className={'self-end ' + (compact ? '' : 'md:col-span-2')}>
+          <PostcodeFinder
+            postcode={draft.postcode}
+            onPick={(a) =>
+              onChange({
+                ...draft,
+                address_line1: a.line1,
+                address_line2: a.line2,
+                city: a.city,
+                postcode: a.postcode,
+              })
+            }
+          />
+        </div>
         <Field label="Address line 1" value={draft.address_line1} onChange={set('address_line1')} />
         <Field label="Address line 2" value={draft.address_line2} onChange={set('address_line2')} />
         <Field label="City" value={draft.city} onChange={set('city')} />
-        <Field label="Postcode" value={draft.postcode} onChange={set('postcode')} />
         <Field label="Country" value={draft.country} onChange={set('country')} />
       </div>
 

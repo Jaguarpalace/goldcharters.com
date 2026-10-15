@@ -1,9 +1,12 @@
 'use client';
 
-import { useEffect, useState, useTransition } from 'react';
+import { useCallback, useEffect, useState, useTransition } from 'react';
 import { createPortal } from 'react-dom';
 import { createPhoneBooking } from '@/lib/actions/valuationRequests';
+import { searchCustomers } from '@/lib/actions/customers';
 import { METAL_OPTIONS, purityOptionsFor } from '@/lib/schemas/valuationFormOptions';
+import type { Customer } from '@/types/database';
+import { Typeahead } from './Typeahead';
 
 /**
  * "Someone rang and wants to come in." Opened from a day on the overview
@@ -52,12 +55,45 @@ export function PhoneBookingModal({
   const [notes, setNotes] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  // A returning caller picked from the name list. Their number and email
+  // fill in; the booking then files under the same customer (matched by
+  // email) instead of starting a second record.
+  const [linked, setLinked] = useState<Customer | null>(null);
 
   useEffect(() => setMounted(true), []);
+
+  const applyCustomer = (c: Customer) => {
+    setLinked(c);
+    setFirst(c.first_name);
+    setLast(c.last_name);
+    setPhone(c.phone ?? '');
+    setEmail(c.email ?? '');
+  };
+  const unlink = () => {
+    setLinked(null);
+    setPhone('');
+    setEmail('');
+  };
+  // Both name boxes search the customer list; the other box narrows it.
+  const searchByFirst = useCallback((q: string) => searchCustomers(`${q} ${last}`.trim()), [last]);
+  const searchByLast = useCallback((q: string) => searchCustomers(`${first} ${q}`.trim()), [first]);
+  const renderCustomer = (c: Customer) => (
+    <div>
+      <div className="text-white">
+        {c.first_name} {c.last_name}
+      </div>
+      <div className="text-[11px] text-warmgrey">
+        {[c.phone, c.email, c.postcode].filter(Boolean).join(' · ')}
+      </div>
+    </div>
+  );
 
   // Escape closes; scroll is locked behind the modal.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      // Escape on an open name list only closes the list, not the form.
+      const target = e.target as HTMLElement | null;
+      if (target?.getAttribute('aria-expanded') === 'true') return;
       if (e.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', onKey);
@@ -140,14 +176,55 @@ export function PhoneBookingModal({
 
         <div className="space-y-4 p-5">
           {/* Who */}
+          {linked ? (
+            <div className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-gold-metallic/30 bg-gold-metallic/10 px-3 py-2 text-[12px]">
+              <span className="text-warmgrey">
+                Existing customer:{' '}
+                <span className="font-semibold text-white">
+                  {linked.first_name} {linked.last_name}
+                </span>
+              </span>
+              <button
+                type="button"
+                onClick={unlink}
+                className="text-[10px] uppercase tracking-luxe text-warmgrey hover:text-gold-bright"
+              >
+                Not them - clear
+              </button>
+            </div>
+          ) : (
+            <p className="text-[11px] text-warmgrey">
+              Start typing the name. Existing customers show up as you type; pick one and their
+              number and email fill in.
+            </p>
+          )}
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label className="gc-label">First name</label>
-              <input value={first} onChange={(e) => setFirst(e.target.value)} className="gc-input" autoFocus />
+              <Typeahead<Customer>
+                value={first}
+                onChange={setFirst}
+                onSelect={applyCustomer}
+                search={searchByFirst}
+                renderItem={renderCustomer}
+                getKey={(c) => c.id}
+                autoFocus
+                inputClassName="gc-input"
+                emptyHint="No existing customer with that name. Carry on typing for a new caller."
+              />
             </div>
             <div>
               <label className="gc-label">Surname</label>
-              <input value={last} onChange={(e) => setLast(e.target.value)} className="gc-input" />
+              <Typeahead<Customer>
+                value={last}
+                onChange={setLast}
+                onSelect={applyCustomer}
+                search={searchByLast}
+                renderItem={renderCustomer}
+                getKey={(c) => c.id}
+                inputClassName="gc-input"
+                emptyHint="No existing customer with that name. Carry on typing for a new caller."
+              />
             </div>
             <div>
               <label className="gc-label">Phone</label>
