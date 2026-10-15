@@ -12,7 +12,7 @@ export default async function AdminEventsPage() {
   return (
     <div className="space-y-8">
       <header>
-        <span className="text-xs uppercase tracking-luxe text-gold-metallic">Appointments</span>
+        <span className="text-xs uppercase tracking-luxe text-gold-metallic">Pop-Ups</span>
         <h1 className="font-display text-2xl text-white mt-2">Pop-Up Locations & Dates</h1>
         <p className="mt-2 max-w-2xl text-sm text-warmgrey">
           Add the places and dates you’ll be available for private appointments - your Ascot showroom or

@@ -36,8 +36,8 @@ const NAV_SECTIONS: Array<{ key: string; title: string; items: NavItem[] }> = [
     items: [
       { href: '/admin/walk-in', label: 'New Walk-in Purchase', manager: true },
       { href: '/admin/valuation-requests', label: 'Valuation Requests', manager: true },
-      { href: '/admin/appointments', label: 'Appointments', manager: true },
       { href: '/admin/events', label: 'Pop-Up Locations' },
+      { href: '/admin/appointments', label: 'Pop-Up Bookings', manager: true },
       { href: '/admin/customers', label: 'Customers', manager: true },
       { href: '/admin/holdings', label: 'Holdings', manager: true },
       { href: '/admin/sales', label: 'Sales & Invoices', manager: true },
@@ -138,7 +138,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         item.href === '/admin/valuation-requests'
           ? `${outstandingCount} outstanding request${outstandingCount === 1 ? '' : 's'}`
           : item.href === '/admin/appointments'
-            ? `${appointmentCount} upcoming appointment${appointmentCount === 1 ? '' : 's'}`
+            ? `${appointmentCount} upcoming pop-up booking${appointmentCount === 1 ? '' : 's'}`
             : undefined,
     })),
   })).filter((section) => section.items.length > 0);
