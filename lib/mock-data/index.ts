@@ -43,7 +43,7 @@ export function mockSiteSettings(): SiteSettings {
     footer_disclaimer:
       'Valuations are subject to inspection, item condition, market prices and verification. Offers may vary depending on purity, weight, gemstones, brand, demand and documentation. Calculator prices are guide prices only.',
     social_links: { instagram: '#', facebook: '#' },
-    seo_title: 'Charters Gold · Private UK Gold & Jewellery Specialists',
+    seo_title: 'Sell Gold & Jewellery - Paid in Seconds | Charters Gold',
     seo_description:
       'Sell gold, diamonds, fine jewellery, luxury watches and designer handbags to a discreet UK private valuation house. Same-day payment, transparent valuations, no obligation.',
     purchase_disclaimer_text: null,

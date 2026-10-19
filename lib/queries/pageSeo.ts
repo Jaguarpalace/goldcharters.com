@@ -11,7 +11,7 @@ import type { PageSeo } from '@/types/database';
  */
 const SEO_DEFAULTS: Record<string, { title: string; description: string }> = {
   '/': {
-    title: 'Charters Gold · Private UK Gold & Jewellery Specialists',
+    title: 'Sell Gold & Jewellery - Paid in Seconds | Charters Gold',
     description:
       'Sell gold, diamonds, fine jewellery, luxury watches and designer handbags to a discreet UK private valuation house. Same-day payment, transparent valuations, no obligation.',
   },

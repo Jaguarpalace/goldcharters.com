@@ -28,7 +28,7 @@ insert into public.site_settings (
   'Same-day payment available',
   'Charters Gold is a private valuation house in Ascot buying gold, fine jewellery, luxury watches and designer handbags from private clients across Berkshire, Surrey and the UK. Priced in front of you, paid the same day.',
   'Valuations are subject to inspection, item condition, market prices and verification. Offers may vary depending on purity, weight, gemstones, brand, demand and documentation. Calculator prices are guide prices only.',
-  'Charters Gold · Private UK Gold & Jewellery Specialists',
+  'Sell Gold & Jewellery - Paid in Seconds | Charters Gold',
   'Sell gold, diamonds, watches and fine jewellery to a private valuation house in Ascot. Priced in front of you, paid the same day, no obligation.'
 ) on conflict do nothing;
 
