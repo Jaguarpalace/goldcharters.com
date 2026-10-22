@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { downscaleImage } from '@/lib/images/downscale';
 
 const DEFAULT_MAX_FILES = 12;
 const MAX_BYTES_PER_FILE = 12 * 1024 * 1024;
@@ -46,9 +47,11 @@ export function MultiImageUploader({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Pull the file's bytes into memory and swap in a fully in-memory File once
-  // they're available. Status updates go through a functional setState so
-  // several reads finishing out of order can't clobber each other.
+  // Pull the file's bytes into memory, then shrink the photo for sending
+  // (see lib/images/downscale.ts: one request can carry about 4 MB in
+  // total, and phone originals are 2 to 6 MB each). Status updates go
+  // through a functional setState so several reads finishing out of order
+  // can't clobber each other.
   const materialize = useCallback(
     (id: string, source: File) => {
       source
@@ -58,8 +61,11 @@ export function MultiImageUploader({
             type: source.type,
             lastModified: source.lastModified,
           });
+          return downscaleImage(inMemory);
+        })
+        .then((ready) => {
           onChange((prev) =>
-            prev.map((f) => (f.id === id ? { ...f, file: inMemory, status: 'ready' } : f)),
+            prev.map((f) => (f.id === id ? { ...f, file: ready, status: 'ready' } : f)),
           );
         })
         .catch((err) => {
@@ -174,7 +180,9 @@ export function MultiImageUploader({
           Upload clear photos from multiple angles, including hallmarks, stones, clasps, boxes and
           certificates where available. JPG · PNG · WEBP · HEIC.
         </p>
-        <p className="mt-2 text-xs text-gold-tint">Up to {MAX_FILES} photos · 12MB each</p>
+        <p className="mt-2 text-xs text-gold-tint">
+          Up to {MAX_FILES} photos · we shrink them for sending, so big phone photos are fine
+        </p>
         <input
           ref={inputRef}
           type="file"

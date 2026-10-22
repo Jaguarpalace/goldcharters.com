@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useMemo, useState, useTransition } from 'react';
 import { submitValuationRequest } from '@/lib/actions/valuationRequests';
+import { MAX_REQUEST_BYTES, formatMB, totalBytes } from '@/lib/images/downscale';
 import { appendAttribution, getAttribution } from '@/lib/attribution/attribution';
 import { track } from '@/lib/analytics/track';
 import { MultiImageUploader, type SelectedFile } from './MultiImageUploader';
@@ -188,8 +189,13 @@ function ValuationFormInner({ variant = 'metal', defaultItemType }: Props) {
       }
     : VARIANT_META[variant];
 
+  // Photos are read and shrunk after selection; don't let a customer submit
+  // while any are still being prepared, or the full-size originals would go.
+  const photosProcessing = files.some((f) => f.status === 'processing');
+
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (photosProcessing) return;
     setServerError(null);
     setSuccess(null);
 
@@ -216,12 +222,33 @@ function ValuationFormInner({ variant = 'metal', defaultItemType }: Props) {
 
     formData.delete('photos');
     files.forEach((f) => formData.append('photos', f.file, f.file.name));
+    // One request can carry about 4 MB in total (Vercel's limit). The photos
+    // are already shrunk on selection; this catches the rare batch that is
+    // still too big, with a message instead of a blank error page.
+    const bytes = totalBytes(files.map((f) => f.file));
+    if (bytes > MAX_REQUEST_BYTES) {
+      setServerError(
+        `Your photos come to ${formatMB(bytes)} and the form can send up to ${formatMB(MAX_REQUEST_BYTES)} in one go. Please remove a photo or two and try again, or send the rest to us on WhatsApp after submitting.`,
+      );
+      return;
+    }
     // Where this enquiry came from (landing page, referrer, campaign): stored
     // with the request so /admin/analytics can attribute it.
     appendAttribution(formData);
 
     startTransition(async () => {
-      const result = await submitValuationRequest(formData);
+      let result: Awaited<ReturnType<typeof submitValuationRequest>>;
+      try {
+        result = await submitValuationRequest(formData);
+      } catch (err) {
+        // A failed request (connection dropped, upload refused) used to throw
+        // straight to Next's "client-side exception" screen.
+        console.error('[valuation:submit]', err);
+        setServerError(
+          'Sorry, that did not go through. Please try again with fewer or smaller photos, or send your photos to us on WhatsApp at 07951 999 999 and we will reply the same day.',
+        );
+        return;
+      }
       if (result.ok) {
         track('generate_lead', {
           form_variant: String(formData.get('form_variant') ?? ''),
@@ -363,8 +390,18 @@ function ValuationFormInner({ variant = 'metal', defaultItemType }: Props) {
         </p>
       )}
 
-      <button type="submit" disabled={isPending} className="gc-btn-primary w-full sm:w-auto">
-        {isPending ? 'Submitting…' : homeVisit ? 'Request My Home Visit' : 'Request My Valuation'}
+      <button
+        type="submit"
+        disabled={isPending || photosProcessing}
+        className="gc-btn-primary w-full sm:w-auto"
+      >
+        {isPending
+          ? 'Submitting…'
+          : photosProcessing
+            ? 'Preparing photos…'
+            : homeVisit
+              ? 'Request My Home Visit'
+              : 'Request My Valuation'}
       </button>
 
       <p className="text-[11px] leading-relaxed text-warmgrey/70">

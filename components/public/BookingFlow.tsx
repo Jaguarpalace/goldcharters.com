@@ -7,6 +7,7 @@ import { bookAppointment, findNearestEvents, type NearestResult } from '@/lib/ac
 import { APPOINTMENT_SERVICES, type ComputedEvent, type ComputedSlot } from '@/lib/appointments/slots';
 import { formatDistance } from '@/lib/appointments/geo';
 import { MultiImageUploader, type SelectedFile } from './MultiImageUploader';
+import { MAX_REQUEST_BYTES, formatMB, totalBytes } from '@/lib/images/downscale';
 
 type SuccessState = {
   reference: string;
@@ -317,12 +318,29 @@ function BookingForEvent({
     // Server Actions"). FormData is the supported channel, so the photos travel
     // separately from the JSON payload.
     const photoData = new FormData();
-    for (const f of files) {
-      if (f.status === 'ready') photoData.append('photos', f.file);
+    const ready = files.filter((f) => f.status === 'ready');
+    for (const f of ready) photoData.append('photos', f.file);
+    // One request can carry about 4 MB in total (Vercel's limit). Photos are
+    // shrunk on selection; this catches a batch that is still too big.
+    const bytes = totalBytes(ready.map((f) => f.file));
+    if (bytes > MAX_REQUEST_BYTES) {
+      setServerError(
+        `Your photos come to ${formatMB(bytes)} and the form can send up to ${formatMB(MAX_REQUEST_BYTES)} in one go. Please remove a photo or two and try again; you can show us the rest at your appointment.`,
+      );
+      return;
     }
 
     startTransition(async () => {
-      const result = await bookAppointment(payload, photoData);
+      let result: Awaited<ReturnType<typeof bookAppointment>>;
+      try {
+        result = await bookAppointment(payload, photoData);
+      } catch (err) {
+        console.error('[booking:submit]', err);
+        setServerError(
+          'Sorry, that did not go through. Please try again with fewer or smaller photos, or ring us on 07951 999 999 and we will book you in.',
+        );
+        return;
+      }
       if (result.ok) {
         track('book_appointment', { city: event.city, page: payload.attribution.source_page });
         onSlotBooked(event.id, slot.startsAt);
