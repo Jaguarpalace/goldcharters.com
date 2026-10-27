@@ -127,6 +127,7 @@ function buildFaqs(rates: CalculatorRate[]) {
   const nine = findGold(rates, 9);
   const eighteen = findGold(rates, 18);
   const twentyTwo = findGold(rates, 22);
+  const twentyFour = findGold(rates, 24);
   const live = (r: CalculatorRate | undefined, label: string) =>
     r ? `${gbp(r.price_per_gram)} per gram for ${label}` : `our ${label} rate on the gold calculator`;
 
@@ -138,7 +139,7 @@ function buildFaqs(rates: CalculatorRate[]) {
     },
     {
       question: 'How much do you pay for gold today?',
-      answer: `It depends on the carat and the weight. Today we pay ${live(nine, '9ct')}, ${live(eighteen, '18ct')} and ${live(twentyTwo, '22ct')}. The rate moves with the gold market through the day, so check the gold calculator on the day you come. Weigh your gold on kitchen scales, pick the carat and you have a guide figure before you leave the house.`,
+      answer: `It depends on the carat and the weight. Today we pay ${live(nine, '9ct')}, ${live(eighteen, '18ct')}, ${live(twentyTwo, '22ct')} and ${live(twentyFour, '24ct')}. The rate moves with the gold market through the day, so check the gold calculator on the day you come. Weigh your gold on kitchen scales, pick the carat and you have a guide figure before you leave the house.`,
     },
     {
       question: 'Can I sell gold for cash?',
@@ -158,7 +159,7 @@ function buildFaqs(rates: CalculatorRate[]) {
     {
       question: 'How do I know what carat my gold is?',
       answer:
-        'Look for the small stamp, usually inside a ring or on the clasp of a chain. 375 is 9ct, 585 is 14ct, 625 is 15ct, 750 is 18ct and 916 is 22ct. No stamp does not mean it is not gold. We test unmarked gold free while you watch.',
+        'Look for the small stamp, usually inside a ring or on the clasp of a chain. 375 is 9ct, 585 is 14ct, 625 is 15ct, 750 is 18ct, 916 is 22ct and 999 is 24ct. No stamp does not mean it is not gold. We test unmarked gold free while you watch.',
     },
     {
       question: 'Why is my gold worth less than I paid for it?',
@@ -205,6 +206,7 @@ export default async function SellGoldPage() {
     { label: '14ct', rate: findGold(rates, 14) },
     { label: '18ct', rate: findGold(rates, 18) },
     { label: '22ct', rate: findGold(rates, 22) },
+    { label: '24ct', rate: findGold(rates, 24) },
   ].filter((x): x is { label: string; rate: CalculatorRate } => Boolean(x.rate));
   const faqs = buildFaqs(rates);
   const towns = getAllLocationSlugs()
@@ -257,7 +259,7 @@ export default async function SellGoldPage() {
               unmarked, weigh it in grams in front of you and show you what we pay for that carat
               today. Happy with the figure? You are paid the same day, usually within seconds. Not
               happy? You take it home, and there is no fee either way. We buy scrap gold, broken
-              chains, old rings, sovereigns and jewellery you no longer wear.
+              chains, old rings, sovereigns, 22ct and 24ct gold, and jewellery you no longer wear.
             </p>
             <div className="mt-7 flex flex-wrap justify-center gap-3">
               <GetValuationLink className="gc-btn-primary">Get a Valuation</GetValuationLink>
@@ -307,7 +309,7 @@ export default async function SellGoldPage() {
                 can price your gold at home before you sell.
               </p>
             </div>
-            <ul className="mx-auto mt-8 grid max-w-4xl gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <ul className="mx-auto mt-8 grid max-w-4xl gap-3 sm:grid-cols-2 lg:grid-cols-5">
               {headline.map(({ label, rate }) => (
                 <li
                   key={label}
