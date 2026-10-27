@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { JsonLd } from '@/lib/seo/JsonLd';
 import {
@@ -61,26 +62,38 @@ export async function generateMetadata(): Promise<Metadata> {
 const WHAT_WE_BUY = [
   {
     title: 'Scrap gold and broken jewellery',
+    image: '/images/sell-gold/scrap-and-broken-gold.webp',
+    alt: 'Scrap gold: a snapped chain, a cut wedding ring and broken gold pieces on a counter',
     body: 'Snapped chains, single earrings, bent rings, broken clasps, watch cases, dental gold. Scrap gold is worth the same per gram as a perfect piece of the same carat, so the condition makes no difference. Bring the whole tin.',
   },
   {
     title: 'Old gold and inherited jewellery',
+    image: '/images/sell-gold/old-and-inherited-gold.webp',
+    alt: 'Old gold jewellery: chains, a cluster ring, a signet ring and an engraved bangle',
     body: 'Rings, lockets, charm bracelets and chains that nobody wears any more. We read the hallmark, sort it by carat and pay for the gold in it. Older 15ct gold, stamped 625, is worth more than most people think.',
   },
   {
     title: 'Gold jewellery you still wear',
+    image: '/images/sell-gold/gold-jewellery-you-wear.webp',
+    alt: 'Gold jewellery: a bangle, a curb chain bracelet, a gold watch and a ring',
     body: 'Good jewellery is checked for more than its weight first. A signed ring, a good diamond or an older piece in original condition is priced for what it is, not by the gram.',
   },
   {
     title: 'Sovereigns, gold coins and bars',
+    image: '/images/sell-gold/sovereigns-coins-and-bars.webp',
+    alt: 'Gold sovereigns stacked beside a 1000g fine gold bar',
     body: 'Full and half sovereigns, Krugerrands, Britannias and hallmarked bars from one gram up. Common coins are paid on their gold content. A rare date or mint mark is worth more as a coin, so please do not clean it.',
   },
   {
     title: '22ct and Asian gold',
+    image: '/images/sell-gold/22ct-asian-gold.webp',
+    alt: '22ct Asian gold: two engraved bangles, a necklace and jhumka earrings',
     body: 'Bangles, sets, chains and coins in 22ct and 24ct. These are weighed and tested in front of you and paid at the 22ct and 24ct rate we pay today, which is the highest per gram.',
   },
   {
     title: 'Gold with no hallmark',
+    image: '/images/sell-gold/gold-with-no-hallmark.webp',
+    alt: 'Plain gold bangle, chain and wedding bands with no visible hallmark',
     body: 'Unmarked gold is tested free while you watch. If it is gold, you are paid for the carat the test shows. If it is not, we tell you straight and there is no charge for looking.',
   },
 ];
@@ -352,9 +365,20 @@ export default async function SellGoldPage() {
           </div>
           <ul className="mx-auto mt-8 grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {WHAT_WE_BUY.map((item) => (
-              <li key={item.title} className="rounded-xl border border-gold-metallic/20 bg-ink-900/60 p-5">
-                <h3 className="font-display text-base font-semibold text-white">{item.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-warmgrey">{item.body}</p>
+              <li key={item.title} className="overflow-hidden rounded-xl border border-gold-metallic/20 bg-ink-900/60">
+                <div className="relative aspect-[3/2] w-full">
+                  <Image
+                    src={item.image}
+                    alt={item.alt}
+                    fill
+                    sizes="(min-width: 1024px) 340px, (min-width: 640px) 50vw, 100vw"
+                    className="object-cover"
+                  />
+                </div>
+                <div className="p-5">
+                  <h3 className="font-display text-base font-semibold text-white">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-warmgrey">{item.body}</p>
+                </div>
               </li>
             ))}
           </ul>
