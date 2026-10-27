@@ -20,7 +20,10 @@ export async function generateMetadata(): Promise<Metadata> {
  * reviews on its own site, and treats it as a guidelines breach.
  */
 export default async function ReviewsPage() {
-  const [settings, reviews] = await Promise.all([getSiteSettings(), getPublishedReviews()]);
+  const [settings, fetched] = await Promise.all([getSiteSettings(), getPublishedReviews()]);
+  // The full list reads newest first (Paul, 27 Oct 2026). Featured order only
+  // matters for the three-card strips on the other pages.
+  const reviews = [...fetched].sort((a, b) => b.review_date.localeCompare(a.review_date));
   const summary = getReviewSummary(settings, { allowSample: reviews.some((r) => r.is_sample) });
 
   return (
