@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getAllLocationSlugs, getLocationBySlug, getNearbyLocations } from '@/lib/content/locations';
@@ -200,17 +201,41 @@ export default async function LocationPage({ params }: { params: { slug: string 
         </section>
       )}
 
-      {/* SPOTLIGHT - optional, one heading + one paragraph per page */}
-      {location.spotlight && (
-        <section className="py-8 lg:py-12 border-b border-gold-metallic/15">
-          <div className="gc-container">
-            <div className="mx-auto max-w-3xl">
-              <h2 className="gc-heading">{location.spotlight.title}</h2>
-              <p className="mt-4 text-base leading-relaxed text-warmgrey">{location.spotlight.body}</p>
+      {/* SPOTLIGHT (+ optional further sections) - one heading + one paragraph each, optional photo */}
+      {[location.spotlight, ...(location.sections ?? [])]
+        .filter((s): s is NonNullable<typeof s> => Boolean(s))
+        .map((s, idx) => (
+          <section key={s.title} className="py-8 lg:py-12 border-b border-gold-metallic/15">
+            <div className="gc-container">
+              {s.image ? (
+                <div
+                  className={`mx-auto grid max-w-5xl items-center gap-8 lg:grid-cols-[1.4fr,1fr] lg:gap-12 ${
+                    idx % 2 === 1 ? 'lg:[&>div:first-child]:order-2' : ''
+                  }`}
+                >
+                  <div>
+                    <h2 className="gc-heading">{s.title}</h2>
+                    <p className="mt-4 text-base leading-relaxed text-warmgrey">{s.body}</p>
+                  </div>
+                  <div className="relative aspect-[3/2] w-full overflow-hidden rounded-xl border border-gold-metallic/20">
+                    <Image
+                      src={s.image.src}
+                      alt={s.image.alt}
+                      fill
+                      sizes="(min-width: 1024px) 400px, 100vw"
+                      className="object-cover"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className="mx-auto max-w-3xl">
+                  <h2 className="gc-heading">{s.title}</h2>
+                  <p className="mt-4 text-base leading-relaxed text-warmgrey">{s.body}</p>
+                </div>
+              )}
             </div>
-          </div>
-        </section>
-      )}
+          </section>
+        ))}
 
       {/* TRAVEL + WHY HERE */}
       <section className="py-8 lg:py-12">
