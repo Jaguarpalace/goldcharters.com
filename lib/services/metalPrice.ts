@@ -112,3 +112,57 @@ export function spotForPurity(
   if (!perGramPureGBP || !Number.isFinite(perGramPureGBP)) return null;
   return Number(((perGramPureGBP * purityPercentage) / 100).toFixed(4));
 }
+
+const HISTORY_REVALIDATE_SECONDS = 6 * 60 * 60; // 6 hours: one call per region per quarter day
+
+type TimeframeResponse = {
+  success?: boolean;
+  rates?: Record<string, { XAU?: number }>;
+  error?: { code?: number; info?: string };
+};
+
+/**
+ * Pure gold, £ per gram, one value per calendar day for the last `days`
+ * days, oldest first. Backs the 30/90 day chart until the snapshot table
+ * has its own rows, and the one-off backfill of that table. Cached hard
+ * because the provider counts every call against the monthly allowance.
+ */
+export async function getGoldSpotHistory(days: number): Promise<{ date: string; spot: number }[]> {
+  if (!isApiConfigured()) return [];
+  const key = process.env.METAL_PRICE_API_KEY!;
+  const end = new Date();
+  const start = new Date(end.getTime() - days * 86400000);
+  const iso = (d: Date) => d.toISOString().slice(0, 10);
+
+  const url = new URL('https://api.metalpriceapi.com/v1/timeframe');
+  url.searchParams.set('api_key', key);
+  url.searchParams.set('base', 'GBP');
+  url.searchParams.set('currencies', 'XAU');
+  url.searchParams.set('start_date', iso(start));
+  url.searchParams.set('end_date', iso(end));
+
+  try {
+    const response = await fetch(url.toString(), {
+      next: { revalidate: HISTORY_REVALIDATE_SECONDS, tags: ['metal-prices'] },
+    });
+    if (!response.ok) {
+      console.error('[metalPrice] history HTTP', response.status);
+      return [];
+    }
+    const json = (await response.json()) as TimeframeResponse;
+    if (!json.success || !json.rates) {
+      console.error('[metalPrice] history api error', json.error);
+      return [];
+    }
+    return Object.entries(json.rates)
+      .filter(([, v]) => v?.XAU && v.XAU > 0)
+      .map(([date, v]) => ({
+        date,
+        spot: Number((1 / v.XAU! / TROY_OUNCE_GRAMS).toFixed(4)),
+      }))
+      .sort((a, b) => a.date.localeCompare(b.date));
+  } catch (e) {
+    console.error('[metalPrice] history fetch failed', e);
+    return [];
+  }
+}

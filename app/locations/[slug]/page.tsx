@@ -129,7 +129,7 @@ export default async function LocationPage({ params }: { params: { slug: string 
               {/* Keyword-rich anchor: tells Google what the calculator page
                   is about from every location page. */}
               <Link href="/gold-calculator" className="gc-btn-secondary">
-                Today&rsquo;s Gold Price Per Gram
+                Today&rsquo;s 9ct Gold Price Per Gram
               </Link>
             </div>
           </div>

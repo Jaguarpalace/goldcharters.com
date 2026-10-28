@@ -876,3 +876,19 @@ export type Appointment = {
   created_at: string;
   updated_at: string;
 };
+
+/** One row a day of what we pay for gold per gram, per carat (migration 039). */
+export type GoldPriceSnapshot = {
+  /** YYYY-MM-DD, London calendar day. */
+  snapshot_date: string;
+  /** Pure 24ct gold, £ per gram, when the row was written. */
+  spot_gbp_per_gram: number;
+  price_9ct: number | null;
+  price_14ct: number | null;
+  price_18ct: number | null;
+  price_22ct: number | null;
+  price_24ct: number | null;
+  source: 'live' | 'backfill';
+  created_at: string;
+  updated_at: string;
+};
