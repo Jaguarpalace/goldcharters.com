@@ -14,7 +14,7 @@ export const slough: LocationContent = {
   metaTitle: 'Sell Gold & Jewellery in Slough - Paid in Seconds',
   titleAbsolute: true,
   metaDescription:
-    'Sell gold and jewellery in Slough: 22ct paid as 22ct, weighed in front of you, paid the same day. At your home in SL1 to SL3 or 25 minutes away in Ascot.',
+    'Cash for gold in Slough, 22ct paid as 22ct. Tested and weighed in front of you at home in SL1 to SL3 or at our Ascot office, paid the same day, usually within seconds.',
 
   heroEyebrow: 'Gold Buyers Serving Slough',
   heroTitle: "Slough's Gold, Tested and Weighed in Front of You, Paid the Same Day",
@@ -24,7 +24,22 @@ export const slough: LocationContent = {
   spotlight: {
     title: 'Gold buyers for Slough: 22ct priced as 22ct',
     body: 'Much of the gold in Slough was made overseas and carries a 916 or 750 stamp rather than a British hallmark, and some carries no mark at all. As private gold buyers we do not price on the stamp or on a cautious guess. Every piece is tested, so 22ct is paid as 22ct and a 21ct chain is paid as 21ct, and the weight goes on the scales in grams while you watch, with the tola conversion shown if that is how you know your set. As jewellery buyers we look at the stones and the maker before anything is called scrap, because a diamond set or a signed bangle is worth more whole. You can sell gold in Slough with us at your own kitchen table or at our office in Ascot, and the figure is the same at either: written down, valid for 24 hours, paid the same day you accept it, usually within seconds.',
+    image: {
+      src: '/images/sell-gold/22ct-asian-gold.webp',
+      alt: 'A pair of 22ct gold bangles, a beaded necklace with a round pendant and jhumka earrings laid out on a dark marble counter',
+    },
   },
+
+  sections: [
+    {
+      title: 'Cash for gold in Slough, without the drive to Ascot',
+      body: 'If you want cash for gold in Slough this week, you do not need to come to us. Book a home visit and one specialist brings the scales and the testing kit to your door anywhere in SL1, SL2 or SL3, usually within a few days. A 9ct chain, an 18ct ring, a snapped bangle or a tin of odd earrings is tested and weighed at your own table and priced at what we pay today for that carat. Smaller amounts are paid in cash there and then. Larger sums go by instant bank transfer before we leave, usually in your account within seconds, and you keep a written purchase record either way. If you would rather see the office, Ascot is 25 minutes away and the figure is the same at either end.',
+      image: {
+        src: '/images/sell-gold/scrap-and-broken-gold.webp',
+        alt: 'A tangled gold chain, a plain gold band and a broken ring on a dark marble counter, ready to be weighed',
+      },
+    },
+  ],
 
   homeVisit: {
     title: "We come to you in Slough, Langley and Burnham",
@@ -54,8 +69,8 @@ export const slough: LocationContent = {
       body: 'Asian wedding jewellery, Middle Eastern 21ct and 24ct coins and bars are everyday work for us rather than the exception. Each piece is tested for its actual purity, weighed in grams on scales you can see, and priced at our rate for that carat today. Nothing is assumed to be a lower carat because it has no British hallmark, and nothing is priced as if it were going to be melted when it is worth more as it is.',
     },
     {
-      title: 'A private room rather than a Farnham Road counter',
-      body: 'Slough has plenty of jewellers, and most will buy gold across the counter, often as part-exchange against a new piece. We are the other thing: a private valuation house that only buys, by appointment, one specialist and one client, paying money rather than shop credit. Nobody else is in the room, nobody is queuing behind you, and no retail overhead comes out of your figure.',
+      title: 'A private room, not a counter',
+      body: 'We do not sell jewellery and we do not do part-exchange. We buy, by appointment, one specialist and one client, and we pay money rather than shop credit. Nobody else is in the room and nobody is queuing behind you. You see the test, you see the scales, you hear how the figure was reached, and you can take it home for 24 hours before you decide.',
     },
     {
       title: 'From the trading estate to Stoke Poges',
@@ -135,7 +150,17 @@ export const slough: LocationContent = {
     {
       question: 'How much is 22ct gold worth per gram today?',
       answer:
-        'The rate we pay today is on our gold calculator and moves with the gold market through the day. 22ct is 91.6% pure, so it is worth close to eleven twelfths of the fine gold figure per gram, less the amount every buyer keeps to cover refining and risk; ours is published on the calculator rather than hidden. 24ct coins and bars, 21ct and 18ct are priced the same way, each at the rate for its own carat.',
+        'What we pay today for 22ct is on our gold calculator and is updated through the day. 22ct is 91.6% pure, so it is paid at close to eleven twelfths of our 24ct figure per gram. 24ct coins and bars, 21ct, 18ct and 9ct are priced the same way, each at what we pay today for its own carat.',
+    },
+    {
+      question: 'Do you buy 9ct and 18ct gold in Slough, or only 22ct?',
+      answer:
+        'All of it. Most of the gold we buy across Berkshire is 9ct and 18ct: chains, rings, bracelets, earrings and charm bracelets stamped 375 or 750. It is tested and weighed exactly like 22ct and paid at what we pay today for 9ct or 18ct, broken or not. The gold calculator shows the figure per gram for each carat before you book.',
+    },
+    {
+      question: 'Is there a gold shop in Slough that buys gold?',
+      answer:
+        'We are not a shop in Slough and we do not pretend to be one. We are a gold buying house in Ascot, nine miles away, and we come to homes across Slough by appointment. There is no counter and no queue. The gold is tested and weighed in front of you at your own table or in our office, the figure is written down, and payment is the same day. If you want a written figure and the money today without leaving the house, book a home visit.',
     },
     {
       question: 'Are you jewellery buyers as well as gold buyers?',

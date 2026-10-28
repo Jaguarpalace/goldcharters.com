@@ -19,6 +19,13 @@ export type LocationFaq = {
   answer: string;
 };
 
+/** One heading, one paragraph, optional photo (public path + alt text). */
+export type LocationSection = {
+  title: string;
+  body: string;
+  image?: { src: string; alt: string };
+};
+
 export type LocationContent = {
   /** URL slug, matches the filename. e.g. "london" → /locations/london */
   slug: string;
@@ -52,7 +59,15 @@ export type LocationContent = {
    * "gold buyers" / "jewellery buyers" / "cash for gold" phrasing once each,
    * in plain sentences. Added page by page from Sep 2026, weakest first.
    */
-  spotlight?: { title: string; body: string };
+  spotlight?: LocationSection;
+
+  /**
+   * Optional further sections rendered straight after the spotlight, same
+   * shape. Used when a town's searches need a second angle on the page
+   * (e.g. Slough: "cash for gold" alongside the 22ct spotlight). Each may
+   * carry a photo from /public/images; the sell-gold set is fine to reuse.
+   */
+  sections?: LocationSection[];
 
   /**
    * Set on towns where another buyer is nearer than our Ascot office. The
