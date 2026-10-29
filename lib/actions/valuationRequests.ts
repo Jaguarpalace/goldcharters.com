@@ -93,6 +93,7 @@ function attributionFromForm(formData: FormData): Record<string, string> {
   const keys: Array<[string, number]> = [
     ['landing_page', 300], ['source_page', 300], ['referrer', 500],
     ['utm_source', 120], ['utm_medium', 120], ['utm_campaign', 120], ['utm_term', 120], ['gclid', 200],
+    ['session_id', 64],
   ];
   for (const [k, max] of keys) {
     const v = text(formData.get('attr_' + k), max);
@@ -237,9 +238,7 @@ export async function submitValuationRequest(
   // the columns exist; values are plain text, trimmed and length-capped.
   const attribution = attributionFromForm(formData);
 
-  const { data: request, error: insertError } = await admin
-    .from('valuation_requests')
-    .insert({
+  const payload = {
       ...attribution,
       first_name: firstName,
       last_name: lastName,
@@ -262,10 +261,24 @@ export async function submitValuationRequest(
       preferred_contact_method: contactRaw as PreferredContactMethod,
       consent_accepted: true,
       status: 'new',
-    })
-    // Pull the full row back so we have everything we need for the email.
+  } as Record<string, unknown>;
+
+  // Pull the full row back so we have everything we need for the email.
+  let { data: request, error: insertError } = await admin
+    .from('valuation_requests')
+    .insert(payload)
     .select('*')
     .single<ValuationRequest>();
+  // Migration 040 adds session_id. Until it is applied the column does not
+  // exist, so retry without it rather than lose the enquiry.
+  if (insertError && /session_id/.test(insertError.message ?? '')) {
+    delete payload.session_id;
+    ({ data: request, error: insertError } = await admin
+      .from('valuation_requests')
+      .insert(payload)
+      .select('*')
+      .single<ValuationRequest>());
+  }
 
   if (insertError || !request) {
     console.error('[valuation:insert]', insertError);

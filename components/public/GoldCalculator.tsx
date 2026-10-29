@@ -1,10 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { CalculatorRate } from '@/types/database';
 import { formatGBP } from '@/lib/format';
 import { track } from '@/lib/analytics/track';
+import { getAttribution } from '@/lib/attribution/attribution';
+import { recordCalculatorEvent, type CalculatorItem } from '@/lib/actions/calculatorEvents';
 
 type Weights = Record<string, string>;
 
@@ -82,6 +84,47 @@ export function GoldCalculator({
   const onChangeWeight = (id: string, value: string) =>
     setWeights((w) => ({ ...w, [id]: value }));
 
+  // ---- usage tracking (migration 040) -------------------------------------
+  // One record per calculation: fires 1.2 s after the visitor stops typing,
+  // only when at least one weight is valid, and never twice for the same
+  // figures. The "Request Valuation" click records a second event with the
+  // same snapshot. Both carry the tab's anonymous session mark so the admin
+  // can match a calculation to the enquiry that followed it.
+  const lastSent = useRef<string>('');
+  const snapshot = (): { items: CalculatorItem[]; total: number } => ({
+    items: rows
+      .filter((r) => r.weight > 0)
+      .map((r) => ({
+        metal: r.rate.metal_type,
+        carat: r.rate.carat_label,
+        purity: r.rate.purity_percentage,
+        weight: r.weight,
+        price_per_gram: r.rate.price_per_gram,
+        item_price: r.itemPrice,
+      })),
+    total,
+  });
+  const send = (event: 'calc' | 'cta') => {
+    const snap = snapshot();
+    if (snap.items.length === 0) return;
+    const key = event + JSON.stringify(snap.items);
+    if (event === 'calc' && key === lastSent.current) return;
+    lastSent.current = key;
+    void recordCalculatorEvent({
+      event,
+      page: window.location.pathname.slice(0, 300),
+      viewport_w: window.innerWidth,
+      ...snap,
+      ...getAttribution(),
+    });
+  };
+  useEffect(() => {
+    if (!rows.some((r) => r.weight > 0)) return;
+    const t = window.setTimeout(() => send('calc'), 1200);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [weights]);
+
   return (
     <section className="relative py-6 lg:py-10" id={sectionId}>
       <div className="gc-container">
@@ -125,7 +168,7 @@ export function GoldCalculator({
               {rows.map((row) => (
                 <RateRow key={row.rate.id} row={row} onChangeWeight={onChangeWeight} />
               ))}
-              <TotalRow total={total} ctaHref={ctaHref} />
+              <TotalRow total={total} ctaHref={ctaHref} onRequest={() => send('cta')} />
             </div>
           </div>
 
@@ -145,7 +188,7 @@ export function GoldCalculator({
                 {rightRows.map((row) => (
                   <RateRow key={`r-${row.rate.id}`} row={row} onChangeWeight={onChangeWeight} />
                 ))}
-                <TotalRow total={total} ctaHref={ctaHref} />
+                <TotalRow total={total} ctaHref={ctaHref} onRequest={() => send('cta')} />
               </div>
             </div>
           </div>
@@ -174,7 +217,7 @@ export function GoldCalculator({
  *     into 5 wrapped lines and overlapped the CTA, so we explicitly stack
  *     instead of inheriting the grid.
  */
-function TotalRow({ total, ctaHref }: { total: number; ctaHref: string }) {
+function TotalRow({ total, ctaHref, onRequest }: { total: number; ctaHref: string; onRequest: () => void }) {
   return (
     <div className="bg-ink-900/60 px-4 py-3 lg:grid lg:grid-cols-[1.4fr,1fr,1fr] lg:items-center lg:gap-3 lg:py-2.5">
       <div className="min-w-0">
@@ -189,7 +232,10 @@ function TotalRow({ total, ctaHref }: { total: number; ctaHref: string }) {
       <div className="mt-3 flex items-center justify-between gap-3 lg:contents lg:mt-0">
         <Link
           href={ctaHref}
-          onClick={() => track('calculator_request_click', { total: Math.round(total) })}
+          onClick={() => {
+            track('calculator_request_click', { total: Math.round(total) });
+            onRequest();
+          }}
           className="gc-btn-primary inline-flex items-center justify-center whitespace-nowrap !px-3 !py-1.5 text-[11px] lg:w-full"
         >
           Request Valuation

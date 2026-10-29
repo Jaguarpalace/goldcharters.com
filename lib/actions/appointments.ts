@@ -66,7 +66,7 @@ export type BookAppointmentInput = {
   preferredContactMethod: string;
   consent: boolean;
   /** Where the visitor came from (lib/attribution). Optional; stored when present. */
-  attribution?: Partial<Record<'landing_page' | 'source_page' | 'referrer' | 'utm_source' | 'utm_medium' | 'utm_campaign' | 'utm_term' | 'gclid', string | null | undefined>>;
+  attribution?: Partial<Record<'landing_page' | 'source_page' | 'referrer' | 'utm_source' | 'utm_medium' | 'utm_campaign' | 'utm_term' | 'gclid' | 'session_id', string | null | undefined>>;
 };
 
 export type BookResult =
@@ -103,7 +103,7 @@ async function getEventForBooking(eventId: string): Promise<AppointmentEvent | n
 function attributionPatch(a: BookAppointmentInput['attribution']): Record<string, string> {
   const out: Record<string, string> = {};
   if (!a) return out;
-  const caps: Record<string, number> = { landing_page: 300, source_page: 300, referrer: 500, utm_source: 120, utm_medium: 120, utm_campaign: 120, utm_term: 120, gclid: 200 };
+  const caps: Record<string, number> = { landing_page: 300, source_page: 300, referrer: 500, utm_source: 120, utm_medium: 120, utm_campaign: 120, utm_term: 120, gclid: 200, session_id: 64 };
   for (const [k, max] of Object.entries(caps)) {
     const v = a[k as keyof typeof a];
     if (typeof v === 'string' && v.trim()) out[k] = v.trim().slice(0, max);
@@ -168,25 +168,29 @@ export async function bookAppointment(
     .maybeSingle();
   if (clash) return { ok: false, error: 'Sorry, that slot was just taken. Please choose another.', code: 'SLOT_TAKEN' };
 
-  const { data: row, error } = await admin
-    .from('appointments')
-    .insert({
-      ...attributionPatch(input.attribution),
-      event_id: eventId,
-      starts_at: startsAt,
-      ends_at: slotEnd(event, startsAt),
-      first_name: firstName,
-      last_name: lastName,
-      email,
-      phone,
-      service_type: serviceType,
-      notes,
-      preferred_contact_method: contact,
-      consent_accepted: true,
-      status: 'booked',
-    })
-    .select('*')
-    .single<Appointment>();
+  const payload = {
+    ...attributionPatch(input.attribution),
+    event_id: eventId,
+    starts_at: startsAt,
+    ends_at: slotEnd(event, startsAt),
+    first_name: firstName,
+    last_name: lastName,
+    email,
+    phone,
+    service_type: serviceType,
+    notes,
+    preferred_contact_method: contact,
+    consent_accepted: true,
+    status: 'booked',
+  } as Record<string, unknown>;
+
+  let { data: row, error } = await admin.from('appointments').insert(payload).select('*').single<Appointment>();
+  // Migration 040 adds session_id. Until it is applied the column does not
+  // exist, so retry without it rather than lose the booking.
+  if (error && /session_id/.test(error.message ?? '')) {
+    delete payload.session_id;
+    ({ data: row, error } = await admin.from('appointments').insert(payload).select('*').single<Appointment>());
+  }
 
   if (error || !row) {
     // 23505 = our partial unique index caught a concurrent booking.

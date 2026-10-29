@@ -288,6 +288,7 @@ export type ValuationRequest = {
   utm_campaign?: string | null;
   utm_term?: string | null;
   gclid?: string | null;
+  session_id?: string | null;
   created_at: string;
   updated_at: string;
   /** ISO timestamp when soft-deleted, or null while active. */
@@ -873,6 +874,7 @@ export type Appointment = {
   utm_campaign?: string | null;
   utm_term?: string | null;
   gclid?: string | null;
+  session_id?: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -891,4 +893,31 @@ export type GoldPriceSnapshot = {
   source: 'live' | 'backfill';
   created_at: string;
   updated_at: string;
+};
+
+/** One use of the public calculator (migration 040). */
+export type CalculatorEvent = {
+  id: string;
+  created_at: string;
+  session_id: string | null;
+  event: 'calc' | 'cta';
+  page: string | null;
+  metal: string | null;
+  carat_label: string | null;
+  purity: number | null;
+  weight_g: number | null;
+  price_per_gram: number | null;
+  item_price: number | null;
+  total_estimate: number | null;
+  rows_filled: number | null;
+  items: Array<{ metal: string; carat: string; purity: number; weight: number; price_per_gram: number; item_price: number }> | null;
+  device: string | null;
+  viewport_w: number | null;
+  landing_page: string | null;
+  referrer: string | null;
+  utm_source: string | null;
+  utm_medium: string | null;
+  utm_campaign: string | null;
+  utm_term: string | null;
+  gclid: string | null;
 };

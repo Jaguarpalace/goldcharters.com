@@ -7,6 +7,8 @@
  */
 
 export type AttributionFields = {
+  /** Anonymous per-tab session mark (migration 040); matches calculator_events. */
+  session_id?: string | null;
   landing_page?: string | null;
   source_page?: string | null;
   referrer?: string | null;
