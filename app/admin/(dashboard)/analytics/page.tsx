@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getSiteSettings } from '@/lib/queries/homepage';
-import { getEnquiryAnalytics, type Bucket } from '@/lib/queries/analytics';
+import { getCalculatorAnalytics, getEnquiryAnalytics, type Bucket } from '@/lib/queries/analytics';
+import { formatGBP } from '@/lib/format';
 import { AnalyticsSettings } from './AnalyticsSettings';
 import { formatDateTimeGB } from '@/lib/format';
 
@@ -18,8 +19,13 @@ export default async function AdminAnalyticsPage({
   searchParams?: { days?: string };
 }) {
   const days = [7, 30, 90].includes(Number(searchParams?.days)) ? Number(searchParams?.days) : 30;
-  const [settings, data] = await Promise.all([getSiteSettings(), getEnquiryAnalytics(days)]);
+  const [settings, data, calc] = await Promise.all([
+    getSiteSettings(),
+    getEnquiryAnalytics(days),
+    getCalculatorAnalytics(days),
+  ]);
   const max = Math.max(1, ...data.byDay.map((d) => d.count));
+  const calcMax = Math.max(1, ...calc.byDay.map((d) => d.count));
 
   return (
     <div className="space-y-6">
@@ -145,6 +151,117 @@ export default async function AdminAnalyticsPage({
             </tbody>
           </table>
         </div>
+      </section>
+
+      {/* ---------------------------------------------------------------
+          Calculator usage (migration 040): what people weigh, what figure
+          they see, and whether that session went on to enquire. */}
+      <section className="space-y-4 border-t border-gold-metallic/15 pt-6">
+        <div>
+          <span className="text-xs uppercase tracking-luxe text-gold-metallic">Calculator</span>
+          <h2 className="mt-1 font-display text-xl text-white">Who uses the calculator, and for what</h2>
+          <p className="mt-1 max-w-2xl text-xs text-warmgrey">
+            One record each time a visitor stops typing with at least one weight in, plus every
+            Request Valuation press. No names, no cookies: an anonymous mark that lives in the
+            browser tab matches a calculation to the enquiry that follows it.
+          </p>
+        </div>
+
+        {!calc.available && (
+          <div className="rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-200">
+            The calculator table is not in the database yet. Run migration 040 in the Supabase SQL
+            Editor; calculations made after that will appear here.
+          </div>
+        )}
+
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <Stat label={`Calculations, last ${days} days`} value={calc.calcs} hint={calc.sessions ? `${calc.sessions} people` : undefined} />
+          <Stat label="Pressed Request Valuation" value={calc.ctaClicks} hint={calc.calcs ? `${Math.round((calc.ctaClicks / calc.calcs) * 100)}% of calculations` : undefined} />
+          <Stat
+            label="Went on to enquire or book"
+            value={calc.enquiredSessions}
+            hint={calc.sessions ? `${Math.round((calc.enquiredSessions / calc.sessions) * 100)}% of people` : undefined}
+          />
+          <div className="rounded-lg border border-gold-metallic/15 bg-ink-900/40 p-4">
+            <div className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">Typical figure shown</div>
+            <div className="mt-1 font-display text-3xl text-white">{formatGBP(calc.medianTotal)}</div>
+            <div className="mt-0.5 text-[11px] text-warmgrey">median; average {formatGBP(calc.avgTotal)}</div>
+          </div>
+        </div>
+
+        <section className="rounded-lg border border-gold-metallic/15 bg-ink-900/40 p-4">
+          <h3 className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">Calculations per day</h3>
+          <div className="mt-3 flex h-24 items-end gap-[2px]">
+            {calc.byDay.map((d) => (
+              <div
+                key={d.day}
+                title={`${d.day}: ${d.count}`}
+                className="flex-1 rounded-t-sm bg-gold-metallic/70"
+                style={{ height: `${Math.max(2, (d.count / calcMax) * 100)}%`, opacity: d.count ? 1 : 0.25 }}
+              />
+            ))}
+          </div>
+          <div className="mt-1 flex justify-between text-[10px] text-warmgrey">
+            <span>{calc.byDay[0]?.day}</span>
+            <span>{calc.byDay[calc.byDay.length - 1]?.day}</span>
+          </div>
+        </section>
+
+        <div className="grid gap-4 lg:grid-cols-3">
+          <BucketTable title="Carats people weigh" rows={calc.byCarat} empty="No calculations yet." />
+          <BucketTable title="Total weight entered" rows={calc.byWeightBand} empty="No calculations yet." />
+          <BucketTable title="Figure they saw" rows={calc.byTotalBand} empty="No calculations yet." />
+          <BucketTable title="Page" rows={calc.byPage} empty="No calculations yet." />
+          <BucketTable title="Device" rows={calc.byDevice} empty="No calculations yet." />
+          <BucketTable title="Where they came from" rows={calc.bySource} empty="No calculations yet." />
+        </div>
+
+        <section className="rounded-lg border border-gold-metallic/15 bg-ink-900/40">
+          <div className="border-b border-gold-metallic/10 px-4 py-3">
+            <h3 className="text-[10px] font-semibold uppercase tracking-luxe text-gold-tint">Recent calculations</h3>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="text-left text-[10px] uppercase tracking-luxe text-warmgrey">
+                  <th className="px-4 py-2">When</th>
+                  <th className="px-4 py-2">What they entered</th>
+                  <th className="px-4 py-2">Figure</th>
+                  <th className="px-4 py-2">Action</th>
+                  <th className="px-4 py-2">Page</th>
+                  <th className="px-4 py-2">Device</th>
+                  <th className="px-4 py-2">Source</th>
+                  <th className="px-4 py-2">Enquired</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gold-metallic/10">
+                {calc.recent.length === 0 && (
+                  <tr>
+                    <td colSpan={8} className="px-4 py-6 text-center text-warmgrey">
+                      Nothing in this period.
+                    </td>
+                  </tr>
+                )}
+                {calc.recent.map((r) => (
+                  <tr key={r.id} className="text-warmgrey">
+                    <td className="whitespace-nowrap px-4 py-2">{formatDateTimeGB(r.created_at)}</td>
+                    <td className="max-w-xs truncate px-4 py-2 text-white" title={r.summary}>{r.summary}</td>
+                    <td className="whitespace-nowrap px-4 py-2 text-gold-tint">{formatGBP(r.total)}</td>
+                    <td className="px-4 py-2">{r.event === 'cta' ? 'Request Valuation' : 'Calculated'}</td>
+                    <td className="px-4 py-2">{r.page_label}</td>
+                    <td className="px-4 py-2">{r.device}</td>
+                    <td className="px-4 py-2">
+                      <span className="rounded border border-gold-metallic/30 px-1.5 py-0.5 text-[10px] uppercase tracking-luxe text-gold-tint">
+                        {r.source}
+                      </span>
+                    </td>
+                    <td className="px-4 py-2">{r.enquired ? 'Yes' : '-'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
       </section>
 
       <AnalyticsSettings

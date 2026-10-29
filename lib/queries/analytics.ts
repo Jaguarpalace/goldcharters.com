@@ -1,4 +1,5 @@
 import { getAdminSupabase } from '@/lib/supabase/server';
+import type { CalculatorEvent } from '@/types/database';
 import { isSupabaseAdminConfigured } from '@/lib/supabase/env';
 import { classifySource, labelPage, type AttributionFields, type EnquirySource } from '@/lib/attribution/classify';
 
@@ -121,5 +122,157 @@ export async function getEnquiryAnalytics(days = 30): Promise<EnquiryAnalytics> 
     byDay: [...byDayMap.entries()].map(([day, count]) => ({ day, count })),
     recent: rows.slice(0, 25),
     available: true,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Calculator usage (migration 040)
+// ---------------------------------------------------------------------------
+
+
+export type CalculatorRecent = {
+  id: string;
+  created_at: string;
+  event: 'calc' | 'cta';
+  page_label: string;
+  summary: string;
+  total: number;
+  device: string;
+  source: EnquirySource;
+  enquired: boolean;
+};
+
+export type CalculatorAnalytics = {
+  days: number;
+  available: boolean;
+  calcs: number;
+  sessions: number;
+  ctaClicks: number;
+  enquiredSessions: number;
+  avgTotal: number;
+  medianTotal: number;
+  byDay: Array<{ day: string; count: number }>;
+  byCarat: Bucket[];
+  byWeightBand: Bucket[];
+  byTotalBand: Bucket[];
+  byPage: Bucket[];
+  byDevice: Bucket[];
+  bySource: Bucket[];
+  recent: CalculatorRecent[];
+};
+
+const gbp0 = (n: number) => `£${Math.round(n).toLocaleString('en-GB')}`;
+
+function band(value: number, edges: number[], fmt: (n: number) => string): string {
+  for (let i = 0; i < edges.length; i++) {
+    if (value < edges[i]) return i === 0 ? `Under ${fmt(edges[0])}` : `${fmt(edges[i - 1])} to ${fmt(edges[i])}`;
+  }
+  return `${fmt(edges[edges.length - 1])} and over`;
+}
+
+function bucketBy<T>(rows: T[], key: (r: T) => string | null | undefined, limit = 12): Bucket[] {
+  const counts = new Map<string, number>();
+  for (const r of rows) {
+    const k = key(r) || 'Unknown';
+    counts.set(k, (counts.get(k) ?? 0) + 1);
+  }
+  const total = rows.length || 1;
+  return [...counts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, limit)
+    .map(([label, count]) => ({ label, count, share: Math.round((count / total) * 100) }));
+}
+
+/**
+ * What people do in the calculator: one row per calculation (the figures
+ * the visitor saw after they stopped typing) plus the Request Valuation
+ * clicks, and which of those sessions went on to send an enquiry or book.
+ */
+export async function getCalculatorAnalytics(days = 30): Promise<CalculatorAnalytics> {
+  const empty: CalculatorAnalytics = {
+    days, available: false, calcs: 0, sessions: 0, ctaClicks: 0, enquiredSessions: 0, avgTotal: 0, medianTotal: 0,
+    byDay: [], byCarat: [], byWeightBand: [], byTotalBand: [], byPage: [], byDevice: [], bySource: [], recent: [],
+  };
+  if (!isSupabaseAdminConfigured()) return empty;
+  const admin = getAdminSupabase();
+  if (!admin) return empty;
+
+  const since = new Date(Date.now() - days * 86_400_000).toISOString();
+  // PostgREST caps a response at 1,000 rows; page until a short page comes back.
+  const PAGE = 1000;
+  const all: CalculatorEvent[] = [];
+  for (let from = 0; from < 10 * PAGE; from += PAGE) {
+    const { data, error } = await admin
+      .from('calculator_events')
+      .select('*')
+      .gte('created_at', since)
+      .order('created_at', { ascending: false })
+      .range(from, from + PAGE - 1);
+    if (error) return empty; // table missing until migration 040 is applied
+    all.push(...((data ?? []) as CalculatorEvent[]));
+    if (!data || data.length < PAGE) break;
+  }
+
+  const calcs = all.filter((e) => e.event === 'calc');
+  const ctas = all.filter((e) => e.event === 'cta');
+  const sessionIds = [...new Set(all.map((e) => e.session_id).filter((s): s is string => !!s))];
+
+  // Which of those sessions sent an enquiry or booked (same session mark).
+  const enquired = new Set<string>();
+  for (let i = 0; i < sessionIds.length; i += 200) {
+    const chunk = sessionIds.slice(i, i + 200);
+    const [vr, ap] = await Promise.all([
+      admin.from('valuation_requests').select('session_id').in('session_id', chunk),
+      admin.from('appointments').select('session_id').in('session_id', chunk),
+    ]);
+    for (const r of [...(vr.data ?? []), ...(ap.data ?? [])] as Array<{ session_id: string | null }>) {
+      if (r.session_id) enquired.add(r.session_id);
+    }
+  }
+
+  const totals = calcs.map((e) => Number(e.total_estimate ?? 0)).filter((n) => n > 0).sort((a, b) => a - b);
+  const avgTotal = totals.length ? totals.reduce((s, n) => s + n, 0) / totals.length : 0;
+  const medianTotal = totals.length ? totals[Math.floor(totals.length / 2)] : 0;
+
+  const byDayMap = new Map<string, number>();
+  for (let i = days - 1; i >= 0; i--) byDayMap.set(new Date(Date.now() - i * 86_400_000).toISOString().slice(0, 10), 0);
+  for (const e of calcs) {
+    const d = e.created_at.slice(0, 10);
+    if (byDayMap.has(d)) byDayMap.set(d, (byDayMap.get(d) ?? 0) + 1);
+  }
+
+  const itemsOf = (e: CalculatorEvent) => (Array.isArray(e.items) ? e.items : []);
+  const summary = (e: CalculatorEvent) =>
+    itemsOf(e)
+      .map((it) => `${it.weight}g ${it.metal} ${it.carat}`)
+      .join(', ') || `${e.weight_g ?? 0}g ${e.metal ?? ''} ${e.carat_label ?? ''}`.trim();
+
+  return {
+    days,
+    available: true,
+    calcs: calcs.length,
+    sessions: sessionIds.length,
+    ctaClicks: ctas.length,
+    enquiredSessions: enquired.size,
+    avgTotal,
+    medianTotal,
+    byDay: [...byDayMap.entries()].map(([day, count]) => ({ day, count })),
+    byCarat: bucketBy(calcs, (e) => (e.metal && e.carat_label ? `${e.metal} ${e.carat_label}` : null)),
+    byWeightBand: bucketBy(calcs, (e) => band(Number(e.weight_g ?? 0), [5, 10, 20, 50, 100], (n) => `${n}g`), 6),
+    byTotalBand: bucketBy(calcs, (e) => band(Number(e.total_estimate ?? 0), [100, 250, 500, 1000, 2500], gbp0), 6),
+    byPage: bucketBy(calcs, (e) => (e.page ? labelPage(e.page) : null)),
+    byDevice: bucketBy(calcs, (e) => (e.device ? e.device[0].toUpperCase() + e.device.slice(1) : null), 3),
+    bySource: bucketBy(calcs, (e) => classifySource(e)),
+    recent: all.slice(0, 30).map((e) => ({
+      id: e.id,
+      created_at: e.created_at,
+      event: e.event,
+      page_label: labelPage(e.page),
+      summary: summary(e),
+      total: Number(e.total_estimate ?? 0),
+      device: e.device ?? '-',
+      source: classifySource(e),
+      enquired: !!(e.session_id && enquired.has(e.session_id)),
+    })),
   };
 }

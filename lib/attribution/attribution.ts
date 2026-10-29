@@ -68,11 +68,35 @@ export function captureAttribution(): void {
   }
 }
 
+const SESSION_KEY = 'gc-session';
+
+/**
+ * Anonymous session mark: a random id kept in sessionStorage for this tab
+ * only, so calculator uses and the enquiry that follows can be matched up in
+ * the admin without identifying anyone. Nothing persists past the tab.
+ */
+export function getSessionId(): string | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    let id = window.sessionStorage.getItem(SESSION_KEY);
+    if (!id) {
+      const bytes = new Uint8Array(12);
+      window.crypto.getRandomValues(bytes);
+      id = Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+      window.sessionStorage.setItem(SESSION_KEY, id);
+    }
+    return id;
+  } catch {
+    return null;
+  }
+}
+
 /** Everything the server should store with an enquiry sent from this page. */
 export function getAttribution(): AttributionFields {
   if (typeof window === 'undefined') return {};
   const s = read();
   return {
+    session_id: getSessionId(),
     landing_page: s?.landing_page ?? window.location.pathname.slice(0, 300),
     source_page: window.location.pathname.slice(0, 300),
     referrer: s?.referrer ?? document.referrer.slice(0, 500) ?? '',
