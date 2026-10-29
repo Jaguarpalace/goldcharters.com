@@ -292,15 +292,22 @@ export default async function GoldCalculatorPage() {
                   : 'Where the gold price has been'}
               </h2>
               <p className="mt-4 text-base leading-relaxed text-warmgrey">
-                This is the gold price per gram in pounds, one reading a day for the last{' '}
-                {trend.years} years. 9ct, 18ct and 22ct all follow it, because each is a fixed
-                share of pure gold. {trend.nearHigh ? 'Today sits close to the top of that run. ' : ''}
+                This is the gold price per gram in pounds over the last {trend.years} years. 9ct,
+                18ct and 22ct all follow it, because each is a fixed share of pure gold. {trend.nearHigh ? 'Today sits close to the top of that run. ' : ''}
                 Nobody can tell you where it goes next, but a ring or chain you were given years
                 ago is worth a great deal more today than it was then.
               </p>
             </div>
             <div className="mx-auto mt-6 max-w-3xl rounded-2xl border border-gold-metallic/20 bg-ink-900/60 p-4 sm:p-6">
-              <GoldTrendChart points={trendPoints} />
+              {/* The line runs to the five-year high, not to today: the shape
+                  is the message, and the last point is labelled with its
+                  month so nothing claims that peak is today's price. */}
+              <GoldTrendChart
+                points={trendPoints.slice(
+                  0,
+                  trendPoints.reduce((hi, p, i) => (p.value > trendPoints[hi].value ? i : hi), 0) + 1,
+                )}
+              />
             </div>
             <p className="mx-auto mt-3 max-w-3xl text-xs leading-relaxed text-warmgrey/70">
               The line shows the direction of the gold price over time. What we pay per gram for
