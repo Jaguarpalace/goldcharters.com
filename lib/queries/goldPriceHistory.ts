@@ -127,6 +127,52 @@ export async function recordGoldSnapshot(rates: CalculatorRate[]): Promise<void>
   }
 }
 
+/** One point on the long trend line: calendar day and pure gold £ per gram. */
+export type GoldTrendPoint = { date: string; value: number };
+
+/**
+ * The gold price per gram in pounds over the last `days` days (default five
+ * years), oldest first, for the trend line on the calculator page. Reads the
+ * spot column of the snapshot table (backfilled with five years of daily
+ * figures on 29 Oct 2026, topped up by the daily cron). Falls back to the
+ * price API's last 12 months when the table is thin. Never throws.
+ */
+export async function getGoldSpotTrend(days = 365 * 5 + 1): Promise<GoldTrendPoint[]> {
+  const since = new Date(Date.now() - days * 86400000).toLocaleDateString('en-CA', {
+    timeZone: 'Europe/London',
+  });
+  try {
+    const supabase = getServerSupabase();
+    if (supabase) {
+      // PostgREST caps a single response at 1,000 rows; five years is ~1,825,
+      // so page through in order until a short page comes back.
+      const PAGE = 1000;
+      const rows: { snapshot_date: string; spot_gbp_per_gram: number | null }[] = [];
+      for (let from = 0; from < 10 * PAGE; from += PAGE) {
+        const { data, error } = await supabase
+          .from('gold_price_snapshots')
+          .select('snapshot_date, spot_gbp_per_gram')
+          .gte('snapshot_date', since)
+          .order('snapshot_date', { ascending: true })
+          .range(from, from + PAGE - 1);
+        if (error || !data) break;
+        rows.push(...data);
+        if (data.length < PAGE) break;
+      }
+      if (rows.length >= 60) {
+        return rows
+          .filter((r) => r.spot_gbp_per_gram != null)
+          .map((r) => ({ date: String(r.snapshot_date), value: Number(r.spot_gbp_per_gram) }));
+      }
+    }
+    const history = await getGoldSpotHistory(Math.min(days, 365));
+    return history.map(({ date, spot }) => ({ date, value: spot }));
+  } catch (e) {
+    console.error('[goldPriceHistory] getGoldSpotTrend failed', e);
+    return [];
+  }
+}
+
 /**
  * The last `days` days of what we pay per gram for `carat` gold, oldest
  * first. Reads the snapshot table; when it is missing or thin (before the

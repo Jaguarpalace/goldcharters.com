@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getCalculatorRates } from '@/lib/queries/calculator';
-import { getGoldPriceHistory, recordGoldSnapshot } from '@/lib/queries/goldPriceHistory';
+import { getGoldSpotTrend, recordGoldSnapshot } from '@/lib/queries/goldPriceHistory';
 import { buildPageMetadata } from '@/lib/queries/pageSeo';
 import { getMetalSpots } from '@/lib/services/metalPrice';
 import { formatDateTimeGB } from '@/lib/format';
 import { GoldCalculator } from '@/components/public/GoldCalculator';
-import { GoldPriceChart } from '@/components/public/GoldPriceChart';
+import { GoldTrendChart } from '@/components/public/GoldTrendChart';
 import { ValuationForm } from '@/components/public/ValuationForm';
 import { JsonLd } from '@/lib/seo/JsonLd';
 import { locationFaqSchema } from '@/lib/seo/structuredData';
@@ -28,9 +28,6 @@ const findGold = (rates: CalculatorRate[], carat: number) =>
  * sits next to the carat everywhere on this page.
  */
 const stamp = (purity: number) => Math.round(purity * 10).toString().padStart(3, '0');
-
-const shortDate = (iso: string) =>
-  new Date(`${iso}T12:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
 
 /**
  * The page is built for one search family: "9ct gold price per gram",
@@ -63,7 +60,7 @@ export async function generateMetadata(): Promise<Metadata> {
  */
 function buildFaqs(
   rates: CalculatorRate[],
-  trend: { first: { date: string; price: number }; last: { date: string; price: number } } | null,
+  trend: { years: number; rise: number; nearHigh: boolean } | null,
 ) {
   const nine = findGold(rates, 9);
   const fourteen = findGold(rates, 14);
@@ -72,17 +69,13 @@ function buildFaqs(
   const live = (r: CalculatorRate | undefined, label: string) =>
     r ? `${gbp(r.price_per_gram)} per gram for ${label}` : `the ${label} rate shown in the table above`;
 
-  const trendFaq = trend
-    ? {
-        question: 'Has the 9ct gold price per gram gone up or down this month?',
-        answer: (() => {
-          const diff = trend.last.price - trend.first.price;
-          const pct = Math.abs((diff / trend.first.price) * 100).toFixed(1);
-          const dir = diff >= 0 ? 'up' : 'down';
-          return `${dir === 'up' ? 'Up' : 'Down'}. On ${shortDate(trend.first.date)} we were paying ${gbp(trend.first.price)} per gram for 9ct gold and today we pay ${gbp(trend.last.price)}, ${dir} ${gbp(Math.abs(diff))} or ${pct}% in 30 days. The chart above shows every day in between, and you can switch it to 90 days.`;
-        })(),
-      }
-    : null;
+  const trendFaq =
+    trend && trend.rise > 0
+      ? {
+          question: 'Is now a good time to sell 9ct gold?',
+          answer: `Gold is worth about ${Math.round(trend.rise)}% more per gram than it was ${trend.years} years ago${trend.nearHigh ? ', and it is close to the highest it has ever been in pounds' : ''}. 9ct gold follows the pure gold price, so what we pay per gram today${nine ? `, ${gbp(nine.price_per_gram)},` : ''} is near the top of that range. Nobody can tell you where it goes next, but a 9ct chain or ring is worth far more today than it was a few years ago. The chart above shows the whole run.`,
+        }
+      : null;
 
   return [
     {
@@ -95,7 +88,7 @@ function buildFaqs(
     {
       question: 'What is the 9ct gold price per gram in the UK today, and why does it change?',
       answer:
-        'Gold is priced in dollars per troy ounce and moves all day. The pound moves against the dollar too. 9ct gold is 37.5% pure, so the 9ct figure is 37.5% of the pure gold figure, less our refining cost. That is why what we pay on a Monday can be different by Friday. Today\'s figure is in the table above with the time it was last updated, and the chart shows the last 30 or 90 days.',
+        'Gold is priced in dollars per troy ounce and moves all day. The pound moves against the dollar too. 9ct gold is 37.5% pure, so the 9ct figure is 37.5% of the pure gold figure, less our refining cost. That is why what we pay on a Monday can be different by Friday. Today\'s figure is in the table above with the time it was last updated, and the chart shows where gold has gone over the last five years.',
     },
     {
       question: 'What is 375 gold, and is it the same as 9ct?',
@@ -152,7 +145,7 @@ export default async function GoldCalculatorPage() {
   const [rates, spots] = await Promise.all([getCalculatorRates(), getMetalSpots()]);
   // Today's row for the chart. Cheap and never throws; see goldPriceHistory.ts.
   await recordGoldSnapshot(rates);
-  const history = await getGoldPriceHistory(rates, 9, 90);
+  const trendPoints = await getGoldSpotTrend();
 
   const goldRates = rates.filter((r) => r.metal_type === 'Gold');
   const otherRates = rates.filter((r) => r.metal_type !== 'Gold');
@@ -161,17 +154,30 @@ export default async function GoldCalculatorPage() {
   const twentyTwoCt = findGold(rates, 22);
   const twentyFourCt = findGold(rates, 24);
 
-  const since30 = new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 10);
-  const last30 = history.points.filter((p) => p.date >= since30);
-  const trend =
-    last30.length >= 2 ? { first: last30[0], last: last30[last30.length - 1] } : null;
+  // Long-run picture for the chart and the "good time to sell" answer:
+  // years covered, rise over the run, and whether today sits near the high.
+  const trend = (() => {
+    if (trendPoints.length < 60) return null;
+    const first = trendPoints[0];
+    const last = trendPoints[trendPoints.length - 1];
+    const high = trendPoints.reduce((a, p) => (p.value > a.value ? p : a), first);
+    const years = Math.max(
+      1,
+      Math.round((Date.parse(last.date) - Date.parse(first.date)) / (365.25 * 86400000)),
+    );
+    return {
+      years,
+      rise: (last.value / first.value - 1) * 100,
+      nearHigh: last.value >= high.value * 0.9,
+    };
+  })();
 
   const faqs = buildFaqs(rates, trend);
   const refreshed = spots.fetched_at ? formatDateTimeGB(spots.fetched_at) : null;
 
   const heading = "9ct Gold Price Per Gram UK, Today's Rate";
   const subhead =
-    'Enter your weights in grams and see what we would pay today for 9ct, 14ct, 18ct and 22ct gold. What we pay is updated through the day as gold moves, and the chart below shows the last 90 days. Sell in person and you are paid by instant bank transfer the same day, usually within seconds of accepting.';
+    'Enter your weights in grams and see what we would pay today for 9ct, 14ct, 18ct and 22ct gold. What we pay is updated through the day as gold moves, and the chart below shows where gold has gone over the last five years. Sell in person and you are paid by instant bank transfer the same day, usually within seconds of accepting.';
 
   return (
     <>
@@ -272,30 +278,33 @@ export default async function GoldCalculatorPage() {
         </section>
       )}
 
-      {/* 30 / 90 DAY CHART - the one thing "9ct gold price uk" searchers want
-          that today's figure alone does not give them. */}
-      {history.points.length >= 2 && (
+      {/* FIVE-YEAR TREND - the long run is the honest and the encouraging
+          picture; short windows wobble and put sellers off. Shape only: no
+          price axis, no daily change figure. */}
+      {trend && trendPoints.length >= 60 && (
         <section className="py-8 lg:py-12 border-b border-gold-metallic/15" id="price-chart">
           <div className="gc-container max-w-4xl">
             <div className="mx-auto max-w-3xl">
-              <span className="gc-eyebrow">9ct gold price per gram, last 90 days</span>
-              <h2 className="gc-heading mt-3">Where the 9ct gold price has been</h2>
+              <span className="gc-eyebrow">The gold price, last {trend.years} years</span>
+              <h2 className="gc-heading mt-3">
+                {trend.rise > 0
+                  ? `Gold is up ${Math.round(trend.rise)}% in ${trend.years} years`
+                  : 'Where the gold price has been'}
+              </h2>
               <p className="mt-4 text-base leading-relaxed text-warmgrey">
-                This is what we have been paying per gram for 9ct gold, day by day. Gold is
-                priced around the clock on weekdays and stands still at weekends, so you will see
-                flat steps from Friday night to Monday morning. If you are deciding whether to sell
-                now or wait, this is the honest picture: nobody can tell you where it goes next,
-                but you can see where it has been.
+                This is the gold price per gram in pounds, one reading a day for the last{' '}
+                {trend.years} years. 9ct, 18ct and 22ct all follow it, because each is a fixed
+                share of pure gold. {trend.nearHigh ? 'Today sits close to the top of that run. ' : ''}
+                Nobody can tell you where it goes next, but a ring or chain you were given years
+                ago is worth a great deal more today than it was then.
               </p>
             </div>
             <div className="mx-auto mt-6 max-w-3xl rounded-2xl border border-gold-metallic/20 bg-ink-900/60 p-4 sm:p-6">
-              <GoldPriceChart points={history.points} carat="9ct" defaultRange={90} />
+              <GoldTrendChart points={trendPoints} />
             </div>
             <p className="mx-auto mt-3 max-w-3xl text-xs leading-relaxed text-warmgrey/70">
-              {history.source === 'snapshots'
-                ? 'One reading a day, taken from the rate shown on this page.'
-                : 'Daily figures worked back from the pure gold price at our paying rate today.'}{' '}
-              Every point is what we pay for hallmarked 9ct gold by weight, not a market quote.
+              The line shows the direction of the gold price over time. What we pay per gram for
+              each carat today is in the table above.
             </p>
           </div>
         </section>
