@@ -112,7 +112,7 @@ export function GoldTrendChart({ points }: { points: TrendPoint[] }) {
           fontWeight="600"
           fill="#F3CC0F"
         >
-          Today
+          {monthYear(last.date)}
         </text>
       </svg>
     </div>
